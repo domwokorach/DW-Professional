@@ -7,6 +7,7 @@ import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import AnimatedBackground from "@/components/ui/AnimatedBackground";
 import UKGreeting from "@/components/ui/UKGreeting";
+import WeatherWidget from "@/components/weather/WeatherWidget";
 
 const headlineLines = ["Software Engineer", "& Frontend Developer"];
 
@@ -62,7 +63,8 @@ export default function Hero() {
 
       <Container className="relative z-10">
         <div className="max-w-2xl">
-          <UKGreeting className="mb-5" />
+          <UKGreeting className="mb-2" />
+          <WeatherWidget className="mb-5" />
 
           <motion.p
             initial={reduceMotion ? false : { opacity: 0 }}

@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { projects } from "@/data/projects";
+import { caseStudies } from "@/data/caseStudies";
 
 const siteUrl = "https://portfolio-wokorach.vercel.app";
 
@@ -10,6 +11,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${siteUrl}/projects/${p.slug}`,
       changeFrequency: "yearly" as const,
       priority: 0.6,
+    })),
+    ...caseStudies.map((c) => ({
+      url: `${siteUrl}/projects/${c.slug}`,
+      changeFrequency: "yearly" as const,
+      priority: 0.7,
     })),
   ];
 }

@@ -8,7 +8,7 @@ export default function Experience() {
   return (
     <section id="experience" className="relative border-t border-line py-28 sm:py-36">
       <Container>
-        <SectionHeading index="04" label="Experience" heading="Experience" />
+        <SectionHeading index="05" label="Experience" heading="Experience" />
 
         <ol className="mt-16 space-y-10 border-l border-line">
           {experience.map((item) => (

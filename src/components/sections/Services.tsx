@@ -11,7 +11,7 @@ export default function Services() {
   return (
     <section id="services" className="relative border-t border-line py-28 sm:py-36">
       <Container>
-        <SectionHeading index="02" label="Services" heading="What I can build for you." />
+        <SectionHeading index="03" label="Services" heading="What I can build for you." />
 
         <MotionReveal delay={0.1} className="mt-8 max-w-2xl">
           <p className="text-base leading-[1.7] text-muted">
