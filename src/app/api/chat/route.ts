@@ -53,7 +53,8 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error("Unable to start OpenAI response stream", error);
-    return new Response("Assistant is unavailable", { status: 502 });
+    const detail = error instanceof Error ? error.message : String(error);
+    return new Response(`Assistant is unavailable: ${detail}`, { status: 502 });
   }
 
   const encoder = new TextEncoder();
