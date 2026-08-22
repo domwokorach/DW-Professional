@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint src scripts --max-warnings=0",
+    "setup:vector-store": "node --env-file=.env.local scripts/setup-vector-store.mjs"
   },
   "dependencies": {
     "framer-motion": "^11.15.0",

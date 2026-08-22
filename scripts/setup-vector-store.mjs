@@ -1,7 +1,7 @@
 // One-time setup script: uploads the fictional sample knowledge base to OpenAI
 // and creates a vector store for the File Search tool used by /api/chat.
 //
-// Run with: node scripts/setup-vector-store.mjs
+// Run with: npm run setup:vector-store
 // Then copy the printed OPENAI_VECTOR_STORE_ID into .env.local
 
 import fs from "node:fs";
