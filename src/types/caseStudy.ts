@@ -1,0 +1,22 @@
+export type CaseStudy = {
+  slug: string;
+  number: string;
+  title: string;
+  subtitle: string;
+  label?: string;
+  categories: string[];
+  summary: string;
+  technology: string[];
+  size: "large" | "half";
+  visualDirection: string;
+  context: string;
+  challenge: string;
+  idea?: string;
+  experience?: string;
+  contribution: string[];
+  uxApproach?: string;
+  engineeringApproach?: string;
+  accessibility?: string;
+  outcome: { heading: "Outcome" | "What I Learned"; text: string };
+  mockup?: "chatbot";
+};
