@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 const categories = [
@@ -33,6 +33,14 @@ export default function ChatbotMockup() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const conversationEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    conversationEndRef.current?.scrollIntoView({
+      behavior: reduceMotion ? "auto" : "smooth",
+      block: "nearest",
+    });
+  }, [messages, error, reduceMotion]);
 
   async function sendMessage(question: string) {
     const trimmed = question.trim();
@@ -55,7 +63,8 @@ export default function ChatbotMockup() {
       });
 
       if (!res.ok || !res.body) {
-        throw new Error("Assistant is unavailable right now.");
+        const detail = await res.text();
+        throw new Error(detail || "Assistant is unavailable right now.");
       }
 
       const reader = res.body.getReader();
@@ -78,6 +87,10 @@ export default function ChatbotMockup() {
       if ((err as Error).name !== "AbortError") {
         setError("Assistant is unavailable right now. Please try again.");
       }
+      setMessages((prev) => {
+        const last = prev[prev.length - 1];
+        return last?.role === "assistant" && !last.content ? prev.slice(0, -1) : prev;
+      });
     } finally {
       setIsStreaming(false);
       abortRef.current = null;
@@ -131,7 +144,12 @@ export default function ChatbotMockup() {
             )
           )}
 
-          {error && <p className="text-sm text-red-400">{error}</p>}
+          {error && (
+            <p className="text-sm text-red-400" role="alert">
+              {error}
+            </p>
+          )}
+          <div ref={conversationEndRef} />
         </div>
 
         <form
@@ -150,16 +168,18 @@ export default function ChatbotMockup() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             disabled={isStreaming}
+            maxLength={2000}
             placeholder="Ask another question..."
             className="w-full bg-transparent text-sm text-white placeholder:text-muted focus:outline-none disabled:opacity-60"
             style={{ fontSize: "16px" }}
           />
           <button
-            type="submit"
-            disabled={isStreaming || !input.trim()}
+            type={isStreaming ? "button" : "submit"}
+            onClick={isStreaming ? () => abortRef.current?.abort() : undefined}
+            disabled={!isStreaming && !input.trim()}
             className="shrink-0 rounded-full bg-accent px-3 py-1 text-xs font-medium text-ink disabled:opacity-40"
           >
-            Send
+            {isStreaming ? "Stop" : "Send"}
           </button>
         </form>
       </div>

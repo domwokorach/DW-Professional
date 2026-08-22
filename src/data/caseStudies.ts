@@ -124,9 +124,9 @@ export const caseStudies: CaseStudy[] = [
     summary:
       "A proof-of-concept conversational search experience designed to help colleagues discover internal knowledge and workplace information more easily, exploring natural-language search instead of manual intranet navigation.",
     technology: [
-      "AI Search Concept",
-      "Chatbot UX",
-      "Information Retrieval",
+      "Next.js",
+      "OpenAI Responses API",
+      "File Search",
       "Accessibility",
     ],
     size: "large",
@@ -142,9 +142,9 @@ export const caseStudies: CaseStudy[] = [
     experience:
       "The concept explored providing direct access to information across areas such as HR, payroll, working hours, annual leave, payslips, invoices and internal opportunities, without claiming every source was fully integrated.",
     contribution: [
-      "Explored and built a proof-of-concept AI search experience focused on improving access to internal knowledge resources.",
+      "Built a working proof-of-concept AI search experience focused on improving access to internal knowledge resources.",
       "Developed the chatbot UX and search-interface design for the concept.",
-      "Considered information retrieval concepts for surfacing relevant internal knowledge.",
+      "Connected the OpenAI Responses API to a vector-store-backed sample knowledge base.",
       "Built the proof of concept with accessibility as a core consideration.",
     ],
     accessibility:
