@@ -154,4 +154,133 @@ export const caseStudies: CaseStudy[] = [
       text: "A proof-of-concept exploring how AI-powered conversational search could improve the discoverability and accessibility of internal knowledge resources.",
     },
   },
+  {
+    slug: "ui-delivery-transformation",
+    number: "06",
+    title: "UI Delivery & Transformation",
+    subtitle: "Supporting reliable digital banking releases across Lloyds Bank and Halifax.",
+    categories: ["Frontend Engineering", "Digital Banking", "Release Quality"],
+    summary:
+      "As part of the UI Delivery & Transformation team, I supported the review, testing and resolution of frontend issues across customer-facing digital banking experiences for Lloyds Bank and Halifax. Our team reviewed defects, error codes and application updates before business releases, helping ensure changes were tested and validated across desktop and mobile environments before progressing through the wider release process.",
+    technology: ["HTML5", "CSS3", "JavaScript", "Git", "Jenkins", "Testing"],
+    size: "large",
+    visualDirection:
+      "Portfolio reconstruction of a desktop and mobile banking interface, a defect/error panel, a code-review view, a Git and Jenkins pipeline, and a release timeline — generic reconstructions rather than any confidential internal banking system.",
+    context:
+      "Digital banking platforms operate at significant scale, meaning frontend defects and release issues can affect customer experience across desktop and mobile channels. Working within UI Delivery & Transformation required careful investigation, testing and collaboration before changes could progress towards a business release.",
+    challenge:
+      "Investigating and resolving frontend defects across customer-facing banking interfaces, and validating changes across desktop and mobile before they could progress through the wider release process — without any single person owning or approving production releases individually.",
+    contribution: [
+      "Reviewed reported frontend errors and defects across customer-facing digital banking interfaces.",
+      "Investigated error codes to help identify the underlying cause of reported issues.",
+      "Supported fixes to customer-facing interfaces using HTML5, CSS3 and JavaScript.",
+      "Tested changes across desktop and mobile environments.",
+      "Reviewed application updates ahead of business releases.",
+      "Used Git within the day-to-day development workflow for managing and reviewing code changes.",
+      "Worked with Jenkins-based delivery processes as part of the wider CI/CD environment.",
+      "Collaborated with DevOps and engineering colleagues to help resolve defects before business releases.",
+    ],
+    engineeringApproach:
+      "Investigated and resolved frontend defects using HTML, CSS and JavaScript, with attention to responsive behaviour across desktop and mobile banking experiences. Git formed part of the development workflow for managing and reviewing code changes, while Jenkins supported build and delivery processes within the wider CI/CD environment. I contributed to and supported these tools and processes as part of a team, rather than designing or administering the CI/CD infrastructure itself.",
+    uxApproach:
+      "Reviewed application changes and tested fixes before release, helping identify issues and verify that updates behaved as expected across supported digital banking environments — including desktop testing, mobile testing and regression checking.",
+    workflow: [
+      "Issue Reported",
+      "Investigate",
+      "Reproduce Error",
+      "Identify Cause",
+      "Implement Fix",
+      "Desktop / Mobile Testing",
+      "Git Commit",
+      "Code Review",
+      "Jenkins Build",
+      "Test / DevOps Review",
+      "Validation",
+      "Business Release",
+    ],
+    jiraWorkflow: ["To Do", "In Progress", "Blocked", "Review", "Test", "Done"],
+    outcome: {
+      heading: "What I Learned",
+      text: "Working within an Agile delivery team, where stand-ups helped the team understand what was To Do, In Progress, Blocked or Done, reinforced how much careful investigation, testing and cross-team collaboration sit behind a single reliable banking release — and shaped how I approach release quality and defect investigation since.",
+    },
+  },
+  {
+    slug: "sky-cloud-native-engineering",
+    number: "07",
+    title: "Sky — Cloud-Native Engineering",
+    subtitle: "Supporting catalogue, pricing and billing services across distributed cloud-native systems.",
+    categories: ["Software Engineering", "Cloud", "APIs", "Microservices"],
+    summary:
+      "Contributed to cloud-native applications and AWS-hosted microservices supporting catalogue, pricing and billing workflows within Sky's engineering environment. Worked across API integration, testing, CI/CD and containerised deployments, collaborating within an Agile Scrum team to support reliable software delivery across distributed systems.",
+    technology: [
+      "AWS",
+      "REST APIs",
+      "Microservices",
+      "Docker",
+      "Kubernetes",
+      "Jenkins",
+      "Git",
+      "CI/CD",
+      "Automated Testing",
+      "Agile Scrum",
+      "Monitoring",
+      "Logging",
+      "Debugging",
+    ],
+    size: "large",
+    visualDirection:
+      "Abstract technical diagrams of API architecture, microservices, containers, CI/CD pipelines and monitoring — portfolio reconstructions rather than any reproduction of confidential Sky systems, repositories, dashboards or architecture.",
+    context:
+      "Modern catalogue, pricing and billing platforms depend on multiple services communicating reliably across distributed systems. My work at Sky involved contributing to applications and API integrations within a cloud-native engineering environment, supporting services deployed using modern container and CI/CD technologies.",
+    challenge:
+      "Supporting reliable communication between application components and AWS-hosted microservices across catalogue, pricing and billing domains, as part of a wider engineering team rather than as an individual system owner.",
+    contribution: [
+      "Contributed to AWS-hosted microservices supporting catalogue, pricing and billing workflows.",
+      "Worked with API functionality across distributed services, supporting communication between application components and microservices.",
+      "Supported containerised application delivery using Docker and Kubernetes as part of the wider deployment environment.",
+      "Worked within an Agile Scrum team delivering software changes through established CI/CD workflows, including Jenkins-supported build and deployment processes.",
+      "Applied automated testing, structured Git workflows and code-review practices to support consistent and maintainable software delivery.",
+      "Contributed to monitoring, logging and debugging activities to support investigation of application behaviour within the wider engineering environment.",
+    ],
+    engineeringApproach:
+      "Contributed to cloud-native applications operating within an AWS environment and worked with containerised services deployed using Docker and Kubernetes. Contributed to API functionality and engineering practices designed to support reliable communication and platform stability across distributed services, rather than architecting the platform individually.",
+    accessibility:
+      "In distributed cloud systems, observability helps engineering teams understand application behaviour, investigate failures and maintain reliable services — this shaped how defect investigation and debugging were approached day to day.",
+    branchDiagrams: [
+      {
+        title: "Catalogue, Pricing & Billing Architecture",
+        root: "Customer / Internal Application",
+        mid: "API Layer",
+        branches: ["Catalogue Service", "Pricing Service", "Billing Service"],
+        footer: "AWS Services",
+      },
+      {
+        title: "Observability",
+        root: "Running Services",
+        branches: ["Logs", "Metrics", "Errors"],
+        footer: "Monitoring → Investigation → Resolution",
+        note: "Supported Kubernetes-based deployments and contributed to monitoring, logging and debugging activities within the wider engineering environment.",
+      },
+    ],
+    pipelines: [
+      {
+        title: "Continuous Integration & Delivery",
+        stages: ["Code", "Git", "Pull Request", "Code Review", "Automated Tests", "Jenkins", "Build", "Deploy", "Validate"],
+        note: "Representative delivery workflow — the exact pipeline structure varied by service.",
+      },
+      {
+        title: "Container Deployment",
+        stages: ["Application", "Docker Container", "Container Registry", "Kubernetes", "Running Service"],
+      },
+      {
+        title: "Git Workflow",
+        stages: ["Feature", "Development", "Commit", "Push", "Pull Request", "Code Review", "Testing", "Merge"],
+      },
+    ],
+    jiraWorkflow: ["Sprint Planning", "Stand-ups", "Development", "Code Review", "Testing", "Release", "Retrospective"],
+    outcome: {
+      heading: "What I Learned",
+      text: "Contributed to the engineering and delivery of cloud-native application functionality supporting catalogue, pricing and billing workflows within Sky's production environment — deepening my practical experience with distributed systems, containerisation and CI/CD as part of a collaborative Agile Scrum team.",
+    },
+  },
 ];
