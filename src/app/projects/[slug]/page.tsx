@@ -5,6 +5,8 @@ import Container from "@/components/ui/Container";
 import { projects } from "@/data/projects";
 import { caseStudies } from "@/data/caseStudies";
 import ChatbotMockup from "@/components/project/ChatbotMockup";
+import WorkflowPipeline from "@/components/project/WorkflowPipeline";
+import BranchDiagram from "@/components/project/BranchDiagram";
 import type { Project } from "@/types/project";
 
 export function generateStaticParams() {
@@ -112,6 +114,26 @@ export default async function ProjectPage({
                     </div>
                   )
               )}
+
+              {caseStudy.workflow && (
+                <WorkflowPipeline
+                  title="Engineering Workflow"
+                  stages={caseStudy.workflow}
+                  note="A representative workflow illustrating the general path from issue to release, rather than a claim that every change followed an identical sequence."
+                />
+              )}
+
+              {caseStudy.jiraWorkflow && (
+                <WorkflowPipeline title="Team Board Workflow" stages={caseStudy.jiraWorkflow} />
+              )}
+
+              {caseStudy.branchDiagrams?.map((diagram) => (
+                <BranchDiagram key={diagram.title} {...diagram} />
+              ))}
+
+              {caseStudy.pipelines?.map((pipeline) => (
+                <WorkflowPipeline key={pipeline.title} {...pipeline} />
+              ))}
 
               <div>
                 <h2 className="text-sm font-mono uppercase tracking-widest text-accent">
