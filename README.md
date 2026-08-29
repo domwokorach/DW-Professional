@@ -141,7 +141,3 @@ Before opening a pull request or deploying, run:
 npm run lint
 npm run build
 ```
-
-## Deployment
-
-The project is ready for deployment on [Vercel](https://vercel.com/). Add the environment variables from `.env.example` to the deployment environment, then deploy the repository.
