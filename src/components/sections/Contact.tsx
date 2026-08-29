@@ -12,6 +12,8 @@ const projectTypes = [
   "UX/UI Development",
   "Software Engineering",
   "Accessibility",
+  "Recruitment",
+  "Hiring Manager",
   "Other",
 ];
 
