@@ -1,5 +1,24 @@
 export type MediaType = "image" | "video" | "reconstruction";
 
+export type TerminalLine = {
+  text: string;
+  kind?: "success";
+};
+
+export type TerminalBlock = {
+  command: string;
+  lines?: TerminalLine[];
+};
+
+export type TerminalSpec = {
+  label: string;
+  heading: string;
+  subtitle: string;
+  intro: string;
+  caption: string;
+  blocks: TerminalBlock[];
+};
+
 export type CaseStudy = {
   slug: string;
   number: string;
@@ -38,4 +57,5 @@ export type CaseStudy = {
     footer?: string;
     note?: string;
   }[];
+  terminal?: TerminalSpec;
 };

@@ -170,7 +170,16 @@ export const caseStudies: CaseStudy[] = [
     categories: ["Frontend Engineering", "Digital Banking", "Release Quality"],
     summary:
       "As part of the UI Delivery & Transformation team, I supported the review, testing and resolution of frontend issues across customer-facing digital banking experiences for Lloyds Bank and Halifax. Our team reviewed defects, error codes and application updates before business releases, helping ensure changes were tested and validated across desktop and mobile environments before progressing through the wider release process.",
-    technology: ["HTML5", "CSS3", "JavaScript", "Git", "Jenkins", "Testing"],
+    technology: [
+      "HTML5",
+      "CSS3",
+      "JavaScript",
+      "Git",
+      "Jenkins",
+      "Testing",
+      "CI/CD",
+      "Responsive UI",
+    ],
     size: "large",
     visualDirection:
       "Portfolio reconstruction of a desktop and mobile banking interface, a defect/error panel, a code-review view, a Git and Jenkins pipeline, and a release timeline — generic reconstructions rather than any confidential internal banking system.",
@@ -207,6 +216,87 @@ export const caseStudies: CaseStudy[] = [
       "Business Release",
     ],
     jiraWorkflow: ["To Do", "In Progress", "Blocked", "Review", "Test", "Done"],
+    terminal: {
+      label: "UI Delivery / Release Validation",
+      heading: "Engineering & Release Workflow",
+      subtitle:
+        "A reconstructed terminal view illustrating frontend issue investigation, testing and release validation.",
+      intro:
+        "Frontend delivery involved investigating reported issues, implementing appropriate changes, validating behaviour across desktop and mobile environments, and supporting code as it progressed through wider testing and release workflows.",
+      caption:
+        "This terminal visual is a portfolio reconstruction designed to communicate the engineering process without exposing confidential internal systems or source code.",
+      blocks: [
+        {
+          command: "issue-status UI-042",
+          lines: [
+            { text: "Responsive navigation alignment issue" },
+            { text: "Device: Mobile · Environment: Test" },
+          ],
+        },
+        {
+          command: "investigate",
+          lines: [
+            { text: "Inspecting HTML structure..." },
+            { text: "Inspecting CSS breakpoints..." },
+            { text: "Reproducing issue in mobile viewport..." },
+            { text: "✓ Issue reproduced", kind: "success" },
+          ],
+        },
+        {
+          command: "apply-fix",
+          lines: [
+            { text: "CSS adjustment applied to navigation component" },
+            { text: "✓ Fix implemented", kind: "success" },
+          ],
+        },
+        {
+          command: "git status",
+          lines: [
+            { text: "On branch feature/ui-navigation-fix" },
+            { text: "Changes ready for review" },
+          ],
+        },
+        {
+          command: "npm run test",
+          lines: [
+            { text: "Running frontend checks..." },
+            { text: "✓ Navigation behaviour", kind: "success" },
+            { text: "✓ Responsive layout", kind: "success" },
+            { text: "✓ Desktop validation", kind: "success" },
+            { text: "✓ Mobile validation", kind: "success" },
+            { text: "Tests completed successfully." },
+          ],
+        },
+        {
+          command: "git diff --stat",
+          lines: [
+            { text: "styles.css       | 12 ++++++------" },
+            { text: "interface.js     |  8 ++++----" },
+            { text: "components/      |  4 ++--" },
+          ],
+        },
+        {
+          command: "npm run build",
+          lines: [
+            { text: "Creating production build..." },
+            { text: "✓ Compile", kind: "success" },
+            { text: "✓ Test", kind: "success" },
+            { text: "✓ Validate", kind: "success" },
+            { text: "Build completed." },
+          ],
+        },
+        {
+          command: "release-status",
+          lines: [
+            { text: "Code Review       PASS" },
+            { text: "Frontend Test     PASS" },
+            { text: "Build             PASS" },
+            { text: "Validation        PASS" },
+            { text: "Status: Ready for next review stage" },
+          ],
+        },
+      ],
+    },
     outcome: {
       heading: "What I Learned",
       text: "Working within an Agile delivery team, where stand-ups helped the team understand what was To Do, In Progress, Blocked or Done, reinforced how much careful investigation, testing and cross-team collaboration sit behind a single reliable banking release — and shaped how I approach release quality and defect investigation since.",
