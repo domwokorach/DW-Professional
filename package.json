@@ -10,6 +10,7 @@
     "setup:vector-store": "node --env-file=.env.local scripts/setup-vector-store.mjs"
   },
   "dependencies": {
+    "embla-carousel-react": "^8.6.0",
     "framer-motion": "^11.15.0",
     "lucide-react": "^1.33.0",
     "next": "^15.1.0",

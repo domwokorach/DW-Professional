@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
+import { ExternalLink } from "lucide-react";
 import Container from "@/components/ui/Container";
 import { projects } from "@/data/projects";
 import { caseStudies } from "@/data/caseStudies";
 import ChatbotMockup from "@/components/project/ChatbotMockup";
+import ReconstructionVisual from "@/components/project/ReconstructionVisual";
+import GithubIcon from "@/components/project/GithubIcon";
 import type { Project } from "@/types/project";
 
 export function generateStaticParams() {
@@ -87,6 +91,67 @@ export default async function ProjectPage({
           <p className="mt-3 max-w-2xl text-base text-muted">{caseStudy.subtitle}</p>
 
           <p className="mt-2 font-mono text-xs text-muted">{caseStudy.categories.join(" · ")}</p>
+
+          {caseStudy.mediaType && (
+            <div
+              className={`relative mt-10 w-full overflow-hidden rounded-2xl border border-line bg-surface ${
+                caseStudy.mediaType === "video" ? "aspect-video" : "aspect-[16/9]"
+              } max-w-4xl`}
+            >
+              {caseStudy.mediaType === "video" && caseStudy.mediaSrc && (
+                <video
+                  controls
+                  playsInline
+                  preload="metadata"
+                  aria-label={caseStudy.mediaAlt ?? `${caseStudy.title} video walkthrough`}
+                  className="h-full w-full object-cover"
+                >
+                  <source src={caseStudy.mediaSrc} />
+                </video>
+              )}
+              {caseStudy.mediaType === "image" && caseStudy.mediaSrc && (
+                <Image
+                  src={caseStudy.mediaSrc}
+                  alt={caseStudy.mediaAlt ?? caseStudy.title}
+                  fill
+                  sizes="(min-width: 1024px) 800px, 100vw"
+                  className="object-cover object-top"
+                />
+              )}
+              {caseStudy.mediaType === "reconstruction" && (
+                <div className="h-full w-full p-4">
+                  <ReconstructionVisual />
+                </div>
+              )}
+            </div>
+          )}
+
+          {(caseStudy.prototypeHref || caseStudy.externalHref) && (
+            <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2">
+              {caseStudy.prototypeHref && (
+                <a
+                  href={caseStudy.prototypeHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+                >
+                  View Prototype
+                  <ExternalLink aria-hidden className="h-3.5 w-3.5" />
+                </a>
+              )}
+              {caseStudy.externalHref && (
+                <a
+                  href={caseStudy.externalHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+                >
+                  {caseStudy.externalLabel ?? "Visit Website"}
+                  <ExternalLink aria-hidden className="h-3.5 w-3.5" />
+                </a>
+              )}
+            </div>
+          )}
 
           <div className="mt-16 grid gap-12 lg:grid-cols-[1fr_320px]">
             <div className="space-y-10">
@@ -189,6 +254,39 @@ export default async function ProjectPage({
               {t}
             </span>
           ))}
+        </div>
+
+        <div className="relative mt-10 aspect-[16/10] w-full max-w-4xl overflow-hidden rounded-2xl border border-line bg-surface">
+          <Image
+            src={proj.image}
+            alt={proj.imageAlt}
+            fill
+            sizes="(min-width: 1024px) 800px, 100vw"
+            className="object-cover object-top"
+          />
+        </div>
+
+        <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2">
+          <a
+            href={proj.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-white transition-colors hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+          >
+            View Live Project
+            <ExternalLink aria-hidden className="h-3.5 w-3.5" />
+          </a>
+          {proj.repoUrl && (
+            <a
+              href={proj.repoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+            >
+              <GithubIcon className="h-3.5 w-3.5" />
+              GitHub
+            </a>
+          )}
         </div>
 
         <div className="mt-16 grid gap-12 lg:grid-cols-[1fr_320px]">

@@ -28,10 +28,79 @@ export const caseStudies: CaseStudy[] = [
       heading: "What I Learned",
       text: "This work deepened my understanding of how frontend implementation decisions directly affect accessibility outcomes for real customers, and shaped how I approach inclusive design in every project since.",
     },
+    mediaType: "video",
+    mediaSrc:
+      "https://res.cloudinary.com/dkkuwmr42/video/upload/v1783170985/videoplayback_1_qa4kbj.mov",
+    mediaAlt: "Screen recording walkthrough of accessible digital banking interface work",
+  },
+  {
+    slug: "halifax-piggy-banking",
+    number: "02",
+    title: "Halifax Piggy Banking",
+    subtitle: "Exploring digital banking experiences for younger customers.",
+    label: "Concept / UX Prototype",
+    categories: ["UX/UI", "Digital Banking", "Prototyping"],
+    summary:
+      "Designed UX prototypes and wireframes for a digital banking concept aimed at younger customers, exploring how banking interactions could be made approachable, intuitive and engaging for a youth audience.",
+    technology: ["UX Prototyping", "Wireframing", "Interaction Design", "Mobile-first Design"],
+    size: "half",
+    visualDirection:
+      "UX wireframes and mobile banking concept screens exploring youth-friendly savings interactions — presented as concept reconstructions, not production screens.",
+    context:
+      "An early-stage digital banking concept exploring how savings and banking interactions could be reimagined for a younger customer audience.",
+    challenge:
+      "Designing banking interactions that feel approachable and engaging to a youth audience, without sacrificing clarity or trust.",
+    contribution: [
+      "Designed UX prototypes and wireframes for the digital banking concept.",
+      "Explored information hierarchy and interaction design for youth-focused banking journeys.",
+      "Approached the concept with mobile-first thinking throughout.",
+    ],
+    uxApproach:
+      "Wireframes and prototypes focused on simplifying savings interactions and information hierarchy, using a mobile-first approach suited to a younger, mobile-native audience.",
+    outcome: {
+      heading: "What I Learned",
+      text: "Prototyping for a distinct audience segment sharpened my approach to information hierarchy and interaction design, and reinforced the value of exploring concepts before committing to production engineering.",
+    },
+    mediaType: "image",
+    mediaSrc: "/images/case-studies/halifax-piggy-banking.webp",
+    mediaAlt: "Piggy Bank youth digital banking prototype landing page",
+    prototypeHref: "https://piggy-bank-wine.vercel.app/",
+  },
+  {
+    slug: "ui-delivery-transformation",
+    number: "03",
+    title: "UI Delivery & Transformation",
+    subtitle: "Digital Banking Release Quality",
+    label: "Portfolio Reconstruction",
+    categories: ["Digital Banking", "Release Quality", "Frontend"],
+    summary:
+      "Contributed to UI delivery and release-quality work within a digital banking environment, covering frontend implementation, issue review, testing and release workflow across desktop and mobile banking interfaces.",
+    technology: ["HTML5", "CSS3", "JavaScript", "Git", "Jenkins", "Testing"],
+    size: "half",
+    visualDirection:
+      "A portfolio reconstruction representing UI delivery, issue review, testing status and release workflow — not a screenshot of any internal system, and not a representation of the public Lloyds Bank website.",
+    context:
+      "A digital banking environment with desktop and mobile interfaces, where frontend changes moved through issue review, testing and a Git/Jenkins-based release pipeline before reaching production.",
+    challenge:
+      "Maintaining release quality across desktop and mobile banking interfaces while delivering frontend changes reliably through a structured testing and release workflow.",
+    contribution: [
+      "Contributed to frontend implementation and debugging across desktop and mobile banking interfaces.",
+      "Supported issue review and testing ahead of release.",
+      "Worked within a Git version-control and Jenkins-based release pipeline.",
+    ],
+    engineeringApproach:
+      "Frontend work was implemented with HTML5, CSS3 and JavaScript, with changes tracked through Git and delivered through a Jenkins-based release pipeline, supported by structured issue review and testing.",
+    outcome: {
+      heading: "What I Learned",
+      text: "This work reinforced how disciplined release workflows, testing and issue review directly protect the quality of a live digital banking product used at scale.",
+    },
+    mediaType: "reconstruction",
+    externalHref: "https://www.lloydsbank.com/",
+    externalLabel: "Visit Lloyds Bank",
   },
   {
     slug: "innovation-community",
-    number: "02",
+    number: "04",
     title: "Innovation Community",
     subtitle: "Supporting the Innovation Communities Conference 2018.",
     categories: ["Frontend Development", "Innovation", "Events"],
@@ -57,7 +126,7 @@ export const caseStudies: CaseStudy[] = [
   },
   {
     slug: "innovation-x",
-    number: "03",
+    number: "05",
     title: "Innovation X",
     subtitle: "Making internal knowledge and people easier to discover.",
     categories: ["Neo4j", "Search", "Frontend", "Internal Tools"],
@@ -85,37 +154,8 @@ export const caseStudies: CaseStudy[] = [
     },
   },
   {
-    slug: "halifax-piggy-banking",
-    number: "04",
-    title: "Halifax Piggy Banking",
-    subtitle: "Exploring digital banking experiences for younger customers.",
-    label: "Concept / UX Prototype",
-    categories: ["UX/UI", "Digital Banking", "Prototyping"],
-    summary:
-      "Designed UX prototypes and wireframes for a digital banking concept aimed at younger customers, exploring how banking interactions could be made approachable, intuitive and engaging for a youth audience.",
-    technology: ["UX Prototyping", "Wireframing", "Interaction Design", "Mobile-first Design"],
-    size: "large",
-    visualDirection:
-      "UX wireframes and mobile banking concept screens exploring youth-friendly savings interactions — presented as concept reconstructions, not production screens.",
-    context:
-      "An early-stage digital banking concept exploring how savings and banking interactions could be reimagined for a younger customer audience.",
-    challenge:
-      "Designing banking interactions that feel approachable and engaging to a youth audience, without sacrificing clarity or trust.",
-    contribution: [
-      "Designed UX prototypes and wireframes for the digital banking concept.",
-      "Explored information hierarchy and interaction design for youth-focused banking journeys.",
-      "Approached the concept with mobile-first thinking throughout.",
-    ],
-    uxApproach:
-      "Wireframes and prototypes focused on simplifying savings interactions and information hierarchy, using a mobile-first approach suited to a younger, mobile-native audience.",
-    outcome: {
-      heading: "What I Learned",
-      text: "Prototyping for a distinct audience segment sharpened my approach to information hierarchy and interaction design, and reinforced the value of exploring concepts before committing to production engineering.",
-    },
-  },
-  {
     slug: "internal-ai-search-assistant",
-    number: "05",
+    number: "06",
     title: "Internal AI Search Assistant",
     subtitle:
       "Exploring a conversational way for colleagues to find internal information more easily.",
