@@ -142,6 +142,12 @@ npm run lint
 npm run build
 ```
 
+## Releases
+
+Stable releases are published through GitHub Releases.
+
+[View Releases](https://github.com/domwokorach/DW-Professional/releases)
+
 ## License
 
 This project is licensed under the MIT License.
