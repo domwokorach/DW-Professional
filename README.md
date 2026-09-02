@@ -1,8 +1,8 @@
-# Dominic Wokorach Olanya — Portfolio
+# Dominic Wokorach
 
 A responsive software engineering portfolio built with Next.js, React, and TypeScript. It presents professional experience, services, skills, and case studies alongside interactive weather and AI search demonstrations.
 
-**Live site:** [portfolio-wokorach.vercel.app](https://portfolio-wokorach.vercel.app/)
+**Live site:** [dominicwokorach.me](https://www.dominicwokorach.me/)
 
 ## Features
 
