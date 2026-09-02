@@ -29,14 +29,14 @@ export async function generateMetadata({
 
   if (project) {
     return {
-      title: `${project.title} | Dominic Wokorach Olanya`,
+      title: `${project.title} | Dominic Wokorach`,
       description: project.description,
     };
   }
 
   if (caseStudy) {
     return {
-      title: `${caseStudy.title} | Dominic Wokorach Olanya`,
+      title: `${caseStudy.title} | Dominic Wokorach`,
       description: caseStudy.summary,
     };
   }

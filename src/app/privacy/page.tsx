@@ -1,6 +1,6 @@
 import LegalPage from "@/components/ui/LegalPage";
 
-export const metadata = { title: "Privacy Policy | Dominic Wokorach Olanya" };
+export const metadata = { title: "Privacy Policy | Dominic Wokorach" };
 
 export default function PrivacyPage() {
   return (

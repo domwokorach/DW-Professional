@@ -22,7 +22,7 @@ export default function Footer() {
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="font-mono text-lg font-semibold text-white">
-              Dominic Wokorach Olanya
+              Dominic Wokorach
             </p>
             <p className="mt-1 text-sm text-muted">
               Software Engineer &amp; Frontend Developer
@@ -70,7 +70,7 @@ export default function Footer() {
 
         <div className="mt-10 border-t border-line pt-6">
           <p className="text-xs text-muted">
-            © {year} Dominic Wokorach Olanya. All rights reserved.
+            © {year} Dominic Wokorach. All rights reserved.
           </p>
         </div>
       </Container>
