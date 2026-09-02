@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { projects } from "@/data/projects";
 import { caseStudies } from "@/data/caseStudies";
 
-const siteUrl = "https://portfolio-wokorach.vercel.app";
+const siteUrl = "https://www.dominicwokorach.me";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
