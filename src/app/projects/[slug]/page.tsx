@@ -11,6 +11,7 @@ import ReconstructionVisual from "@/components/project/ReconstructionVisual";
 import GithubIcon from "@/components/project/GithubIcon";
 import WorkflowPipeline from "@/components/project/WorkflowPipeline";
 import BranchDiagram from "@/components/project/BranchDiagram";
+import TerminalCard from "@/components/project/TerminalCard";
 import type { Project } from "@/types/project";
 
 export function generateStaticParams() {
@@ -215,6 +216,35 @@ export default async function ProjectPage({
                   ))}
                 </ul>
               </div>
+
+              {caseStudy.terminal && (
+                <div>
+                  <div className="flex items-center gap-3">
+                    <h2 className="text-sm font-mono uppercase tracking-widest text-accent">
+                      {caseStudy.terminal.heading}
+                    </h2>
+                    <span className="rounded-full border border-accent/30 px-3 py-1 text-xs font-mono text-accent">
+                      Portfolio Reconstruction
+                    </span>
+                  </div>
+                  <p className="mt-2 max-w-2xl text-sm text-muted">
+                    {caseStudy.terminal.subtitle}
+                  </p>
+
+                  <div className="mt-6 grid gap-8 lg:grid-cols-[2fr_3fr] lg:items-start">
+                    <p className="text-base leading-[1.7] text-muted">
+                      {caseStudy.terminal.intro}
+                    </p>
+
+                    <div>
+                      <TerminalCard terminal={caseStudy.terminal} />
+                      <p className="mt-3 text-xs leading-[1.6] text-muted">
+                        {caseStudy.terminal.caption}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div>
                 <h2 className="text-sm font-mono uppercase tracking-widest text-accent">
