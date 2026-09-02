@@ -34,15 +34,6 @@ function getPeriod(hour: number): Period {
   return "evening";
 }
 
-function getUKTime(): string {
-  return new Intl.DateTimeFormat("en-GB", {
-    timeZone: "Europe/London",
-    hour: "2-digit",
-    minute: "2-digit",
-    hourCycle: "h23",
-  }).format(new Date());
-}
-
 function getUKZoneLabel(): string {
   const parts = new Intl.DateTimeFormat("en-GB", {
     timeZone: "Europe/London",
@@ -55,21 +46,19 @@ function getUKZoneLabel(): string {
 const CHECK_INTERVAL_MS = 45_000;
 
 export default function UKGreeting({
-  showClock = true,
+  showLocation = true,
   className,
 }: {
-  showClock?: boolean;
+  showLocation?: boolean;
   className?: string;
 }) {
   const [period, setPeriod] = useState<Period | null>(null);
-  const [time, setTime] = useState<string>("");
   const [zone, setZone] = useState<string>("UK");
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const update = () => {
       setPeriod(getPeriod(getUKHour()));
-      setTime(getUKTime());
       setZone(getUKZoneLabel());
     };
 
@@ -94,9 +83,9 @@ export default function UKGreeting({
           className="text-sm font-medium tracking-wide sm:text-base"
         >
           <span className={GREETING_COLORS[period]}>{GREETINGS[period]}</span>
-          {showClock && (
+          {showLocation && (
             <span className="ml-2 text-muted">
-              {time} · London, {zone}
+              Current location: London · {zone}
             </span>
           )}
         </motion.p>

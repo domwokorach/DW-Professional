@@ -27,4 +27,15 @@ export type CaseStudy = {
   externalHref?: string;
   externalLabel?: string;
   prototypeHref?: string;
+  workflow?: string[];
+  jiraWorkflow?: string[];
+  pipelines?: { title: string; stages: string[]; note?: string }[];
+  branchDiagrams?: {
+    title: string;
+    root: string;
+    mid?: string;
+    branches: string[];
+    footer?: string;
+    note?: string;
+  }[];
 };
