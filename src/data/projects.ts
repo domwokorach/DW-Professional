@@ -2,91 +2,79 @@ import type { Project } from "@/types/project";
 
 export const projects: Project[] = [
   {
-    slug: "world-cup-2026-match-tracker",
-    title: "World Cup 2026 Match Tracker",
-    technology: ["React", "TypeScript", "REST APIs"],
-    description:
-      "A football match tracking experience supporting more than 100 fixtures with timezone conversion, calendar exports and match reminders.",
-    features: [
-      "100+ fixtures",
-      "Timezone conversion",
-      "Calendar export",
-      "Match reminders",
-      "API-driven content",
-      "Responsive interface",
-    ],
-    overview:
-      "A portfolio frontend project built to track World Cup 2026 fixtures, giving fans an accurate, personalised view of match schedules across timezones.",
-    challenge:
-      "Presenting over 100 fixtures in a way that stays clear and scannable, while accounting for timezone differences and giving users a way to remember matches they care about.",
-    approach:
-      "Built with React and TypeScript, integrating REST APIs for fixture data, with timezone conversion logic, calendar export functionality, and a responsive interface for reminders.",
-    outcome:
-      "A working match tracker demonstrating REST API integration, timezone handling, and responsive frontend engineering.",
-  },
-  {
-    slug: "ai-chatbot-assistant",
-    title: "AI Chatbot Assistant",
-    technology: ["React", "TypeScript", "Google Gemini API"],
-    description:
-      "An AI-powered conversational assistant designed for intelligent search and information retrieval.",
-    features: [
-      "Conversational UI",
-      "AI integration",
-      "Search",
-      "Information retrieval",
-      "Responsive interface",
-    ],
-    overview:
-      "A conversational AI assistant built to explore search and information-retrieval workflows powered by the Google Gemini API.",
-    challenge:
-      "Designing a conversational interface that feels natural and responsive while integrating an external AI API for search and retrieval.",
-    approach:
-      "Implemented with React and TypeScript, connecting to the Google Gemini API to handle conversational queries and return relevant information.",
-    outcome:
-      "A functioning chatbot assistant demonstrating AI API integration and conversational UI design.",
-  },
-  {
-    slug: "weather-forecasting-application",
-    title: "Weather Forecasting Application",
+    slug: "news",
+    title: "News",
     technology: ["Next.js", "TypeScript", "REST APIs"],
     description:
-      "A modern weather forecasting application delivering real-time weather information through external API integrations.",
+      "A modern news web application delivering UK and world headlines across politics, business, health, tech, sport and weather.",
     features: [
-      "Real-time weather",
-      "API integration",
+      "Section-based navigation",
+      "Live weather widget",
+      "Top stories feed",
+      "Newsletter subscription",
       "Responsive interface",
       "Modern Next.js architecture",
     ],
+    image: "/images/projects/news.webp",
+    imageAlt: "The Daily Wire news application header navigation and newsletter footer",
+    liveUrl: "https://the-daily-wire-two.vercel.app/",
     overview:
-      "A weather forecasting application delivering real-time updates through external REST API integrations, built on Next.js.",
+      "A freelance news web application built to explore modern content delivery, covering UK and world news across multiple sections.",
     challenge:
-      "Delivering accurate, real-time weather data through a clean, responsive interface across devices.",
+      "Structuring a multi-section news experience — politics, world, business, health, tech, sport and weather — in a way that stays clear, fast and easy to navigate.",
     approach:
-      "Built with Next.js and TypeScript, fetching real-time weather data from external REST APIs and rendering it through responsive UI patterns.",
+      "Built with Next.js and TypeScript, integrating external APIs for headline and weather data, with a section-based navigation model and a responsive layout.",
     outcome:
-      "A responsive weather application showcasing Next.js architecture and REST API integration.",
+      "A working news application demonstrating Next.js architecture, API integration and responsive frontend engineering.",
   },
   {
-    slug: "geolocation-search-application",
-    title: "Geolocation Search Application",
-    technology: ["React", "Google Maps API"],
+    slug: "dog-booking-system",
+    title: "Dog Booking System",
+    technology: ["React", "TypeScript", "Booking Workflow"],
     description:
-      "A location-based application providing real-time address lookup and location tracking functionality.",
+      "A booking-system web application designed around managing dog-related appointments and bookings, including grooming, training, daycare and boarding.",
     features: [
-      "Google Maps API",
-      "Geolocation",
-      "Address lookup",
-      "Location tracking",
-      "Interactive mapping",
+      "Appointment booking",
+      "Sign in / registration",
+      "Service categories",
+      "Booking management",
+      "Responsive interface",
     ],
+    image: "/images/projects/dog-booking.webp",
+    imageAlt: "Pawside dog booking system landing page with appointment booking call to action",
+    liveUrl: "https://booking-system-for-dogs.vercel.app/",
     overview:
-      "A geolocation search application providing real-time address lookup and location tracking using the Google Maps API.",
+      "A booking-system web application built around managing dog-related appointments, covering services such as grooming, training, daycare and boarding.",
     challenge:
-      "Building accurate, real-time location lookup and tracking functionality with an interactive mapping interface.",
+      "Designing a booking flow that feels simple for customers arranging appointments across multiple dog-care services.",
     approach:
-      "Built with React, integrating the Google Maps API for geolocation, address lookup, and interactive map rendering.",
+      "Built with React and TypeScript, implementing sign in / registration, service selection and an appointment booking workflow within a responsive interface.",
     outcome:
-      "A working geolocation application demonstrating third-party mapping API integration.",
+      "A working booking-system application demonstrating appointment-workflow design and modern frontend engineering.",
+  },
+  {
+    slug: "jira-project-management-system",
+    title: "JIRA Project Management System",
+    technology: ["React", "TypeScript", "Project Management"],
+    description:
+      "A project-management application exploring task organisation, issue tracking and workflow-based delivery.",
+    features: [
+      "Project dashboard",
+      "Sprint / task tracking",
+      "Status workflow",
+      "Issue tracking",
+      "Responsive interface",
+    ],
+    image: "/images/projects/jira-project-management.webp",
+    imageAlt: "Atlas project management application dashboard showing sprint tasks and status",
+    liveUrl: "https://jiraprojectmanagementsystem.vercel.app/",
+    overview:
+      "A project-management application exploring task organisation, issue tracking and workflow-based delivery, inspired by tools such as JIRA.",
+    challenge:
+      "Presenting roadmaps, sprints, tasks and issue status in a focused workspace that stays clear as work scales.",
+    approach:
+      "Built with React and TypeScript, implementing a sprint-based dashboard, task/issue tracking and status workflow within a responsive interface.",
+    outcome:
+      "A working project-management application demonstrating workflow design, state management and responsive frontend engineering.",
   },
 ];

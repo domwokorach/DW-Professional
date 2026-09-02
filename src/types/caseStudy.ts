@@ -1,3 +1,5 @@
+export type MediaType = "image" | "video" | "reconstruction";
+
 export type CaseStudy = {
   slug: string;
   number: string;
@@ -19,4 +21,10 @@ export type CaseStudy = {
   accessibility?: string;
   outcome: { heading: "Outcome" | "What I Learned"; text: string };
   mockup?: "chatbot";
+  mediaType?: MediaType;
+  mediaSrc?: string;
+  mediaAlt?: string;
+  externalHref?: string;
+  externalLabel?: string;
+  prototypeHref?: string;
 };

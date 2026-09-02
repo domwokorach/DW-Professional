@@ -42,7 +42,7 @@ export default function Contact() {
       <Container>
         <div className="grid gap-16 lg:grid-cols-2 lg:gap-20">
           <div>
-            <SectionHeading index="06" label="Contact" heading="Have a project in mind?" />
+            <SectionHeading index="07" label="Contact" heading="Have a project in mind?" />
 
             <MotionReveal delay={0.1} className="mt-8 max-w-md">
               <p className="text-base leading-[1.7] text-muted">

@@ -9,7 +9,7 @@ import { projectReveal } from "@/lib/animations";
 
 export default function Projects() {
   return (
-    <section id="projects" className="relative border-t border-line py-28 sm:py-36">
+    <section id="projects" className="relative scroll-mt-24 border-t border-line py-28 sm:py-36">
       <Container>
         <SectionHeading index="04" label="Projects" heading="Selected Work" />
 
@@ -23,14 +23,44 @@ export default function Projects() {
           </p>
         </MotionReveal>
 
-        <div className="mt-16">
+        <div className="mt-16 scroll-mt-24">
+          <MotionReveal>
+            <h3 className="font-mono text-xs uppercase tracking-widest text-accent">
+              Freelance Projects
+            </h3>
+          </MotionReveal>
+
+          <MotionReveal delay={0.05} className="mt-3 max-w-2xl">
+            <p className="text-sm leading-[1.7] text-muted">
+              Selected freelance and independent projects built across modern
+              web development, product design and application engineering.
+            </p>
+          </MotionReveal>
+
+          <div className="mt-8 grid gap-6 md:grid-cols-2">
+            {projects.map((project, i) => (
+              <MotionReveal key={project.slug} variants={projectReveal} delay={0.05 * i}>
+                <ProjectCard project={project} index={i} />
+              </MotionReveal>
+            ))}
+          </div>
+        </div>
+
+        <div id="case-studies" className="mt-24 scroll-mt-24">
           <MotionReveal>
             <h3 className="font-mono text-xs uppercase tracking-widest text-accent">
               Case Studies
             </h3>
           </MotionReveal>
 
-          <div className="mt-6 grid gap-6 md:grid-cols-2">
+          <MotionReveal delay={0.05} className="mt-3 max-w-2xl">
+            <p className="text-sm leading-[1.7] text-muted">
+              Selected professional work exploring accessibility, digital
+              banking, frontend engineering and product design.
+            </p>
+          </MotionReveal>
+
+          <div className="mt-8 grid gap-6 md:grid-cols-2">
             {caseStudies.map((caseStudy, i) => (
               <MotionReveal
                 key={caseStudy.slug}
@@ -39,22 +69,6 @@ export default function Projects() {
                 className={caseStudy.size === "large" ? "md:col-span-2" : ""}
               >
                 <CaseStudyCard caseStudy={caseStudy} />
-              </MotionReveal>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-20">
-          <MotionReveal>
-            <h3 className="font-mono text-xs uppercase tracking-widest text-accent">
-              Freelance Projects
-            </h3>
-          </MotionReveal>
-
-          <div className="mt-6 grid gap-6 md:grid-cols-2">
-            {projects.map((project, i) => (
-              <MotionReveal key={project.slug} variants={projectReveal} delay={0.05 * i}>
-                <ProjectCard project={project} index={i} />
               </MotionReveal>
             ))}
           </div>
