@@ -165,7 +165,7 @@ Please keep contributions focused, accessible and consistent with the existing p
 
 ## Author
 
-**Dominic Wokorach Olanya**
+**Dominic Wokorach**
 
 Software Engineer & Frontend Developer
 
