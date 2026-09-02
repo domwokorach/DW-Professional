@@ -218,13 +218,14 @@ export const caseStudies: CaseStudy[] = [
     jiraWorkflow: ["To Do", "In Progress", "Blocked", "Review", "Test", "Done"],
     terminal: {
       label: "UI Delivery / Release Validation",
-      heading: "Engineering & Release Workflow",
+      heading: "Engineering Terminal",
       subtitle:
-        "A reconstructed terminal view illustrating frontend issue investigation, testing and release validation.",
+        "A reconstructed terminal view illustrating frontend debugging, testing, Git workflows and release validation.",
       intro:
-        "Frontend delivery involved investigating reported issues, implementing appropriate changes, validating behaviour across desktop and mobile environments, and supporting code as it progressed through wider testing and release workflows.",
+        "This reconstructed terminal visual illustrates the type of frontend investigation, testing, source-control and release-validation workflow associated with my UI Delivery & Transformation experience.",
       caption:
-        "This terminal visual is a portfolio reconstruction designed to communicate the engineering process without exposing confidential internal systems or source code.",
+        "The visual is intentionally generic and does not reproduce confidential internal systems, source code or production data.",
+      tags: ["HTML5", "CSS3", "JavaScript", "Git", "Jenkins", "CI/CD"],
       blocks: [
         {
           command: "issue-status UI-042",
@@ -260,10 +261,11 @@ export const caseStudies: CaseStudy[] = [
           command: "npm run test",
           lines: [
             { text: "Running frontend checks..." },
-            { text: "✓ Navigation behaviour", kind: "success" },
-            { text: "✓ Responsive layout", kind: "success" },
-            { text: "✓ Desktop validation", kind: "success" },
-            { text: "✓ Mobile validation", kind: "success" },
+            { text: "✓ HTML validation passed", kind: "success" },
+            { text: "✓ CSS validation passed", kind: "success" },
+            { text: "✓ JavaScript validation passed", kind: "success" },
+            { text: "✓ Desktop checks passed", kind: "success" },
+            { text: "✓ Mobile checks passed", kind: "success" },
             { text: "Tests completed successfully." },
           ],
         },

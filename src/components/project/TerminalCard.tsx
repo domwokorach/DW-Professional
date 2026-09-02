@@ -36,6 +36,22 @@ function BlockContent({ block }: { block: TerminalBlock }) {
   );
 }
 
+function TerminalFooter({ tags }: { tags?: string[] }) {
+  if (!tags?.length) return null;
+
+  return (
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-white/10 bg-white/[0.02] px-4 py-4 sm:px-8">
+      <span className="font-mono text-[11px] uppercase tracking-widest text-accent">
+        Portfolio Reconstruction
+      </span>
+      <span className="text-white/20" aria-hidden="true">
+        ·
+      </span>
+      <p className="font-mono text-xs text-white/50">{tags.join(" · ")}</p>
+    </div>
+  );
+}
+
 function TerminalChrome({ label }: { label: string }) {
   return (
     <div
@@ -57,7 +73,7 @@ export default function TerminalCard({ terminal }: { terminal: TerminalSpec }) {
 
   if (reduceMotion) {
     return (
-      <div className="overflow-hidden rounded-[24px] border border-white/10 bg-neutral-950 shadow-2xl">
+      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-neutral-950 shadow-2xl">
         <TerminalChrome label={terminal.label} />
         <div className="overflow-x-auto p-4 font-mono text-sm leading-7 text-neutral-300 sm:p-8">
           <h3 className="sr-only">Terminal transcript: {terminal.label}</h3>
@@ -67,6 +83,7 @@ export default function TerminalCard({ terminal }: { terminal: TerminalSpec }) {
             </div>
           ))}
         </div>
+        <TerminalFooter tags={terminal.tags} />
       </div>
     );
   }
@@ -77,7 +94,7 @@ export default function TerminalCard({ terminal }: { terminal: TerminalSpec }) {
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
       variants={container}
-      className="overflow-hidden rounded-[24px] border border-white/10 bg-neutral-950 shadow-2xl"
+      className="relative overflow-hidden rounded-[28px] border border-white/10 bg-neutral-950 shadow-2xl"
     >
       <TerminalChrome label={terminal.label} />
 
@@ -89,6 +106,7 @@ export default function TerminalCard({ terminal }: { terminal: TerminalSpec }) {
           </motion.div>
         ))}
       </div>
+      <TerminalFooter tags={terminal.tags} />
     </motion.div>
   );
 }

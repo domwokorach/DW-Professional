@@ -16,6 +16,7 @@ export type TerminalSpec = {
   subtitle: string;
   intro: string;
   caption: string;
+  tags?: string[];
   blocks: TerminalBlock[];
 };
 

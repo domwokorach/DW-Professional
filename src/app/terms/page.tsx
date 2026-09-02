@@ -1,6 +1,6 @@
 import LegalPage from "@/components/ui/LegalPage";
 
-export const metadata = { title: "Terms | Dominic Wokorach Olanya" };
+export const metadata = { title: "Terms | Dominic Wokorach" };
 
 export default function TermsPage() {
   return (
