@@ -17,8 +17,8 @@ const jetbrains = JetBrains_Mono({
   display: "swap",
 });
 
-const siteUrl = "https://portfolio-wokorach.vercel.app";
-const title = "Dominic Wokorach Olanya | Software Engineer & Frontend Developer";
+const siteUrl = "https://www.dominicwokorach.me/";
+const title = "Dominic Wokorach | Software Engineer & Frontend Developer";
 const description =
   "Software Engineer and Frontend Developer based in London, specialising in React, TypeScript, Next.js, accessible web applications, UX/UI and modern frontend engineering.";
 
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     title,
     description,
     url: siteUrl,
-    siteName: "Dominic Wokorach Olanya",
+    siteName: "Dominic Wokorach",
     images: [{ url: "/images/dominic/portrait.jpg", width: 1200, height: 630 }],
     locale: "en_GB",
     type: "website",
