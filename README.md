@@ -148,6 +148,31 @@ Stable releases are published through GitHub Releases.
 
 [View Releases](https://github.com/domwokorach/DW-Professional/releases)
 
+## Contributing
+
+Contributions, suggestions and bug reports are welcome.
+
+If you would like to contribute:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test your changes
+5. Commit your work
+6. Open a pull request
+
+Please keep contributions focused, accessible and consistent with the existing project structure. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, code style and testing details.
+
+## Author
+
+**Dominic Wokorach Olanya**
+
+Software Engineer & Frontend Developer
+
+- Portfolio: <https://www.dominicwokorach.me/>
+- GitHub: <https://github.com/domwokorach>
+- LinkedIn: <https://www.linkedin.com/in/dominic-w-3673523b/>
+
 ## License
 
 This project is licensed under the MIT License.
