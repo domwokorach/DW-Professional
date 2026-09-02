@@ -18,7 +18,7 @@ const jetbrains = JetBrains_Mono({
 });
 
 const siteUrl = "https://www.dominicwokorach.me/";
-const title = "Dominic Wokorach | Software Engineer & Frontend Developer";
+const title = "Dominic | Software Engineer & Frontend Developer";
 const description =
   "Software Engineer and Frontend Developer based in London, specialising in React, TypeScript, Next.js, accessible web applications, UX/UI and modern frontend engineering.";
 
