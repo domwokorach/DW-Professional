@@ -7,10 +7,12 @@ export default function MobileNavigation({
   open,
   active,
   onNavigate,
+  onOpenResume,
 }: {
   open: boolean;
   active: string;
   onNavigate: (id: string) => void;
+  onOpenResume: () => void;
 }) {
   return (
     <AnimatePresence>
@@ -38,6 +40,15 @@ export default function MobileNavigation({
               </li>
             ))}
           </ul>
+
+          <div className="mx-auto w-full max-w-content px-6 pb-6 sm:px-8">
+            <button
+              onClick={onOpenResume}
+              className="min-h-11 w-full rounded-full border border-line px-4 py-3 text-sm text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            >
+              Resume
+            </button>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
