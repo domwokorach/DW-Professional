@@ -8,6 +8,8 @@ import { projects } from "@/data/projects";
 import { caseStudies } from "@/data/caseStudies";
 import ChatbotMockup from "@/components/project/ChatbotMockup";
 import ReconstructionVisual from "@/components/project/ReconstructionVisual";
+import OrgGraphPreview from "@/components/project/OrgGraphPreview";
+import OrgGraph from "@/components/project/OrgGraph";
 import GithubIcon from "@/components/project/GithubIcon";
 import WorkflowPipeline from "@/components/project/WorkflowPipeline";
 import BranchDiagram from "@/components/project/BranchDiagram";
@@ -126,6 +128,11 @@ export default async function ProjectPage({
                   <ReconstructionVisual />
                 </div>
               )}
+              {caseStudy.mediaType === "orgGraph" && (
+                <div className="h-full w-full p-4">
+                  <OrgGraphPreview />
+                </div>
+              )}
             </div>
           )}
 
@@ -200,6 +207,23 @@ export default async function ProjectPage({
               {caseStudy.pipelines?.map((pipeline) => (
                 <WorkflowPipeline key={pipeline.title} {...pipeline} />
               ))}
+
+              {caseStudy.orgGraph && (
+                <div>
+                  <h2 className="text-sm font-mono uppercase tracking-widest text-accent">
+                    Organisation Graph
+                  </h2>
+                  <p className="mt-2 max-w-2xl text-sm text-muted">
+                    An interactive D3.js visualisation of Innovation X&rsquo;s structure —
+                    departments, teams, roles, people, reporting lines, cross-functional teams
+                    and active projects. Zoom, pan, drag nodes, expand or collapse departments and
+                    teams, and search to focus on any part of the organisation.
+                  </p>
+                  <div className="mt-5">
+                    <OrgGraph />
+                  </div>
+                </div>
+              )}
 
               <div>
                 <h2 className="text-sm font-mono uppercase tracking-widest text-accent">

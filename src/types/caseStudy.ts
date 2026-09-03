@@ -1,4 +1,4 @@
-export type MediaType = "image" | "video" | "reconstruction";
+export type MediaType = "image" | "video" | "reconstruction" | "orgGraph";
 
 export type TerminalLine = {
   text: string;
@@ -59,4 +59,6 @@ export type CaseStudy = {
     note?: string;
   }[];
   terminal?: TerminalSpec;
+  /** Renders the interactive D3.js organisation graph section on the case study page. */
+  orgGraph?: boolean;
 };
