@@ -12,6 +12,9 @@ export default function Projects() {
   const newsProject = projects.find((p) => p.slug === "news");
   const otherProjects = projects.filter((p) => p.slug !== "news");
 
+  const orgGraphCaseStudy = caseStudies.find((c) => c.slug === "innovation-x-org-graph");
+  const otherCaseStudies = caseStudies.filter((c) => c.slug !== "innovation-x-org-graph");
+
   return (
     <section id="projects" className="relative scroll-mt-24 border-t border-line py-28 sm:py-36">
       <Container>
@@ -78,8 +81,23 @@ export default function Projects() {
             </p>
           </MotionReveal>
 
+          {orgGraphCaseStudy && (
+            <div className="mt-8">
+              <FeaturedProjectCard
+                eyebrow="Case Study"
+                title={orgGraphCaseStudy.title}
+                subtitle={orgGraphCaseStudy.subtitle}
+                description={orgGraphCaseStudy.summary}
+                image="/images/case-studies/innovation-x-org-graph.webp"
+                imageAlt="Innovation X organisation overview platform showing an interactive D3.js graph of departments, teams, roles and people"
+                liveUrl={orgGraphCaseStudy.externalHref ?? "https://organisation-overview.vercel.app/"}
+                browserLabel="organisation-overview.vercel.app"
+              />
+            </div>
+          )}
+
           <div className="mt-8 grid gap-6 md:grid-cols-2">
-            {caseStudies.map((caseStudy, i) => (
+            {otherCaseStudies.map((caseStudy, i) => (
               <MotionReveal
                 key={caseStudy.slug}
                 variants={projectReveal}

@@ -6,6 +6,7 @@ import { ExternalLink } from "lucide-react";
 import { EASE } from "@/lib/animations";
 
 export default function FeaturedProjectCard({
+  eyebrow = "Selected Work",
   title,
   subtitle,
   description,
@@ -14,6 +15,7 @@ export default function FeaturedProjectCard({
   liveUrl,
   browserLabel,
 }: {
+  eyebrow?: string;
   title: string;
   subtitle: string;
   description: string;
@@ -59,7 +61,7 @@ export default function FeaturedProjectCard({
 
       <div className="p-6 md:p-8">
         <span className="font-mono text-xs uppercase tracking-widest text-accent">
-          Selected Work
+          {eyebrow}
         </span>
 
         <h3 className="mt-3 text-2xl font-medium text-white md:text-3xl">

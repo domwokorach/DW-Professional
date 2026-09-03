@@ -422,5 +422,7 @@ export const caseStudies: CaseStudy[] = [
     },
     mediaType: "orgGraph",
     orgGraph: true,
+    externalHref: "https://organisation-overview.vercel.app/",
+    externalLabel: "View Live Project",
   },
 ];
