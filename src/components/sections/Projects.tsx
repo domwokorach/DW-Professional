@@ -2,12 +2,16 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
 import ProjectCard from "@/components/project/ProjectCard";
+import FeaturedProjectCard from "@/components/project/FeaturedProjectCard";
 import CaseStudyCard from "@/components/project/CaseStudyCard";
 import { projects } from "@/data/projects";
 import { caseStudies } from "@/data/caseStudies";
 import { projectReveal } from "@/lib/animations";
 
 export default function Projects() {
+  const newsProject = projects.find((p) => p.slug === "news");
+  const otherProjects = projects.filter((p) => p.slug !== "news");
+
   return (
     <section id="projects" className="relative scroll-mt-24 border-t border-line py-28 sm:py-36">
       <Container>
@@ -37,10 +41,24 @@ export default function Projects() {
             </p>
           </MotionReveal>
 
+          {newsProject && (
+            <div className="mt-8">
+              <FeaturedProjectCard
+                title={newsProject.title}
+                subtitle="Modern News Web Application"
+                description="A modern news web application focused on presenting current stories through a clean, responsive and easy-to-navigate interface."
+                image={newsProject.image}
+                imageAlt={newsProject.imageAlt}
+                liveUrl={newsProject.liveUrl}
+                browserLabel="the-daily-wire-two.vercel.app"
+              />
+            </div>
+          )}
+
           <div className="mt-8 grid gap-6 md:grid-cols-2">
-            {projects.map((project, i) => (
+            {otherProjects.map((project, i) => (
               <MotionReveal key={project.slug} variants={projectReveal} delay={0.05 * i}>
-                <ProjectCard project={project} index={i} />
+                <ProjectCard project={project} index={i + 1} />
               </MotionReveal>
             ))}
           </div>
