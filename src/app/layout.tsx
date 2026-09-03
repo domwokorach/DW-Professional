@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import CookieConsentManager from "@/components/ui/CookieConsentManager";
+import BackToTopButton from "@/components/ui/BackToTopButton";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -59,6 +60,7 @@ export default function RootLayout({
         <main id="main">{children}</main>
         <Footer />
         <CookieConsentManager />
+        <BackToTopButton />
       </body>
     </html>
   );
