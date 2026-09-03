@@ -383,4 +383,44 @@ export const caseStudies: CaseStudy[] = [
       text: "Contributed to the engineering and delivery of cloud-native application functionality supporting catalogue, pricing and billing workflows within Sky's production environment — deepening my practical experience with distributed systems, containerisation and CI/CD as part of a collaborative Agile Scrum team.",
     },
   },
+  {
+    slug: "innovation-x-org-graph",
+    number: "08",
+    title: "Innovation X",
+    subtitle: "An interactive organisation intelligence and workforce visualisation platform.",
+    label: "Concept Platform",
+    categories: ["D3.js", "Data Visualisation", "Org Design", "Frontend"],
+    summary:
+      "A concept project exploring how an interactive, D3.js-powered graph can turn a static org chart into a scalable organisation intelligence platform — surfacing departments, teams, roles, people, reporting lines, cross-functional teams and live projects in one explorable view.",
+    technology: ["D3.js", "Next.js", "TypeScript", "SVG", "Force-Directed Graphs"],
+    size: "large",
+    visualDirection:
+      "A force-directed node-link graph with distinct colours and sizes per node type (organisation, department, team, role, person, project), dashed lines for reporting and cross-functional links, and a dark, data-dense interface consistent with the rest of the portfolio.",
+    context:
+      "Traditional org charts are static, hierarchy-only images that struggle to represent modern organisations with cross-functional teams, matrixed reporting lines and shifting project work.",
+    challenge:
+      "Design and build an interactive organisation graph that scales from a single organisation-level view down to individual people, without becoming visually overwhelming or losing the relationships that make an org chart useful.",
+    idea:
+      "Model the organisation as a graph rather than a tree — departments, teams, roles, people and projects as nodes, with structural, reporting, cross-functional and project links as distinct edge types — then let a force-directed D3.js layout, search and filtering make that graph explorable.",
+    experience:
+      "Explored zoomable and pannable navigation, draggable nodes, expandable and collapsible departments and teams, hover-based relationship highlighting, a searchable focus mode, and a detail panel summarising a selected node's role, manager, direct reports, responsibilities, team size and current projects.",
+    contribution: [
+      "Designed the graph data model — organisation, department, team, role, person and project node types with structural, reporting, cross-functional and project relationships.",
+      "Built the interactive D3.js force-directed graph, including zoom/pan, drag, expand/collapse and hover-based highlighting.",
+      "Implemented search-and-focus and type-based filtering so any department, team, role or person can be located quickly.",
+      "Built the node detail panel surfacing role, department, manager, direct reports, responsibilities and current projects.",
+    ],
+    uxApproach:
+      "Prioritised progressive disclosure — the graph opens at a readable department-level view, with detail (teams, roles, people, projects) revealed on demand through expansion, hover and selection rather than shown all at once.",
+    engineeringApproach:
+      "Built as a client-side React component that hands node positioning to a D3.js force simulation while keeping selection, filtering and search state in React, with a ResizeObserver for responsive sizing and cached node positions so the layout stays stable across interactions.",
+    accessibility:
+      "Graph nodes are keyboard-focusable and operable buttons with descriptive labels, the search input supports a full node list via a native datalist, and colour is paired with distinct node sizing and labelling rather than being the only differentiator between node types.",
+    outcome: {
+      heading: "What I Learned",
+      text: "Turning a hierarchy into an explorable graph is as much an information-design problem as an engineering one — the interesting work was in deciding what to hide by default, what to highlight on hover, and how to keep a data-dense visualisation legible at a glance.",
+    },
+    mediaType: "orgGraph",
+    orgGraph: true,
+  },
 ];

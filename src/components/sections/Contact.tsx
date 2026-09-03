@@ -21,22 +21,59 @@ const inputClasses =
   "w-full rounded-lg border border-line bg-transparent px-4 py-3 text-white placeholder:text-muted/60 outline-none transition-colors focus:border-accent";
 
 export default function Contact() {
-  const [status, setStatus] = useState<"idle" | "sent">("idle");
+  const [status, setStatus] = useState<"idle" | "submitting" | "sent" | "error">(
+    "idle"
+  );
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (status === "submitting" || status === "sent") return;
+
     const form = e.currentTarget;
     const data = new FormData(form);
-    const subject = encodeURIComponent(
-      `Project enquiry: ${data.get("projectType") || "General"}`
-    );
-    const body = encodeURIComponent(
-      `Name: ${data.get("name")}\nCompany: ${data.get("company")}\nBudget: ${data.get(
-        "budget"
-      )}\n\n${data.get("message")}`
-    );
-    window.location.href = `mailto:${social.email}?subject=${subject}&body=${body}`;
-    setStatus("sent");
+
+    const name = String(data.get("name") || "").trim();
+    const email = String(data.get("email") || "").trim();
+    const message = String(data.get("message") || "").trim();
+
+    if (!name || !email || !message) {
+      setStatus("error");
+      setErrorMessage("Please fill in your name, email and message.");
+      return;
+    }
+
+    setStatus("submitting");
+    setErrorMessage("");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          message,
+          company: String(data.get("company") || ""),
+          budget: String(data.get("budget") || ""),
+          projectType: String(data.get("projectType") || ""),
+        }),
+      });
+
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok || !result?.success) {
+        throw new Error(result?.error || "Failed to send your message");
+      }
+
+      setStatus("sent");
+    } catch (err) {
+      setStatus("error");
+      setErrorMessage(
+        err instanceof Error ? err.message : "Something went wrong. Please try again."
+      );
+    }
   };
 
   return (
@@ -96,6 +133,15 @@ export default function Contact() {
           </div>
 
           <MotionReveal delay={0.1}>
+            {status === "sent" ? (
+              <div
+                role="status"
+                aria-live="polite"
+                className="flex min-h-[200px] items-center justify-center rounded-lg border border-line px-6 py-16 text-center"
+              >
+                <p className="text-2xl font-medium text-white">Thank you</p>
+              </div>
+            ) : (
             <form onSubmit={handleSubmit} className="space-y-5" noValidate>
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
@@ -191,15 +237,22 @@ export default function Contact() {
 
               <button
                 type="submit"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                disabled={status === "submitting"}
+                className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Send Enquiry →
+                {status === "submitting" ? "Sending…" : "Send Enquiry →"}
               </button>
 
-              <p role="status" aria-live="polite" className="text-sm text-accent">
-                {status === "sent" ? "Opening your email client…" : ""}
+              <p
+                role="status"
+                aria-live="polite"
+                className={`text-sm ${status === "error" ? "text-red-400" : "text-accent"}`}
+              >
+                {status === "submitting" ? "Sending your message…" : ""}
+                {status === "error" ? errorMessage : ""}
               </p>
             </form>
+            )}
           </MotionReveal>
         </div>
       </Container>

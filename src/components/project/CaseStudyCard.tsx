@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import type { CaseStudy } from "@/types/caseStudy";
 import ReconstructionVisual from "./ReconstructionVisual";
+import OrgGraphPreview from "./OrgGraphPreview";
 
 export default function CaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
   const isLarge = caseStudy.size === "large";
@@ -49,6 +50,12 @@ export default function CaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
           {caseStudy.mediaType === "reconstruction" && (
             <div className="h-full w-full p-3">
               <ReconstructionVisual />
+            </div>
+          )}
+
+          {caseStudy.mediaType === "orgGraph" && (
+            <div className="h-full w-full p-3">
+              <OrgGraphPreview />
             </div>
           )}
         </div>
