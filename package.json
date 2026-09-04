@@ -8,9 +8,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint src scripts --max-warnings=0",
-    "setup:vector-store": "node --env-file=.env.local scripts/setup-vector-store.mjs"
+    "setup:vector-store": "node --env-file=.env.local scripts/setup-vector-store.mjs",
+    "email:dev": "email dev --dir emails"
   },
   "dependencies": {
+    "@react-email/components": "^1.0.12",
     "@types/d3": "^7.4.3",
     "d3": "^7.9.0",
     "embla-carousel-react": "^8.6.0",
@@ -24,6 +26,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
+    "@react-email/ui": "^6.9.3",
     "@types/node": "^22.10.5",
     "@types/react": "^19.0.4",
     "@types/react-dom": "^19.0.2",
@@ -31,6 +34,7 @@
     "eslint": "^9.17.0",
     "eslint-config-next": "^15.1.0",
     "postcss": "^8.4.49",
+    "react-email": "^6.9.3",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.2"
   }

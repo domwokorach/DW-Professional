@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createPinChallenge, generatePin } from "@/lib/resumeAuth";
 import { isRequestOnCooldown, markRequested } from "@/lib/resumeRateLimit";
+import VerificationEmail from "@emails/VerificationEmail";
+import { RESUME_PIN_TTL_MINUTES } from "@/lib/resumeConstants";
 
 export async function POST(request: NextRequest) {
   let body: Record<string, unknown>;
@@ -28,8 +30,9 @@ export async function POST(request: NextRequest) {
 
   const resendApiKey = process.env.RESEND_API_KEY;
   const pinSecret = process.env.RESUME_PIN_SECRET;
+  const fromEmail = process.env.RESEND_FROM_EMAIL;
 
-  if (!resendApiKey || !pinSecret) {
+  if (!resendApiKey || !pinSecret || !fromEmail) {
     return NextResponse.json(
       { error: "Resume verification is not configured" },
       { status: 500 }
@@ -43,20 +46,18 @@ export async function POST(request: NextRequest) {
 
   try {
     const { error } = await resend.emails.send({
-      from: "Dominic Wokorach <onboarding@resend.dev>",
-      to: email,
-      subject: "Your resume verification code",
-      html: `
-        <p>Here is your verification code to download the resume:</p>
-        <p style="font-size: 28px; font-weight: 700; letter-spacing: 6px;">${pin}</p>
-        <p>This code expires in 10 minutes. If you didn't request this, you can ignore this email.</p>
-      `,
+      from: fromEmail,
+      to: [email],
+      subject: "Verify your email",
+      react: VerificationEmail({ pin, expiresInMinutes: RESUME_PIN_TTL_MINUTES }),
     });
 
     if (error) {
+      console.error("Resend email error:", error);
       return NextResponse.json({ error: "Failed to send verification code" }, { status: 502 });
     }
-  } catch {
+  } catch (err) {
+    console.error("Resend email error:", err);
     return NextResponse.json({ error: "Failed to send verification code" }, { status: 500 });
   }
 

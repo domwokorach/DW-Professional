@@ -1,12 +1,24 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+} from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import OtpInput from "@/components/ui/OtpInput";
+import {
+  RESEND_COOLDOWN_SECONDS,
+  RESUME_PIN_TTL_MINUTES,
+} from "@/lib/resumeConstants";
 
 type Step = "email" | "pin" | "success";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PIN_LENGTH = 6;
+const EXPIRED_REASON = "Code has expired";
 
 export default function ResumeDownloadModal({
   open,
@@ -26,7 +38,8 @@ export default function ResumeDownloadModal({
   const [error, setError] = useState("");
   const [cooldown, setCooldown] = useState(0);
   const emailInputRef = useRef<HTMLInputElement>(null);
-  const pinInputRef = useRef<HTMLInputElement>(null);
+
+  const isExpired = error === EXPIRED_REASON;
 
   useEffect(() => setMounted(true), []);
 
@@ -45,7 +58,6 @@ export default function ResumeDownloadModal({
     if (!open) return;
     const id = requestAnimationFrame(() => {
       if (step === "email") emailInputRef.current?.focus();
-      if (step === "pin") pinInputRef.current?.focus();
     });
     return () => cancelAnimationFrame(id);
   }, [open, step]);
@@ -93,7 +105,7 @@ export default function ResumeDownloadModal({
       setChallenge(data.challenge);
       setPin("");
       setStep("pin");
-      setCooldown(30);
+      setCooldown(RESEND_COOLDOWN_SECONDS);
     } catch {
       setError("Couldn't send the code. Try again.");
     } finally {
@@ -157,10 +169,26 @@ export default function ResumeDownloadModal({
             onClick={(e) => e.stopPropagation()}
             className="w-full max-w-sm rounded-2xl border border-line bg-surface p-6 shadow-2xl"
           >
+            <div className="mb-5 flex items-center gap-2.5">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-[13px] font-bold tracking-wide text-ink">
+                DW
+              </span>
+              <span className="text-sm font-medium text-muted">
+                Dominic Wokorach
+              </span>
+            </div>
+
             <div className="flex items-center justify-between">
-              <h2 id="resume-modal-title" className="text-lg font-medium text-white">
-                {step === "success" ? "Resume ready" : "Verify your email"}
-              </h2>
+              <div>
+                <h2 id="resume-modal-title" className="text-lg font-medium text-white">
+                  {step === "success" ? "Resume ready" : "Verify your email"}
+                </h2>
+                {step === "pin" && (
+                  <p className="mt-0.5 text-xs text-muted">
+                    Code sent to <span className="text-white">{email}</span>
+                  </p>
+                )}
+              </div>
               <button
                 onClick={onClose}
                 aria-label="Close"
@@ -193,9 +221,12 @@ export default function ResumeDownloadModal({
                   />
                 </div>
                 {error && (
-                  <p role="alert" className="text-sm text-red-400">
+                  <div
+                    role="alert"
+                    className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2.5 text-sm text-red-300"
+                  >
                     {error}
-                  </p>
+                  </div>
                 )}
                 <button
                   type="submit"
@@ -210,37 +241,43 @@ export default function ResumeDownloadModal({
             {step === "pin" && (
               <form onSubmit={verifyPin} className="mt-5 space-y-4">
                 <p className="text-sm leading-[1.6] text-muted">
-                  Enter the 6-digit PIN sent to{" "}
-                  <span className="text-white">{email}</span>.
+                  Enter the 6-digit code from the email to continue.
                 </p>
                 <div>
-                  <label htmlFor="resume-pin" className="sr-only">
+                  <label htmlFor="resume-pin-0" className="sr-only">
                     Verification PIN
                   </label>
-                  <input
-                    ref={pinInputRef}
+                  <OtpInput
                     id="resume-pin"
-                    type="text"
-                    inputMode="numeric"
-                    autoComplete="one-time-code"
-                    maxLength={6}
-                    required
                     value={pin}
-                    onChange={(e) =>
-                      setPin(e.target.value.replace(/\D/g, "").slice(0, 6))
-                    }
-                    placeholder="123456"
-                    className="min-h-11 w-full rounded-lg border border-line bg-black/30 px-4 py-3 text-center text-lg tracking-[0.4em] text-white placeholder:tracking-normal placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                    onChange={(value) => {
+                      setPin(value);
+                      if (error) setError("");
+                    }}
+                    autoFocus
+                    invalid={!!error}
+                    disabled={loading}
                   />
+                  <p className="mt-3 text-center text-xs text-muted">
+                    This code expires in {RESUME_PIN_TTL_MINUTES} minutes.
+                  </p>
                 </div>
                 {error && (
-                  <p role="alert" className="text-sm text-red-400">
-                    {error}
-                  </p>
+                  <div
+                    role="alert"
+                    className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2.5 text-sm text-red-300"
+                  >
+                    <p>{isExpired ? "This code has expired." : error}</p>
+                    {isExpired && (
+                      <p className="mt-1 text-red-300/80">
+                        Request a new code below to keep going.
+                      </p>
+                    )}
+                  </div>
                 )}
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || pin.length !== PIN_LENGTH}
                   className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-medium text-ink transition-colors hover:bg-accent disabled:opacity-60"
                 >
                   {loading ? "Verifying…" : "Verify & continue"}
@@ -267,6 +304,22 @@ export default function ResumeDownloadModal({
 
             {step === "success" && (
               <div className="mt-5 space-y-4">
+                <div className="flex justify-center">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-full border border-accent/40 bg-accent/10">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-6 w-6 text-accent"
+                      aria-hidden="true"
+                    >
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                  </span>
+                </div>
                 <p className="text-sm leading-[1.6] text-muted">
                   Your email has been verified. Click below to download the
                   resume.

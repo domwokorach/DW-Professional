@@ -41,8 +41,9 @@ export async function POST(request: NextRequest) {
   }
 
   const apiKey = process.env.RESEND_API_KEY;
+  const fromEmail = process.env.RESEND_FROM_EMAIL;
 
-  if (!apiKey) {
+  if (!apiKey || !fromEmail) {
     return NextResponse.json(
       { error: "Email service is not configured" },
       { status: 500 }
@@ -53,8 +54,8 @@ export async function POST(request: NextRequest) {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: "Portfolio Contact Form <onboarding@resend.dev>",
-      to: RECIPIENT_EMAIL,
+      from: fromEmail,
+      to: [RECIPIENT_EMAIL],
       replyTo: email,
       subject: `Project enquiry: ${projectType || "General"}`,
       html: `
