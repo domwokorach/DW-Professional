@@ -53,6 +53,32 @@ export const projects: Project[] = [
       "A working booking-system application demonstrating appointment-workflow design and modern frontend engineering.",
   },
   {
+    slug: "air-quality-weather-forecasting",
+    title: "Air Quality & Weather Forecasting",
+    technology: ["Next.js", "React", "D3.js", "Node.js", "OJS", "API", "OpenWeather"],
+    description:
+      "An environmental research dashboard delivering real-time air-quality monitoring, weather observations and forecasting, with D3.js visualisation and international geographic comparison.",
+    features: [
+      "Real-time AQI and pollutant monitoring",
+      "Current weather conditions and forecasts",
+      "D3.js charts and bivariate choropleth mapping",
+      "International country and city search",
+      "Monitoring-station analysis",
+      "Responsive research interface",
+    ],
+    image: "/images/projects/air-quality-weather-forecasting.webp",
+    imageAlt: "Air Quality, Weather & Research Dashboard showing current AQI, pollutant levels and weather summary",
+    liveUrl: "https://air-quality-weather-forecasting.vercel.app/en",
+    overview:
+      "A freelance environmental research platform combining live air-quality and weather data with forecasting, historical analysis and D3.js geographic visualisation.",
+    challenge:
+      "Bringing together air-quality and weather data from separate providers into one coherent, research-grade dashboard, including a bivariate choropleth map that stays honest about missing station coverage.",
+    approach:
+      "Built with Next.js and React, integrating the OpenWeather and WAQI APIs on the backend and rendering D3.js time-series charts and an international bivariate choropleth on the frontend.",
+    outcome:
+      "A working research dashboard demonstrating API integration, data visualisation with D3.js and responsive frontend engineering.",
+  },
+  {
     slug: "jira-project-management-system",
     title: "JIRA Project Management System",
     technology: ["React", "TypeScript", "Project Management"],
