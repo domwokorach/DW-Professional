@@ -1,5 +1,22 @@
 export const services = [
   {
+    title: "Specialist Accessibility",
+    description:
+      "Accessible digital experiences for people with disabilities, low vision, reading difficulties, colour-vision differences, and those who rely on assistive technology. I apply WCAG requirements across design, development, content, forms, navigation and testing.",
+    items: [
+      "WCAG 2.2 Level AA",
+      "Legal & Compliance Guidance",
+      "POUR Principles",
+      "Semantic HTML & ARIA",
+      "Keyboard Navigation & Focus",
+      "Accessible Forms & Error States",
+      "Font, Colour & Readability",
+      "High-Contrast Themes",
+      "Screen Reader Support",
+      "Lighthouse, axe & Manual Testing",
+    ],
+  },
+  {
     title: "Frontend Development",
     description:
       "Modern frontend applications built with React, Next.js and TypeScript, designed for performance, accessibility and maintainability.",
