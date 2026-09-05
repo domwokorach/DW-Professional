@@ -6,6 +6,7 @@ import { navigation } from "@/data/navigation";
 import Navigation from "./Navigation";
 import MobileNavigation from "./MobileNavigation";
 import ResumeDownloadModal from "@/components/resume/ResumeDownloadModal";
+import ThemeModeButton from "@/components/ui/ThemeModeButton";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -80,16 +81,17 @@ export default function Header() {
 
         <Navigation active={active} onNavigate={handleNavigate} />
 
-        <div className="hidden md:flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3">
+          <ThemeModeButton />
           <button
             onClick={() => setResumeOpen(true)}
-            className="inline-flex items-center rounded-full border border-line px-4 py-2 text-sm text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            className="hidden md:inline-flex items-center rounded-full border border-line px-4 py-2 text-sm text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           >
             Resume
           </button>
           <button
             onClick={() => handleNavigate("contact")}
-            className="inline-flex items-center rounded-full border border-accent/40 px-4 py-2 text-sm text-accent transition-colors hover:bg-accent/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            className="hidden md:inline-flex items-center rounded-full border border-accent/40 px-4 py-2 text-sm text-accent transition-colors hover:bg-accent/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           >
             Get in Touch
           </button>
