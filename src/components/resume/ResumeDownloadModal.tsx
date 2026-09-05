@@ -38,6 +38,8 @@ export default function ResumeDownloadModal({
   const [error, setError] = useState("");
   const [cooldown, setCooldown] = useState(0);
   const emailInputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
 
   const isExpired = error === EXPIRED_REASON;
 
@@ -52,6 +54,12 @@ export default function ResumeDownloadModal({
     setError("");
     setLoading(false);
     setCooldown(0);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
+    return () => previouslyFocusedRef.current?.focus();
   }, [open]);
 
   useEffect(() => {
@@ -71,10 +79,32 @@ export default function ResumeDownloadModal({
   useEffect(() => {
     if (!open) return;
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onClose();
+        return;
+      }
+      if (e.key !== "Tab") return;
+
+      const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusable?.length) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
   }, [open, onClose]);
 
   async function requestPin(e?: FormEvent) {
@@ -159,6 +189,7 @@ export default function ResumeDownloadModal({
           onClick={onClose}
         >
           <motion.div
+            ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby="resume-modal-title"
@@ -218,10 +249,13 @@ export default function ResumeDownloadModal({
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
                     className="min-h-11 w-full rounded-lg border border-line bg-black/30 px-4 py-3 text-sm text-white placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                    aria-invalid={Boolean(error)}
+                    aria-describedby={error ? "resume-email-error" : undefined}
                   />
                 </div>
                 {error && (
                   <div
+                    id="resume-email-error"
                     role="alert"
                     className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2.5 text-sm text-red-300"
                   >
@@ -257,6 +291,7 @@ export default function ResumeDownloadModal({
                     autoFocus
                     invalid={!!error}
                     disabled={loading}
+                    aria-label="Six-digit verification code"
                   />
                   <p className="mt-3 text-center text-xs text-muted">
                     This code expires in {RESUME_PIN_TTL_MINUTES} minutes.
@@ -264,6 +299,7 @@ export default function ResumeDownloadModal({
                 </div>
                 {error && (
                   <div
+                    id="resume-pin-error"
                     role="alert"
                     className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2.5 text-sm text-red-300"
                   >
