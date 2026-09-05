@@ -16,7 +16,7 @@ export default function Navigation({
           <button
             onClick={() => onNavigate(item.id)}
             aria-current={active === item.id ? "true" : undefined}
-            className={`text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-4 rounded ${
+            className={`tablet-white text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-4 rounded ${
               active === item.id ? "text-white" : "text-muted hover:text-white"
             }`}
           >

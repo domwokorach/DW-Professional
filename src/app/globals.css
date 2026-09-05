@@ -45,6 +45,30 @@ body {
   line-height: 1.5;
 }
 
+.greeting-title {
+  color: #93c5fd;
+}
+
+.greeting-text {
+  color: #ffffff;
+}
+
+.location-text {
+  color: #ffffff;
+}
+
+.intro-paragraph {
+  color: #ffffff;
+}
+
+.hero-role {
+  color: #ffffff;
+}
+
+html[data-theme="dark"] .intro-paragraph {
+  color: #ffffff;
+}
+
 :focus-visible {
   outline: 2px solid #5b8def;
   outline-offset: 3px;
@@ -99,6 +123,25 @@ html[data-theme="light"] .text-accent3 {
   color: #0f766e !important;
 }
 
+html[data-theme="light"] .greeting-title {
+  color: #0b1f3a;
+}
+
+html[data-theme="light"] .greeting-text {
+  color: #000000;
+}
+
+html[data-theme="light"] .location-text {
+  color: #ffffff;
+}
+
+@media (min-width: 1024px) {
+  html[data-theme="light"] .intro-paragraph,
+  html[data-theme="light"] .location-text {
+    color: #0b1f3a;
+  }
+}
+
 html[data-theme="light"] [class*="border-"] {
   border-color: #cbd5e1 !important;
 }
@@ -109,6 +152,14 @@ html[data-theme="light"] [class*="hover:text-white"]:hover {
 
 html[data-theme="light"] :focus-visible {
   outline-color: #1d4ed8;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  html[data-theme="light"] .tablet-white,
+  html[data-theme="light"] .tablet-white:hover,
+  html[data-theme="dark"] .tablet-white {
+    color: #ffffff !important;
+  }
 }
 
 html[data-theme="light"] .grid-bg {
