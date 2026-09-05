@@ -43,7 +43,11 @@ function restoreSettings(value: string): AccessibilitySettings {
     isTextSize(parsedSettings.textSize) &&
     typeof parsedSettings.boldText === "boolean"
   ) {
-    return parsedSettings;
+    return {
+      highContrast: parsedSettings.highContrast,
+      textSize: parsedSettings.textSize,
+      boldText: parsedSettings.boldText,
+    };
   }
 
   localStorage.removeItem(storageKey);

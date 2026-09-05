@@ -58,9 +58,9 @@ export default function Expertise() {
                 {category.index}
               </p>
 
-              <h4 className="relative mt-1 text-lg font-medium text-white transition-colors duration-200 group-hover:text-white">
+              <h3 className="relative mt-1 text-lg font-medium text-white transition-colors duration-200 group-hover:text-white">
                 {category.title}
-              </h4>
+              </h3>
 
               <p className="relative mt-2 text-sm leading-[1.6] text-muted">
                 {category.description}

@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint src scripts --max-warnings=0",
+    "test:accessibility": "playwright test",
     "setup:vector-store": "node --env-file=.env.local scripts/setup-vector-store.mjs",
     "email:dev": "email dev --dir emails"
   },
@@ -25,7 +26,11 @@
     "resend": "^6.26.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@eslint/eslintrc": "^3.2.0",
+    "@playwright/test": "^1.63.0",
+    "@axe-core/playwright": "^4.11.0",
+    "@playwright/test": "^1.55.0",
     "@react-email/ui": "^6.9.3",
     "@types/node": "^22.10.5",
     "@types/react": "^19.0.4",
