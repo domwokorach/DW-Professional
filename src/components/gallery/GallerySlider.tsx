@@ -129,7 +129,7 @@ export default function GallerySlider({ collection }: { collection: GalleryColle
                 onClick={() => scrollTo(i)}
                 aria-label={`Go to slide ${i + 1}`}
                 aria-current={i === selectedIndex ? "true" : undefined}
-                className="flex h-6 items-center justify-center px-0.5"
+                className="flex h-11 min-w-11 items-center justify-center px-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
               >
                 <span
                   className={`block h-1.5 rounded-full transition-all duration-300 ease-out ${

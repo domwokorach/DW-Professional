@@ -25,21 +25,23 @@ export default function MobileNavigation({
           transition={{ duration: 0.25, ease: "easeInOut" }}
           className="md:hidden overflow-hidden border-b border-line bg-ink/95 backdrop-blur-lg"
         >
-          <ul className="mx-auto flex w-full max-w-content flex-col gap-1 px-6 py-4 sm:px-8">
-            {navigation.map((item) => (
-              <li key={item.id}>
-                <button
-                  onClick={() => onNavigate(item.id)}
-                  aria-current={active === item.id ? "true" : undefined}
-                  className={`block w-full py-3 text-left text-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded ${
-                    active === item.id ? "text-white" : "text-muted"
-                  }`}
-                >
-                  {item.label}
-                </button>
-              </li>
-            ))}
-          </ul>
+          <nav aria-label="Mobile navigation">
+            <ul className="mx-auto flex w-full max-w-content flex-col gap-1 px-6 py-4 sm:px-8">
+              {navigation.map((item) => (
+                <li key={item.id}>
+                  <button
+                    onClick={() => onNavigate(item.id)}
+                    aria-current={active === item.id ? "true" : undefined}
+                    className={`block w-full py-3 text-left text-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded ${
+                      active === item.id ? "text-white" : "text-muted"
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
           <div className="mx-auto w-full max-w-content px-6 pb-6 sm:px-8">
             <button

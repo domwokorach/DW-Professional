@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
@@ -25,6 +25,12 @@ export default function Contact() {
     "idle"
   );
   const [errorMessage, setErrorMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const errorRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    if (status === "error") errorRef.current?.focus();
+  }, [status]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,14 +44,21 @@ export default function Contact() {
     const email = String(data.get("email") || "").trim();
     const message = String(data.get("message") || "").trim();
 
-    if (!name || !email || !message) {
+    const nextFieldErrors: Record<string, string> = {};
+    if (!name) nextFieldErrors.name = "Enter your name.";
+    if (!email) nextFieldErrors.email = "Enter your email address.";
+    if (!message) nextFieldErrors.message = "Enter a message.";
+
+    if (Object.keys(nextFieldErrors).length > 0) {
+      setFieldErrors(nextFieldErrors);
       setStatus("error");
-      setErrorMessage("Please fill in your name, email and message.");
+      setErrorMessage("Please correct the required fields below.");
       return;
     }
 
     setStatus("submitting");
     setErrorMessage("");
+    setFieldErrors({});
 
     try {
       const response = await fetch("/api/contact", {
@@ -146,7 +159,7 @@ export default function Contact() {
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
                   <label htmlFor="name" className="mb-2 block text-sm text-muted">
-                    Name
+                    Name <span aria-hidden="true">(required)</span>
                   </label>
                   <input
                     id="name"
@@ -155,12 +168,19 @@ export default function Contact() {
                     required
                     autoComplete="name"
                     className={inputClasses}
+                    aria-invalid={Boolean(fieldErrors.name)}
+                    aria-describedby={fieldErrors.name ? "name-error" : undefined}
                     style={{ fontSize: "16px" }}
                   />
+                  {fieldErrors.name && (
+                    <p id="name-error" className="mt-2 text-sm text-red-300">
+                      {fieldErrors.name}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label htmlFor="email" className="mb-2 block text-sm text-muted">
-                    Email
+                    Email <span aria-hidden="true">(required)</span>
                   </label>
                   <input
                     id="email"
@@ -169,15 +189,22 @@ export default function Contact() {
                     required
                     autoComplete="email"
                     className={inputClasses}
+                    aria-invalid={Boolean(fieldErrors.email)}
+                    aria-describedby={fieldErrors.email ? "email-error" : undefined}
                     style={{ fontSize: "16px" }}
                   />
+                  {fieldErrors.email && (
+                    <p id="email-error" className="mt-2 text-sm text-red-300">
+                      {fieldErrors.email}
+                    </p>
+                  )}
                 </div>
               </div>
 
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
                   <label htmlFor="company" className="mb-2 block text-sm text-muted">
-                    Company
+                    Company <span className="text-xs">(optional)</span>
                   </label>
                   <input
                     id="company"
@@ -190,7 +217,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <label htmlFor="budget" className="mb-2 block text-sm text-muted">
-                    Budget
+                    Budget <span className="text-xs">(optional)</span>
                   </label>
                   <input
                     id="budget"
@@ -204,7 +231,7 @@ export default function Contact() {
 
               <div>
                 <label htmlFor="projectType" className="mb-2 block text-sm text-muted">
-                  Project Type
+                  Project Type <span className="text-xs">(optional)</span>
                 </label>
                 <select
                   id="projectType"
@@ -223,7 +250,7 @@ export default function Contact() {
 
               <div>
                 <label htmlFor="message" className="mb-2 block text-sm text-muted">
-                  Message
+                  Message <span aria-hidden="true">(required)</span>
                 </label>
                 <textarea
                   id="message"
@@ -231,8 +258,15 @@ export default function Contact() {
                   rows={5}
                   required
                   className={inputClasses}
+                  aria-invalid={Boolean(fieldErrors.message)}
+                  aria-describedby={fieldErrors.message ? "message-error" : undefined}
                   style={{ fontSize: "16px" }}
                 />
+                {fieldErrors.message && (
+                  <p id="message-error" className="mt-2 text-sm text-red-300">
+                    {fieldErrors.message}
+                  </p>
+                )}
               </div>
 
               <button
@@ -244,8 +278,10 @@ export default function Contact() {
               </button>
 
               <p
-                role="status"
-                aria-live="polite"
+                ref={errorRef}
+                role={status === "error" ? "alert" : "status"}
+                aria-live={status === "error" ? "assertive" : "polite"}
+                tabIndex={status === "error" ? -1 : undefined}
                 className={`text-sm ${status === "error" ? "text-red-400" : "text-accent"}`}
               >
                 {status === "submitting" ? "Sending your message…" : ""}
