@@ -20,17 +20,11 @@ export default function Footer() {
   return (
     <footer className="border-t border-line bg-surface/30 py-12 sm:py-14">
       <Container>
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.35fr)_repeat(3,minmax(0,1fr))]">
-          <section aria-labelledby="footer-name">
-            <h2 id="footer-name" className="font-mono text-lg font-semibold text-white">
-              Dominic Wokorach
-            </h2>
-            <p className="mt-2 max-w-xs text-sm leading-6 text-muted">
-              Software Engineer &amp; Frontend Developer
-            </p>
-          </section>
-
-          <nav aria-labelledby="footer-explore-heading">
+        <div className="flex flex-col items-center justify-center gap-10 text-center md:flex-row md:flex-wrap md:items-stretch md:justify-start md:gap-x-12 md:gap-y-10 md:text-left lg:flex-nowrap">
+          <nav
+            aria-labelledby="footer-explore-heading"
+            className="w-full md:min-w-52 md:flex-1"
+          >
             <h2 id="footer-explore-heading" className="text-sm font-semibold text-white">
               Explore
             </h2>
@@ -48,7 +42,10 @@ export default function Footer() {
             </ul>
           </nav>
 
-          <nav aria-labelledby="footer-social-heading">
+          <nav
+            aria-labelledby="footer-social-heading"
+            className="w-full md:min-w-52 md:flex-1"
+          >
             <h2 id="footer-social-heading" className="text-sm font-semibold text-white">
               Connect
             </h2>
@@ -76,7 +73,10 @@ export default function Footer() {
             </ul>
           </nav>
 
-          <nav aria-labelledby="footer-legal-heading">
+          <nav
+            aria-labelledby="footer-legal-heading"
+            className="w-full md:min-w-52 md:flex-1"
+          >
             <h2 id="footer-legal-heading" className="text-sm font-semibold text-white">
               Legal
             </h2>
@@ -109,7 +109,7 @@ export default function Footer() {
                 <button
                   type="button"
                   onClick={openCookieSettings}
-                  className="inline-flex min-h-11 items-center rounded px-1 text-left text-sm text-muted transition-colors hover:text-white"
+                  className="inline-flex min-h-11 items-center rounded px-1 text-center text-sm text-muted transition-colors hover:text-white md:text-left"
                 >
                   Cookie settings
                 </button>
@@ -118,7 +118,7 @@ export default function Footer() {
           </nav>
         </div>
 
-        <div className="mt-10 flex flex-col gap-4 border-t border-line pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col items-center gap-4 border-t border-line pt-6 text-center md:flex-row md:justify-between md:text-left">
           <p className="text-xs leading-5 text-muted">
             © {year} Dominic Wokorach. All rights reserved.
           </p>

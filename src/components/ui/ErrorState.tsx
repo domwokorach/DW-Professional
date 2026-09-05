@@ -14,14 +14,13 @@ const content = {
     code: "404",
     title: "Page not found",
     description:
-      "The page you’re looking for may have been moved, deleted, or the URL may be incorrect.",
+      "The page you are looking for may have been moved, removed, or does not exist.",
     icon: AlertTriangle,
   },
   connection: {
-    code: "Connection lost",
-    title: "Unable to connect",
+    title: "Connection lost",
     description:
-      "We couldn’t connect to the server. Check your internet connection and try again.",
+      "It looks like you are offline or the connection to the website was interrupted.",
     icon: WifiOff,
   },
 } as const;
@@ -73,10 +72,12 @@ export default function ErrorState({ kind, onRetry }: ErrorStateProps) {
           <Icon aria-hidden="true" size={28} strokeWidth={2} />
         </div>
 
-        <p className="mt-6 font-mono text-sm font-semibold tracking-[0.15em] text-accent">
-          {content[kind].code}
-        </p>
-        <div role="alert" className="mt-3">
+        {kind === "not-found" && (
+          <p className="mt-6 font-mono text-sm font-semibold tracking-[0.15em] text-accent">
+            {content["not-found"].code}
+          </p>
+        )}
+        <div role="alert" className={kind === "not-found" ? "mt-3" : "mt-6"}>
           <h1 id="error-title" className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
             {content[kind].title}
           </h1>
@@ -90,26 +91,34 @@ export default function ErrorState({ kind, onRetry }: ErrorStateProps) {
         </p>
 
         <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-          <button
-            type="button"
-            onClick={tryAgain}
-            className="inline-flex min-h-11 items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
-          >
-            Try Again
-          </button>
-          <button
-            type="button"
-            onClick={goBack}
-            className="inline-flex min-h-11 items-center justify-center rounded-full border border-line px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-accent hover:text-accent"
-          >
-            Go Back
-          </button>
+          {kind === "connection" && (
+            <button
+              type="button"
+              onClick={tryAgain}
+              className="inline-flex min-h-11 items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            >
+              Try Again
+            </button>
+          )}
           <Link
             href="/"
-            className="inline-flex min-h-11 items-center justify-center rounded-full border border-line px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-accent hover:text-accent"
+            className={`inline-flex min-h-11 items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${
+              kind === "not-found"
+                ? "bg-white text-ink hover:bg-accent"
+                : "border border-line text-white hover:border-accent hover:text-accent"
+            }`}
           >
-            Back to Home
+            Go Home
           </Link>
+          {kind === "not-found" && (
+            <button
+              type="button"
+              onClick={goBack}
+              className="inline-flex min-h-11 items-center justify-center rounded-full border border-line px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-accent hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            >
+              Go Back
+            </button>
+          )}
         </div>
       </div>
     </section>
