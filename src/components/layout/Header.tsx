@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { navigation } from "@/data/navigation";
 import Navigation from "./Navigation";
@@ -14,13 +14,20 @@ export default function Header() {
   const [resumeOpen, setResumeOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const scrollToSection = useCallback((id: string) => {
+    const section = document.getElementById(id);
+    if (!section) return;
+
+    section.setAttribute("tabindex", "-1");
+    section.focus({ preventScroll: true });
+    section.scrollIntoView({ behavior: "smooth" });
+  }, []);
 
   useEffect(() => {
     if (pathname !== "/" || !window.location.hash) return;
     const id = window.location.hash.slice(1);
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  }, [pathname]);
+    scrollToSection(id);
+  }, [pathname, scrollToSection]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -49,13 +56,11 @@ export default function Header() {
 
   const handleNavigate = (id: string) => {
     setMenuOpen(false);
-
     if (pathname !== "/") {
       router.push(`/#${id}`);
       return;
     }
-
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    scrollToSection(id);
   };
 
   return (

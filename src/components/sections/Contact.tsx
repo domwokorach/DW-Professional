@@ -27,9 +27,11 @@ export default function Contact() {
   const [errorMessage, setErrorMessage] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const errorRef = useRef<HTMLParagraphElement>(null);
+  const successRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     if (status === "error") errorRef.current?.focus();
+    if (status === "sent") successRef.current?.focus();
   }, [status]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -75,7 +77,6 @@ export default function Contact() {
       });
 
       const result = await response.json().catch(() => null);
-
       if (!response.ok || !result?.success) {
         throw new Error(result?.error || "Failed to send your message");
       }
@@ -152,7 +153,13 @@ export default function Contact() {
                 aria-live="polite"
                 className="flex min-h-[200px] items-center justify-center rounded-lg border border-line px-6 py-16 text-center"
               >
-                <p className="text-2xl font-medium text-white">Thank you</p>
+                <h3
+                  ref={successRef}
+                  tabIndex={-1}
+                  className="text-2xl font-medium text-white"
+                >
+                  Thank you
+                </h3>
               </div>
             ) : (
             <form onSubmit={handleSubmit} className="space-y-5" noValidate>

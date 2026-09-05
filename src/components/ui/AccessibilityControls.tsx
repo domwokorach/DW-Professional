@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Monitor, Moon, Sun, type LucideIcon } from "lucide-react";
 
 type TextSize = "small" | "default" | "large";
 type ThemePreference = "light" | "dark" | "system";
@@ -19,6 +20,16 @@ const defaultSettings: AccessibilitySettings = {
 
 const storageKey = "accessibility-settings-v1";
 const themeStorageKey = "theme-preference-v1";
+
+const themeOptions: {
+  preference: ThemePreference;
+  label: string;
+  Icon: LucideIcon;
+}[] = [
+  { preference: "light", label: "Light", Icon: Sun },
+  { preference: "dark", label: "Dark", Icon: Moon },
+  { preference: "system", label: "System", Icon: Monitor },
+];
 
 function isTextSize(value: unknown): value is TextSize {
   return value === "small" || value === "default" || value === "large";
@@ -189,14 +200,11 @@ export default function AccessibilityControls() {
           <div className="mt-5 space-y-5">
             <fieldset>
               <legend className="text-sm font-medium text-white">Appearance</legend>
+              <p className="mt-1 text-xs leading-5 text-muted">
+                Choose Light, Dark, or match your device setting.
+              </p>
               <div className="mt-2 grid grid-cols-3 gap-2">
-                {(
-                  [
-                    ["light", "Light"],
-                    ["dark", "Dark"],
-                    ["system", "System"],
-                  ] as const
-                ).map(([preference, label]) => (
+                {themeOptions.map(({ preference, label, Icon }) => (
                   <button
                     key={preference}
                     type="button"
@@ -205,8 +213,13 @@ export default function AccessibilityControls() {
                       setThemePreference(preference);
                       setAnnouncement(`${label} appearance selected.`);
                     }}
-                    className="min-h-11 rounded-lg border border-line px-2 text-sm font-medium text-white transition-colors hover:border-accent"
+                    className={`inline-flex min-h-11 flex-col items-center justify-center gap-1 rounded-lg border px-2 py-2 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+                      themePreference === preference
+                        ? "border-accent bg-accent/20 text-white shadow-sm"
+                        : "border-line text-white hover:border-accent hover:bg-white/5"
+                    }`}
                   >
+                    <Icon className="h-4 w-4" aria-hidden="true" />
                     {label}
                   </button>
                 ))}
