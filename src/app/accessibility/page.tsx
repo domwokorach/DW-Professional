@@ -46,6 +46,18 @@ export default function AccessibilityPage() {
         </ul>
       </section>
 
+      <section aria-labelledby="accessibility-preferences">
+        <h2 id="accessibility-preferences" className="text-base font-semibold text-white">
+          Display preferences
+        </h2>
+        <p className="mt-2">
+          Select <strong>Accessibility options</strong> in the lower-left corner
+          of any page to turn on high contrast, adjust text size, use bolder
+          text, or reset your preferences. Your choices are saved on this
+          device and apply across the website.
+        </p>
+      </section>
+
       <section aria-labelledby="accessibility-feedback">
         <h2 id="accessibility-feedback" className="text-base font-semibold text-white">
           Accessibility feedback

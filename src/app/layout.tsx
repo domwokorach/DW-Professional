@@ -5,6 +5,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import CookieConsentManager from "@/components/ui/CookieConsentManager";
 import BackToTopButton from "@/components/ui/BackToTopButton";
+import AccessibilityControls from "@/components/ui/AccessibilityControls";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -61,6 +62,7 @@ export default function RootLayout({
         <Footer />
         <CookieConsentManager />
         <BackToTopButton />
+        <AccessibilityControls />
       </body>
     </html>
   );
