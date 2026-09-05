@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -52,7 +53,27 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrains.variable}`}>
+    <html
+      lang="en"
+      className={`${inter.variable} ${jetbrains.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <Script id="theme-preference" strategy="beforeInteractive">
+          {`(() => {
+            let preference = "system";
+            try {
+              const saved = localStorage.getItem("theme-preference-v1");
+              if (saved === "light" || saved === "dark" || saved === "system") {
+                preference = saved;
+              }
+            } catch {}
+            const isDark = preference === "dark" ||
+              (preference === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+            document.documentElement.dataset.theme = isDark ? "dark" : "light";
+          })();`}
+        </Script>
+      </head>
       <body className="font-sans antialiased">
         <a href="#main" className="skip-link">
           Skip to content

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 type TextSize = "small" | "default" | "large";
+type ThemePreference = "light" | "dark" | "system";
 
 type AccessibilitySettings = {
   highContrast: boolean;
@@ -17,6 +18,7 @@ const defaultSettings: AccessibilitySettings = {
 };
 
 const storageKey = "accessibility-settings-v1";
+const themeStorageKey = "theme-preference-v1";
 
 function isTextSize(value: unknown): value is TextSize {
   return value === "small" || value === "default" || value === "large";
@@ -61,10 +63,25 @@ function applySettings(settings: AccessibilitySettings) {
   root.dataset.boldText = String(settings.boldText);
 }
 
+function isThemePreference(value: string | null): value is ThemePreference {
+  return value === "light" || value === "dark" || value === "system";
+}
+
+function applyTheme(preference: ThemePreference) {
+  const isDark =
+    preference === "dark" ||
+    (preference === "system" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+  document.documentElement.dataset.theme = isDark ? "dark" : "light";
+}
+
 export default function AccessibilityControls() {
   const [isOpen, setIsOpen] = useState(false);
   const [settings, setSettings] = useState(defaultSettings);
+  const [themePreference, setThemePreference] = useState<ThemePreference>("system");
   const [isReady, setIsReady] = useState(false);
+  const [isThemeReady, setIsThemeReady] = useState(false);
   const [announcement, setAnnouncement] = useState("");
 
   useEffect(() => {
@@ -87,6 +104,29 @@ export default function AccessibilityControls() {
     applySettings(settings);
     localStorage.setItem(storageKey, JSON.stringify(settings));
   }, [isReady, settings]);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem(themeStorageKey);
+    const preference = isThemePreference(savedTheme) ? savedTheme : "system";
+
+    setThemePreference(preference);
+    applyTheme(preference);
+    setIsThemeReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isThemeReady) return;
+
+    localStorage.setItem(themeStorageKey, themePreference);
+    applyTheme(themePreference);
+
+    if (themePreference !== "system") return;
+
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const updateSystemTheme = () => applyTheme("system");
+    mediaQuery.addEventListener("change", updateSystemTheme);
+    return () => mediaQuery.removeEventListener("change", updateSystemTheme);
+  }, [isThemeReady, themePreference]);
 
   const setTextSize = (textSize: TextSize) => {
     setSettings((current) => ({ ...current, textSize }));
@@ -147,6 +187,32 @@ export default function AccessibilityControls() {
           </p>
 
           <div className="mt-5 space-y-5">
+            <fieldset>
+              <legend className="text-sm font-medium text-white">Appearance</legend>
+              <div className="mt-2 grid grid-cols-3 gap-2">
+                {(
+                  [
+                    ["light", "Light"],
+                    ["dark", "Dark"],
+                    ["system", "System"],
+                  ] as const
+                ).map(([preference, label]) => (
+                  <button
+                    key={preference}
+                    type="button"
+                    aria-pressed={themePreference === preference}
+                    onClick={() => {
+                      setThemePreference(preference);
+                      setAnnouncement(`${label} appearance selected.`);
+                    }}
+                    className="min-h-11 rounded-lg border border-line px-2 text-sm font-medium text-white transition-colors hover:border-accent"
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+
             <section aria-labelledby="contrast-setting">
               <h3 id="contrast-setting" className="text-sm font-medium text-white">
                 Contrast
