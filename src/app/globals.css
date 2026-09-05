@@ -10,6 +10,20 @@ html {
   scroll-behavior: smooth;
 }
 
+body,
+button,
+a,
+input,
+select,
+textarea,
+[class*="bg-"],
+[class*="text-"],
+[class*="border-"] {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-for (const path of ["/", "/accessibility"]) {
+for (const path of ["/", "/accessibility", "/page-that-does-not-exist"]) {
   test(`${path} has no automated accessibility violations`, async ({ page }) => {
     await page.goto(path);
     await page.getByRole("button", { name: "Accept" }).click();
@@ -50,8 +50,11 @@ test("appearance preference applies and follows the selected theme", async ({ pa
   await expect(page.getByRole("region", { name: "Cookie preferences" })).toHaveCount(0);
   await page.getByRole("button", { name: "Accessibility options" }).click();
 
-  await page.getByRole("button", { name: "Dark" }).click();
+  const darkButton = page.getByRole("button", { name: "Dark" });
+  await darkButton.focus();
+  await page.keyboard.press("Enter");
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(darkButton).toHaveAttribute("aria-pressed", "true");
 
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
@@ -63,4 +66,7 @@ test("appearance preference applies and follows the selected theme", async ({ pa
   await page.emulateMedia({ colorScheme: "dark" });
   await page.getByRole("button", { name: "System" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+
+  await page.emulateMedia({ colorScheme: "light" });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 });

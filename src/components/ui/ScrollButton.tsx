@@ -11,13 +11,20 @@ export default function ScrollButton({
   className?: string;
   children: ReactNode;
 }) {
+  const navigateToSection = () => {
+    const target = document.getElementById(targetId);
+    if (!target) return;
+
+    target.setAttribute("tabindex", "-1");
+    target.focus({ preventScroll: true });
+    target.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <button
       type="button"
       className={className}
-      onClick={() =>
-        document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth" })
-      }
+      onClick={navigateToSection}
     >
       {children}
     </button>
