@@ -70,7 +70,7 @@ export default function Hero() {
             initial={reduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="font-mono text-sm tracking-[0.15em] text-accent"
+            className="hero-role font-mono text-sm tracking-[0.15em]"
           >
             Software Engineer · Frontend Developer · London
           </motion.p>
@@ -94,7 +94,7 @@ export default function Hero() {
             initial={reduceMotion ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: EASE, delay: 0.7 }}
-            className="mt-8 max-w-lg text-[clamp(1rem,1.2vw,1.125rem)] leading-[1.7] text-muted"
+            className="intro-paragraph mt-8 max-w-lg text-[clamp(1rem,1.2vw,1.125rem)] leading-[1.7]"
           >
             I&rsquo;m Dominic, a Software Engineer and Frontend Developer
             specialising in React, TypeScript, JavaScript and modern web
@@ -112,10 +112,10 @@ export default function Hero() {
             className="mt-10 flex flex-wrap items-center gap-4"
           >
             <Button href="#projects">View Projects</Button>
-            <Button href="#about" variant="secondary">
+            <Button href="#about" variant="secondary" className="tablet-white">
               About Me
             </Button>
-            <Button href="#contact" variant="ghost">
+            <Button href="#contact" variant="ghost" className="tablet-white">
               Get in Touch →
             </Button>
           </motion.div>
@@ -124,7 +124,7 @@ export default function Hero() {
             initial={reduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, delay: 1 }}
-            className="mt-10 flex items-center gap-2 text-xs text-muted"
+            className="tablet-white mt-10 flex items-center gap-2 text-xs text-muted"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden />
             Available for freelance opportunities

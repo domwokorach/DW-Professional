@@ -22,12 +22,6 @@ const GREETINGS: Record<Period, string> = {
   evening: "Good Evening!",
 };
 
-const GREETING_COLORS: Record<Period, string> = {
-  morning: "text-emerald-300",
-  afternoon: "text-orange-400",
-  evening: "text-sky-300",
-};
-
 function getPeriod(hour: number): Period {
   if (hour < 12) return "morning";
   if (hour < 18) return "afternoon";
@@ -80,11 +74,11 @@ export default function UKGreeting({
           animate={{ opacity: 1, y: 0 }}
           exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="text-sm font-medium tracking-wide sm:text-base"
+          className="greeting-text text-sm font-medium tracking-wide sm:text-base"
         >
-          <span className={GREETING_COLORS[period]}>{GREETINGS[period]}</span>
+          <span className="greeting-title">{GREETINGS[period]}</span>
           {showLocation && (
-            <span className="ml-2 text-muted">
+            <span className="location-text ml-2">
               Current location: London · {zone}
             </span>
           )}

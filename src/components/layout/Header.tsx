@@ -91,7 +91,7 @@ export default function Header() {
           </button>
           <button
             onClick={() => handleNavigate("contact")}
-            className="hidden md:inline-flex items-center rounded-full border border-accent/40 px-4 py-2 text-sm text-accent transition-colors hover:bg-accent/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            className="tablet-white hidden md:inline-flex items-center rounded-full border border-accent/40 px-4 py-2 text-sm text-accent transition-colors hover:bg-accent/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           >
             Get in Touch
           </button>
