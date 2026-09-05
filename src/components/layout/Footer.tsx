@@ -28,12 +28,6 @@ export default function Footer() {
             <p className="mt-2 max-w-xs text-sm leading-6 text-muted">
               Software Engineer &amp; Frontend Developer
             </p>
-            <a
-              href={`mailto:${social.email}`}
-              className="mt-4 inline-flex min-h-11 items-center rounded px-1 text-sm font-medium text-accent transition-colors hover:text-white"
-            >
-              {social.email}
-            </a>
           </section>
 
           <nav aria-labelledby="footer-explore-heading">
