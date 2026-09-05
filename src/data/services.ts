@@ -17,6 +17,23 @@ export const services = [
     ],
   },
   {
+    title: "AI Developer & Testing Tools",
+    description:
+      "Practical AI-powered solutions and testing tools that help teams develop faster, identify issues earlier, and improve software quality. From rapid prototypes to production systems, I automate engineering workflows while keeping implementations clean and maintainable.",
+    items: [
+      "AI-Assisted Workflows",
+      "Automated Testing Tools",
+      "Unit to Accessibility Testing",
+      "Debugging & Error Resolution",
+      "LLMs, Agents & AI APIs",
+      "Prompts & Validation Pipelines",
+      "FastAPI, Node.js & REST APIs",
+      "API Testing & Reliability",
+      "Code Quality & Regression Checks",
+      "CI/CD & Deployment Support",
+    ],
+  },
+  {
     title: "Frontend Development",
     description:
       "Modern frontend applications built with React, Next.js and TypeScript, designed for performance, accessibility and maintainability.",
