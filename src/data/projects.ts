@@ -79,6 +79,33 @@ export const projects: Project[] = [
       "A working research dashboard demonstrating API integration, data visualisation with D3.js and responsive frontend engineering.",
   },
   {
+    slug: "ai-application-jobs",
+    title: "AI Application Jobs",
+    technology: ["Next.js", "TypeScript", "AI"],
+    description:
+      "An AI-assisted job application platform helping candidates track, complete and manage job applications through a structured, section-based workflow.",
+    features: [
+      "Application progress tracking",
+      "Section-based application workflow",
+      "Draft saving and resuming",
+      "Recent activity timeline",
+      "Account creation and profile summary",
+      "Responsive interface",
+    ],
+    image: "/images/projects/ai-application-jobs.webp",
+    imageAlt:
+      "Northstar Careers dashboard showing an in-progress job application with a 5 of 14 sections progress bar and recent activity feed",
+    liveUrl: "https://ai-application-jobs-special.vercel.app/",
+    overview:
+      "A freelance AI-assisted job application platform built to help candidates manage and complete job applications through a clear, section-based workflow.",
+    challenge:
+      "Presenting a multi-section job application process in a way that keeps progress visible, lets candidates save drafts, and stays approachable across devices.",
+    approach:
+      "Built with Next.js and TypeScript, implementing a section-based application workflow, progress tracking, draft persistence and an activity feed within a responsive interface.",
+    outcome:
+      "A working application-tracking platform demonstrating structured workflow design, state management and responsive frontend engineering.",
+  },
+  {
     slug: "jira-project-management-system",
     title: "JIRA Project Management System",
     technology: ["React", "TypeScript", "Project Management"],
