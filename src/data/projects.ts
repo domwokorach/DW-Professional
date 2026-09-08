@@ -106,6 +106,32 @@ export const projects: Project[] = [
       "A working application-tracking platform demonstrating structured workflow design, state management and responsive frontend engineering.",
   },
   {
+    slug: "assessment-platform",
+    title: "Assessment Platform",
+    technology: ["Next.js", "TypeScript", "Assessment Engine"],
+    description:
+      "A candidate and employee assessment platform for creating tests, collecting responses and tracking results through a structured, easy-to-follow flow.",
+    features: [
+      "Assessment creation and delivery",
+      "Candidate response collection",
+      "Results tracking and scoring",
+      "Structured, guided test flow",
+      "Responsive interface",
+    ],
+    image: "/images/projects/assessment-platform.webp",
+    imageAlt:
+      "Assessment Platform preview card showing the project title, browser chrome and the live-preview-unavailable placeholder state",
+    liveUrl: "https://assessment-flame-eight.vercel.app/",
+    overview:
+      "A freelance candidate/employee assessment platform built to streamline creating, delivering and scoring structured assessments.",
+    challenge:
+      "Designing an assessment flow that stays clear and guided for candidates while giving assessors a reliable way to track responses and results.",
+    approach:
+      "Built with Next.js and TypeScript, implementing an assessment engine covering test delivery, response collection and results tracking within a responsive interface.",
+    outcome:
+      "A working assessment platform demonstrating structured workflow design and responsive frontend engineering.",
+  },
+  {
     slug: "jira-project-management-system",
     title: "JIRA Project Management System",
     technology: ["React", "TypeScript", "Project Management"],
