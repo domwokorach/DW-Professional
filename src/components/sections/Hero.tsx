@@ -10,6 +10,8 @@ import UKGreeting from "@/components/ui/UKGreeting";
 import WeatherWidget from "@/components/weather/WeatherWidget";
 import { VideoText } from "@/components/ui/video-text";
 
+// TEMPORARY placeholder (Magic UI's own demo clip) so the effect can be
+// previewed end-to-end. Swap for a licensed/owned clip before shipping.
 const HERO_VIDEO_SRC = "/videos/hero-background.webm";
 
 const headlineLines = ["Software Engineer", "& Frontend Developer"];

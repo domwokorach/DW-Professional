@@ -32,6 +32,16 @@ export function VideoText({
 
   const showVideoEffect = canPlay && !videoError && !reduceMotion;
 
+  // The video's `src` is present in the server-rendered HTML, so the browser
+  // can start loading (and fire `loadeddata`) before React hydrates and
+  // attaches the JSX event handlers below — missing the event entirely.
+  // Checking `readyState` on mount catches that race; the handlers below
+  // still cover the normal case where loading finishes after hydration.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video && video.readyState >= 2) setCanPlay(true);
+  }, []);
+
   useEffect(() => {
     if (!showVideoEffect) return;
 
@@ -102,11 +112,12 @@ export function VideoText({
         src={src}
         muted
         loop
+        autoPlay
         playsInline
-        preload="metadata"
+        preload="auto"
         aria-hidden="true"
         className="hidden"
-        onCanPlayThrough={() => setCanPlay(true)}
+        onLoadedData={() => setCanPlay(true)}
         onError={() => setVideoError(true)}
       />
     </span>
