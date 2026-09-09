@@ -156,4 +156,30 @@ export const projects: Project[] = [
     outcome:
       "A working project-management application demonstrating workflow design, state management and responsive frontend engineering.",
   },
+  {
+    slug: "coding-challenge-assessment",
+    title: "Coding Challenge Assessment",
+    technology: ["Next.js", "TypeScript", "Tailwind CSS"],
+    description:
+      "A guided coding-assessment workspace for a software engineer programme, taking candidates through structured, level-based coding challenges from beginner to intermediate.",
+    features: [
+      "Guided, level-based coding challenges",
+      "Beginner Friendly to Intermediate progression",
+      "Structured learning path",
+      "Clean, focused workspace UI",
+      "Responsive interface",
+    ],
+    image: "/images/projects/coding-challenge-assessment.webp",
+    imageAlt:
+      "Coding Challenge Assessment welcome screen for the Software Engineer Programme with a Start Programme call to action",
+    liveUrl: "https://coding-challenege-assessment.vercel.app/",
+    overview:
+      "A freelance coding-assessment platform built to guide candidates through a structured software engineer programme via practical coding challenges.",
+    challenge:
+      "Presenting a multi-level coding programme in a way that feels approachable to beginners while still scaling cleanly to intermediate challenges.",
+    approach:
+      "Built with Next.js and TypeScript, using Tailwind CSS for a clean, structured layout and a guided progression from Beginner Friendly to Intermediate levels.",
+    outcome:
+      "A working coding-assessment platform demonstrating structured learning-flow design and responsive frontend engineering.",
+  },
 ];

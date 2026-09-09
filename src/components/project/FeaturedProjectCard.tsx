@@ -1,9 +1,5 @@
-"use client";
-
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
-import { EASE } from "@/lib/animations";
 
 export default function FeaturedProjectCard({
   eyebrow = "Selected Work",
@@ -24,17 +20,8 @@ export default function FeaturedProjectCard({
   liveUrl: string;
   browserLabel: string;
 }) {
-  const reduceMotion = useReducedMotion();
-
   return (
-    <motion.article
-      initial={reduceMotion ? undefined : { opacity: 0, y: 24 }}
-      whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.65, ease: EASE }}
-      whileHover={reduceMotion ? undefined : { y: -4 }}
-      className="group overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] transition-colors duration-300 hover:border-white/20"
-    >
+    <article className="hover-lift group overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] transition-colors duration-300 hover:border-white/20">
       <div
         aria-hidden="true"
         className="flex items-center gap-2 border-b border-white/10 bg-black/40 px-4 py-3"
@@ -86,6 +73,6 @@ export default function FeaturedProjectCard({
           />
         </a>
       </div>
-    </motion.article>
+    </article>
   );
 }

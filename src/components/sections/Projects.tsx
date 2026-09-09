@@ -45,7 +45,7 @@ export default function Projects() {
           </MotionReveal>
 
           {newsProject && (
-            <div className="mt-8">
+            <MotionReveal className="mt-8">
               <FeaturedProjectCard
                 title={newsProject.title}
                 subtitle="Modern News Web Application"
@@ -55,7 +55,7 @@ export default function Projects() {
                 liveUrl={newsProject.liveUrl}
                 browserLabel="the-daily-wire-two.vercel.app"
               />
-            </div>
+            </MotionReveal>
           )}
 
           <div className="mt-8 grid gap-6 md:grid-cols-2">
@@ -82,7 +82,7 @@ export default function Projects() {
           </MotionReveal>
 
           {orgGraphCaseStudy && (
-            <div className="mt-8">
+            <MotionReveal className="mt-8">
               <FeaturedProjectCard
                 eyebrow="Case Study"
                 title={orgGraphCaseStudy.title}
@@ -93,7 +93,7 @@ export default function Projects() {
                 liveUrl={orgGraphCaseStudy.externalHref ?? "https://organisation-overview.vercel.app/"}
                 browserLabel="organisation-overview.vercel.app"
               />
-            </div>
+            </MotionReveal>
           )}
 
           <div className="mt-8 grid gap-6 md:grid-cols-2">

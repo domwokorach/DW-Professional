@@ -1,8 +1,5 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import type { CaseStudy } from "@/types/caseStudy";
 import ReconstructionVisual from "./ReconstructionVisual";
@@ -12,10 +9,8 @@ export default function CaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
   const isLarge = caseStudy.size === "large";
 
   return (
-    <motion.article
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className={`group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-white/[0.03] transition-colors duration-200 hover:border-accent/40 ${
+    <article
+      className={`hover-lift group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-white/[0.03] transition-colors duration-200 hover:border-accent/40 ${
         isLarge ? "md:col-span-2" : ""
       }`}
     >
@@ -110,13 +105,12 @@ export default function CaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
               className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-sm font-medium text-white transition-colors hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
             >
               <span aria-hidden>View Case Study</span>
-              <motion.span
-                variants={{ hover: { x: 4, y: -4 } }}
-                transition={{ duration: 0.2 }}
+              <span
                 aria-hidden
+                className="inline-block transition-transform duration-200 group-hover:-translate-y-1 group-hover:translate-x-1"
               >
                 →
-              </motion.span>
+              </span>
             </Link>
 
             {caseStudy.prototypeHref && (
@@ -145,6 +139,6 @@ export default function CaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
           </div>
         </div>
       </div>
-    </motion.article>
+    </article>
   );
 }

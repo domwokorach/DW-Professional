@@ -83,7 +83,6 @@ export default function GallerySlider({ collection }: { collection: GalleryColle
                     src={item.src}
                     alt={item.alt}
                     fill
-                    priority={i === 0}
                     loading={i === 0 ? "eager" : "lazy"}
                     sizes={IMAGE_SIZES}
                     className="h-full w-full object-cover transition-transform duration-700 ease-out md:hover:scale-[1.02]"
