@@ -3,6 +3,7 @@ import Image from "next/image";
 import { ExternalLink } from "lucide-react";
 import type { Project } from "@/types/project";
 import GithubIcon from "./GithubIcon";
+import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
 
 export default function ProjectCard({
   project,
@@ -31,7 +32,9 @@ export default function ProjectCard({
         </div>
 
         <h3 className="mt-4 text-2xl font-medium text-white">{project.title}</h3>
-        <p className="mt-3 text-sm leading-[1.7] text-muted">{project.description}</p>
+        <ProtectedParagraph className="mt-3 text-sm leading-[1.7] text-muted">
+          {project.description}
+        </ProtectedParagraph>
 
         <ul className="mt-5 flex flex-wrap gap-2">
           {project.technology.map((t) => (

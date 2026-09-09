@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ExternalLink } from "lucide-react";
 import type { CaseStudy } from "@/types/caseStudy";
+import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
 import ReconstructionVisual from "./ReconstructionVisual";
 import OrgGraphPreview from "./OrgGraphPreview";
 
@@ -79,7 +80,9 @@ export default function CaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
           </h3>
           <p className="mt-2 text-sm text-muted">{caseStudy.subtitle}</p>
 
-          <p className="mt-4 max-w-xl text-sm leading-[1.7] text-muted">{caseStudy.summary}</p>
+          <ProtectedParagraph className="mt-4 max-w-xl text-sm leading-[1.7] text-muted">
+            {caseStudy.summary}
+          </ProtectedParagraph>
 
           <p className="mt-5 font-mono text-xs text-muted">
             {caseStudy.categories.join(" · ")}

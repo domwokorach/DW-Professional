@@ -8,6 +8,9 @@ import Button from "@/components/ui/Button";
 import AnimatedBackground from "@/components/ui/AnimatedBackground";
 import UKGreeting from "@/components/ui/UKGreeting";
 import WeatherWidget from "@/components/weather/WeatherWidget";
+import { VideoText } from "@/components/ui/video-text";
+
+const HERO_VIDEO_SRC = "/videos/hero-background.webm";
 
 const headlineLines = ["Software Engineer", "& Frontend Developer"];
 
@@ -85,7 +88,7 @@ export default function Hero() {
                 variants={lineVariants}
                 className="block"
               >
-                {line}
+                <VideoText src={HERO_VIDEO_SRC}>{line}</VideoText>
               </motion.span>
             ))}
           </h1>

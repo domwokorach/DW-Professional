@@ -8,6 +8,7 @@ import CookieConsentManager from "@/components/ui/CookieConsentManager";
 import BackToTopButton from "@/components/ui/BackToTopButton";
 import AccessibilityControls from "@/components/ui/AccessibilityControls";
 import OfflineStatus from "@/components/ui/OfflineStatus";
+import PortfolioChatLoader from "@/components/portfolio-chat/PortfolioChatLoader";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -86,6 +87,7 @@ export default function RootLayout({
         <BackToTopButton />
         <AccessibilityControls />
         <OfflineStatus />
+        <PortfolioChatLoader />
       </body>
     </html>
   );

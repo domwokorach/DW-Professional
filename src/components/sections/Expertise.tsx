@@ -5,6 +5,7 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
 import { skillCategories } from "@/data/skills";
+import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
 
 export default function Expertise() {
   return (
@@ -13,11 +14,11 @@ export default function Expertise() {
         <SectionHeading index="02" label="Expertise" heading="Technologies I work with." />
 
         <MotionReveal delay={0.1} className="mt-8 max-w-2xl">
-          <p className="text-base leading-[1.7] text-muted">
+          <ProtectedParagraph className="text-base leading-[1.7] text-muted">
             A modern engineering stack spanning frontend development, backend
             services, databases, cloud infrastructure, testing, security and
             UX/UI. Highlighted items reflect my core, day-to-day stack.
-          </p>
+          </ProtectedParagraph>
         </MotionReveal>
 
         <div className="mt-16 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -62,9 +63,9 @@ export default function Expertise() {
                 {category.title}
               </h3>
 
-              <p className="relative mt-2 text-sm leading-[1.6] text-muted">
+              <ProtectedParagraph className="relative mt-2 text-sm leading-[1.6] text-muted">
                 {category.description}
-              </p>
+              </ProtectedParagraph>
 
               <ul className="relative mt-5 flex flex-wrap gap-2">
                 {category.items.map((item) => (

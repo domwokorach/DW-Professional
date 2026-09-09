@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { Menu, X } from "lucide-react";
 import { navigation } from "@/data/navigation";
 import Navigation from "./Navigation";
 import MobileNavigation from "./MobileNavigation";
@@ -98,13 +99,18 @@ export default function Header() {
         </div>
 
         <button
+          type="button"
           onClick={() => setMenuOpen((o) => !o)}
-          className="md:hidden font-mono text-sm text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded px-1"
+          className="md:hidden flex h-11 w-11 items-center justify-center rounded text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
-          aria-label="Toggle navigation menu"
+          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
         >
-          {menuOpen ? "Close" : "Menu"}
+          {menuOpen ? (
+            <X className="h-6 w-6" aria-hidden="true" />
+          ) : (
+            <Menu className="h-6 w-6" aria-hidden="true" />
+          )}
         </button>
       </nav>
 

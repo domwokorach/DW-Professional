@@ -7,6 +7,7 @@ import CaseStudyCard from "@/components/project/CaseStudyCard";
 import { projects } from "@/data/projects";
 import { caseStudies } from "@/data/caseStudies";
 import { projectReveal } from "@/lib/animations";
+import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
 
 export default function Projects() {
   const newsProject = projects.find((p) => p.slug === "news");
@@ -21,13 +22,13 @@ export default function Projects() {
         <SectionHeading index="04" label="Projects" heading="Selected Work" />
 
         <MotionReveal delay={0.1} className="mt-8 max-w-2xl">
-          <p className="text-base leading-[1.7] text-muted">
+          <ProtectedParagraph className="text-base leading-[1.7] text-muted">
             A selection of professional projects spanning accessible digital
             banking, frontend engineering, innovation platforms, search
             experiences and UX/UI design, alongside independent freelance
             builds demonstrating API integration and modern software
             development.
-          </p>
+          </ProtectedParagraph>
         </MotionReveal>
 
         <div className="mt-16 scroll-mt-24">
@@ -38,10 +39,10 @@ export default function Projects() {
           </MotionReveal>
 
           <MotionReveal delay={0.05} className="mt-3 max-w-2xl">
-            <p className="text-sm leading-[1.7] text-muted">
+            <ProtectedParagraph className="text-sm leading-[1.7] text-muted">
               Selected freelance and independent projects built across modern
               web development, product design and application engineering.
-            </p>
+            </ProtectedParagraph>
           </MotionReveal>
 
           {newsProject && (
@@ -75,10 +76,10 @@ export default function Projects() {
           </MotionReveal>
 
           <MotionReveal delay={0.05} className="mt-3 max-w-2xl">
-            <p className="text-sm leading-[1.7] text-muted">
+            <ProtectedParagraph className="text-sm leading-[1.7] text-muted">
               Selected professional work exploring accessibility, digital
               banking, frontend engineering and product design.
-            </p>
+            </ProtectedParagraph>
           </MotionReveal>
 
           {orgGraphCaseStudy && (

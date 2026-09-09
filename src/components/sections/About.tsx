@@ -1,6 +1,7 @@
 import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
+import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
 
 const paragraphs = [
   "I'm a Software Engineer and Frontend Developer with commercial experience creating modern, accessible and scalable web applications.",
@@ -25,7 +26,9 @@ export default function About() {
             <div className="grid gap-6 sm:grid-cols-2">
               {paragraphs.map((p, i) => (
                 <MotionReveal key={p} delay={0.05 * i}>
-                  <p className="text-base leading-[1.7] text-muted">{p}</p>
+                  <ProtectedParagraph className="text-base leading-[1.7] text-muted">
+                    {p}
+                  </ProtectedParagraph>
                 </MotionReveal>
               ))}
             </div>
