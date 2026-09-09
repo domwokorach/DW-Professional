@@ -1,8 +1,5 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import type { Project } from "@/types/project";
 import GithubIcon from "./GithubIcon";
@@ -15,11 +12,7 @@ export default function ProjectCard({
   index: number;
 }) {
   return (
-    <motion.article
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white/[0.03] transition-colors duration-200 hover:border-accent/40"
-    >
+    <article className="hover-lift group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white/[0.03] transition-colors duration-200 hover:border-accent/40">
       <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-line bg-surface">
         <Image
           src={project.image}
@@ -85,6 +78,6 @@ export default function ProjectCard({
           </Link>
         </div>
       </div>
-    </motion.article>
+    </article>
   );
 }

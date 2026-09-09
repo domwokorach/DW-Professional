@@ -40,7 +40,7 @@ export default function Hero() {
             alt=""
             fill
             priority
-            quality={90}
+            quality={80}
             sizes="(min-width: 1024px) 48vw, 100vw"
             className="object-cover object-top opacity-[0.35] lg:opacity-90"
           />
