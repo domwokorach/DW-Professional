@@ -7,6 +7,7 @@ import Container from "@/components/ui/Container";
 import { services } from "@/data/services";
 import { aiCapabilities } from "@/data/aiServices";
 import { fadeUp } from "@/lib/animations";
+import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
 
 export default function Services() {
   return (
@@ -15,11 +16,11 @@ export default function Services() {
         <SectionHeading index="03" label="Services" heading="What I can build for you." />
 
         <MotionReveal delay={0.1} className="mt-8 max-w-2xl">
-          <p className="text-base leading-[1.7] text-muted">
+          <ProtectedParagraph className="text-base leading-[1.7] text-muted">
             I help businesses transform ideas into modern, accessible and
             scalable digital products — from high-performance websites and
             frontend applications to custom software and API-driven platforms.
-          </p>
+          </ProtectedParagraph>
         </MotionReveal>
 
         <div className="mt-16 divide-y divide-line border-t border-line">
@@ -44,9 +45,9 @@ export default function Services() {
                 </div>
 
                 <div>
-                  <p className="max-w-xl text-sm leading-[1.7] text-muted">
+                  <ProtectedParagraph className="max-w-xl text-sm leading-[1.7] text-muted">
                     {service.description}
-                  </p>
+                  </ProtectedParagraph>
                   <ul className="mt-5 flex flex-wrap gap-2">
                     {service.items.map((item) => (
                       <li
@@ -71,13 +72,13 @@ export default function Services() {
           </MotionReveal>
 
           <MotionReveal delay={0.06} className="mt-4 max-w-2xl">
-            <p className="text-base leading-[1.7] text-muted">
+            <ProtectedParagraph className="text-base leading-[1.7] text-muted">
               I design and ship production-ready AI solutions — from AI
               chatbots and agentic workflows to secure, scalable integrations
               with OpenAI, Anthropic and Gemini. The focus is always business
               outcomes: faster delivery, dependable performance and
               architecture that scales with your product.
-            </p>
+            </ProtectedParagraph>
           </MotionReveal>
 
           <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -112,9 +113,9 @@ export default function Services() {
                   {group.title}
                 </h4>
 
-                <p className="relative mt-2 text-sm leading-[1.6] text-muted">
+                <ProtectedParagraph className="relative mt-2 text-sm leading-[1.6] text-muted">
                   {group.description}
-                </p>
+                </ProtectedParagraph>
 
                 <ul className="relative mt-5 flex flex-wrap gap-2">
                   {group.items.map((item) => (

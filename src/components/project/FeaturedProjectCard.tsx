@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ExternalLink } from "lucide-react";
+import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
 
 export default function FeaturedProjectCard({
   eyebrow = "Selected Work",
@@ -56,9 +57,9 @@ export default function FeaturedProjectCard({
         </h3>
         <p className="mt-1 text-sm text-muted">{subtitle}</p>
 
-        <p className="mt-4 max-w-2xl text-sm leading-[1.7] text-muted">
+        <ProtectedParagraph className="mt-4 max-w-2xl text-sm leading-[1.7] text-muted">
           {description}
-        </p>
+        </ProtectedParagraph>
 
         <a
           href={liveUrl}

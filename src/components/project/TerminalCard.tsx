@@ -1,40 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion, type Variants } from "framer-motion";
-import { EASE } from "@/lib/animations";
-import type { TerminalBlock, TerminalSpec } from "@/types/caseStudy";
-
-const container: Variants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: EASE, staggerChildren: 0.06, delayChildren: 0.15 },
-  },
-};
-
-const item: Variants = {
-  hidden: { opacity: 0, y: 8 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.25, ease: EASE } },
-};
-
-function BlockContent({ block }: { block: TerminalBlock }) {
-  return (
-    <>
-      <p className="text-white">
-        <span className="text-accent/70" aria-hidden="true">
-          ${" "}
-        </span>
-        {block.command}
-      </p>
-      {block.lines?.map((line, li) => (
-        <p key={li} className={line.kind === "success" ? "text-emerald-400" : "text-neutral-400"}>
-          {line.text}
-        </p>
-      ))}
-    </>
-  );
-}
+import { AnimatedSpan, Terminal, TypingAnimation } from "@/components/ui/terminal";
+import type { TerminalSpec } from "@/types/caseStudy";
 
 function TerminalFooter({ tags }: { tags?: string[] }) {
   if (!tags?.length) return null;
@@ -69,44 +36,51 @@ function TerminalChrome({ label }: { label: string }) {
 }
 
 export default function TerminalCard({ terminal }: { terminal: TerminalSpec }) {
-  const reduceMotion = useReducedMotion();
-
-  if (reduceMotion) {
-    return (
-      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-neutral-950 shadow-2xl">
-        <TerminalChrome label={terminal.label} />
-        <div className="overflow-x-auto p-4 font-mono text-sm leading-7 text-neutral-300 sm:p-8">
-          <h3 className="sr-only">Terminal transcript: {terminal.label}</h3>
-          {terminal.blocks.map((block, i) => (
-            <div key={block.command + i} className={i === 0 ? "" : "mt-5"}>
-              <BlockContent block={block} />
-            </div>
-          ))}
-        </div>
-        <TerminalFooter tags={terminal.tags} />
-      </div>
-    );
-  }
+  const elements = terminal.blocks.flatMap((block, bi) => [
+    <TypingAnimation key={`cmd-${bi}`} className={bi > 0 ? "mt-5 block" : "block"}>
+      {`$ ${block.command}`}
+    </TypingAnimation>,
+    ...(block.lines ?? []).map((line, li) => (
+      <AnimatedSpan
+        key={`line-${bi}-${li}`}
+        className={`block ${line.kind === "success" ? "text-emerald-400" : "text-neutral-400"}`}
+      >
+        {line.text}
+      </AnimatedSpan>
+    )),
+  ]);
 
   return (
-    <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={container}
-      className="relative overflow-hidden rounded-[28px] border border-white/10 bg-neutral-950 shadow-2xl"
-    >
+    <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-neutral-950 shadow-2xl">
       <TerminalChrome label={terminal.label} />
 
-      <div className="overflow-x-auto p-4 font-mono text-sm leading-7 text-neutral-300 sm:p-8">
-        <h3 className="sr-only">Terminal transcript: {terminal.label}</h3>
-        {terminal.blocks.map((block, i) => (
-          <motion.div key={block.command + i} variants={item} className={i === 0 ? "" : "mt-5"}>
-            <BlockContent block={block} />
-          </motion.div>
+      {/*
+        Real, always-present transcript for screen readers, no-JS and search
+        engines — the animated copy below is a purely decorative, aria-hidden
+        duplicate so the progressive typing effect never hides real content.
+      */}
+      <div className="sr-only">
+        <p>Terminal transcript: {terminal.label}</p>
+        {terminal.blocks.map((block, bi) => (
+          <p key={bi}>
+            {`$ ${block.command}. `}
+            {(block.lines ?? []).map((line) => line.text).join(". ")}
+          </p>
         ))}
       </div>
+
+      <div
+        tabIndex={0}
+        role="group"
+        aria-label={`${terminal.label} terminal transcript, scrollable`}
+        className="w-full max-w-none overflow-x-auto p-4 text-xs leading-7 text-neutral-300 sm:p-8 sm:text-sm md:text-base"
+      >
+        <Terminal sequence startOnView aria-hidden="true" className="block">
+          {elements}
+        </Terminal>
+      </div>
+
       <TerminalFooter tags={terminal.tags} />
-    </motion.div>
+    </div>
   );
 }

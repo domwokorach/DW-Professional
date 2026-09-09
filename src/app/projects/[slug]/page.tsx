@@ -15,6 +15,7 @@ import WorkflowPipeline from "@/components/project/WorkflowPipeline";
 import BranchDiagram from "@/components/project/BranchDiagram";
 import TerminalCard from "@/components/project/TerminalCard";
 import type { Project } from "@/types/project";
+import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
 
 export function generateStaticParams() {
   return [...projects.map((p) => ({ slug: p.slug })), ...caseStudies.map((c) => ({ slug: c.slug }))];
@@ -169,9 +170,9 @@ export default async function ProjectPage({
                 <h2 className="text-sm font-mono uppercase tracking-widest text-accent">
                   Overview
                 </h2>
-                <p className="mt-3 max-w-2xl text-base leading-[1.7] text-muted">
+                <ProtectedParagraph className="mt-3 max-w-2xl text-base leading-[1.7] text-muted">
                   {caseStudy.summary}
-                </p>
+                </ProtectedParagraph>
               </div>
 
               {caseStudy.mockup === "chatbot" && <ChatbotMockup />}
@@ -183,7 +184,9 @@ export default async function ProjectPage({
                       <h2 className="text-sm font-mono uppercase tracking-widest text-accent">
                         {label}
                       </h2>
-                      <p className="mt-3 max-w-2xl text-base leading-[1.7] text-muted">{text}</p>
+                      <ProtectedParagraph className="mt-3 max-w-2xl text-base leading-[1.7] text-muted">
+                        {text}
+                      </ProtectedParagraph>
                     </div>
                   )
               )}
@@ -256,9 +259,9 @@ export default async function ProjectPage({
                   </p>
 
                   <div className="mt-6 grid gap-8 lg:grid-cols-[2fr_3fr] lg:items-start">
-                    <p className="text-base leading-[1.7] text-muted">
+                    <ProtectedParagraph className="text-base leading-[1.7] text-muted">
                       {caseStudy.terminal.intro}
-                    </p>
+                    </ProtectedParagraph>
 
                     <div>
                       <TerminalCard terminal={caseStudy.terminal} />
@@ -274,9 +277,9 @@ export default async function ProjectPage({
                 <h2 className="text-sm font-mono uppercase tracking-widest text-accent">
                   {caseStudy.outcome.heading}
                 </h2>
-                <p className="mt-3 max-w-2xl text-base leading-[1.7] text-muted">
+                <ProtectedParagraph className="mt-3 max-w-2xl text-base leading-[1.7] text-muted">
                   {caseStudy.outcome.text}
-                </p>
+                </ProtectedParagraph>
               </div>
             </div>
 
@@ -374,9 +377,9 @@ export default async function ProjectPage({
                     <h2 className="text-sm font-mono uppercase tracking-widest text-accent">
                       {label}
                     </h2>
-                    <p className="mt-3 max-w-2xl text-base leading-[1.7] text-muted">
+                    <ProtectedParagraph className="mt-3 max-w-2xl text-base leading-[1.7] text-muted">
                       {proj[key] as string}
-                    </p>
+                    </ProtectedParagraph>
                   </div>
                 )
             )}
