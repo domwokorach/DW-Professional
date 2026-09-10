@@ -75,7 +75,10 @@ export default function CaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
             )}
           </div>
 
-          <h3 className="mt-4 text-2xl font-medium text-white transition-colors duration-200 group-hover:text-accent sm:text-3xl">
+          <h3
+            className="mt-4 text-2xl font-medium text-white transition-colors duration-200 group-hover:text-accent sm:text-3xl"
+            data-i18n-ignore
+          >
             {caseStudy.title}
           </h3>
           <p className="mt-2 text-sm text-muted">{caseStudy.subtitle}</p>
@@ -90,7 +93,7 @@ export default function CaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
         </div>
 
         <div className="mt-8">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2" data-i18n-ignore>
             {caseStudy.technology.slice(0, 4).map((tech) => (
               <span
                 key={tech}

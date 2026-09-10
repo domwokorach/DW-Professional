@@ -103,3 +103,31 @@ test("appearance preference applies and follows the selected theme", async ({ pa
   await page.emulateMedia({ colorScheme: "light" });
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 });
+
+test("language selection preserves the route and persists the locale", async ({ page }) => {
+  await page.route("**/api/translations", async (route) => {
+    const request = route.request().postDataJSON() as { texts: string[] };
+    await route.fulfill({ json: { translations: request.texts } });
+  });
+  await page.goto("/en-gb/accessibility");
+
+  const languageButton = page.getByRole("button", { name: /Language: English \(UK\)/ });
+  await languageButton.click();
+  await page.getByRole("menuitemradio", { name: "Français" }).click();
+
+  await expect(page).toHaveURL(/\/fr\/accessibility$/);
+  await expect(page.locator("html")).toHaveAttribute("lang", "fr");
+  await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
+  await expect(page.getByRole("button", { name: /Français/ })).toBeVisible();
+  expect((await page.context().cookies()).find((cookie) => cookie.name === "portfolio-locale")?.value).toBe("fr");
+});
+
+test("Arabic routes render with RTL direction and the selector works on mobile", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/ar");
+
+  await expect(page.locator("html")).toHaveAttribute("lang", "ar");
+  await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  await page.getByRole("button", { name: "Open navigation menu" }).click();
+  await expect(page.getByRole("button", { name: /العربية/ })).toBeVisible();
+});
