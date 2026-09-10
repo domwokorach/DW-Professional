@@ -46,20 +46,3 @@ export const projectReveal: Variants = {
     transition: { duration: 0.6, ease: EASE },
   },
 };
-
-export const timelineReveal: Variants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: EASE },
-  },
-};
-
-export const timelineDot: Variants = {
-  hidden: { scale: 0 },
-  visible: {
-    scale: 1,
-    transition: { duration: 0.4, ease: EASE },
-  },
-};

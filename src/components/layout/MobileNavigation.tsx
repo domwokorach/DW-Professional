@@ -1,16 +1,43 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { navigation } from "@/data/navigation";
+import { headerNavigation, type NavItem } from "@/data/navigation";
+import { Highlighter } from "@/components/magicui/highlighter";
+
+function MobileNavItem({
+  item,
+  activeGroup,
+  onNavigate,
+}: {
+  item: NavItem;
+  activeGroup: string;
+  onNavigate: (id: string) => void;
+}) {
+  const isActive = activeGroup === item.id;
+
+  return (
+    <li>
+      <button
+        onClick={() => onNavigate(item.id)}
+        aria-current={isActive ? "true" : undefined}
+        className={`block min-h-11 w-full rounded py-3 text-left text-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${
+          isActive ? "text-white" : "text-muted"
+        }`}
+      >
+        {isActive ? <Highlighter action="highlight">{item.label}</Highlighter> : item.label}
+      </button>
+    </li>
+  );
+}
 
 export default function MobileNavigation({
   open,
-  active,
+  activeGroup,
   onNavigate,
   onOpenResume,
 }: {
   open: boolean;
-  active: string;
+  activeGroup: string;
   onNavigate: (id: string) => void;
   onOpenResume: () => void;
 }) {
@@ -26,19 +53,14 @@ export default function MobileNavigation({
           className="md:hidden overflow-hidden border-b border-line bg-ink/95 backdrop-blur-lg"
         >
           <nav aria-label="Mobile navigation">
-            <ul className="mx-auto flex w-full max-w-content flex-col gap-1 px-6 py-4 sm:px-8">
-              {navigation.map((item) => (
-                <li key={item.id}>
-                  <button
-                    onClick={() => onNavigate(item.id)}
-                    aria-current={active === item.id ? "true" : undefined}
-                    className={`block w-full py-3 text-left text-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded ${
-                      active === item.id ? "text-white" : "text-muted"
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                </li>
+            <ul className="mx-auto flex max-h-[70vh] w-full max-w-content flex-col gap-1 overflow-y-auto px-6 py-4 sm:px-8">
+              {headerNavigation.map((item) => (
+                <MobileNavItem
+                  key={item.id}
+                  item={item}
+                  activeGroup={activeGroup}
+                  onNavigate={onNavigate}
+                />
               ))}
             </ul>
           </nav>

@@ -1,10 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import { navigation } from "@/data/navigation";
-import Navigation from "./Navigation";
+import { navigation, flattenNavIds, buildTopLevelMap } from "@/data/navigation";
 import MobileNavigation from "./MobileNavigation";
 import ResumeDownloadModal from "@/components/resume/ResumeDownloadModal";
 import ThemeModeButton from "@/components/ui/ThemeModeButton";
@@ -23,6 +22,7 @@ export default function Header() {
     section.setAttribute("tabindex", "-1");
     section.focus({ preventScroll: true });
     section.scrollIntoView({ behavior: "smooth" });
+    window.history.replaceState(null, "", `#${id}`);
   }, []);
 
   useEffect(() => {
@@ -39,8 +39,8 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    const sections = navigation
-      .map((n) => document.getElementById(n.id))
+    const sections = flattenNavIds(navigation)
+      .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => Boolean(el));
 
     const observer = new IntersectionObserver(
@@ -58,12 +58,16 @@ export default function Header() {
 
   const handleNavigate = (id: string) => {
     setMenuOpen(false);
+    setActive(id);
     if (pathname !== "/") {
       router.push(`/#${id}`);
       return;
     }
     scrollToSection(id);
   };
+
+  const topLevelMap = useMemo(() => buildTopLevelMap(navigation), []);
+  const activeGroup = topLevelMap.get(active) ?? active;
 
   return (
     <header
@@ -79,8 +83,6 @@ export default function Header() {
         >
           Dominic<span className="text-accent">.</span>
         </button>
-
-        <Navigation active={active} onNavigate={handleNavigate} />
 
         <div className="flex items-center gap-2 md:gap-3">
           <ThemeModeButton />
@@ -116,7 +118,7 @@ export default function Header() {
 
       <MobileNavigation
         open={menuOpen}
-        active={active}
+        activeGroup={activeGroup}
         onNavigate={handleNavigate}
         onOpenResume={() => {
           setMenuOpen(false);
