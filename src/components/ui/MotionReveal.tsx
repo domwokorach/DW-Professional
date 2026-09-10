@@ -11,6 +11,7 @@ export default function MotionReveal({
   delay = 0,
   amount = 0.2,
   as = "div",
+  id,
 }: {
   children: ReactNode;
   variants?: Variants;
@@ -18,17 +19,23 @@ export default function MotionReveal({
   delay?: number;
   amount?: number;
   as?: "div" | "li";
+  id?: string;
 }) {
   const reduceMotion = useReducedMotion();
   const Component = motion[as];
 
   if (reduceMotion) {
     const Static = as;
-    return <Static className={className}>{children}</Static>;
+    return (
+      <Static id={id} className={className}>
+        {children}
+      </Static>
+    );
   }
 
   return (
     <Component
+      id={id}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount }}

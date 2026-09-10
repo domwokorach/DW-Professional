@@ -9,6 +9,24 @@ import { aiCapabilities } from "@/data/aiServices";
 import { fadeUp } from "@/lib/animations";
 import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
 
+const SERVICE_ANCHORS: Record<string, string> = {
+  "Specialist Accessibility": "specialist-accessibility",
+  "AI Developer & Testing Tools": "ai-developer-testing",
+  "Frontend Development": "frontend-development",
+  "UX/UI Development": "ux-ui-development",
+  "Web Applications": "web-applications",
+  "Software Engineering": "software-engineering",
+};
+
+const AI_CAPABILITY_ANCHORS: Record<string, string> = {
+  "AI Products & Applications": "ai-products",
+  "LLMs & Agentic Workflows": "agentic-workflows",
+  "RAG & Intelligent Search": "rag-search",
+  "AI API & Model Integrations": "ai-integrations",
+  "AI Backend & Python Development": "ai-backend-python",
+  "Deployment & Production Readiness": "production-readiness",
+};
+
 export default function Services() {
   return (
     <section id="services" className="relative border-t border-line py-28 sm:py-36">
@@ -25,7 +43,13 @@ export default function Services() {
 
         <div className="mt-16 divide-y divide-line border-t border-line">
           {services.map((service, i) => (
-            <MotionReveal key={service.title} variants={fadeUp} delay={0.04 * i}>
+            <MotionReveal
+              key={service.title}
+              id={SERVICE_ANCHORS[service.title]}
+              variants={fadeUp}
+              delay={0.04 * i}
+              className="scroll-mt-24"
+            >
               <motion.article
                 whileHover="hover"
                 className="group grid gap-6 py-10 sm:grid-cols-[minmax(0,280px)_1fr] sm:gap-10"
@@ -64,7 +88,7 @@ export default function Services() {
           ))}
         </div>
 
-        <div className="mt-24">
+        <div id="ai-professional" className="mt-24 scroll-mt-24">
           <MotionReveal>
             <h3 className="text-2xl font-medium text-white sm:text-3xl">
               AI Developer Professional
@@ -85,6 +109,7 @@ export default function Services() {
             {aiCapabilities.map((group, i) => (
               <motion.article
                 key={group.title}
+                id={AI_CAPABILITY_ANCHORS[group.title]}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
@@ -93,7 +118,7 @@ export default function Services() {
                   ease: [0.22, 1, 0.36, 1],
                   delay: (i % 3) * 0.06,
                 }}
-                className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.04]"
+                className="group relative scroll-mt-24 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.04]"
               >
                 <div
                   className="pointer-events-none absolute -top-16 right-0 h-40 w-40 rounded-full bg-accent/0 blur-3xl transition-colors duration-300 group-hover:bg-accent/10"

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { navigation, social } from "@/data/navigation";
+import { footerNavigation, social } from "@/data/navigation";
 import Container from "@/components/ui/Container";
 import { OPEN_COOKIE_SETTINGS_EVENT } from "@/lib/cookieConsent";
 
@@ -29,7 +29,7 @@ export default function Footer() {
               Explore
             </h2>
             <ul className="mt-3 space-y-1">
-              {navigation.map((item) => (
+              {footerNavigation.map((item) => (
                 <li key={item.id}>
                   <Link
                     href={`/#${item.id}`}

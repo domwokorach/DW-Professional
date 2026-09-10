@@ -7,6 +7,18 @@ import Container from "@/components/ui/Container";
 import { skillCategories } from "@/data/skills";
 import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
 
+const CATEGORY_ANCHORS: Record<string, string> = {
+  Frontend: "frontend",
+  "Backend & APIs": "backend-api",
+  "Databases & ORM": "database-orm",
+  "Cloud & DevOps": "cloud-devops",
+  "Testing & Quality": "testing-quality",
+  "Security & Authentication": "security-authentication",
+  "UI/UX & Design": "ui-ux-design",
+  "CSS & Styling": "css-styling",
+  "Development Tools": "development-tools",
+};
+
 export default function Expertise() {
   return (
     <section id="expertise" className="relative border-t border-line py-28 sm:py-36">
@@ -25,11 +37,12 @@ export default function Expertise() {
           {skillCategories.map((category, i) => (
             <motion.article
               key={category.title}
+              id={CATEGORY_ANCHORS[category.title]}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: (i % 3) * 0.06 }}
-              className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.04]"
+              className="group relative scroll-mt-24 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.04]"
             >
               <div
                 className="pointer-events-none absolute -top-16 right-0 h-40 w-40 rounded-full bg-accent/0 blur-3xl transition-colors duration-300 group-hover:bg-accent/10"

@@ -4,10 +4,42 @@ import Container from "@/components/ui/Container";
 import ProjectCard from "@/components/project/ProjectCard";
 import FeaturedProjectCard from "@/components/project/FeaturedProjectCard";
 import CaseStudyCard from "@/components/project/CaseStudyCard";
+import ProjectDropdownFilter from "@/components/project/ProjectDropdownFilter";
 import { projects } from "@/data/projects";
 import { caseStudies } from "@/data/caseStudies";
 import { projectReveal } from "@/lib/animations";
 import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
+import { cn } from "@/lib/utils";
+
+const CASE_STUDY_ANCHORS: Record<string, string> = {
+  "innovation-x": "innovation-x-internal-search",
+  "specialist-disability": "specialist-disability",
+  "halifax-piggy-banking": "halifax-piggy-banking",
+  "innovation-community": "innovation-community",
+  "internal-ai-search-assistant": "internal-ai-search",
+  "ui-delivery-transformation": "ui-delivery-transformation",
+  "sky-cloud-native-engineering": "sky-cloud-native",
+};
+
+const FREELANCE_DROPDOWN_ITEMS = [
+  { label: "News", href: "#news" },
+  { label: "Dog Booking System", href: "#dog-booking-system" },
+  { label: "Air Quality & Weather Forecasting", href: "#air-quality-weather-forecasting" },
+  { label: "AI Application Jobs", href: "#ai-application-jobs" },
+  { label: "JIRA Project Management System", href: "#jira-project-management-system" },
+  { label: "Coding Challenge Assessment", href: "#coding-challenge-assessment" },
+];
+
+const CASE_STUDY_DROPDOWN_ITEMS = [
+  { label: "Innovation X — Organisation Intelligence Platform", href: "#innovation-x" },
+  { label: "Specialist Disability", href: "#specialist-disability" },
+  { label: "Halifax Piggy Banking", href: "#halifax-piggy-banking" },
+  { label: "Innovation Community", href: "#innovation-community" },
+  { label: "Innovation X — Internal Search", href: "#innovation-x-internal-search" },
+  { label: "Internal AI Search Assistant", href: "#internal-ai-search" },
+  { label: "UI Delivery & Transformation", href: "#ui-delivery-transformation" },
+  { label: "Sky — Cloud-Native Engineering", href: "#sky-cloud-native" },
+];
 
 export default function Projects() {
   const newsProject = projects.find((p) => p.slug === "news");
@@ -31,6 +63,22 @@ export default function Projects() {
           </ProtectedParagraph>
         </MotionReveal>
 
+        <MotionReveal
+          delay={0.15}
+          className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4"
+        >
+          <ProjectDropdownFilter
+            label="Freelance Projects"
+            description="Selected freelance and independent projects built across modern web development, product design and application engineering."
+            items={FREELANCE_DROPDOWN_ITEMS}
+          />
+          <ProjectDropdownFilter
+            label="Case Studies"
+            description="Selected professional work exploring accessibility, digital banking, frontend engineering and product design."
+            items={CASE_STUDY_DROPDOWN_ITEMS}
+          />
+        </MotionReveal>
+
         <div className="mt-16 scroll-mt-24">
           <MotionReveal>
             <h3 className="font-mono text-xs uppercase tracking-widest text-accent">
@@ -46,7 +94,7 @@ export default function Projects() {
           </MotionReveal>
 
           {newsProject && (
-            <MotionReveal className="mt-8">
+            <MotionReveal id="news" className="mt-8 scroll-mt-24">
               <FeaturedProjectCard
                 title={newsProject.title}
                 subtitle="Modern News Web Application"
@@ -61,7 +109,13 @@ export default function Projects() {
 
           <div className="mt-8 grid gap-6 md:grid-cols-2">
             {otherProjects.map((project, i) => (
-              <MotionReveal key={project.slug} variants={projectReveal} delay={0.05 * i}>
+              <MotionReveal
+                key={project.slug}
+                id={project.slug}
+                variants={projectReveal}
+                delay={0.05 * i}
+                className="scroll-mt-24"
+              >
                 <ProjectCard project={project} index={i + 1} />
               </MotionReveal>
             ))}
@@ -83,7 +137,7 @@ export default function Projects() {
           </MotionReveal>
 
           {orgGraphCaseStudy && (
-            <MotionReveal className="mt-8">
+            <MotionReveal id="innovation-x" className="mt-8 scroll-mt-24">
               <FeaturedProjectCard
                 eyebrow="Case Study"
                 title={orgGraphCaseStudy.title}
@@ -101,9 +155,13 @@ export default function Projects() {
             {otherCaseStudies.map((caseStudy, i) => (
               <MotionReveal
                 key={caseStudy.slug}
+                id={CASE_STUDY_ANCHORS[caseStudy.slug]}
                 variants={projectReveal}
                 delay={0.06 * i}
-                className={caseStudy.size === "large" ? "md:col-span-2" : ""}
+                className={cn(
+                  "scroll-mt-24",
+                  caseStudy.size === "large" ? "md:col-span-2" : ""
+                )}
               >
                 <CaseStudyCard caseStudy={caseStudy} />
               </MotionReveal>
