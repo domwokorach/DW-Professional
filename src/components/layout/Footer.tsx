@@ -4,9 +4,11 @@ import Link from "next/link";
 import { footerNavigation, social } from "@/data/navigation";
 import Container from "@/components/ui/Container";
 import { OPEN_COOKIE_SETTINGS_EVENT } from "@/lib/cookieConsent";
+import { useLocale } from "@/i18n/LocaleProvider";
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const { localiseHref } = useLocale();
 
   const scrollToTop = () => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -32,7 +34,7 @@ export default function Footer() {
               {footerNavigation.map((item) => (
                 <li key={item.id}>
                   <Link
-                    href={`/#${item.id}`}
+                    href={localiseHref(`/#${item.id}`)}
                     className="inline-flex min-h-11 items-center rounded px-1 text-sm text-muted transition-colors hover:text-white"
                   >
                     {item.label}
@@ -83,7 +85,7 @@ export default function Footer() {
             <ul className="mt-3 space-y-1">
               <li>
                 <Link
-                  href="/privacy"
+                  href={localiseHref("/privacy")}
                   className="inline-flex min-h-11 items-center rounded px-1 text-sm text-muted transition-colors hover:text-white"
                 >
                   Privacy Policy
@@ -91,7 +93,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/terms"
+                  href={localiseHref("/terms")}
                   className="inline-flex min-h-11 items-center rounded px-1 text-sm text-muted transition-colors hover:text-white"
                 >
                   Terms of Use
@@ -99,7 +101,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/accessibility"
+                  href={localiseHref("/accessibility")}
                   className="inline-flex min-h-11 items-center rounded px-1 text-sm text-muted transition-colors hover:text-white"
                 >
                   Accessibility

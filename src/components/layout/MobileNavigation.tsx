@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { headerNavigation, type NavItem } from "@/data/navigation";
 import { Highlighter } from "@/components/magicui/highlighter";
+import LanguageSelector from "./LanguageSelector";
 
 function MobileNavItem({
   item,
@@ -66,6 +67,9 @@ export default function MobileNavigation({
           </nav>
 
           <div className="mx-auto w-full max-w-content px-6 pb-6 sm:px-8">
+            <div className="mb-3">
+              <LanguageSelector mobile />
+            </div>
             <button
               onClick={onOpenResume}
               className="min-h-11 w-full rounded-full border border-line px-4 py-3 text-sm text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"

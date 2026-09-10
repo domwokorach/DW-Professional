@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
@@ -9,6 +10,8 @@ import BackToTopButton from "@/components/ui/BackToTopButton";
 import AccessibilityControls from "@/components/ui/AccessibilityControls";
 import OfflineStatus from "@/components/ui/OfflineStatus";
 import PortfolioChatLoader from "@/components/portfolio-chat/PortfolioChatLoader";
+import { LocaleProvider } from "@/i18n/LocaleProvider";
+import { defaultLocale, isRtlLocale, normaliseLocale } from "@/i18n/config";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -31,7 +34,27 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title,
   description,
-  alternates: { canonical: siteUrl },
+  alternates: {
+    canonical: `${siteUrl}en-gb`,
+    languages: {
+      "en-GB": "/en-gb",
+      "en-US": "/en-us",
+      es: "/es",
+      fr: "/fr",
+      de: "/de",
+      it: "/it",
+      pt: "/pt",
+      nl: "/nl",
+      pl: "/pl",
+      th: "/th",
+      ja: "/ja",
+      ko: "/ko",
+      zh: "/zh",
+      ar: "/ar",
+      hi: "/hi",
+      "x-default": "/en-gb",
+    },
+  },
   robots: { index: true, follow: true },
   icons: { icon: "/favicon.svg" },
   openGraph: {
@@ -51,12 +74,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const requestHeaders = await headers();
+  const locale = normaliseLocale(requestHeaders.get("x-portfolio-locale")) ?? defaultLocale;
+
   return (
     <html
-      lang="en"
+      lang={locale}
+      dir={isRtlLocale(locale) ? "rtl" : "ltr"}
       className={`${inter.variable} ${jetbrains.variable}`}
       suppressHydrationWarning
     >
@@ -77,17 +104,19 @@ export default function RootLayout({
         </Script>
       </head>
       <body className="font-sans antialiased">
-        <a href="#main" className="skip-link">
-          Skip to content
-        </a>
-        <Header />
-        <main id="main">{children}</main>
-        <Footer />
-        <CookieConsentManager />
-        <BackToTopButton />
-        <AccessibilityControls />
-        <OfflineStatus />
-        <PortfolioChatLoader />
+        <LocaleProvider initialLocale={locale}>
+          <a href="#main" className="skip-link">
+            Skip to content
+          </a>
+          <Header />
+          <main id="main">{children}</main>
+          <Footer />
+          <CookieConsentManager />
+          <BackToTopButton />
+          <AccessibilityControls />
+          <OfflineStatus />
+          <PortfolioChatLoader />
+        </LocaleProvider>
       </body>
     </html>
   );

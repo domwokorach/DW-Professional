@@ -84,7 +84,10 @@ export default async function ProjectPage({
           </Link>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <h1 className="text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-tight text-white">
+            <h1
+              className="text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-tight text-white"
+              data-i18n-ignore
+            >
               {caseStudy.title}
             </h1>
             {caseStudy.label && (
@@ -287,7 +290,7 @@ export default async function ProjectPage({
               <h2 className="text-sm font-mono uppercase tracking-widest text-accent">
                 Technology
               </h2>
-              <ul className="mt-3 space-y-2">
+              <ul className="mt-3 space-y-2" data-i18n-ignore>
                 {caseStudy.technology.map((t) => (
                   <li
                     key={t}
@@ -320,11 +323,14 @@ export default async function ProjectPage({
           ← Back to projects
         </Link>
 
-        <h1 className="mt-8 text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-tight text-white">
+        <h1
+          className="mt-8 text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-tight text-white"
+          data-i18n-ignore
+        >
           {proj.title}
         </h1>
 
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap gap-2" data-i18n-ignore>
           {proj.technology.map((t) => (
             <span
               key={t}

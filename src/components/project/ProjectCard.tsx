@@ -31,12 +31,14 @@ export default function ProjectCard({
           </span>
         </div>
 
-        <h3 className="mt-4 text-2xl font-medium text-white">{project.title}</h3>
+        <h3 className="mt-4 text-2xl font-medium text-white" data-i18n-ignore>
+          {project.title}
+        </h3>
         <ProtectedParagraph className="mt-3 text-sm leading-[1.7] text-muted">
           {project.description}
         </ProtectedParagraph>
 
-        <ul className="mt-5 flex flex-wrap gap-2">
+        <ul className="mt-5 flex flex-wrap gap-2" data-i18n-ignore>
           {project.technology.map((t) => (
             <li
               key={t}

@@ -7,6 +7,9 @@ import { navigation, flattenNavIds, buildTopLevelMap } from "@/data/navigation";
 import MobileNavigation from "./MobileNavigation";
 import ResumeDownloadModal from "@/components/resume/ResumeDownloadModal";
 import ThemeModeButton from "@/components/ui/ThemeModeButton";
+import LanguageSelector from "./LanguageSelector";
+import { localisedPathname, stripLocale } from "@/i18n/config";
+import { useLocale } from "@/i18n/LocaleProvider";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -15,6 +18,7 @@ export default function Header() {
   const [resumeOpen, setResumeOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const { locale } = useLocale();
   const scrollToSection = useCallback((id: string) => {
     const section = document.getElementById(id);
     if (!section) return;
@@ -26,7 +30,7 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    if (pathname !== "/" || !window.location.hash) return;
+    if (stripLocale(pathname) !== "/" || !window.location.hash) return;
     const id = window.location.hash.slice(1);
     scrollToSection(id);
   }, [pathname, scrollToSection]);
@@ -59,8 +63,8 @@ export default function Header() {
   const handleNavigate = (id: string) => {
     setMenuOpen(false);
     setActive(id);
-    if (pathname !== "/") {
-      router.push(`/#${id}`);
+    if (stripLocale(pathname) !== "/") {
+      router.push(`${localisedPathname("/", locale)}#${id}`);
       return;
     }
     scrollToSection(id);
@@ -85,6 +89,9 @@ export default function Header() {
         </button>
 
         <div className="flex items-center gap-2 md:gap-3">
+          <div className="hidden md:block">
+            <LanguageSelector />
+          </div>
           <ThemeModeButton />
           <button
             onClick={() => setResumeOpen(true)}
