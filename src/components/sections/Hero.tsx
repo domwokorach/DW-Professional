@@ -8,6 +8,7 @@ import Button from "@/components/ui/Button";
 import AnimatedBackground from "@/components/ui/AnimatedBackground";
 import UKGreeting from "@/components/ui/UKGreeting";
 import WeatherWidget from "@/components/weather/WeatherWidget";
+import DecryptedText from "@/components/ui/DecryptedText";
 
 const headlineLines = ["Software Engineer", "& Frontend Developer"];
 
@@ -85,7 +86,10 @@ export default function Hero() {
                 variants={lineVariants}
                 className="block"
               >
-                {line}
+                <DecryptedText
+                  text={line}
+                  startDelay={reduceMotion ? 0 : 300 + i * 130}
+                />
               </motion.span>
             ))}
           </h1>
