@@ -33,6 +33,8 @@ export interface PresencePayload {
 
 export interface MessageEventPayload {
   message: ChatMessage;
+  /** Echoed back to the sender so it can reconcile its optimistic message instead of duplicating it. */
+  clientMessageId?: string;
 }
 
 export interface ConversationEventPayload {

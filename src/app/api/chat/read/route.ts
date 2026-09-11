@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSessionAdmin } from "@/lib/auth/auth";
+import { getAdminSession } from "@/lib/admin";
 import { markAsRead } from "@/lib/chat/mark-as-read";
 
 export const runtime = "nodejs";
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (body.reader === "admin") {
-    const admin = await getSessionAdmin();
+    const admin = await getAdminSession();
     if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   } else if (!body.visitorId || !VISITOR_ID_PATTERN.test(body.visitorId)) {
     return NextResponse.json({ error: "Invalid visitorId" }, { status: 400 });

@@ -1,5 +1,10 @@
 import { auth, clerkClient } from "@clerk/nextjs/server";
 
+export interface AdminSession {
+  userId: string;
+  email: string;
+}
+
 function allowedAdminEmails(): string[] {
   return (process.env.ADMIN_EMAILS ?? "")
     .split(",")
@@ -7,26 +12,26 @@ function allowedAdminEmails(): string[] {
     .filter(Boolean);
 }
 
-/**
- * Being signed in with Clerk is not enough — Clerk sign-up is open, so
- * authorization also requires the account's email to be on the explicit
- * allowlist. Every admin surface (page and API route) calls this rather than
- * trusting the client, per the "no client-side isAdmin boolean" requirement.
- */
-export async function requireAdmin(): Promise<{ userId: string; email: string }> {
+async function resolveClerkSession(): Promise<{ userId: string | null; email: string | null }> {
   const { userId } = await auth();
-  if (!userId) {
-    throw new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-  }
+  if (!userId) return { userId: null, email: null };
 
-  const allowed = allowedAdminEmails();
   const client = await clerkClient();
   const user = await client.users.getUser(userId);
   const email = user.primaryEmailAddress?.emailAddress?.toLowerCase() ?? "";
+  return { userId, email };
+}
 
-  if (!allowed.length || !allowed.includes(email)) {
-    throw new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 });
-  }
-
+/**
+ * Being signed in with Clerk is not enough — Clerk sign-up is open, so
+ * authorization also requires the account's email to be on the explicit
+ * allowlist. Every admin surface (page and API route) resolves through this
+ * rather than trusting the client, per the "no client-side isAdmin boolean"
+ * requirement.
+ */
+export async function getAdminSession(): Promise<AdminSession | null> {
+  const { userId, email } = await resolveClerkSession();
+  if (!userId || !email) return null;
+  if (!allowedAdminEmails().includes(email)) return null;
   return { userId, email };
 }

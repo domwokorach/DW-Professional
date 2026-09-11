@@ -112,8 +112,6 @@ async function handleIncomingMessage(
   const rateLimitKey = socket.data.visitorId ?? socket.id;
   if (isRateLimited(rateLimitKey)) return;
 
-  void clientMessageId;
-
   const message = await sendMessage({
     conversationId,
     sender: "visitor",
@@ -122,7 +120,7 @@ async function handleIncomingMessage(
   });
 
   const room = getConversationRoom(conversationId);
-  io.to(room).emit(SOCKET_EVENTS.MESSAGE, { message });
+  io.to(room).emit(SOCKET_EVENTS.MESSAGE, { message, clientMessageId });
 
   const conversation = await getConversationById(conversationId);
   if (!conversation) return;

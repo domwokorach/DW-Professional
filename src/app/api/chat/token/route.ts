@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSessionAdmin } from "@/lib/auth/auth";
+import { getAdminSession } from "@/lib/admin";
 import { findOrCreateConversation } from "@/lib/chat/create-conversation";
 import { createLiveChatToken } from "@/lib/liveChatAuth";
 
@@ -14,9 +14,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Live chat is not configured" }, { status: 503 });
   }
 
-  const admin = await getSessionAdmin();
+  const admin = await getAdminSession();
   if (admin) {
-    const token = createLiveChatToken({ role: "admin", adminId: admin.id }, secret);
+    const token = createLiveChatToken({ role: "admin", adminId: admin.userId }, secret);
     return NextResponse.json({ token });
   }
 

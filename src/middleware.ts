@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { clerkMiddleware } from "@clerk/nextjs/server";
 import {
   defaultLocale,
   isLocale,
@@ -21,28 +21,16 @@ function preferredLocale(request: NextRequest) {
   return defaultLocale;
 }
 
-const isAdminRoute = createRouteMatcher(["/admin(.*)", "/:locale/admin(.*)"]);
-
-export default clerkMiddleware(async (auth, request) => {
+export default clerkMiddleware(async (_auth, request) => {
   const { pathname } = request.nextUrl;
-  const firstSegment = pathname.split("/").filter(Boolean)[0];
 
-  if (isAdminRoute(request)) {
-    const { userId, sessionClaims, redirectToSignIn } = await auth();
-    if (!userId) return redirectToSignIn();
-
-    const role = (sessionClaims?.publicMetadata as { role?: string } | undefined)?.role;
-    const allowedIds = new Set(
-      (process.env.ADMIN_USER_IDS ?? "").split(",").map((id) => id.trim()).filter(Boolean)
-    );
-    if (role !== "admin" && !allowedIds.has(userId)) {
-      const unauthorized = request.nextUrl.clone();
-      unauthorized.pathname = isLocale(firstSegment)
-        ? `/${firstSegment}/unauthorized`
-        : "/unauthorized";
-      return NextResponse.redirect(unauthorized);
-    }
+  // API routes need clerkMiddleware() to wrap them (so auth() works inside
+  // route handlers), but never take part in the locale rewrite below.
+  if (pathname.startsWith("/api")) {
+    return NextResponse.next();
   }
+
+  const firstSegment = pathname.split("/").filter(Boolean)[0];
 
   if (!isLocale(firstSegment)) {
     const locale = preferredLocale(request);
@@ -79,5 +67,5 @@ export default clerkMiddleware(async (auth, request) => {
 });
 
 export const config = {
-  matcher: ["/((?!api|_next|favicon\\.svg|robots\\.txt|sitemap\\.xml|.*\\.[^/]+$).*)"],
+  matcher: ["/((?!_next|favicon\\.svg|robots\\.txt|sitemap\\.xml|.*\\.[^/]+$).*)"],
 };

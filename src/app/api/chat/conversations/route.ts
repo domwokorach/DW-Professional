@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSessionAdmin } from "@/lib/auth/auth";
+import { getAdminSession } from "@/lib/admin";
 import { findOrCreateConversation } from "@/lib/chat/create-conversation";
 import { getConversations } from "@/lib/chat/get-conversations";
 import type { ConversationStatus } from "@/types/conversation";
@@ -10,7 +10,7 @@ const VISITOR_ID_PATTERN = /^[a-zA-Z0-9-]{1,64}$/;
 
 /** Admin: list conversations for the dashboard. */
 export async function GET(request: NextRequest) {
-  const admin = await getSessionAdmin();
+  const admin = await getAdminSession();
   if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { searchParams } = new URL(request.url);
