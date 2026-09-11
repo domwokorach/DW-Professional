@@ -1,4 +1,4 @@
-import { MAX_MESSAGE_LENGTH } from "@/config/chat";
+import { MAX_MESSAGE_LENGTH } from "@/lib/chat/constants";
 
 // Matches ASCII control characters (0x00-0x1F, 0x7F) built via charCodes to
 // avoid embedding literal unprintable bytes in this source file.

@@ -1,29 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAdminSession } from "@/lib/admin";
+import { isAdmin } from "@/lib/chat/permissions";
 import { markAsRead } from "@/lib/chat/mark-as-read";
+import { conversationIdSchema, safeParse, visitorIdSchema } from "@/lib/chat/validation";
+import { z } from "zod";
 
 export const runtime = "nodejs";
 
-const VISITOR_ID_PATTERN = /^[a-zA-Z0-9-]{1,64}$/;
+const readBodySchema = z.object({
+  conversationId: conversationIdSchema,
+  reader: z.enum(["visitor", "admin"]),
+  visitorId: visitorIdSchema.optional(),
+});
 
 export async function POST(request: NextRequest) {
-  const body = (await request.json().catch(() => ({}))) as {
-    conversationId?: string;
-    reader?: "visitor" | "admin";
-    visitorId?: string;
-  };
-
-  if (!body.conversationId || (body.reader !== "visitor" && body.reader !== "admin")) {
+  const body = await request.json().catch(() => ({}));
+  const input = safeParse(readBodySchema, body);
+  if (!input) {
     return NextResponse.json({ error: "conversationId and reader are required" }, { status: 400 });
   }
 
-  if (body.reader === "admin") {
-    const admin = await getAdminSession();
+  if (input.reader === "admin") {
+    const admin = await isAdmin();
     if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  } else if (!body.visitorId || !VISITOR_ID_PATTERN.test(body.visitorId)) {
+  } else if (!input.visitorId) {
     return NextResponse.json({ error: "Invalid visitorId" }, { status: 400 });
   }
 
-  await markAsRead(body.conversationId, body.reader);
+  await markAsRead(input.conversationId, input.reader);
   return NextResponse.json({ ok: true });
 }

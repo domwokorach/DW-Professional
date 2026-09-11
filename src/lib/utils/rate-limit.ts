@@ -1,4 +1,4 @@
-import { RATE_LIMIT_MAX_MESSAGES, RATE_LIMIT_WINDOW_MS } from "@/config/chat";
+import { RATE_LIMIT_MAX_MESSAGES, RATE_LIMIT_WINDOW_MS } from "@/lib/chat/constants";
 
 const requestLog = new Map<string, number[]>();
 

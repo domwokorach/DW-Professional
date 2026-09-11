@@ -6,7 +6,7 @@ import LiveChatLauncher from "./LiveChatLauncher";
 import LiveChatPanel from "./LiveChatPanel";
 import ResumeDownloadModal from "@/components/resume/ResumeDownloadModal";
 import { useLiveChat } from "@/hooks/use-live-chat";
-import { WELCOME_MESSAGE } from "@/config/chat";
+import { WELCOME_MESSAGE } from "@/lib/chat/constants";
 import type { ChatAction, ChatMessage, PanelState } from "@/types/chat";
 
 const WELCOME_BUBBLE: ChatMessage = {

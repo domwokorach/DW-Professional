@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { getAdminSession } from "@/lib/admin";
+import { isAdmin } from "@/lib/chat/permissions";
 import { updatePresence } from "@/lib/chat/update-presence";
 
 export const runtime = "nodejs";
 
 /** Admin availability toggle, independent of socket connect/disconnect (e.g. "away" while still connected). */
 export async function GET() {
-  const admin = await getAdminSession();
+  const admin = await isAdmin();
   if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const onlineAdminIds = await updatePresence.getOnlineAdminIds();
@@ -14,7 +14,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const admin = await getAdminSession();
+  const admin = await isAdmin();
   if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { available } = (await request.json().catch(() => ({}))) as { available?: boolean };

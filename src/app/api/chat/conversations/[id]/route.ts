@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAdminSession } from "@/lib/admin";
+import { isAdmin } from "@/lib/chat/permissions";
 import { getConversationById } from "@/lib/chat/get-conversations";
 import { getMessages } from "@/lib/chat/get-messages";
 import { markAsRead } from "@/lib/chat/mark-as-read";
 import { updateConversation } from "@/lib/chat/update-conversation";
+import { conversationStatusSchema, safeParse } from "@/lib/chat/validation";
 
 export const runtime = "nodejs";
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const admin = await getAdminSession();
+  const admin = await isAdmin();
   if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
@@ -24,21 +25,14 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
 }
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const admin = await getAdminSession();
+  const admin = await isAdmin();
   if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  let body: Record<string, unknown> = {};
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
-  }
+  const body = await request.json().catch(() => ({}));
+  const status = safeParse(conversationStatusSchema, body?.status);
+  if (!status) return NextResponse.json({ error: "Invalid status" }, { status: 400 });
 
-  if (body.status !== "open" && body.status !== "closed") {
-    return NextResponse.json({ error: "Invalid status" }, { status: 400 });
-  }
-
-  const conversation = await updateConversation(id, { status: body.status });
+  const conversation = await updateConversation(id, { status });
   return NextResponse.json({ conversation });
 }

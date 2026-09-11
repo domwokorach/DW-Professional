@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { SOCKET_EVENTS } from "@/lib/socket/events";
-import { TYPING_DEBOUNCE_MS } from "@/config/chat";
+import { TYPING_DEBOUNCE_MS } from "@/lib/chat/constants";
 import type { ChatSocket } from "@/lib/socket/client";
 import type { TypingEventPayload } from "@/types/socket";
 
