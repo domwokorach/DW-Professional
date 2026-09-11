@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -81,43 +82,45 @@ export default async function RootLayout({
   const locale = normaliseLocale(requestHeaders.get("x-portfolio-locale")) ?? defaultLocale;
 
   return (
-    <html
-      lang={locale}
-      dir={isRtlLocale(locale) ? "rtl" : "ltr"}
-      className={`${inter.variable} ${jetbrains.variable}`}
-      suppressHydrationWarning
-    >
-      <head>
-        <Script id="theme-preference" strategy="beforeInteractive">
-          {`(() => {
-            let preference = "system";
-            try {
-              const saved = localStorage.getItem("theme-preference-v1");
-              if (saved === "light" || saved === "dark" || saved === "system") {
-                preference = saved;
-              }
-            } catch {}
-            const isDark = preference === "dark" ||
-              (preference === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
-            document.documentElement.dataset.theme = isDark ? "dark" : "light";
-          })();`}
-        </Script>
-      </head>
-      <body className="font-sans antialiased">
-        <LocaleProvider initialLocale={locale}>
-          <a href="#main" className="skip-link">
-            Skip to content
-          </a>
-          <Header />
-          <main id="main">{children}</main>
-          <Footer />
-          <CookieConsentManager />
-          <BackToTopButton />
-          <AccessibilityControls />
-          <OfflineStatus />
-          <LiveChatLoader />
-        </LocaleProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html
+        lang={locale}
+        dir={isRtlLocale(locale) ? "rtl" : "ltr"}
+        className={`${inter.variable} ${jetbrains.variable}`}
+        suppressHydrationWarning
+      >
+        <head>
+          <Script id="theme-preference" strategy="beforeInteractive">
+            {`(() => {
+              let preference = "system";
+              try {
+                const saved = localStorage.getItem("theme-preference-v1");
+                if (saved === "light" || saved === "dark" || saved === "system") {
+                  preference = saved;
+                }
+              } catch {}
+              const isDark = preference === "dark" ||
+                (preference === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+              document.documentElement.dataset.theme = isDark ? "dark" : "light";
+            })();`}
+          </Script>
+        </head>
+        <body className="font-sans antialiased">
+          <LocaleProvider initialLocale={locale}>
+            <a href="#main" className="skip-link">
+              Skip to content
+            </a>
+            <Header />
+            <main id="main">{children}</main>
+            <Footer />
+            <CookieConsentManager />
+            <BackToTopButton />
+            <AccessibilityControls />
+            <OfflineStatus />
+            <LiveChatLoader />
+          </LocaleProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
