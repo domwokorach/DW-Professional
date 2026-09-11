@@ -1,13 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createSocket, type ChatSocket } from "@/lib/socket/client";
+import { SessionExpiredError } from "@/lib/socket/errors";
 import type { ConnectionState } from "@/types/chat";
 
 /**
  * Owns connect/disconnect/reconnect for a single Socket.IO connection.
  * `fetchToken` is called on every (re)connect attempt so a token that
- * expired mid-session gets replaced instead of failing auth on reconnect.
+ * expired mid-session gets replaced instead of failing auth on reconnect —
+ * unless the fetcher throws SessionExpiredError, which means the caller is
+ * no longer authorized at all (not just a stale token), in which case
+ * reconnection is abandoned and "unauthorized" is reported instead of
+ * retrying forever against a request that can never succeed.
  */
 export function useSocket(fetchToken: () => Promise<string>, enabled = true) {
   const socketRef = useRef<ChatSocket | null>(null);
@@ -20,13 +25,32 @@ export function useSocket(fetchToken: () => Promise<string>, enabled = true) {
       return;
     }
 
-    const socket = createSocket(fetchToken);
+    const sessionExpiredRef = { current: false };
+    const wrappedFetchToken = async () => {
+      try {
+        const token = await fetchToken();
+        sessionExpiredRef.current = false;
+        return token;
+      } catch (error) {
+        sessionExpiredRef.current = error instanceof SessionExpiredError;
+        throw error;
+      }
+    };
+
+    const socket = createSocket(wrappedFetchToken);
     socketRef.current = socket;
     setConnectionState("connecting");
 
     const handleConnect = () => setConnectionState("online");
     const handleDisconnect = () => setConnectionState("reconnecting");
-    const handleConnectError = () => setConnectionState("reconnecting");
+    const handleConnectError = () => {
+      if (sessionExpiredRef.current) {
+        setConnectionState("unauthorized");
+        socket.disconnect();
+        return;
+      }
+      setConnectionState("reconnecting");
+    };
     const handleReconnectFailed = () => setConnectionState("offline");
 
     socket.on("connect", handleConnect);
@@ -51,5 +75,12 @@ export function useSocket(fetchToken: () => Promise<string>, enabled = true) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled]);
 
-  return { socketRef, connectionState };
+  const reconnect = useCallback(() => {
+    const socket = socketRef.current;
+    if (!socket || socket.connected) return;
+    setConnectionState("connecting");
+    socket.connect();
+  }, []);
+
+  return { socketRef, connectionState, reconnect };
 }

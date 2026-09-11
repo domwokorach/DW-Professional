@@ -9,6 +9,7 @@ const STATUS_LABEL: Record<ConnectionState, string> = {
   connecting: "Connecting…",
   reconnecting: "Reconnecting…",
   offline: "Offline",
+  unauthorized: "Connection error",
 };
 
 const STATUS_DOT_CLASS: Record<ConnectionState, string> = {
@@ -16,6 +17,7 @@ const STATUS_DOT_CLASS: Record<ConnectionState, string> = {
   connecting: "bg-amber-400",
   reconnecting: "bg-amber-400",
   offline: "bg-red-400",
+  unauthorized: "bg-red-400",
 };
 
 function formatTimestamp(createdAt: string): string {
@@ -47,6 +49,7 @@ export default function LiveChatPanel({
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const canSend = connectionState === "online";
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -55,7 +58,7 @@ export default function LiveChatPanel({
   }, [messages, typing]);
 
   const handleSend = () => {
-    if (!input.trim()) return;
+    if (!input.trim() || !canSend) return;
     onSend(input);
     setInput("");
     if (textareaRef.current) textareaRef.current.style.height = "auto";
@@ -170,34 +173,41 @@ export default function LiveChatPanel({
         ) : null}
       </div>
 
-      <form onSubmit={handleSubmit} className="flex items-end gap-2 border-t border-line px-3 py-3">
-        <label htmlFor="live-chat-input" className="sr-only">
-          Type a message
-        </label>
-        <textarea
-          ref={textareaRef}
-          id="live-chat-input"
-          value={input}
-          onChange={(event) => {
-            setInput(event.target.value);
-            const el = event.target;
-            el.style.height = "auto";
-            el.style.height = `${Math.min(el.scrollHeight, 96)}px`;
-          }}
-          onKeyDown={handleKeyDown}
-          placeholder="Type a message…"
-          rows={1}
-          maxLength={2000}
-          className="min-h-11 max-h-24 flex-1 resize-none rounded-2xl border border-line bg-ink px-4 py-2.5 text-sm leading-normal text-white placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
-        />
-        <button
-          type="submit"
-          disabled={!input.trim()}
-          aria-label="Send message"
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-ink transition-opacity duration-150 disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-        >
-          <Send className="h-4 w-4" aria-hidden="true" />
-        </button>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-1.5 border-t border-line px-3 py-3">
+        {!canSend ? (
+          <p className="px-1 text-xs text-amber-400" role="status" aria-live="polite">
+            Reconnecting…
+          </p>
+        ) : null}
+        <div className="flex items-end gap-2">
+          <label htmlFor="live-chat-input" className="sr-only">
+            Type a message
+          </label>
+          <textarea
+            ref={textareaRef}
+            id="live-chat-input"
+            value={input}
+            onChange={(event) => {
+              setInput(event.target.value);
+              const el = event.target;
+              el.style.height = "auto";
+              el.style.height = `${Math.min(el.scrollHeight, 96)}px`;
+            }}
+            onKeyDown={handleKeyDown}
+            placeholder="Type a message…"
+            rows={1}
+            maxLength={2000}
+            className="min-h-11 max-h-24 flex-1 resize-none rounded-2xl border border-line bg-ink px-4 py-2.5 text-sm leading-normal text-white placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+          />
+          <button
+            type="submit"
+            disabled={!input.trim() || !canSend}
+            aria-label="Send message"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-ink transition-opacity duration-150 disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          >
+            <Send className="h-4 w-4" aria-hidden="true" />
+          </button>
+        </div>
       </form>
     </div>
   );

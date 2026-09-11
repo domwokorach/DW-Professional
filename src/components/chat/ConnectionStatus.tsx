@@ -9,6 +9,7 @@ const CONFIG: Record<
   connecting: { label: "Connecting…", icon: RefreshCw, className: "text-muted", spin: true },
   reconnecting: { label: "Reconnecting…", icon: RefreshCw, className: "text-amber-400", spin: true },
   offline: { label: "Offline", icon: WifiOff, className: "text-muted" },
+  unauthorized: { label: "Session expired", icon: TriangleAlert, className: "text-red-400" },
 };
 
 export default function ConnectionStatus({ state }: { state: ConnectionState }) {

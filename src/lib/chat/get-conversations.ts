@@ -25,6 +25,9 @@ export async function getConversations({
     },
     orderBy: { lastMessageAt: "desc" },
     take: limit,
+    include: {
+      messages: { take: 1, orderBy: { createdAt: "desc" } },
+    },
   });
 
   return rows.map(toConversation);

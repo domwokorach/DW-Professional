@@ -1,4 +1,4 @@
-export type ConnectionState = "connecting" | "online" | "reconnecting" | "offline";
+export type ConnectionState = "connecting" | "online" | "reconnecting" | "offline" | "unauthorized";
 
 export type PanelState = "closed" | "open" | "minimised";
 

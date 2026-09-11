@@ -20,6 +20,16 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json().catch(() => ({}));
+
+  // The admin socket explicitly requests an admin token so a lost Clerk
+  // session or a removal from ADMIN_EMAILS surfaces as an unambiguous 401
+  // instead of falling into the visitor path's "Invalid visitorId" 400 —
+  // the client relies on this to distinguish "session expired" from a
+  // transient network failure (see hooks/use-socket.ts).
+  if (body?.role === "admin") {
+    return NextResponse.json({ error: "Not authorized" }, { status: 401 });
+  }
+
   const visitorId = safeParse(visitorIdSchema, body?.visitorId);
   if (!visitorId) {
     return NextResponse.json({ error: "Invalid visitorId" }, { status: 400 });

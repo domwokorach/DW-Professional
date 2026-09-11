@@ -17,6 +17,8 @@ export default function ConversationThread({
   loading,
   onSend,
   onToggleStatus,
+  sendDisabled = false,
+  sendDisabledHint,
 }: {
   conversation: Conversation | null;
   messages: ChatMessage[];
@@ -24,6 +26,9 @@ export default function ConversationThread({
   loading: boolean;
   onSend: (content: string) => void;
   onToggleStatus: () => void;
+  /** Disables sending (e.g. while the socket is offline/reconnecting) without touching the draft. */
+  sendDisabled?: boolean;
+  sendDisabledHint?: string;
 }) {
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -43,7 +48,7 @@ export default function ConversationThread({
   }
 
   const handleSend = () => {
-    if (!input.trim()) return;
+    if (!input.trim() || sendDisabled) return;
     onSend(input);
     setInput("");
   };
@@ -114,28 +119,35 @@ export default function ConversationThread({
         ) : null}
       </div>
 
-      <form onSubmit={handleSubmit} className="flex items-end gap-2 border-t border-line px-4 py-3">
-        <label htmlFor="admin-reply-input" className="sr-only">
-          Reply to conversation
-        </label>
-        <textarea
-          id="admin-reply-input"
-          value={input}
-          onChange={(event) => setInput(event.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Reply to candidate…"
-          rows={1}
-          maxLength={2000}
-          className="min-h-11 max-h-24 flex-1 resize-none rounded-2xl border border-line bg-ink px-4 py-2.5 text-sm leading-normal text-white placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
-        />
-        <button
-          type="submit"
-          disabled={!input.trim()}
-          aria-label="Send reply"
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-ink transition-opacity duration-150 disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-        >
-          <Send className="h-4 w-4" aria-hidden="true" />
-        </button>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-1.5 border-t border-line px-4 py-3">
+        {sendDisabled && sendDisabledHint ? (
+          <p className="text-xs text-amber-400" role="status" aria-live="polite">
+            {sendDisabledHint}
+          </p>
+        ) : null}
+        <div className="flex items-end gap-2">
+          <label htmlFor="admin-reply-input" className="sr-only">
+            Reply to conversation
+          </label>
+          <textarea
+            id="admin-reply-input"
+            value={input}
+            onChange={(event) => setInput(event.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Reply to candidate…"
+            rows={1}
+            maxLength={2000}
+            className="min-h-11 max-h-24 flex-1 resize-none rounded-2xl border border-line bg-ink px-4 py-2.5 text-sm leading-normal text-white placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+          />
+          <button
+            type="submit"
+            disabled={!input.trim() || sendDisabled}
+            aria-label="Send reply"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-ink transition-opacity duration-150 disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          >
+            <Send className="h-4 w-4" aria-hidden="true" />
+          </button>
+        </div>
       </form>
     </div>
   );

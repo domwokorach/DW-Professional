@@ -1,12 +1,18 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSocket } from "./use-socket";
 import { SOCKET_EVENTS } from "@/lib/socket/events";
 import { CONVERSATION_ID_STORAGE_KEY, VISITOR_ID_STORAGE_KEY } from "@/lib/chat/constants";
 import { generateId } from "@/lib/utils/generate-id";
 import type { ChatMessage } from "@/types/message";
 import type { MessageEventPayload, TypingEventPayload } from "@/types/socket";
+
+function mergeById(prev: ChatMessage[], incoming: ChatMessage[]): ChatMessage[] {
+  const byId = new Map(prev.map((message) => [message.id, message]));
+  for (const message of incoming) byId.set(message.id, message);
+  return Array.from(byId.values()).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+}
 
 function getVisitorId(): string {
   if (typeof window === "undefined") return "visitor";
@@ -71,10 +77,30 @@ export function useLiveChat() {
     };
   }, []);
 
+  // Room membership does not survive a reconnect, so the conversation room
+  // is re-joined on every transition back to "online". That same drop can
+  // also mean a message arrived while disconnected and was never seen as a
+  // live event, so a reconnect (not the very first connect) also re-fetches
+  // and merges the conversation's persisted history, deduped by message id.
+  const wasOnline = useRef(false);
   useEffect(() => {
     const socket = socketRef.current;
-    if (!socket || !conversationId || connectionState !== "online") return;
+    if (!socket || !conversationId || connectionState !== "online") {
+      if (connectionState !== "online") wasOnline.current = false;
+      return;
+    }
+
     socket.emit(SOCKET_EVENTS.JOIN, { conversationId });
+
+    if (wasOnline.current) {
+      fetch(`/api/chat/messages?conversationId=${conversationId}&visitorId=${getVisitorId()}`)
+        .then((res) => (res.ok ? res.json() : Promise.reject(res)))
+        .then(({ messages: history }: { messages: ChatMessage[] }) => {
+          setMessages((prev) => mergeById(prev, history));
+        })
+        .catch(() => {});
+    }
+    wasOnline.current = true;
   }, [socketRef, conversationId, connectionState]);
 
   useEffect(() => {
