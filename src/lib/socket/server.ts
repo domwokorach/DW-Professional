@@ -9,6 +9,14 @@ import { updatePresence } from "@/lib/chat/update-presence";
 import { sendNewConversationEmail } from "@/lib/notifications/email";
 import { matchIntent } from "@/lib/portfolioAssistant/match";
 import { getResponseForIntent } from "@/lib/portfolioAssistant/responses";
+import {
+  adminMessageSchema,
+  candidateMessageSchema,
+  joinPayloadSchema,
+  readPayloadSchema,
+  safeParse,
+  typingPayloadSchema,
+} from "@/lib/chat/validation";
 import { SOCKET_EVENTS } from "./events";
 import { ADMIN_ROOM, getConversationRoom } from "./rooms";
 import type { ClientToServerEvents, ServerToClientEvents, SocketData } from "./types";
@@ -55,40 +63,55 @@ async function handleConnection(io: ChatServer, socket: ChatSocket) {
     socket.join(ADMIN_ROOM);
     await updatePresence.markOnline(socket.data.adminId);
     io.emit(SOCKET_EVENTS.ONLINE);
-  } else if (socket.data.role === "visitor" && socket.data.conversationId) {
+  } else if (socket.data.role === "visitor" && socket.data.conversationId && socket.data.visitorId) {
     socket.join(getConversationRoom(socket.data.conversationId));
     const anyAdminOnline = await updatePresence.isAnyAdminOnline();
     if (anyAdminOnline) socket.emit(SOCKET_EVENTS.ONLINE);
+
+    await updatePresence.markVisitorOnline(socket.data.visitorId);
+    io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.PRESENCE, { userId: socket.data.visitorId, online: true });
   }
 
-  socket.on(SOCKET_EVENTS.JOIN, ({ conversationId }) => {
-    if (!conversationId) return;
+  socket.on(SOCKET_EVENTS.JOIN, (payload) => {
+    const parsed = safeParse(joinPayloadSchema, payload);
+    if (!parsed) return;
+    const { conversationId } = parsed;
     // Admins may follow any conversation; visitors are pinned to their own token-bound one.
     if (socket.data.role === "visitor" && conversationId !== socket.data.conversationId) return;
     socket.join(getConversationRoom(conversationId));
   });
 
-  socket.on(SOCKET_EVENTS.MESSAGE, async ({ conversationId, content, clientMessageId }) => {
-    if (socket.data.role !== "visitor" || conversationId !== socket.data.conversationId) return;
-    await handleIncomingMessage(io, socket, conversationId, content, clientMessageId);
+  socket.on(SOCKET_EVENTS.MESSAGE, async (payload) => {
+    const parsed = safeParse(candidateMessageSchema, payload);
+    if (!parsed) return;
+    if (socket.data.role !== "visitor" || parsed.conversationId !== socket.data.conversationId) return;
+    await handleIncomingMessage(io, socket, parsed.conversationId, parsed.content, parsed.clientMessageId);
   });
 
-  socket.on(SOCKET_EVENTS.REPLY, async ({ conversationId, content }) => {
+  socket.on(SOCKET_EVENTS.REPLY, async (payload) => {
+    const parsed = safeParse(adminMessageSchema, payload);
+    if (!parsed) return;
     if (socket.data.role !== "admin" || !socket.data.adminId) return;
-    await handleAdminReply(io, conversationId, content, socket.data.adminId);
+    await handleAdminReply(io, parsed.conversationId, parsed.content, socket.data.adminId);
   });
 
-  socket.on(SOCKET_EVENTS.TYPING, ({ conversationId }) => {
-    broadcastTyping(io, socket, conversationId, true);
+  socket.on(SOCKET_EVENTS.TYPING, (payload) => {
+    const parsed = safeParse(typingPayloadSchema, payload);
+    if (!parsed) return;
+    broadcastTyping(io, socket, parsed.conversationId, true);
   });
 
-  socket.on(SOCKET_EVENTS.STOP_TYPING, ({ conversationId }) => {
-    broadcastTyping(io, socket, conversationId, false);
+  socket.on(SOCKET_EVENTS.STOP_TYPING, (payload) => {
+    const parsed = safeParse(typingPayloadSchema, payload);
+    if (!parsed) return;
+    broadcastTyping(io, socket, parsed.conversationId, false);
   });
 
-  socket.on(SOCKET_EVENTS.READ, async ({ conversationId, reader }) => {
-    await markAsRead(conversationId, reader);
-    const conversation = await getConversationById(conversationId);
+  socket.on(SOCKET_EVENTS.READ, async (payload) => {
+    const parsed = safeParse(readPayloadSchema, payload);
+    if (!parsed) return;
+    await markAsRead(parsed.conversationId, parsed.reader);
+    const conversation = await getConversationById(parsed.conversationId);
     if (conversation) {
       io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.CONVERSATION_UPDATED, { conversation });
     }
@@ -182,9 +205,15 @@ function broadcastTyping(io: ChatServer, socket: ChatSocket, conversationId: str
 }
 
 async function handleDisconnect(io: ChatServer, socket: ChatSocket) {
-  if (socket.data.role !== "admin" || !socket.data.adminId) return;
+  if (socket.data.role === "admin" && socket.data.adminId) {
+    await updatePresence.markOffline(socket.data.adminId);
+    const stillOnline = await updatePresence.isAnyAdminOnline();
+    if (!stillOnline) io.emit(SOCKET_EVENTS.OFFLINE);
+    return;
+  }
 
-  await updatePresence.markOffline(socket.data.adminId);
-  const stillOnline = await updatePresence.isAnyAdminOnline();
-  if (!stillOnline) io.emit(SOCKET_EVENTS.OFFLINE);
+  if (socket.data.role === "visitor" && socket.data.visitorId) {
+    await updatePresence.markVisitorOffline(socket.data.visitorId);
+    io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.PRESENCE, { userId: socket.data.visitorId, online: false });
+  }
 }

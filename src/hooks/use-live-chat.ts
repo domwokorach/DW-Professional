@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useSocket } from "./use-socket";
 import { SOCKET_EVENTS } from "@/lib/socket/events";
-import { CONVERSATION_ID_STORAGE_KEY, VISITOR_ID_STORAGE_KEY } from "@/config/chat";
+import { CONVERSATION_ID_STORAGE_KEY, VISITOR_ID_STORAGE_KEY } from "@/lib/chat/constants";
 import { generateId } from "@/lib/utils/generate-id";
 import type { ChatMessage } from "@/types/message";
 import type { MessageEventPayload, TypingEventPayload } from "@/types/socket";
@@ -54,7 +54,9 @@ export function useLiveChat() {
       setConversationId(conversation.id);
       window.sessionStorage.setItem(CONVERSATION_ID_STORAGE_KEY, conversation.id);
 
-      const messagesRes = await fetch(`/api/chat/messages?conversationId=${conversation.id}`);
+      const messagesRes = await fetch(
+        `/api/chat/messages?conversationId=${conversation.id}&visitorId=${getVisitorId()}`
+      );
       if (!messagesRes.ok || cancelled) return;
       const { messages: history } = (await messagesRes.json()) as { messages: ChatMessage[] };
       if (!cancelled) {

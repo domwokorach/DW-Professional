@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAdminSession } from "@/lib/admin";
+import { isAdmin } from "@/lib/chat/permissions";
 import { findOrCreateConversation } from "@/lib/chat/create-conversation";
 import { createLiveChatToken } from "@/lib/liveChatAuth";
+import { safeParse, visitorIdSchema } from "@/lib/chat/validation";
 
 export const runtime = "nodejs";
-
-const VISITOR_ID_PATTERN = /^[a-zA-Z0-9-]{1,64}$/;
 
 /** Issues a short-lived socket auth token: visitors get one bound to their conversation, admins to their Clerk session. */
 export async function POST(request: NextRequest) {
@@ -14,15 +13,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Live chat is not configured" }, { status: 503 });
   }
 
-  const admin = await getAdminSession();
+  const admin = await isAdmin();
   if (admin) {
     const token = createLiveChatToken({ role: "admin", adminId: admin.userId }, secret);
     return NextResponse.json({ token });
   }
 
-  const body = (await request.json().catch(() => ({}))) as { visitorId?: unknown };
-  const visitorId = typeof body.visitorId === "string" ? body.visitorId : "";
-  if (!VISITOR_ID_PATTERN.test(visitorId)) {
+  const body = await request.json().catch(() => ({}));
+  const visitorId = safeParse(visitorIdSchema, body?.visitorId);
+  if (!visitorId) {
     return NextResponse.json({ error: "Invalid visitorId" }, { status: 400 });
   }
 
