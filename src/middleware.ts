@@ -1,17 +1,13 @@
+import { NextResponse, type NextRequest } from "next/server";
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextRequest, NextResponse } from "next/server";
 import {
   defaultLocale,
   isLocale,
   localeCookieName,
   localisedPathname,
   normaliseLocale,
+  stripLocale,
 } from "@/i18n/config";
-
-// The admin dashboard lives at a clean, non-localised path and is protected
-// by Clerk — it's a private tool for one person, not portfolio content.
-const isAdminRoute = createRouteMatcher(["/admin(.*)", "/api/admin(.*)"]);
-const isAdminSignIn = createRouteMatcher(["/admin/sign-in(.*)"]);
 
 function preferredLocale(request: NextRequest) {
   const saved = normaliseLocale(request.cookies.get(localeCookieName)?.value);
@@ -25,9 +21,28 @@ function preferredLocale(request: NextRequest) {
   return defaultLocale;
 }
 
-function localeMiddleware(request: NextRequest) {
+const isAdminRoute = createRouteMatcher(["/admin(.*)", "/:locale/admin(.*)"]);
+
+export default clerkMiddleware(async (auth, request) => {
   const { pathname } = request.nextUrl;
   const firstSegment = pathname.split("/").filter(Boolean)[0];
+
+  if (isAdminRoute(request)) {
+    const { userId, sessionClaims, redirectToSignIn } = await auth();
+    if (!userId) return redirectToSignIn();
+
+    const role = (sessionClaims?.publicMetadata as { role?: string } | undefined)?.role;
+    const allowedIds = new Set(
+      (process.env.ADMIN_USER_IDS ?? "").split(",").map((id) => id.trim()).filter(Boolean)
+    );
+    if (role !== "admin" && !allowedIds.has(userId)) {
+      const unauthorized = request.nextUrl.clone();
+      unauthorized.pathname = isLocale(firstSegment)
+        ? `/${firstSegment}/unauthorized`
+        : "/unauthorized";
+      return NextResponse.redirect(unauthorized);
+    }
+  }
 
   if (!isLocale(firstSegment)) {
     const locale = preferredLocale(request);
@@ -44,9 +59,9 @@ function localeMiddleware(request: NextRequest) {
   }
 
   const locale = normaliseLocale(firstSegment) ?? defaultLocale;
+  const remainingPath = stripLocale(pathname);
   const rewriteUrl = request.nextUrl.clone();
-  const remainingPath = pathname.split("/").slice(2).join("/");
-  rewriteUrl.pathname = `/${remainingPath}`;
+  rewriteUrl.pathname = remainingPath;
 
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-portfolio-locale", locale);
@@ -61,26 +76,8 @@ function localeMiddleware(request: NextRequest) {
     secure: process.env.NODE_ENV === "production",
   });
   return response;
-}
-
-export default clerkMiddleware(async (auth, request) => {
-  if (isAdminRoute(request)) {
-    if (!isAdminSignIn(request)) {
-      await auth.protect();
-    }
-    return NextResponse.next();
-  }
-
-  if (request.nextUrl.pathname.startsWith("/api")) {
-    return NextResponse.next();
-  }
-
-  return localeMiddleware(request);
 });
 
 export const config = {
-  matcher: [
-    "/((?!_next|favicon\\.svg|robots\\.txt|sitemap\\.xml|.*\\.[^/]+$).*)",
-    "/(api|trpc)(.*)",
-  ],
+  matcher: ["/((?!api|_next|favicon\\.svg|robots\\.txt|sitemap\\.xml|.*\\.[^/]+$).*)"],
 };
