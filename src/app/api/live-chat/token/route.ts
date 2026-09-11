@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { randomUUID } from "crypto";
 import { createLiveChatToken } from "@/lib/liveChatAuth";
+import { getConversationForVisitor } from "@/lib/liveChat/conversations";
 
 export const runtime = "nodejs";
 
-const VISITOR_ID_PATTERN = /^[a-zA-Z0-9-]{1,64}$/;
+const ID_PATTERN = /^[a-zA-Z0-9-]{1,64}$/;
 
+/**
+ * Re-mints a short-lived socket token for an existing conversation, used on
+ * reconnect (the client's socket.io `auth` callback re-fetches on every
+ * (re)connect attempt). Starting a new conversation goes through
+ * /api/live-chat/start instead.
+ */
 export async function POST(request: NextRequest) {
   const secret = process.env.SOCKET_SECRET;
   if (!secret) {
@@ -16,14 +22,21 @@ export async function POST(request: NextRequest) {
   try {
     body = await request.json();
   } catch {
-    // No body is fine — we'll issue a fresh visitor id.
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
-  const requestedVisitorId = typeof body.visitorId === "string" ? body.visitorId : "";
-  const visitorId = VISITOR_ID_PATTERN.test(requestedVisitorId)
-    ? requestedVisitorId
-    : randomUUID();
+  const visitorId = typeof body.visitorId === "string" ? body.visitorId : "";
+  const conversationId = typeof body.conversationId === "string" ? body.conversationId : "";
 
-  const token = createLiveChatToken(visitorId, secret);
-  return NextResponse.json({ token, visitorId });
+  if (!ID_PATTERN.test(visitorId) || !ID_PATTERN.test(conversationId)) {
+    return NextResponse.json({ error: "Unknown conversation" }, { status: 404 });
+  }
+
+  const conversation = await getConversationForVisitor(conversationId, visitorId);
+  if (!conversation) {
+    return NextResponse.json({ error: "Unknown conversation" }, { status: 404 });
+  }
+
+  const token = createLiveChatToken({ role: "visitor", visitorId, conversationId }, secret);
+  return NextResponse.json({ token });
 }
