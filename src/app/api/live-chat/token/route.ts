@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createLiveChatToken } from "@/lib/liveChatAuth";
-import { getConversationForVisitor } from "@/lib/liveChat/conversations";
+import { getConversationById } from "@/lib/chat/get-conversations";
 
 export const runtime = "nodejs";
 
@@ -32,8 +32,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unknown conversation" }, { status: 404 });
   }
 
-  const conversation = await getConversationForVisitor(conversationId, visitorId);
-  if (!conversation) {
+  const conversation = await getConversationById(conversationId);
+  if (!conversation || conversation.visitorId !== visitorId) {
     return NextResponse.json({ error: "Unknown conversation" }, { status: 404 });
   }
 

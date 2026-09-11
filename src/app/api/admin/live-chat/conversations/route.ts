@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin";
-import { listConversations } from "@/lib/liveChat/conversations";
+import { getConversations } from "@/lib/chat/get-conversations";
 
 export const runtime = "nodejs";
 
@@ -16,8 +16,8 @@ export async function GET(request: NextRequest) {
   const status = searchParams.get("status");
   const search = searchParams.get("search") ?? undefined;
 
-  const conversations = await listConversations({
-    status: status === "open" || status === "closed" ? status : undefined,
+  const conversations = await getConversations({
+    status: status === "open" || status === "pending" || status === "closed" ? status : undefined,
     search,
   });
 
