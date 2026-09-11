@@ -12,6 +12,7 @@ export interface Conversation {
   unreadByAdmin: number;
   unreadByVisitor: number;
   lastMessageAt?: string | null;
+  lastMessagePreview?: string | null;
   createdAt: string;
   updatedAt: string;
 }
