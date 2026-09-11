@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { ChevronLeft } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { useAdminSocket } from "@/hooks/use-admin-socket";
 import { useConversations } from "@/hooks/use-conversations";
 import { useAdminThread } from "@/hooks/use-admin-thread";
@@ -11,23 +11,18 @@ import ConversationList from "./ConversationList";
 import ChatHeader from "./ChatHeader";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
-
-const STATUS_LABEL: Record<string, string> = {
-  online: "Connected",
-  connecting: "Connecting…",
-  reconnecting: "Reconnecting…",
-  offline: "Offline",
-};
+import ConnectionStatus from "./ConnectionStatus";
 
 export default function AdminChat() {
   const { socketRef, connectionState } = useAdminSocket();
-  const { conversations, loading: listLoading, refresh } = useConversations(socketRef);
+  const { conversations, loading: listLoading, refresh } = useConversations(socketRef, connectionState);
   const onlineVisitorIds = useAdminPresence(socketRef);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const { conversation, messages, typing, loading: threadLoading, sendReply } = useAdminThread(
     socketRef,
     selectedId,
+    connectionState,
     refresh
   );
   const { notifyTyping } = useTyping(socketRef, selectedId, "visitor");
@@ -43,17 +38,27 @@ export default function AdminChat() {
     if (res.ok) refresh();
   }, [conversation, refresh]);
 
+  const handleMarkUnread = useCallback(async () => {
+    if (!conversation) return;
+    const res = await fetch(`/api/chat/conversations/${conversation.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ markUnread: true }),
+    });
+    if (res.ok) refresh();
+  }, [conversation, refresh]);
+
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col">
-      <header className="flex items-center justify-between gap-3 border-b border-line px-6 py-4">
-        <h1 className="font-mono text-lg font-semibold text-white">Admin Chat</h1>
-        <p className="text-xs text-muted">{STATUS_LABEL[connectionState] ?? connectionState}</p>
+    <div className="flex h-[calc(100dvh-4rem)] flex-col overflow-hidden">
+      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-6">
+        <h1 className="font-mono text-base font-semibold text-white sm:text-lg">Admin Chat</h1>
+        <ConnectionStatus state={connectionState} />
       </header>
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="min-h-0 flex-1 md:grid md:grid-cols-[260px_1fr] lg:grid-cols-[320px_1fr]">
         <aside
-          className={`w-full shrink-0 overflow-hidden border-r border-line md:max-w-xs ${
-            selectedId ? "hidden md:block" : "block"
+          className={`h-full min-h-0 overflow-hidden border-line md:block md:border-r ${
+            selectedId ? "hidden" : "block"
           }`}
         >
           <ConversationList
@@ -65,34 +70,36 @@ export default function AdminChat() {
           />
         </aside>
 
-        <div className={`flex flex-1 flex-col ${selectedId ? "flex" : "hidden md:flex"}`}>
+        <div className={`flex h-full min-h-0 flex-col ${selectedId ? "flex" : "hidden md:flex"}`}>
           {!conversation ? (
-            <div className="flex flex-1 items-center justify-center text-sm text-muted">
-              Select a candidate to view the conversation.
+            <div className="flex flex-1 flex-col items-center justify-center gap-2 px-6 text-center">
+              <MessageSquare className="h-10 w-10 text-muted" aria-hidden="true" />
+              <p className="text-sm font-medium text-white">Select a conversation</p>
+              <p className="max-w-xs text-sm text-muted">
+                Choose a candidate from the conversation list to view and reply to their messages.
+              </p>
             </div>
           ) : (
             <>
-              <div className="flex items-center gap-1 border-b border-line md:hidden">
-                <button
-                  type="button"
-                  onClick={() => setSelectedId(null)}
-                  aria-label="Back to conversations"
-                  className="flex h-11 w-11 shrink-0 items-center justify-center text-muted hover:text-white"
-                >
-                  <ChevronLeft className="h-5 w-5" aria-hidden="true" />
-                </button>
-              </div>
               <ChatHeader
                 conversation={conversation}
                 online={onlineVisitorIds.has(conversation.visitorId)}
+                onBack={() => setSelectedId(null)}
                 onToggleStatus={handleToggleStatus}
+                onMarkUnread={handleMarkUnread}
               />
               <MessageList
                 messages={messages}
                 loading={threadLoading}
                 typingLabel={typing ? "Candidate is typing…" : null}
               />
-              <MessageInput onSend={sendReply} onTyping={notifyTyping} placeholder="Reply to candidate…" />
+              <MessageInput
+                onSend={sendReply}
+                onTyping={notifyTyping}
+                placeholder="Reply to candidate…"
+                disabled={connectionState !== "online"}
+                disabledHint={connectionState === "unauthorized" ? "Session expired" : "Reconnecting…"}
+              />
             </>
           )}
         </div>

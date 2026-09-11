@@ -4,24 +4,19 @@ import { useCallback, useState } from "react";
 import { useAdminSocket } from "@/hooks/use-admin-socket";
 import { useConversations } from "@/hooks/use-conversations";
 import { useAdminThread } from "@/hooks/use-admin-thread";
+import ConnectionStatus from "@/components/chat/ConnectionStatus";
 import ConversationList from "./ConversationList";
 import ConversationThread from "./ConversationThread";
 
-const STATUS_LABEL: Record<string, string> = {
-  online: "Connected",
-  connecting: "Connecting…",
-  reconnecting: "Reconnecting…",
-  offline: "Offline",
-};
-
 export default function AdminLiveChat() {
   const { socketRef, connectionState } = useAdminSocket();
-  const { conversations, loading: conversationsLoading, refresh } = useConversations(socketRef);
+  const { conversations, loading: conversationsLoading, refresh } = useConversations(socketRef, connectionState);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const { conversation, messages, typing, loading: threadLoading, sendReply } = useAdminThread(
     socketRef,
     selectedId,
+    connectionState,
     refresh
   );
 
@@ -40,7 +35,7 @@ export default function AdminLiveChat() {
     <div className="flex h-[calc(100vh-4rem)] flex-col">
       <header className="flex items-center justify-between gap-3 border-b border-line px-6 py-4">
         <h1 className="font-mono text-lg font-semibold text-white">Live Chat</h1>
-        <p className="text-xs text-muted">{STATUS_LABEL[connectionState] ?? connectionState}</p>
+        <ConnectionStatus state={connectionState} />
       </header>
 
       <div className="flex flex-1 overflow-hidden">
@@ -60,6 +55,8 @@ export default function AdminLiveChat() {
           loading={threadLoading}
           onSend={sendReply}
           onToggleStatus={handleToggleStatus}
+          sendDisabled={connectionState !== "online"}
+          sendDisabledHint={connectionState === "unauthorized" ? "Session expired" : "Reconnecting…"}
         />
       </div>
     </div>
