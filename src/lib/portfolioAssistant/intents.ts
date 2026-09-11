@@ -74,10 +74,6 @@ export const intents: IntentDefinition[] = [
     keywords: ["when can you start", "notice period", "how soon are you available", "availability", "start date"],
   },
   {
-    id: "teams",
-    keywords: ["microsoft teams", "video call", "video interview", "teams interview", "arrange a call", "arrange an interview"],
-  },
-  {
     id: "recruiterInterest",
     keywords: ["interested in your profile", "interested in your experience", "like your profile", "your profile and experience"],
   },

@@ -188,7 +188,6 @@ export function buildTopLevelMap(items: NavItem[]): Map<string, string> {
 }
 
 export const social = {
-  email: "Dominic.Wokorach-O@outlook.com",
   linkedin: "https://www.linkedin.com/in/dominic-w-3673523b/",
   github: "https://github.com/domwokorach",
   portfolio: "https://www.dominicwokorach.me/",
