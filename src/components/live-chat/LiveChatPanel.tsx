@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Minus, Send, X } from "lucide-react";
-import type { ChatAction, ConnectionState, LiveChatMessage } from "./types";
+import type { ChatAction, ChatMessage, ConnectionState } from "@/types/chat";
 
 const STATUS_LABEL: Record<ConnectionState, string> = {
   online: "Online",
@@ -18,11 +18,11 @@ const STATUS_DOT_CLASS: Record<ConnectionState, string> = {
   offline: "bg-red-400",
 };
 
-function formatTimestamp(timestamp: number): string {
+function formatTimestamp(createdAt: string): string {
   return new Intl.DateTimeFormat(undefined, {
     hour: "numeric",
     minute: "2-digit",
-  }).format(timestamp);
+  }).format(new Date(createdAt));
 }
 
 export default function LiveChatPanel({
@@ -35,7 +35,7 @@ export default function LiveChatPanel({
   onClose,
   closeButtonRef,
 }: {
-  messages: LiveChatMessage[];
+  messages: ChatMessage[];
   typing: boolean;
   connectionState: ConnectionState;
   onSend: (text: string) => void;
@@ -128,12 +128,12 @@ export default function LiveChatPanel({
           <div
             key={message.id}
             className={`flex flex-col gap-1 ${
-              message.role === "user" ? "items-end" : "items-start"
+              message.sender === "visitor" ? "items-end" : "items-start"
             }`}
           >
             <div
               className={`max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-4 py-2.5 text-sm ${
-                message.role === "user"
+                message.sender === "visitor"
                   ? "bg-accent text-ink"
                   : "border border-line bg-ink text-white"
               }`}
@@ -141,7 +141,7 @@ export default function LiveChatPanel({
               {message.content}
             </div>
             <span className="px-1 text-[11px] text-muted">
-              {formatTimestamp(message.timestamp)}
+              {formatTimestamp(message.createdAt)}
             </span>
             {message.actions?.length ? (
               <div className="flex flex-wrap gap-2">

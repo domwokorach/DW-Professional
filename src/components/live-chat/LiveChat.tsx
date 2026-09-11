@@ -1,12 +1,22 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import LiveChatLauncher from "./LiveChatLauncher";
 import LiveChatPanel from "./LiveChatPanel";
 import ResumeDownloadModal from "@/components/resume/ResumeDownloadModal";
-import { useLiveChatSocket } from "./useLiveChatSocket";
-import type { ChatAction, PanelState } from "./types";
+import { useLiveChat } from "@/hooks/use-live-chat";
+import { WELCOME_MESSAGE } from "@/config/chat";
+import type { ChatAction, ChatMessage, PanelState } from "@/types/chat";
+
+const WELCOME_BUBBLE: ChatMessage = {
+  id: "welcome",
+  conversationId: "",
+  sender: "bot",
+  content: WELCOME_MESSAGE,
+  status: "sent",
+  createdAt: new Date(0).toISOString(),
+};
 
 function scrollToSection(id: string) {
   const target = document.getElementById(id);
@@ -26,7 +36,12 @@ export default function LiveChat() {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const seenMessageCount = useRef(0);
 
-  const { connectionState, messages, typing, sendMessage } = useLiveChatSocket();
+  const { connectionState, messages, typing, sendMessage } = useLiveChat();
+
+  const displayMessages = useMemo(
+    () => (messages.length > 0 ? messages : [WELCOME_BUBBLE]),
+    [messages]
+  );
 
   useEffect(() => {
     if (panelState === "open") {
@@ -37,7 +52,7 @@ export default function LiveChat() {
     if (messages.length > seenMessageCount.current) {
       const newAssistantMessages = messages
         .slice(seenMessageCount.current)
-        .filter((message) => message.role === "assistant").length;
+        .filter((message) => message.sender !== "visitor").length;
       if (newAssistantMessages > 0) {
         setUnreadCount((count) => count + newAssistantMessages);
       }
@@ -74,8 +89,8 @@ export default function LiveChat() {
   }, []);
 
   const handleClose = useCallback(() => {
-    // Conversation history is preserved (see useLiveChatSocket's session storage
-    // persistence) even though the panel is fully dismissed.
+    // Conversation history is preserved server-side (see useLiveChat's
+    // conversationId bootstrap) even though the panel is fully dismissed.
     setPanelState("closed");
     launcherButtonRef.current?.focus();
   }, []);
@@ -114,7 +129,7 @@ export default function LiveChat() {
             transition={{ duration: 0.18, ease: "easeOut" }}
           >
             <LiveChatPanel
-              messages={messages}
+              messages={displayMessages}
               typing={typing}
               connectionState={connectionState}
               onSend={sendMessage}

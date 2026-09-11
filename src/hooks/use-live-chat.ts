@@ -79,10 +79,21 @@ export function useLiveChat() {
     const socket = socketRef.current;
     if (!socket) return;
 
-    const handleMessage = ({ message }: MessageEventPayload) => {
+    const handleMessage = ({ message, clientMessageId }: MessageEventPayload) => {
       if (message.conversationId !== conversationId) return;
       setTyping(false);
-      setMessages((prev) => (prev.some((m) => m.id === message.id) ? prev : [...prev, message]));
+      setMessages((prev) => {
+        if (prev.some((m) => m.id === message.id)) return prev;
+        if (clientMessageId) {
+          const optimisticIndex = prev.findIndex((m) => m.id === clientMessageId);
+          if (optimisticIndex !== -1) {
+            const next = prev.slice();
+            next[optimisticIndex] = message;
+            return next;
+          }
+        }
+        return [...prev, message];
+      });
     };
 
     const handleTyping = (payload: TypingEventPayload) => {

@@ -2,7 +2,7 @@
 
 import { forwardRef } from "react";
 import { MessageCircle, X } from "lucide-react";
-import type { ConnectionState, PanelState } from "./types";
+import type { ConnectionState, PanelState } from "@/types/chat";
 
 const STATUS_LABEL: Record<ConnectionState, string> = {
   online: "Online",
