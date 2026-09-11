@@ -2,7 +2,9 @@ import type { Conversation as PrismaConversation, Message as PrismaMessage } fro
 import type { ChatMessage } from "@/types/message";
 import type { Conversation } from "@/types/conversation";
 
-export function toConversation(row: PrismaConversation): Conversation {
+export function toConversation(
+  row: PrismaConversation & { messages?: PrismaMessage[] }
+): Conversation {
   return {
     id: row.id,
     visitorId: row.visitorId,
@@ -13,6 +15,7 @@ export function toConversation(row: PrismaConversation): Conversation {
     unreadByAdmin: row.unreadByAdmin,
     unreadByVisitor: row.unreadByVisitor,
     lastMessageAt: row.lastMessageAt?.toISOString() ?? null,
+    lastMessagePreview: row.messages?.[0]?.content ?? null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };

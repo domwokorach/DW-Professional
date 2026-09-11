@@ -51,6 +51,11 @@ export const createConversationSchema = candidateSchema.extend({
 
 export const conversationStatusSchema = z.enum(["open", "closed"]);
 
+export const conversationPatchSchema = z.object({
+  status: conversationStatusSchema.optional(),
+  markUnread: z.boolean().optional(),
+});
+
 /** Parses `value` against `schema`, returning `null` instead of throwing on failure — the caller decides the HTTP/socket response. */
 export function safeParse<T>(schema: z.ZodType<T>, value: unknown): T | null {
   const result = schema.safeParse(value);

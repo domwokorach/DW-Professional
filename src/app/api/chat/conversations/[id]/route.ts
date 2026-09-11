@@ -4,7 +4,7 @@ import { getConversationById } from "@/lib/chat/get-conversations";
 import { getMessages } from "@/lib/chat/get-messages";
 import { markAsRead } from "@/lib/chat/mark-as-read";
 import { updateConversation } from "@/lib/chat/update-conversation";
-import { conversationStatusSchema, safeParse } from "@/lib/chat/validation";
+import { conversationPatchSchema, safeParse } from "@/lib/chat/validation";
 
 export const runtime = "nodejs";
 
@@ -30,9 +30,14 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 
   const { id } = await params;
   const body = await request.json().catch(() => ({}));
-  const status = safeParse(conversationStatusSchema, body?.status);
-  if (!status) return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+  const input = safeParse(conversationPatchSchema, body);
+  if (!input || (!input.status && input.markUnread === undefined)) {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
 
-  const conversation = await updateConversation(id, { status });
+  const conversation = await updateConversation(id, {
+    status: input.status,
+    unreadByAdmin: input.markUnread ? 1 : undefined,
+  });
   return NextResponse.json({ conversation });
 }
