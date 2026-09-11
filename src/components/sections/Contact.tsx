@@ -114,12 +114,6 @@ export default function Contact() {
 
             <MotionReveal delay={0.2} className="mt-10 space-y-3 text-sm">
               <a
-                href={`mailto:${social.email}`}
-                className="block text-white hover:text-accent transition-colors"
-              >
-                {social.email}
-              </a>
-              <a
                 href={social.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"

@@ -9,7 +9,7 @@ import CookieConsentManager from "@/components/ui/CookieConsentManager";
 import BackToTopButton from "@/components/ui/BackToTopButton";
 import AccessibilityControls from "@/components/ui/AccessibilityControls";
 import OfflineStatus from "@/components/ui/OfflineStatus";
-import PortfolioChatLoader from "@/components/portfolio-chat/PortfolioChatLoader";
+import LiveChatLoader from "@/components/live-chat/LiveChatLoader";
 import { LocaleProvider } from "@/i18n/LocaleProvider";
 import { defaultLocale, isRtlLocale, normaliseLocale } from "@/i18n/config";
 
@@ -115,7 +115,7 @@ export default async function RootLayout({
           <BackToTopButton />
           <AccessibilityControls />
           <OfflineStatus />
-          <PortfolioChatLoader />
+          <LiveChatLoader />
         </LocaleProvider>
       </body>
     </html>

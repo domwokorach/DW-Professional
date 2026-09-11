@@ -26,8 +26,6 @@ const GITHUB_ACTION: ChatAction = {
   href: "https://github.com/domwokorach",
   external: true,
 };
-const TEAMS_EMAIL = "dominic-wokorach-o@outlook.com";
-
 function findExperienceByOrg(orgMatch: string) {
   return experience.filter((item) =>
     item.org.toLowerCase().includes(orgMatch.toLowerCase())
@@ -204,10 +202,6 @@ const RESPONSES: Record<string, () => IntentResponse> = {
   }),
   availability: () => ({
     content: `I'm available to start immediately.`,
-  }),
-  teams: () => ({
-    content: `You're welcome to send a Microsoft Teams interview invitation to ${TEAMS_EMAIL}. I can review the invitation and confirm my availability.`,
-    actions: [{ label: `Email ${TEAMS_EMAIL} →`, href: `mailto:${TEAMS_EMAIL}`, external: true }],
   }),
   recruiterInterest: () => ({
     content: `Thank you for your interest. Please use the contact form or email me with details about the opportunity, role and company.`,
