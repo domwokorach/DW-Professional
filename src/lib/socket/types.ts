@@ -32,5 +32,6 @@ export interface ServerToClientEvents {
 export interface SocketData {
   role: "visitor" | "admin";
   visitorId?: string;
+  conversationId?: string;
   adminId?: string;
 }
