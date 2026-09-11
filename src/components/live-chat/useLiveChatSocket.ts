@@ -117,7 +117,12 @@ export function useLiveChatSocket() {
       // on every (re)connect attempt, so a token that expired mid-session
       // gets replaced instead of failing auth on reconnect.
       socket = io(SOCKET_URL, {
-        transports: ["websocket"],
+        // Let engine.io do its normal polling-handshake-then-upgrade sequence
+        // rather than forcing "websocket" as the very first transport: against
+        // the server's eiows-backed ws engine, a websocket-only client fails
+        // the initial handshake outright. It still ends up upgraded to a real
+        // WebSocket connection immediately after connecting.
+        transports: ["polling", "websocket"],
         auth: (callback) => {
           fetchToken()
             .then((token) => callback({ token }))
