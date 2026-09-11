@@ -1,3 +1,4 @@
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import {
   defaultLocale,
@@ -6,6 +7,11 @@ import {
   localisedPathname,
   normaliseLocale,
 } from "@/i18n/config";
+
+// The admin dashboard lives at a clean, non-localised path and is protected
+// by Clerk — it's a private tool for one person, not portfolio content.
+const isAdminRoute = createRouteMatcher(["/admin(.*)", "/api/admin(.*)"]);
+const isAdminSignIn = createRouteMatcher(["/admin/sign-in(.*)"]);
 
 function preferredLocale(request: NextRequest) {
   const saved = normaliseLocale(request.cookies.get(localeCookieName)?.value);
@@ -19,7 +25,7 @@ function preferredLocale(request: NextRequest) {
   return defaultLocale;
 }
 
-export function middleware(request: NextRequest) {
+function localeMiddleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const firstSegment = pathname.split("/").filter(Boolean)[0];
 
@@ -57,6 +63,24 @@ export function middleware(request: NextRequest) {
   return response;
 }
 
+export default clerkMiddleware(async (auth, request) => {
+  if (isAdminRoute(request)) {
+    if (!isAdminSignIn(request)) {
+      await auth.protect();
+    }
+    return NextResponse.next();
+  }
+
+  if (request.nextUrl.pathname.startsWith("/api")) {
+    return NextResponse.next();
+  }
+
+  return localeMiddleware(request);
+});
+
 export const config = {
-  matcher: ["/((?!api|_next|favicon\\.svg|robots\\.txt|sitemap\\.xml|.*\\.[^/]+$).*)"],
+  matcher: [
+    "/((?!_next|favicon\\.svg|robots\\.txt|sitemap\\.xml|.*\\.[^/]+$).*)",
+    "/(api|trpc)(.*)",
+  ],
 };
