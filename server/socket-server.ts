@@ -11,6 +11,7 @@ import { createServer } from "node:http";
 import { Server } from "socket.io";
 import eiows from "eiows";
 import { attachChatHandlers } from "../src/lib/socket/server";
+import type { ClientToServerEvents, ServerToClientEvents, SocketData } from "../src/lib/socket/types";
 
 const PORT = Number(process.env.SOCKET_PORT ?? 4001);
 const CORS_ORIGIN = process.env.SOCKET_CORS_ORIGIN ?? "http://localhost:3000";
@@ -20,7 +21,7 @@ const httpServer = createServer((_req, res) => {
   res.end("Live chat socket server is running.\n");
 });
 
-const io = new Server(httpServer, {
+const io = new Server<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>(httpServer, {
   wsEngine: eiows.Server,
   perMessageDeflate: false,
   cors: {

@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin";
-import {
-  getConversationWithMessages,
-  markConversationRead,
-  setConversationStatus,
-} from "@/lib/liveChat/conversations";
+import { getConversationById } from "@/lib/chat/get-conversations";
+import { getMessages } from "@/lib/chat/get-messages";
+import { markAsRead } from "@/lib/chat/mark-as-read";
+import { updateConversation } from "@/lib/chat/update-conversation";
 
 export const runtime = "nodejs";
 
@@ -17,14 +16,15 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
   }
 
   const { id } = await params;
-  const conversation = await getConversationWithMessages(id);
+  const conversation = await getConversationById(id);
   if (!conversation) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  await markConversationRead(id, "admin");
+  const messages = await getMessages(id);
+  await markAsRead(id, "admin");
 
-  return NextResponse.json({ conversation });
+  return NextResponse.json({ conversation: { ...conversation, messages } });
 }
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -47,6 +47,6 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     return NextResponse.json({ error: "Invalid status" }, { status: 400 });
   }
 
-  const conversation = await setConversationStatus(id, body.status);
+  const conversation = await updateConversation(id, { status: body.status });
   return NextResponse.json({ conversation });
 }
