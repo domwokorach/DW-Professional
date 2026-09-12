@@ -12,3 +12,18 @@ export class SessionExpiredError extends Error {
     this.name = "SessionExpiredError";
   }
 }
+
+/**
+ * Thrown by a token fetcher when the request itself failed in a way retrying
+ * cannot fix (e.g. the token endpoint rejected the payload, or the server
+ * reports live chat isn't configured) — as opposed to a transient network
+ * error, which should keep retrying. useSocket checks for this type to stop
+ * reconnection and surface "Unable to authenticate chat" instead of looping
+ * forever against a request that will never succeed.
+ */
+export class ChatUnavailableError extends Error {
+  constructor() {
+    super("Unable to authenticate chat");
+    this.name = "ChatUnavailableError";
+  }
+}

@@ -59,6 +59,8 @@ export function attachChatHandlers(io: ChatServer): void {
 }
 
 async function handleConnection(io: ChatServer, socket: ChatSocket) {
+  console.log("[socket] connected", { id: socket.id, role: socket.data.role });
+
   if (socket.data.role === "admin" && socket.data.adminId) {
     socket.join(ADMIN_ROOM);
     await updatePresence.markOnline(socket.data.adminId);
@@ -117,7 +119,8 @@ async function handleConnection(io: ChatServer, socket: ChatSocket) {
     }
   });
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", (reason) => {
+    console.log("[socket] disconnected", { id: socket.id, reason });
     void handleDisconnect(io, socket);
   });
 }

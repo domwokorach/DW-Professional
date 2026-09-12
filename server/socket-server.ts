@@ -13,10 +13,22 @@ import eiows from "eiows";
 import { attachChatHandlers } from "../src/lib/socket/server";
 import type { ClientToServerEvents, ServerToClientEvents, SocketData } from "../src/lib/socket/types";
 
-// SOCKET_PORT is used for local dev; hosts like Render/Railway/Fly inject
-// their own PORT and require the process to bind to it.
-const PORT = Number(process.env.SOCKET_PORT ?? process.env.PORT ?? 4001);
-const CORS_ORIGIN = process.env.SOCKET_CORS_ORIGIN ?? "http://localhost:3000";
+// Hosts like Render/Railway/Fly inject PORT and require the process to bind
+// to it — that must win whenever it's present. SOCKET_PORT is the local-dev
+// override for when nothing injects PORT.
+const PORT = Number(process.env.PORT ?? process.env.SOCKET_PORT ?? 4001);
+
+// SOCKET_CORS_ORIGIN may be a single origin or a comma-separated list (e.g.
+// both the apex and www production domains). localhost:3000 is always
+// allowed in addition so local dev keeps working regardless of what's
+// configured for production.
+const allowedOrigins = [
+  ...(process.env.SOCKET_CORS_ORIGIN ?? "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
+  "http://localhost:3000",
+];
 
 // Fail loudly and immediately on misconfiguration rather than letting every
 // connection silently reject as "Unauthorized" — a mismatched or missing
@@ -50,8 +62,16 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents, Record<string,
   wsEngine: eiows.Server,
   perMessageDeflate: false,
   cors: {
-    origin: CORS_ORIGIN,
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      console.error(`[socket] rejected CORS origin: ${origin}`);
+      callback(new Error(`Origin ${origin} is not allowed`));
+    },
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 

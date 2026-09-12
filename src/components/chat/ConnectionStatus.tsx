@@ -10,6 +10,7 @@ const CONFIG: Record<
   reconnecting: { label: "Reconnecting…", icon: RefreshCw, className: "text-amber-400", spin: true },
   offline: { label: "Offline", icon: WifiOff, className: "text-muted" },
   unauthorized: { label: "Session expired", icon: TriangleAlert, className: "text-red-400" },
+  "auth-failed": { label: "Unable to authenticate chat", icon: TriangleAlert, className: "text-red-400" },
 };
 
 export default function ConnectionStatus({ state }: { state: ConnectionState }) {

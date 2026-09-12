@@ -10,6 +10,7 @@ const STATUS_LABEL: Record<ConnectionState, string> = {
   reconnecting: "Reconnecting",
   offline: "Offline",
   unauthorized: "Connection error",
+  "auth-failed": "Unable to authenticate chat",
 };
 
 const STATUS_DOT_CLASS: Record<ConnectionState, string> = {
@@ -18,6 +19,7 @@ const STATUS_DOT_CLASS: Record<ConnectionState, string> = {
   reconnecting: "bg-amber-400",
   offline: "bg-red-400",
   unauthorized: "bg-red-400",
+  "auth-failed": "bg-red-400",
 };
 
 const LiveChatLauncher = forwardRef<
