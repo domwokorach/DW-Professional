@@ -27,7 +27,7 @@ type ChatSocket = Socket<ClientToServerEvents, ServerToClientEvents, Record<stri
 /**
  * Wires every chat:* handler onto an already-constructed Socket.IO server.
  * Kept separate from server/socket-server.ts so the transport setup
- * (http server, eiows, cors) stays independent of the chat protocol.
+ * (http server, cors) stays independent of the chat protocol.
  */
 export function attachChatHandlers(io: ChatServer): void {
   const secret = process.env.SOCKET_SECRET;

@@ -9,26 +9,56 @@
  */
 import { createServer } from "node:http";
 import { Server } from "socket.io";
-import eiows from "eiows";
 import { attachChatHandlers } from "../src/lib/socket/server";
 import type { ClientToServerEvents, ServerToClientEvents, SocketData } from "../src/lib/socket/types";
+
+process.on("uncaughtException", (error) => {
+  console.error("[socket] uncaughtException", error);
+});
+
+process.on("unhandledRejection", (reason) => {
+  console.error("[socket] unhandledRejection", reason);
+});
 
 // Hosts like Render/Railway/Fly inject PORT and require the process to bind
 // to it — that must win whenever it's present. SOCKET_PORT is the local-dev
 // override for when nothing injects PORT.
 const PORT = Number(process.env.PORT ?? process.env.SOCKET_PORT ?? 4001);
 
+console.log("[socket] startup", {
+  nodeEnv: process.env.NODE_ENV,
+  portProvided: Boolean(process.env.PORT),
+  socketSecretConfigured: Boolean(process.env.SOCKET_SECRET),
+  databaseConfigured: Boolean(process.env.DATABASE_URL),
+  redisConfigured: Boolean(process.env.REDIS_URL),
+  corsOrigin: process.env.SOCKET_CORS_ORIGIN,
+});
+
 // SOCKET_CORS_ORIGIN may be a single origin or a comma-separated list (e.g.
-// both the apex and www production domains). localhost:3000 is always
-// allowed in addition so local dev keeps working regardless of what's
-// configured for production.
+// both the apex and www production domains). Localhost is only allowed
+// outside production, even if it is accidentally included in the environment.
 const allowedOrigins = [
+  "https://www.dominicwokorach.me",
+  "https://dominicwokorach.me",
   ...(process.env.SOCKET_CORS_ORIGIN ?? "")
     .split(",")
     .map((origin) => origin.trim())
-    .filter(Boolean),
-  "http://localhost:3000",
+    .filter((origin) => {
+      if (!origin || origin === "*") return false;
+      if (process.env.NODE_ENV !== "production") return true;
+      try {
+        const url = new URL(origin);
+        return url.protocol === "https:" &&
+          !["localhost", "127.0.0.1", "[::1]"].includes(url.hostname);
+      } catch {
+        return false;
+      }
+    }),
 ];
+
+if (process.env.NODE_ENV !== "production") {
+  allowedOrigins.push("http://localhost:3000");
+}
 
 // Fail loudly and immediately on misconfiguration rather than letting every
 // connection silently reject as "Unauthorized" — a mismatched or missing
@@ -59,8 +89,6 @@ const httpServer = createServer((req, res) => {
 });
 
 const io = new Server<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>(httpServer, {
-  wsEngine: eiows.Server,
-  perMessageDeflate: false,
   cors: {
     origin(origin, callback) {
       if (!origin || allowedOrigins.includes(origin)) {
@@ -77,6 +105,6 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents, Record<string,
 
 attachChatHandlers(io);
 
-httpServer.listen(PORT, () => {
-  console.log(`Live chat socket server listening on http://localhost:${PORT}`);
+httpServer.listen(PORT, "0.0.0.0", () => {
+  console.log(`[socket] listening on 0.0.0.0:${PORT}`);
 });
