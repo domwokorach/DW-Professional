@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isAdmin } from "@/lib/chat/permissions";
+import { requireAdminApi } from "@/lib/admin";
 import { getConversationById } from "@/lib/chat/get-conversations";
 import { getMessages } from "@/lib/chat/get-messages";
 import { markAsRead } from "@/lib/chat/mark-as-read";
@@ -9,8 +9,8 @@ import { conversationPatchSchema, safeParse } from "@/lib/chat/validation";
 export const runtime = "nodejs";
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const admin = await isAdmin();
-  if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const check = await requireAdminApi();
+  if (!check.ok) return check.response;
 
   const { id } = await params;
   const conversation = await getConversationById(id);
@@ -25,8 +25,8 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
 }
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const admin = await isAdmin();
-  if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const check = await requireAdminApi();
+  if (!check.ok) return check.response;
 
   const { id } = await params;
   const body = await request.json().catch(() => ({}));

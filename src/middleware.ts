@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, clerkClient } from "@clerk/nextjs/server";
 import {
   defaultLocale,
   isLocale,
@@ -8,6 +8,24 @@ import {
   normaliseLocale,
   stripLocale,
 } from "@/i18n/config";
+
+function isAdminRoute(remainingPath: string) {
+  return remainingPath === "/admin" || remainingPath.startsWith("/admin/");
+}
+
+async function isAdminUser(userId: string): Promise<boolean> {
+  const client = await clerkClient();
+  const user = await client.users.getUser(userId);
+
+  if (user.publicMetadata?.role === "admin") return true;
+
+  const allowedEmails = (process.env.ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+  const email = user.primaryEmailAddress?.emailAddress?.toLowerCase();
+  return Boolean(email && allowedEmails.includes(email));
+}
 
 function preferredLocale(request: NextRequest) {
   const saved = normaliseLocale(request.cookies.get(localeCookieName)?.value);
@@ -21,7 +39,7 @@ function preferredLocale(request: NextRequest) {
   return defaultLocale;
 }
 
-export default clerkMiddleware(async (_auth, request) => {
+export default clerkMiddleware(async (auth, request) => {
   const { pathname } = request.nextUrl;
 
   // API routes need clerkMiddleware() to wrap them (so auth() works inside
@@ -48,11 +66,32 @@ export default clerkMiddleware(async (_auth, request) => {
 
   const locale = normaliseLocale(firstSegment) ?? defaultLocale;
   const remainingPath = stripLocale(pathname);
+
+  if (isAdminRoute(remainingPath)) {
+    const { userId } = await auth();
+
+    if (!userId) {
+      const signInUrl = request.nextUrl.clone();
+      signInUrl.pathname = localisedPathname("/sign-in", locale);
+      signInUrl.search = "";
+      signInUrl.searchParams.set("redirect_url", `${localisedPathname(remainingPath, locale)}${request.nextUrl.search}`);
+      return NextResponse.redirect(signInUrl);
+    }
+
+    if (!(await isAdminUser(userId))) {
+      const unauthorizedUrl = request.nextUrl.clone();
+      unauthorizedUrl.pathname = localisedPathname("/unauthorized", locale);
+      unauthorizedUrl.search = "";
+      return NextResponse.redirect(unauthorizedUrl);
+    }
+  }
+
   const rewriteUrl = request.nextUrl.clone();
   rewriteUrl.pathname = remainingPath;
 
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-portfolio-locale", locale);
+  requestHeaders.set("x-portfolio-path", `${localisedPathname(remainingPath, locale)}${request.nextUrl.search}`);
 
   const response = NextResponse.rewrite(rewriteUrl, {
     request: { headers: requestHeaders },
