@@ -4,13 +4,6 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import CookieConsentManager from "@/components/ui/CookieConsentManager";
-import BackToTopButton from "@/components/ui/BackToTopButton";
-import AccessibilityControls from "@/components/ui/AccessibilityControls";
-import OfflineStatus from "@/components/ui/OfflineStatus";
-import LiveChatLoader from "@/components/live-chat/LiveChatLoader";
 import { LocaleProvider } from "@/i18n/LocaleProvider";
 import { defaultLocale, isRtlLocale, normaliseLocale } from "@/i18n/config";
 
@@ -106,19 +99,7 @@ export default async function RootLayout({
           </Script>
         </head>
         <body className="font-sans antialiased">
-          <LocaleProvider initialLocale={locale}>
-            <a href="#main" className="skip-link">
-              Skip to content
-            </a>
-            <Header />
-            <main id="main">{children}</main>
-            <Footer />
-            <CookieConsentManager />
-            <BackToTopButton />
-            <AccessibilityControls />
-            <OfflineStatus />
-            <LiveChatLoader />
-          </LocaleProvider>
+          <LocaleProvider initialLocale={locale}>{children}</LocaleProvider>
         </body>
       </html>
     </ClerkProvider>
