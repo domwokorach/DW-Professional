@@ -22,12 +22,28 @@ process.on("unhandledRejection", (reason) => {
 
 // Hosts like Render/Railway/Fly inject PORT and require the process to bind
 // to it — that must win whenever it's present. SOCKET_PORT is the local-dev
-// override for when nothing injects PORT.
-const PORT = Number(process.env.PORT ?? process.env.SOCKET_PORT ?? 4001);
+// override for when nothing injects PORT. No automatic fallback to a
+// different port if the resolved one is busy: clients (the Next.js app,
+// NEXT_PUBLIC_SOCKET_URL) are configured against a specific port, so silently
+// picking another one would just move the failure to "can't connect" instead
+// of the clearer "port in use" error below.
+let PORT: number;
+let portSource: "PORT" | "SOCKET_PORT" | "default";
+if (process.env.PORT) {
+  PORT = Number(process.env.PORT);
+  portSource = "PORT";
+} else if (process.env.SOCKET_PORT) {
+  PORT = Number(process.env.SOCKET_PORT);
+  portSource = "SOCKET_PORT";
+} else {
+  PORT = 3001;
+  portSource = "default";
+}
 
 console.log("[socket] startup", {
   nodeEnv: process.env.NODE_ENV,
-  portProvided: Boolean(process.env.PORT),
+  port: PORT,
+  portSource,
   socketSecretConfigured: Boolean(process.env.SOCKET_SECRET),
   databaseConfigured: Boolean(process.env.DATABASE_URL),
   redisConfigured: Boolean(process.env.REDIS_URL),
@@ -105,6 +121,34 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents, Record<string,
 
 attachChatHandlers(io);
 
+httpServer.on("error", (error: NodeJS.ErrnoException) => {
+  if (error.code === "EADDRINUSE") {
+    console.error(
+      `[socket] Port ${PORT} is already in use. Stop the existing socket server or configure a different port.`
+    );
+  } else {
+    console.error("[socket] http server error", error);
+  }
+  process.exit(1);
+});
+
 httpServer.listen(PORT, "0.0.0.0", () => {
   console.log(`[socket] listening on 0.0.0.0:${PORT}`);
 });
+
+// Local dev restarts (tsx watch, manual re-runs) are the main source of
+// stale listeners holding the port; closing cleanly on SIGINT/SIGTERM makes
+// that far less likely without masking a real EADDRINUSE with a fallback.
+function shutdown(signal: NodeJS.Signals) {
+  console.log(`[socket] received ${signal}, shutting down`);
+  io.close(() => {
+    httpServer.close(() => {
+      console.log("[socket] shutdown complete");
+      process.exit(0);
+    });
+  });
+  setTimeout(() => process.exit(1), 5000).unref();
+}
+
+process.on("SIGINT", () => shutdown("SIGINT"));
+process.on("SIGTERM", () => shutdown("SIGTERM"));

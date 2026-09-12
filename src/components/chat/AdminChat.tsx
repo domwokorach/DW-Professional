@@ -2,8 +2,9 @@
 
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
-import { MessageSquare, LogOut } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { useClerk } from "@clerk/nextjs";
+import { SidebarProvider } from "@/components/animate-ui/components/radix/sidebar";
 import { useAdminSocket } from "@/hooks/use-admin-socket";
 import { useConversations } from "@/hooks/use-conversations";
 import { useAdminThread } from "@/hooks/use-admin-thread";
@@ -14,8 +15,6 @@ import ConversationList from "./ConversationList";
 import ChatHeader from "./ChatHeader";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
-import ConnectionStatus from "./ConnectionStatus";
-import OnlineStatus from "./OnlineStatus";
 
 export default function AdminChat({ adminName, adminEmail }: { adminName: string; adminEmail: string }) {
   const { socketRef, connectionState } = useAdminSocket();
@@ -61,47 +60,26 @@ export default function AdminChat({ adminName, adminEmail }: { adminName: string
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
-      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-6">
-        <div className="min-w-0">
-          <h1 className="font-mono text-base font-semibold text-white sm:text-lg">Admin Chat</h1>
-          <div className="mt-0.5 flex min-w-0 items-center gap-2 text-xs text-muted">
-            <span className="truncate">
-              Signed in as <span className="text-white">{adminName}</span>
-              {adminEmail ? <span className="hidden sm:inline"> · {adminEmail}</span> : null}
-            </span>
-          </div>
-        </div>
-
-        <div className="flex shrink-0 items-center gap-3">
-          <OnlineStatus online={connectionState === "online"} />
-          <ConnectionStatus state={connectionState} />
-          <button
-            type="button"
-            onClick={handleSignOut}
-            className="flex h-9 items-center gap-1.5 rounded-full border border-line px-3 text-xs font-semibold text-white transition-colors hover:border-accent hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
-          >
-            <LogOut className="h-3.5 w-3.5" aria-hidden="true" />
-            Sign Out
-          </button>
-        </div>
+      <header className="flex shrink-0 items-center border-b border-line px-4 py-3 sm:px-6">
+        <h1 className="font-mono text-base font-semibold text-white sm:text-lg">Admin Chat</h1>
       </header>
 
-      <div className="min-h-0 flex-1 md:grid md:grid-cols-[260px_1fr] lg:grid-cols-[320px_1fr]">
-        <aside
-          className={`h-full min-h-0 overflow-hidden border-line md:block md:border-r ${
-            selectedId ? "hidden" : "block"
-          }`}
-        >
+      <SidebarProvider className="contents">
+        <div className="min-h-0 flex-1 md:grid md:grid-cols-[260px_1fr] lg:grid-cols-[320px_1fr]">
           <ConversationList
             conversations={conversations}
             loading={listLoading}
             selectedId={selectedId}
             onlineVisitorIds={onlineVisitorIds}
+            connectionState={connectionState}
+            adminName={adminName}
+            adminEmail={adminEmail}
             onSelect={setSelectedId}
+            onSignOut={handleSignOut}
+            className={`h-full w-full border-line md:border-r ${selectedId ? "hidden" : "flex"} md:flex`}
           />
-        </aside>
 
-        <div className={`flex h-full min-h-0 flex-col ${selectedId ? "flex" : "hidden md:flex"}`}>
+          <div className={`flex h-full min-h-0 flex-col ${selectedId ? "flex" : "hidden md:flex"}`}>
           {!conversation ? (
             <div className="flex flex-1 flex-col items-center justify-center gap-2 px-6 text-center">
               <MessageSquare className="h-10 w-10 text-muted" aria-hidden="true" />
@@ -133,8 +111,9 @@ export default function AdminChat({ adminName, adminEmail }: { adminName: string
               />
             </>
           )}
+          </div>
         </div>
-      </div>
+      </SidebarProvider>
     </div>
   );
 }

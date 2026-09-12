@@ -1,4 +1,4 @@
-export const SOCKET_PORT = Number(process.env.SOCKET_PORT ?? 4001);
+export const SOCKET_PORT = Number(process.env.SOCKET_PORT ?? 3001);
 export const SOCKET_CORS_ORIGIN = process.env.SOCKET_CORS_ORIGIN ?? "http://localhost:3000";
 export const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL ?? "";
 
