@@ -8,8 +8,10 @@ services:
     buildCommand: npm install
     startCommand: npm run socket:start
     envVars:
+      - key: NODE_ENV
+        value: production
       - key: SOCKET_CORS_ORIGIN
-        value: https://dominicwokorach.me
+        value: https://www.dominicwokorach.me,https://dominicwokorach.me
       - key: SOCKET_SECRET
         sync: false
       - key: DATABASE_URL

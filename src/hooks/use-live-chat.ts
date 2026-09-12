@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSocket } from "./use-socket";
+import { ChatUnavailableError } from "@/lib/socket/errors";
 import { SOCKET_EVENTS } from "@/lib/socket/events";
 import { CONVERSATION_ID_STORAGE_KEY, VISITOR_ID_STORAGE_KEY } from "@/lib/chat/constants";
 import { generateId } from "@/lib/utils/generate-id";
@@ -37,6 +38,10 @@ export function useLiveChat() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ visitorId: getVisitorId() }),
     });
+    // A 400/503 means the request itself is rejected (bad visitorId, or live
+    // chat not configured server-side) — retrying with the same payload can
+    // never succeed, unlike a transient network/5xx failure.
+    if (res.status === 400 || res.status === 503) throw new ChatUnavailableError();
     if (!res.ok) throw new Error("Unable to fetch chat token");
     const { token } = (await res.json()) as { token: string };
     return token;
