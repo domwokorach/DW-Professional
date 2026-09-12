@@ -1,18 +1,21 @@
 services:
   - type: web
-    name: dw-portfolio-socket
+    name: dw-professional
     runtime: node
-    plan: starter
-    region: ohio
-    branch: master
-    buildCommand: npm install
+    region: frankfurt
+    plan: free
+    buildCommand: npm ci
     startCommand: npm run socket:start
+    healthCheckPath: /health
+    autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production
       - key: SOCKET_CORS_ORIGIN
-        value: https://www.dominicwokorach.me,https://dominicwokorach.me
+        value: https://www.dominicwokorach.me
       - key: SOCKET_SECRET
         sync: false
       - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
         sync: false
