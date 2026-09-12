@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma migrate deploy --schema prisma/schema.prisma; next build",
     "start": "next start",
     "lint": "eslint src scripts --max-warnings=0",
     "test:accessibility": "playwright test",
