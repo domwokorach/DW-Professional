@@ -60,7 +60,7 @@ export default function AdminChat({ adminName, adminEmail }: { adminName: string
   }, [conversation, refresh]);
 
   return (
-    <div className="flex h-[calc(100dvh-4rem)] flex-col overflow-hidden">
+    <div className="flex h-dvh flex-col overflow-hidden">
       <header className="flex shrink-0 items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-6">
         <div className="min-w-0">
           <h1 className="font-mono text-base font-semibold text-white sm:text-lg">Admin Chat</h1>
