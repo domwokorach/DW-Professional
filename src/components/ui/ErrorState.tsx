@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { AlertTriangle, WifiOff } from "lucide-react";
+import { AlertTriangle, ShieldAlert, WifiOff } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type ErrorStateProps = {
-  kind: "not-found" | "connection";
+  kind: "not-found" | "connection" | "unauthorized";
   onRetry?: () => void;
 };
 
@@ -18,10 +18,18 @@ const content = {
     icon: AlertTriangle,
   },
   connection: {
+    code: undefined,
     title: "Connection lost",
     description:
       "It looks like you are offline or the connection to the website was interrupted.",
     icon: WifiOff,
+  },
+  unauthorized: {
+    code: "401",
+    title: "Access restricted",
+    description:
+      "You don’t have permission to view this page, or your session has expired. Sign in with an authorised account to continue.",
+    icon: ShieldAlert,
   },
 } as const;
 
@@ -72,12 +80,12 @@ export default function ErrorState({ kind, onRetry }: ErrorStateProps) {
           <Icon aria-hidden="true" size={28} strokeWidth={2} />
         </div>
 
-        {kind === "not-found" && (
+        {content[kind].code && (
           <p className="mt-6 font-mono text-sm font-semibold tracking-[0.15em] text-accent">
-            {content["not-found"].code}
+            {content[kind].code}
           </p>
         )}
-        <div role="alert" className={kind === "not-found" ? "mt-3" : "mt-6"}>
+        <div role="alert" className={content[kind].code ? "mt-3" : "mt-6"}>
           <h1 id="error-title" className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
             {content[kind].title}
           </h1>
