@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: dw-portfolio-socket
+    runtime: node
+    plan: starter
+    region: ohio
+    branch: master
+    buildCommand: npm install
+    startCommand: npm run socket:start
+    envVars:
+      - key: SOCKET_CORS_ORIGIN
+        value: https://dominicwokorach.me
+      - key: SOCKET_SECRET
+        sync: false
+      - key: DATABASE_URL
+        sync: false
