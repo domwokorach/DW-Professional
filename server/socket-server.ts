@@ -13,7 +13,9 @@ import eiows from "eiows";
 import { attachChatHandlers } from "../src/lib/socket/server";
 import type { ClientToServerEvents, ServerToClientEvents, SocketData } from "../src/lib/socket/types";
 
-const PORT = Number(process.env.SOCKET_PORT ?? 4001);
+// SOCKET_PORT is used for local dev; hosts like Render/Railway/Fly inject
+// their own PORT and require the process to bind to it.
+const PORT = Number(process.env.SOCKET_PORT ?? process.env.PORT ?? 4001);
 const CORS_ORIGIN = process.env.SOCKET_CORS_ORIGIN ?? "http://localhost:3000";
 
 // Fail loudly and immediately on misconfiguration rather than letting every
