@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isAdmin } from "@/lib/chat/permissions";
+import { requireAdminApi } from "@/lib/admin";
 import { markAsRead } from "@/lib/chat/mark-as-read";
 import { conversationIdSchema, safeParse, visitorIdSchema } from "@/lib/chat/validation";
 import { z } from "zod";
@@ -20,8 +20,8 @@ export async function POST(request: NextRequest) {
   }
 
   if (input.reader === "admin") {
-    const admin = await isAdmin();
-    if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const check = await requireAdminApi();
+    if (!check.ok) return check.response;
   } else if (!input.visitorId) {
     return NextResponse.json({ error: "Invalid visitorId" }, { status: 400 });
   }

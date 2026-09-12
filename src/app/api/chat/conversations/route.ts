@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isAdmin } from "@/lib/chat/permissions";
+import { requireAdminApi } from "@/lib/admin";
 import { findOrCreateConversation } from "@/lib/chat/create-conversation";
 import { getConversations } from "@/lib/chat/get-conversations";
 import { createConversationSchema, safeParse } from "@/lib/chat/validation";
@@ -9,8 +9,8 @@ export const runtime = "nodejs";
 
 /** Admin: list conversations for the dashboard. */
 export async function GET(request: NextRequest) {
-  const admin = await isAdmin();
-  if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const check = await requireAdminApi();
+  if (!check.ok) return check.response;
 
   const { searchParams } = new URL(request.url);
   const status = searchParams.get("status") as ConversationStatus | null;
