@@ -61,6 +61,19 @@ export function attachChatHandlers(io: ChatServer): void {
 async function handleConnection(io: ChatServer, socket: ChatSocket) {
   console.log("[socket] connected", { id: socket.id, role: socket.data.role });
 
+  // Redis presence expires after 60 seconds. Refresh it while this socket is
+  // connected so an active admin does not disappear and trigger bot replies.
+  const presenceHeartbeat = setInterval(() => {
+    const refresh = socket.data.role === "admin" && socket.data.adminId
+      ? updatePresence.markOnline(socket.data.adminId)
+      : socket.data.visitorId
+        ? updatePresence.markVisitorOnline(socket.data.visitorId)
+        : Promise.resolve();
+    void refresh.catch((error) => console.error("[socket] presence refresh failed", error));
+  }, 20_000);
+  presenceHeartbeat.unref();
+  socket.once("disconnect", () => clearInterval(presenceHeartbeat));
+
   if (socket.data.role === "admin" && socket.data.adminId) {
     socket.join(ADMIN_ROOM);
     await updatePresence.markOnline(socket.data.adminId);
