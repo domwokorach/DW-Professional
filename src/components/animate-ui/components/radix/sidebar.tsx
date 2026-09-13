@@ -76,10 +76,14 @@ function SidebarProvider({
     (value: boolean | ((value: boolean) => boolean)) => {
       const openState = typeof value === 'function' ? value(open) : value;
       if (setOpenProp) {
+        // A controlled instance manages its own persistence (if any) — writing the
+        // shared cookie here would clobber state for other, uncontrolled sidebars
+        // (e.g. a nested provider) that also default from it.
         setOpenProp(openState);
-      } else {
-        _setOpen(openState);
+        return;
       }
+
+      _setOpen(openState);
 
       // This sets the cookie to keep the sidebar state.
       document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
