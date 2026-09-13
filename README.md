@@ -215,7 +215,7 @@ authentication system — see `src/lib/auth/` for the implementation. There is n
 admin accounts are provisioned directly.
 
 1. Set up PostgreSQL and point `DATABASE_URL` at it (a Prisma Postgres or Neon database both work).
-2. Set `JWT_ACCESS_SECRET` and `JWT_REFRESH_PEPPER` in `.env.local` to two distinct long random strings,
+2. Set `JWT_ACCESS_SECRET` and `TOKEN_HASH_PEPPER` in `.env.local` to two distinct long random strings,
    e.g. `node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"`.
 3. Set `NEXT_PUBLIC_APP_URL` to your app's origin (used to build links in transactional emails).
 4. Apply the database schema: `npx prisma migrate deploy` (or `npx prisma migrate dev` locally).
@@ -239,7 +239,7 @@ OPENAI_VECTOR_STORE_ID=
 OPENWEATHER_API_KEY=
 DATABASE_URL=
 JWT_ACCESS_SECRET=
-JWT_REFRESH_PEPPER=
+TOKEN_HASH_PEPPER=
 NEXT_PUBLIC_APP_URL=
 RESEND_API_KEY=
 RESEND_FROM_EMAIL=
@@ -252,7 +252,7 @@ RESEND_FROM_EMAIL=
 | `OPENWEATHER_API_KEY` | `src/app/api/weather/route.ts` | Weather widget |
 | `DATABASE_URL` | `prisma/schema.prisma`, `src/lib/database/db.ts` | Admin Chat auth, live chat |
 | `JWT_ACCESS_SECRET` | `src/lib/auth/tokens.ts`, `src/middleware.ts` | Admin Chat auth (access tokens) |
-| `JWT_REFRESH_PEPPER` | `src/lib/auth/env.ts` | Admin Chat auth (reserved) |
+| `TOKEN_HASH_PEPPER` | `src/lib/auth/env.ts` | Hashes refresh/reset/email-change tokens |
 | `NEXT_PUBLIC_APP_URL` | `src/lib/email/mailer.ts` callers | Links in auth emails |
 | `RESEND_API_KEY` / `RESEND_FROM_EMAIL` | `src/lib/email/mailer.ts` | Auth transactional emails |
 

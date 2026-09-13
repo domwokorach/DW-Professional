@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum CommentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 enum ConversationStatus {
   OPEN
   PENDING
@@ -145,6 +151,21 @@ model SecurityEvent {
   session Session? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
 
   @@index([userId, createdAt])
+}
+
+model Comment {
+  id         String        @id @default(cuid())
+  fullName   String
+  company    String?
+  body       String
+  avatarUrl  String?
+  status     CommentStatus @default(PENDING)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  reviewedAt DateTime?
+  reviewedBy String?
+
+  @@index([status, createdAt])
 }
 
 model Conversation {

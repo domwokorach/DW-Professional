@@ -20,18 +20,18 @@ describe('src/lib/auth/env', () => {
     expect(() => getAccessTokenSecret()).toThrow('JWT_ACCESS_SECRET is not configured');
   });
 
-  it('getRefreshTokenPepper throws when JWT_REFRESH_PEPPER is not configured', () => {
+  it('getTokenHashPepper throws when TOKEN_HASH_PEPPER is not configured', () => {
     process.env = { ...ORIGINAL_ENV };
-    delete process.env.JWT_REFRESH_PEPPER;
+    delete process.env.TOKEN_HASH_PEPPER;
     jest.resetModules();
-    const { getRefreshTokenPepper } = require('@/lib/auth/env');
-    expect(() => getRefreshTokenPepper()).toThrow('JWT_REFRESH_PEPPER is not configured');
+    const { getTokenHashPepper } = require('@/lib/auth/env');
+    expect(() => getTokenHashPepper()).toThrow('TOKEN_HASH_PEPPER is not configured');
   });
 
-  it('getRefreshTokenPepper returns the configured pepper', () => {
-    process.env = { ...ORIGINAL_ENV, JWT_REFRESH_PEPPER: 'a-real-pepper' };
-    const { getRefreshTokenPepper } = require('@/lib/auth/env');
-    expect(getRefreshTokenPepper()).toBe('a-real-pepper');
+  it('getTokenHashPepper returns the configured pepper', () => {
+    process.env = { ...ORIGINAL_ENV, TOKEN_HASH_PEPPER: 'a-real-pepper' };
+    const { getTokenHashPepper } = require('@/lib/auth/env');
+    expect(getTokenHashPepper()).toBe('a-real-pepper');
   });
 
   it('isProduction reflects NODE_ENV === "production"', () => {
