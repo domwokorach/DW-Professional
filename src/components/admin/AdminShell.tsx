@@ -16,6 +16,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
+  useSidebar,
 } from "@/components/animate-ui/components/radix/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -51,13 +52,34 @@ function roleLabel(role: AdminSession["role"]): string {
   return "Admin";
 }
 
-export default function AdminShell({ admin, children }: { admin: AdminSession; children: React.ReactNode }) {
+/** Closes the off-canvas mobile sidebar once a destination is picked, so it never lingers over the newly-navigated page. */
+function NavLink({ href, active, tooltip, children }: { href: string; active: boolean; tooltip: string; children: React.ReactNode }) {
+  const { isMobile, setOpenMobile } = useSidebar();
+
+  return (
+    <SidebarMenuButton asChild isActive={active} tooltip={tooltip}>
+      <Link href={href} onClick={() => isMobile && setOpenMobile(false)}>
+        {children}
+      </Link>
+    </SidebarMenuButton>
+  );
+}
+
+export default function AdminShell({
+  admin,
+  sidebarDefaultOpen = true,
+  children,
+}: {
+  admin: AdminSession;
+  sidebarDefaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
   const { localiseHref } = useLocale();
   const { signOut, signingOut } = useSignOut();
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={sidebarDefaultOpen}>
       <Sidebar collapsible="icon">
         <SidebarHeader className="px-3 py-3">
           <Link href={localiseHref("/admin/chat")} className="flex items-center gap-2 px-1">
@@ -80,12 +102,10 @@ export default function AdminShell({ admin, children }: { admin: AdminSession; c
                   const Icon = item.icon;
                   return (
                     <SidebarMenuItem key={item.id}>
-                      <SidebarMenuButton asChild isActive={active} tooltip={item.label}>
-                        <Link href={href}>
-                          <Icon />
-                          <span>{item.label}</span>
-                        </Link>
-                      </SidebarMenuButton>
+                      <NavLink href={href} active={active} tooltip={item.label}>
+                        <Icon />
+                        <span>{item.label}</span>
+                      </NavLink>
                     </SidebarMenuItem>
                   );
                 })}

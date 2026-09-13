@@ -1,4 +1,4 @@
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { defaultLocale, localisedPathname, normaliseLocale } from "@/i18n/config";
 import { getAdminSession } from "@/lib/auth/guard";
@@ -21,5 +21,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     );
   }
 
-  return <AdminShell admin={admin}>{children}</AdminShell>;
+  // Read the desktop sidebar's persisted open/collapsed preference server-side
+  // so the initial render already matches it — avoids the hydration mismatch
+  // (and layout flash) that reading it client-only after mount would cause.
+  const cookieStore = await cookies();
+  const sidebarDefaultOpen = cookieStore.get("sidebar_state")?.value !== "false";
+
+  return (
+    <AdminShell admin={admin} sidebarDefaultOpen={sidebarDefaultOpen}>
+      {children}
+    </AdminShell>
+  );
 }
