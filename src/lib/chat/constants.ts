@@ -10,6 +10,7 @@ export const WELCOME_MESSAGE =
 
 export const VISITOR_ID_STORAGE_KEY = "live-chat-visitor-id";
 export const CONVERSATION_ID_STORAGE_KEY = "live-chat-conversation-id";
+export const REGISTERED_STORAGE_KEY = "live-chat-registered";
 
 export const CHAT_ROOMS = {
   ADMINS: "admins",

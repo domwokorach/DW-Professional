@@ -4,10 +4,26 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useSocket } from "./use-socket";
 import { ChatUnavailableError } from "@/lib/socket/errors";
 import { SOCKET_EVENTS } from "@/lib/socket/events";
-import { CONVERSATION_ID_STORAGE_KEY, VISITOR_ID_STORAGE_KEY } from "@/lib/chat/constants";
+import {
+  CONVERSATION_ID_STORAGE_KEY,
+  REGISTERED_STORAGE_KEY,
+  VISITOR_ID_STORAGE_KEY,
+} from "@/lib/chat/constants";
 import { generateId } from "@/lib/utils/generate-id";
 import type { ChatMessage } from "@/types/message";
 import type { MessageEventPayload, TypingEventPayload } from "@/types/socket";
+
+export type CandidateDetails = {
+  name: string;
+  email: string;
+  mobile: string;
+  companyName: string;
+};
+
+function hasStoredIdentity(): boolean {
+  if (typeof window === "undefined") return false;
+  return window.sessionStorage.getItem(REGISTERED_STORAGE_KEY) === "1";
+}
 
 function mergeById(prev: ChatMessage[], incoming: ChatMessage[]): ChatMessage[] {
   const byId = new Map(prev.map((message) => [message.id, message]));
@@ -25,12 +41,20 @@ function getVisitorId(): string {
   return id;
 }
 
-/** Candidate-facing chat state: creates/loads the visitor's conversation, then owns realtime messages, typing, and sending. */
+/** Candidate-facing chat state: gates on registration, then creates/loads the visitor's conversation and owns realtime messages, typing, and sending. */
 export function useLiveChat() {
+  // Lazy-initialised from sessionStorage so a same-tab refresh mid-conversation
+  // skips the registration form again (the conversation itself is still
+  // restored by visitorId, unchanged from before) — a brand new tab/session
+  // has no visitorId yet and always sees the registration form first.
+  const [hasIdentity, setHasIdentity] = useState(hasStoredIdentity);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [typing, setTyping] = useState(false);
   const [ready, setReady] = useState(false);
+  const [registering, setRegistering] = useState(false);
+  const [registrationError, setRegistrationError] = useState<string | null>(null);
+  const pendingDetailsRef = useRef<CandidateDetails | null>(null);
 
   const fetchToken = useCallback(async () => {
     const res = await fetch("/api/chat/token", {
@@ -47,32 +71,55 @@ export function useLiveChat() {
     return token;
   }, []);
 
-  const { socketRef, connectionState } = useSocket(fetchToken);
+  const { socketRef, connectionState } = useSocket(fetchToken, hasIdentity);
 
+  // Single path for both "returning to an active conversation" (pendingDetailsRef
+  // empty) and "just registered" (pendingDetailsRef holds the submitted form) —
+  // so both share the same success/failure handling instead of duplicating it.
   useEffect(() => {
+    if (!hasIdentity) return;
     let cancelled = false;
 
     async function bootstrap() {
-      const conversationRes = await fetch("/api/chat/conversations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ visitorId: getVisitorId() }),
-      });
-      if (!conversationRes.ok || cancelled) return;
-      const { conversation } = (await conversationRes.json()) as { conversation: { id: string } };
-      if (cancelled) return;
+      const details = pendingDetailsRef.current;
+      pendingDetailsRef.current = null;
+      try {
+        const conversationRes = await fetch("/api/chat/conversations", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ visitorId: getVisitorId(), ...details }),
+        });
+        if (!conversationRes.ok) throw new Error("Unable to start chat");
+        const { conversation } = (await conversationRes.json()) as {
+          conversation: { id: string };
+        };
+        if (cancelled) return;
 
-      setConversationId(conversation.id);
-      window.sessionStorage.setItem(CONVERSATION_ID_STORAGE_KEY, conversation.id);
+        setConversationId(conversation.id);
+        window.sessionStorage.setItem(CONVERSATION_ID_STORAGE_KEY, conversation.id);
+        window.sessionStorage.setItem(REGISTERED_STORAGE_KEY, "1");
 
-      const messagesRes = await fetch(
-        `/api/chat/messages?conversationId=${conversation.id}&visitorId=${getVisitorId()}`
-      );
-      if (!messagesRes.ok || cancelled) return;
-      const { messages: history } = (await messagesRes.json()) as { messages: ChatMessage[] };
-      if (!cancelled) {
+        const messagesRes = await fetch(
+          `/api/chat/messages?conversationId=${conversation.id}&visitorId=${getVisitorId()}`
+        );
+        if (!messagesRes.ok) throw new Error("Unable to load chat history");
+        const { messages: history } = (await messagesRes.json()) as { messages: ChatMessage[] };
+        if (cancelled) return;
+
         setMessages(history);
         setReady(true);
+        setRegistering(false);
+      } catch {
+        if (cancelled) return;
+        setRegistering(false);
+        // Only a fresh registration attempt gets bounced back to the form;
+        // a failed silent restore (e.g. a flaky refresh) should not discard
+        // an otherwise-valid session, so it's left to retry rather than reset.
+        if (details) {
+          setRegistrationError("Unable to start the chat. Please try again.");
+          setHasIdentity(false);
+          window.sessionStorage.removeItem(REGISTERED_STORAGE_KEY);
+        }
       }
     }
 
@@ -80,6 +127,13 @@ export function useLiveChat() {
     return () => {
       cancelled = true;
     };
+  }, [hasIdentity]);
+
+  const registerCandidate = useCallback((details: CandidateDetails) => {
+    setRegistrationError(null);
+    setRegistering(true);
+    pendingDetailsRef.current = details;
+    setHasIdentity(true);
   }, []);
 
   // Room membership does not survive a reconnect, so the conversation room
@@ -168,5 +222,16 @@ export function useLiveChat() {
     [socketRef, conversationId]
   );
 
-  return { connectionState, messages, typing, sendMessage, ready, conversationId };
+  return {
+    connectionState,
+    messages,
+    typing,
+    sendMessage,
+    ready,
+    conversationId,
+    hasIdentity,
+    registering,
+    registrationError,
+    registerCandidate,
+  };
 }

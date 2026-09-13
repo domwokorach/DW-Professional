@@ -10,6 +10,8 @@ export function toConversation(
     visitorId: row.visitorId,
     name: row.name,
     email: row.email,
+    mobile: row.mobile,
+    companyName: row.companyName,
     status: row.status.toLowerCase() as Conversation["status"],
     assignedAdminId: row.assignedAdminId,
     unreadByAdmin: row.unreadByAdmin,

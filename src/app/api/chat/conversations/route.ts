@@ -29,6 +29,8 @@ export async function POST(request: NextRequest) {
   const conversation = await findOrCreateConversation(input.visitorId, {
     name: input.name,
     email: input.email,
+    mobile: input.mobile,
+    companyName: input.companyName,
   });
   return NextResponse.json({ conversation });
 }

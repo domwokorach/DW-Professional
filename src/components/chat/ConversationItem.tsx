@@ -3,7 +3,8 @@ import {
   SidebarMenuItem,
 } from "@/components/animate-ui/components/radix/sidebar";
 import type { Conversation } from "@/types/chat";
-import { formatChatDate, getMessagePreview } from "@/lib/chat/helpers";
+import { formatChatDate, getMessagePreview, getPresenceStatus } from "@/lib/chat/helpers";
+import { PresenceDot, presenceLabel } from "./OnlineStatus";
 import CandidateAvatar from "./CandidateAvatar";
 import UnreadBadge from "./UnreadBadge";
 
@@ -22,6 +23,7 @@ export default function ConversationItem({
   const preview = conversation.lastMessagePreview
     ? getMessagePreview(conversation.lastMessagePreview, 48)
     : "No messages yet";
+  const status = getPresenceStatus(conversation, online);
 
   return (
     <SidebarMenuItem>
@@ -32,16 +34,11 @@ export default function ConversationItem({
         className="h-auto items-start gap-2.5 py-2.5"
         aria-label={`Open conversation with ${displayName}${
           conversation.unreadByAdmin > 0 ? `, ${conversation.unreadByAdmin} unread messages` : ""
-        }${online ? ", online" : ", offline"}`}
+        }, ${presenceLabel(status)}`}
       >
         <span className="relative mt-0.5 shrink-0">
           <CandidateAvatar label={displayName} className="h-9 w-9" />
-          <span
-            aria-hidden="true"
-            className={`absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-ink ${
-              online ? "bg-accent3" : "bg-muted"
-            }`}
-          />
+          <PresenceDot status={status} className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5" />
         </span>
 
         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
@@ -53,6 +50,9 @@ export default function ConversationItem({
           </span>
           {conversation.email ? (
             <span className="truncate text-xs font-normal text-muted">{conversation.email}</span>
+          ) : null}
+          {conversation.mobile ? (
+            <span className="truncate text-xs font-normal text-muted">{conversation.mobile}</span>
           ) : null}
           <span className="flex items-center justify-between gap-2">
             <span className="truncate text-xs font-normal text-muted">{preview}</span>

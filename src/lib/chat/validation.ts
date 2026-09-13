@@ -10,6 +10,12 @@ export const visitorIdSchema = z
 export const candidateSchema = z.object({
   name: z.string().trim().min(2).max(100).optional(),
   email: z.string().trim().email().optional(),
+  mobile: z
+    .string()
+    .trim()
+    .regex(/^[+()\d\s-]{5,32}$/, "Invalid mobile number")
+    .optional(),
+  companyName: z.string().trim().min(1).max(150).optional(),
 });
 
 export const messageContentSchema = z

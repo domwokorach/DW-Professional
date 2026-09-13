@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
 import type { Conversation } from "@/types/chat";
-import { formatChatDate } from "@/lib/chat/helpers";
+import { formatChatDate, getPresenceStatus } from "@/lib/chat/helpers";
 import CandidateAvatar from "./CandidateAvatar";
 import OnlineStatus from "./OnlineStatus";
 
@@ -77,14 +77,21 @@ export default function CustomerDetails({
         <div>
           <p className="font-mono text-sm font-semibold text-white">{displayName}</p>
           {conversation.email ? <p className="text-xs text-muted">{conversation.email}</p> : null}
+          {conversation.companyName ? (
+            <p className="text-xs text-muted">{conversation.companyName}</p>
+          ) : null}
         </div>
-        <OnlineStatus online={online} />
+        <OnlineStatus status={getPresenceStatus(conversation, online)} />
       </div>
 
       <Separator className="bg-line" />
 
       <dl className="grid grid-cols-1 gap-3">
         <Field label="Visitor ID" value={<span className="break-all">{conversation.visitorId}</span>} />
+        {conversation.companyName ? (
+          <Field label="Company" value={conversation.companyName} />
+        ) : null}
+        {conversation.mobile ? <Field label="Mobile" value={conversation.mobile} /> : null}
         <Field
           label="Status"
           value={

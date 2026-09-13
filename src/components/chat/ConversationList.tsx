@@ -16,12 +16,13 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { matchesFilter, type ConversationFilter } from "@/lib/chat/filters";
+import { getPresenceStatus } from "@/lib/chat/helpers";
 import type { Conversation } from "@/types/chat";
 import ConversationFilters from "./ConversationFilters";
 import ConversationItem from "./ConversationItem";
 
 function matchesQuery(conversation: Conversation, term: string): boolean {
-  return [conversation.name, conversation.email, conversation.lastMessagePreview]
+  return [conversation.name, conversation.email, conversation.mobile, conversation.lastMessagePreview]
     .filter(Boolean)
     .some((field) => field!.toLowerCase().includes(term));
 }
@@ -65,21 +66,21 @@ export default function ConversationList({
     });
   }, [conversations, debouncedQuery, filter, onlineVisitorIds, currentAdminId]);
 
-  // Presence is currently binary (online/offline; see hooks/use-admin-presence),
-  // so "waiting" is approximated from unreadByAdmin rather than a distinct
-  // server-tracked state: an online candidate with unread messages hasn't
-  // been answered yet, one with none has.
   const { waiting, active, offline } = useMemo(() => {
     const waiting: Conversation[] = [];
     const active: Conversation[] = [];
     const offline: Conversation[] = [];
     for (const conversation of filtered) {
-      if (!onlineVisitorIds.has(conversation.visitorId)) {
-        offline.push(conversation);
-      } else if (conversation.unreadByAdmin > 0) {
-        waiting.push(conversation);
-      } else {
-        active.push(conversation);
+      const online = onlineVisitorIds.has(conversation.visitorId);
+      switch (getPresenceStatus(conversation, online)) {
+        case "offline":
+          offline.push(conversation);
+          break;
+        case "waiting":
+          waiting.push(conversation);
+          break;
+        default:
+          active.push(conversation);
       }
     }
     return { waiting, active, offline };

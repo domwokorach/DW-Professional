@@ -5,7 +5,7 @@ import type { Conversation } from "@/types/conversation";
 /** Reuses a visitor's existing open conversation instead of forking a new thread per page load. */
 export async function findOrCreateConversation(
   visitorId: string,
-  details?: { name?: string; email?: string }
+  details?: { name?: string; email?: string; mobile?: string; companyName?: string }
 ): Promise<Conversation> {
   const existing = await db.conversation.findFirst({
     where: { visitorId, status: { in: ["OPEN", "PENDING"] } },
@@ -19,6 +19,8 @@ export async function findOrCreateConversation(
       visitorId,
       name: details?.name,
       email: details?.email,
+      mobile: details?.mobile,
+      companyName: details?.companyName,
       status: "OPEN",
     },
   });
