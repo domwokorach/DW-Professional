@@ -37,7 +37,6 @@ export default function ConversationList({
   adminName,
   adminEmail,
   currentAdminId,
-  className,
   onSelect,
   onSignOut,
 }: {
@@ -50,7 +49,6 @@ export default function ConversationList({
   adminName: string;
   adminEmail: string;
   currentAdminId: string;
-  className?: string;
   onSelect: (id: string) => void;
   onSignOut: () => void;
 }) {
@@ -87,7 +85,7 @@ export default function ConversationList({
   }, [filtered, onlineVisitorIds]);
 
   return (
-    <Sidebar collapsible="none" className={className}>
+    <Sidebar collapsible="offcanvas" className="border-line md:border-r">
       <SidebarHeader className="gap-3 border-b border-line p-3">
         <div className="flex items-center gap-2">
           <div className="relative min-w-0 flex-1">
