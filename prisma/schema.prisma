@@ -173,6 +173,8 @@ model Conversation {
   visitorId       String
   name            String?
   email           String?
+  mobile          String?
+  companyName     String?
   status          ConversationStatus @default(OPEN)
   assignedAdminId String?
   unreadByAdmin   Int                @default(0)

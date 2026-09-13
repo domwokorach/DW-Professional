@@ -7,6 +7,8 @@ export interface Conversation {
   visitorId: string;
   name?: string | null;
   email?: string | null;
+  mobile?: string | null;
+  companyName?: string | null;
   status: ConversationStatus;
   assignedAdminId?: string | null;
   unreadByAdmin: number;

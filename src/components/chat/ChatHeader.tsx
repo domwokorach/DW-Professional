@@ -16,6 +16,7 @@ import {
   SheetTitle,
 } from "@/components/animate-ui/components/radix/sheet";
 import type { Conversation } from "@/types/chat";
+import { getPresenceStatus } from "@/lib/chat/helpers";
 import CandidateAvatar from "./CandidateAvatar";
 import OnlineStatus from "./OnlineStatus";
 import CustomerDetails from "./CustomerDetails";
@@ -58,10 +59,12 @@ export default function ChatHeader({
 
         <div className="min-w-0 flex-1">
           <p className="truncate font-mono text-sm font-semibold text-white">{displayName}</p>
-          {conversation.email ? (
-            <p className="hidden truncate text-xs text-muted sm:block">{conversation.email}</p>
+          {conversation.email || conversation.mobile ? (
+            <p className="hidden truncate text-xs text-muted sm:block">
+              {[conversation.email, conversation.mobile].filter(Boolean).join(" · ")}
+            </p>
           ) : null}
-          <OnlineStatus online={online} />
+          <OnlineStatus status={getPresenceStatus(conversation, online)} />
         </div>
 
         <DropdownMenu>

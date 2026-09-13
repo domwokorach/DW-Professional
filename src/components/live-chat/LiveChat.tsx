@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import CandidateRegistration from "./CandidateRegistration";
 import LiveChatLauncher from "./LiveChatLauncher";
 import LiveChatPanel from "./LiveChatPanel";
 import ResumeDownloadModal from "@/components/resume/ResumeDownloadModal";
@@ -36,7 +37,21 @@ export default function LiveChat() {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const seenMessageCount = useRef(0);
 
-  const { connectionState, messages, typing, sendMessage } = useLiveChat();
+  const {
+    connectionState,
+    messages,
+    typing,
+    sendMessage,
+    hasIdentity,
+    registering,
+    registrationError,
+    registerCandidate,
+  } = useLiveChat();
+
+  // The socket only connects once the candidate has registered, so the
+  // launcher's status dot would otherwise sit on "connecting" indefinitely
+  // while the registration form is showing.
+  const launcherConnectionState = hasIdentity ? connectionState : "offline";
 
   const displayMessages = useMemo(
     () => (messages.length > 0 ? messages : [WELCOME_BUBBLE]),
@@ -115,7 +130,7 @@ export default function LiveChat() {
       <LiveChatLauncher
         ref={launcherButtonRef}
         panelState={panelState}
-        connectionState={connectionState}
+        connectionState={launcherConnectionState}
         unreadCount={unreadCount}
         onToggle={handleToggle}
       />
@@ -128,16 +143,27 @@ export default function LiveChat() {
             exit={reduceMotion ? undefined : { opacity: 0, scale: 0.95, y: 12 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
           >
-            <LiveChatPanel
-              messages={displayMessages}
-              typing={typing}
-              connectionState={connectionState}
-              onSend={sendMessage}
-              onAction={handleAction}
-              onMinimise={handleMinimise}
-              onClose={handleClose}
-              closeButtonRef={closeButtonRef}
-            />
+            {hasIdentity ? (
+              <LiveChatPanel
+                messages={displayMessages}
+                typing={typing}
+                connectionState={connectionState}
+                onSend={sendMessage}
+                onAction={handleAction}
+                onMinimise={handleMinimise}
+                onClose={handleClose}
+                closeButtonRef={closeButtonRef}
+              />
+            ) : (
+              <CandidateRegistration
+                onSubmit={registerCandidate}
+                submitting={registering}
+                submitError={registrationError}
+                onMinimise={handleMinimise}
+                onClose={handleClose}
+                closeButtonRef={closeButtonRef}
+              />
+            )}
           </motion.div>
         ) : null}
       </AnimatePresence>
