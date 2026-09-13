@@ -28,9 +28,10 @@ const LiveChatLauncher = forwardRef<
     panelState: PanelState;
     connectionState: ConnectionState;
     unreadCount: number;
+    attention?: boolean;
     onToggle: () => void;
   }
->(function LiveChatLauncher({ panelState, connectionState, unreadCount, onToggle }, ref) {
+>(function LiveChatLauncher({ panelState, connectionState, unreadCount, attention = false, onToggle }, ref) {
   const isOpen = panelState === "open";
 
   return (
@@ -54,10 +55,17 @@ const LiveChatLauncher = forwardRef<
         right: "max(16px, env(safe-area-inset-right))",
       }}
     >
+      {!isOpen && attention ? (
+        <span
+          className="absolute inset-0 animate-ping rounded-full bg-accent opacity-50 motion-reduce:hidden"
+          aria-hidden="true"
+        />
+      ) : null}
+
       {isOpen ? (
         <X className="h-6 w-6" aria-hidden="true" />
       ) : (
-        <MessageCircle className="h-6 w-6" aria-hidden="true" />
+        <MessageCircle className="relative h-6 w-6" aria-hidden="true" />
       )}
 
       <span

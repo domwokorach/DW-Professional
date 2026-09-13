@@ -31,6 +31,7 @@ function scrollToSection(id: string) {
 export default function LiveChat() {
   const [panelState, setPanelState] = useState<PanelState>("closed");
   const [unreadCount, setUnreadCount] = useState(0);
+  const [attention, setAttention] = useState(false);
   const [resumeOpen, setResumeOpen] = useState(false);
   const reduceMotion = useReducedMotion();
   const launcherButtonRef = useRef<HTMLButtonElement>(null);
@@ -39,9 +40,13 @@ export default function LiveChat() {
 
   const {
     connectionState,
+    adminStatus,
+    adminJoined,
+    pendingMessageIds,
     messages,
     typing,
     sendMessage,
+    conversationId,
     hasIdentity,
     registering,
     registrationError,
@@ -70,6 +75,7 @@ export default function LiveChat() {
         .filter((message) => message.sender !== "visitor").length;
       if (newAssistantMessages > 0) {
         setUnreadCount((count) => count + newAssistantMessages);
+        setAttention(true);
       }
       seenMessageCount.current = messages.length;
     }
@@ -96,6 +102,7 @@ export default function LiveChat() {
 
   const handleToggle = useCallback(() => {
     setPanelState((current) => (current === "open" ? "minimised" : "open"));
+    setAttention(false);
   }, []);
 
   const handleMinimise = useCallback(() => {
@@ -132,22 +139,27 @@ export default function LiveChat() {
         panelState={panelState}
         connectionState={launcherConnectionState}
         unreadCount={unreadCount}
+        attention={attention}
         onToggle={handleToggle}
       />
 
       <AnimatePresence>
         {panelState === "open" ? (
           <motion.div
-            initial={reduceMotion ? undefined : { opacity: 0, scale: 0.95, y: 12 }}
-            animate={reduceMotion ? undefined : { opacity: 1, scale: 1, y: 0 }}
-            exit={reduceMotion ? undefined : { opacity: 0, scale: 0.95, y: 12 }}
-            transition={{ duration: 0.18, ease: "easeOut" }}
+            initial={reduceMotion ? undefined : { opacity: 0, y: 12 }}
+            animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+            exit={reduceMotion ? undefined : { opacity: 0, y: 8 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
           >
             {hasIdentity ? (
               <LiveChatPanel
                 messages={displayMessages}
                 typing={typing}
                 connectionState={connectionState}
+                adminStatus={adminStatus}
+                adminJoined={adminJoined}
+                pendingMessageIds={pendingMessageIds}
+                conversationId={conversationId}
                 onSend={sendMessage}
                 onAction={handleAction}
                 onMinimise={handleMinimise}

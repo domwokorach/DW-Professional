@@ -32,3 +32,21 @@ export default function ConnectionStatus({ state }: { state: ConnectionState }) 
     </span>
   );
 }
+
+/** A full-width strip shown only while disconnected — auto-disappears once `state` returns to "online", rather than occupying header space permanently. */
+export function ConnectionBanner({ state }: { state: ConnectionState }) {
+  if (state === "online") return null;
+  const config = CONFIG[state] ?? { label: "Connection failed", icon: TriangleAlert, className: "text-red-400" };
+  const Icon = config.icon;
+
+  return (
+    <div
+      className={`flex shrink-0 items-center justify-center gap-1.5 border-b border-line bg-surface px-3 py-1.5 text-xs font-medium ${config.className}`}
+      role="status"
+      aria-live="polite"
+    >
+      <Icon className={`h-3.5 w-3.5 ${config.spin ? "motion-safe:animate-spin" : ""}`} aria-hidden="true" />
+      {config.label}
+    </div>
+  );
+}

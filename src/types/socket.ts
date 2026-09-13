@@ -46,3 +46,20 @@ export interface TypingEventPayload {
   sender: "visitor" | "admin";
   isTyping: boolean;
 }
+
+export type AdminPresenceState = "online" | "away" | "offline";
+
+export interface AdminStatusPayload {
+  status: AdminPresenceState;
+  updatedAt: string;
+}
+
+export interface AdminJoinedPayload {
+  conversationId: string;
+  adminId: string;
+  adminName?: string;
+}
+
+export interface AdminOpenPayload {
+  conversationId: string;
+}

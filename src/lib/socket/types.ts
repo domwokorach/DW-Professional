@@ -1,4 +1,7 @@
 import type {
+  AdminJoinedPayload,
+  AdminOpenPayload,
+  AdminStatusPayload,
   ConversationEventPayload,
   JoinPayload,
   MessageEventPayload,
@@ -17,6 +20,8 @@ export interface ClientToServerEvents {
   "chat:typing": (payload: TypingPayload) => void;
   "chat:stop-typing": (payload: TypingPayload) => void;
   "chat:read": (payload: ReadPayload) => void;
+  "chat:admin-open": (payload: AdminOpenPayload) => void;
+  "admin:activity": () => void;
 }
 
 export interface ServerToClientEvents {
@@ -25,8 +30,8 @@ export interface ServerToClientEvents {
   "chat:presence": (payload: PresencePayload) => void;
   "chat:new-conversation": (payload: ConversationEventPayload) => void;
   "chat:conversation-updated": (payload: ConversationEventPayload) => void;
-  "chat:online": () => void;
-  "chat:offline": () => void;
+  "admin:status": (payload: AdminStatusPayload) => void;
+  "admin:joined": (payload: AdminJoinedPayload) => void;
 }
 
 export interface SocketData {

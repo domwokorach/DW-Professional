@@ -87,6 +87,7 @@ export default function CustomerDetails({
       <Separator className="bg-line" />
 
       <dl className="grid grid-cols-1 gap-3">
+        <Field label="Conversation ID" value={<span className="break-all">{conversation.id}</span>} />
         <Field label="Visitor ID" value={<span className="break-all">{conversation.visitorId}</span>} />
         {conversation.companyName ? (
           <Field label="Company" value={conversation.companyName} />

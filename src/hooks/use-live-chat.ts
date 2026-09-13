@@ -11,7 +11,13 @@ import {
 } from "@/lib/chat/constants";
 import { generateId } from "@/lib/utils/generate-id";
 import type { ChatMessage } from "@/types/message";
-import type { MessageEventPayload, TypingEventPayload } from "@/types/socket";
+import type {
+  AdminJoinedPayload,
+  AdminPresenceState,
+  AdminStatusPayload,
+  MessageEventPayload,
+  TypingEventPayload,
+} from "@/types/socket";
 
 export type CandidateDetails = {
   name: string;
@@ -54,7 +60,11 @@ export function useLiveChat() {
   const [ready, setReady] = useState(false);
   const [registering, setRegistering] = useState(false);
   const [registrationError, setRegistrationError] = useState<string | null>(null);
+  const [adminStatus, setAdminStatus] = useState<AdminPresenceState>("offline");
+  const [adminJoined, setAdminJoined] = useState(false);
+  const [pendingMessageIds, setPendingMessageIds] = useState<Set<string>>(new Set());
   const pendingDetailsRef = useRef<CandidateDetails | null>(null);
+  const outboxRef = useRef<Map<string, { conversationId: string; content: string }>>(new Map());
 
   const fetchToken = useCallback(async () => {
     const res = await fetch("/api/chat/token", {
@@ -91,11 +101,12 @@ export function useLiveChat() {
         });
         if (!conversationRes.ok) throw new Error("Unable to start chat");
         const { conversation } = (await conversationRes.json()) as {
-          conversation: { id: string };
+          conversation: { id: string; assignedAdminId?: string | null };
         };
         if (cancelled) return;
 
         setConversationId(conversation.id);
+        setAdminJoined(Boolean(conversation.assignedAdminId));
         window.sessionStorage.setItem(CONVERSATION_ID_STORAGE_KEY, conversation.id);
         window.sessionStorage.setItem(REGISTERED_STORAGE_KEY, "1");
 
@@ -159,6 +170,20 @@ export function useLiveChat() {
         })
         .catch(() => {});
     }
+
+    // Anything sent while disconnected/reconnecting was only ever queued
+    // locally (see sendMessage's outbox below) — flush it now that a room
+    // is joined again. The server dedupes by clientMessageId, so a message
+    // that actually did get through before the drop is a safe no-op resend.
+    for (const [clientMessageId, pending] of outboxRef.current) {
+      if (pending.conversationId !== conversationId) continue;
+      socket.emit(SOCKET_EVENTS.MESSAGE, {
+        conversationId: pending.conversationId,
+        content: pending.content,
+        clientMessageId,
+      });
+    }
+
     wasOnline.current = true;
   }, [socketRef, conversationId, connectionState]);
 
@@ -169,6 +194,15 @@ export function useLiveChat() {
     const handleMessage = ({ message, clientMessageId }: MessageEventPayload) => {
       if (message.conversationId !== conversationId) return;
       setTyping(false);
+      if (clientMessageId) {
+        outboxRef.current.delete(clientMessageId);
+        setPendingMessageIds((prev) => {
+          if (!prev.has(clientMessageId)) return prev;
+          const next = new Set(prev);
+          next.delete(clientMessageId);
+          return next;
+        });
+      }
       setMessages((prev) => {
         if (prev.some((m) => m.id === message.id)) return prev;
         if (clientMessageId) {
@@ -188,11 +222,24 @@ export function useLiveChat() {
       setTyping(payload.isTyping);
     };
 
+    const handleAdminStatus = (payload: AdminStatusPayload) => {
+      setAdminStatus(payload.status);
+    };
+
+    const handleAdminJoined = (payload: AdminJoinedPayload) => {
+      if (payload.conversationId !== conversationId) return;
+      setAdminJoined(true);
+    };
+
     socket.on(SOCKET_EVENTS.MESSAGE, handleMessage);
     socket.on(SOCKET_EVENTS.TYPING, handleTyping);
+    socket.on(SOCKET_EVENTS.ADMIN_STATUS, handleAdminStatus);
+    socket.on(SOCKET_EVENTS.ADMIN_JOINED, handleAdminJoined);
     return () => {
       socket.off(SOCKET_EVENTS.MESSAGE, handleMessage);
       socket.off(SOCKET_EVENTS.TYPING, handleTyping);
+      socket.off(SOCKET_EVENTS.ADMIN_STATUS, handleAdminStatus);
+      socket.off(SOCKET_EVENTS.ADMIN_JOINED, handleAdminJoined);
     };
   }, [socketRef, conversationId]);
 
@@ -210,6 +257,8 @@ export function useLiveChat() {
         createdAt: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, optimistic]);
+      outboxRef.current.set(optimistic.id, { conversationId, content: trimmed });
+      setPendingMessageIds((prev) => new Set(prev).add(optimistic.id));
 
       const socket = socketRef.current;
       if (!socket?.connected) return;
@@ -224,6 +273,9 @@ export function useLiveChat() {
 
   return {
     connectionState,
+    adminStatus,
+    adminJoined,
+    pendingMessageIds,
     messages,
     typing,
     sendMessage,

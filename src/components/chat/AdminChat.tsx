@@ -1,16 +1,18 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MessageSquare } from "lucide-react";
-import ConnectionStatus from "./ConnectionStatus";
+import ConnectionStatus, { ConnectionBanner } from "./ConnectionStatus";
 import { SidebarProvider } from "@/components/animate-ui/components/radix/sidebar";
 import { cn } from "@/lib/utils";
 import { useAdminSocket } from "@/hooks/use-admin-socket";
 import { useConversations } from "@/hooks/use-conversations";
 import { useAdminThread } from "@/hooks/use-admin-thread";
 import { useAdminPresence } from "@/hooks/use-admin-presence";
+import { useAdminActivity } from "@/hooks/use-admin-activity";
 import { useTyping } from "@/hooks/use-typing";
 import { useSignOut } from "@/hooks/use-sign-out";
+import { SOCKET_EVENTS } from "@/lib/socket/events";
 import ConversationList from "./ConversationList";
 import ChatHeader from "./ChatHeader";
 import MessageList from "./MessageList";
@@ -35,6 +37,7 @@ export default function AdminChat({
     refresh,
   } = useConversations(socketRef, connectionState);
   const onlineVisitorIds = useAdminPresence(socketRef);
+  useAdminActivity(socketRef);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const { conversation, messages, typing, loading: threadLoading, sendReply } = useAdminThread(
@@ -45,6 +48,15 @@ export default function AdminChat({
   );
   const { notifyTyping } = useTyping(socketRef, selectedId, "visitor");
   const { signOut } = useSignOut();
+
+  // Tells the server (and thus the candidate) that an admin has opened this
+  // specific conversation — drives the "waiting for admin" → "admin joined"
+  // transition. Re-fires on reconnect too, matching connectionState !==
+  // "online" being the only thing that ever tears the socket room down.
+  useEffect(() => {
+    if (!selectedId || connectionState !== "online") return;
+    socketRef.current?.emit(SOCKET_EVENTS.ADMIN_OPEN, { conversationId: selectedId });
+  }, [socketRef, selectedId, connectionState]);
 
   const handleSignOut = useCallback(() => {
     void signOut();
@@ -157,17 +169,16 @@ function ChatShell({
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
-      <header
-        className={cn(
-          "shrink-0 items-center gap-3 border-b border-line px-4 py-3 sm:px-6",
-          selectedId ? "hidden md:flex" : "flex"
-        )}
-      >
+      {/* AdminShell already renders its own "Admin Chat" bar below md, so this
+          title row would otherwise duplicate it — only shown at md+ where
+          AdminShell's app-level nav lives in a permanent side rail instead. */}
+      <header className="hidden shrink-0 items-center gap-3 border-b border-line px-4 py-3 sm:px-6 md:flex">
         <h1 className="min-w-0 flex-1 truncate font-mono text-base font-semibold text-white sm:text-lg">
           Admin Chat
         </h1>
         <ConnectionStatus state={connectionState} />
       </header>
+      <ConnectionBanner state={connectionState} />
 
       <div className="flex min-h-0 flex-1 overflow-hidden">
         <div

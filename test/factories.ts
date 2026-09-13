@@ -139,6 +139,7 @@ export function buildMessage(overrides: Partial<Message> = {}): Message {
     senderId: null,
     content: 'Hello, I have a question.',
     status: 'SENT',
+    clientMessageId: null,
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
     readAt: null,
     ...overrides,

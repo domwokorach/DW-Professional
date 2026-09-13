@@ -5,11 +5,13 @@ export const SOCKET_EVENTS = {
   TYPING: "chat:typing",
   STOP_TYPING: "chat:stop-typing",
   READ: "chat:read",
-  ONLINE: "chat:online",
-  OFFLINE: "chat:offline",
   PRESENCE: "chat:presence",
   NEW_CONVERSATION: "chat:new-conversation",
   CONVERSATION_UPDATED: "chat:conversation-updated",
+  ADMIN_STATUS: "admin:status",
+  ADMIN_JOINED: "admin:joined",
+  ADMIN_ACTIVITY: "admin:activity",
+  ADMIN_OPEN: "chat:admin-open",
 } as const;
 
 export type SocketEventName = (typeof SOCKET_EVENTS)[keyof typeof SOCKET_EVENTS];
