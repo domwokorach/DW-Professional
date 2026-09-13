@@ -12,6 +12,7 @@ export default function MessageInput({
   placeholder = "Type a message…",
   disabled = false,
   disabledHint,
+  closed = false,
 }: {
   onSend: (content: string) => void;
   onTyping?: () => void;
@@ -19,11 +20,13 @@ export default function MessageInput({
   /** Disables sending (e.g. while the socket is offline/reconnecting) without touching the textarea, so a draft is never lost or blocked. */
   disabled?: boolean;
   disabledHint?: string;
+  /** A closed conversation can never accept new messages again, unlike a transient connection drop — locks the textarea itself rather than only blocking Send. */
+  closed?: boolean;
 }) {
   const [value, setValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const trimmed = value.trim();
-  const canSend = trimmed.length > 0 && trimmed.length <= MAX_MESSAGE_LENGTH && !disabled;
+  const canSend = trimmed.length > 0 && trimmed.length <= MAX_MESSAGE_LENGTH && !disabled && !closed;
 
   const autoGrow = (el: HTMLTextAreaElement) => {
     el.style.height = "auto";
@@ -39,9 +42,17 @@ export default function MessageInput({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-1.5 border-t border-line px-4 py-3">
-      {disabled && disabledHint ? (
-        <p className="text-xs text-amber-400" role="status" aria-live="polite">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-1.5 border-t border-line px-3 pt-3 sm:px-4"
+      style={{ paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
+    >
+      {(disabled || closed) && disabledHint ? (
+        <p
+          className={`text-xs ${closed ? "text-muted" : "text-amber-400"}`}
+          role="status"
+          aria-live="polite"
+        >
           {disabledHint}
         </p>
       ) : null}
@@ -67,8 +78,10 @@ export default function MessageInput({
           placeholder={placeholder}
           rows={1}
           maxLength={MAX_MESSAGE_LENGTH}
+          disabled={closed}
           aria-describedby="chat-message-limit"
-          className="min-h-[44px] max-h-40 flex-1 resize-none overflow-y-auto rounded-2xl border border-line bg-ink px-4 py-2.5 text-sm leading-normal text-white placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+          aria-label="Message"
+          className="min-h-[44px] max-h-40 min-w-0 flex-1 resize-none overflow-y-auto rounded-2xl border border-line bg-ink px-4 py-2.5 text-sm leading-normal text-white placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-60"
         />
         <span id="chat-message-limit" className="sr-only">
           Maximum {MAX_MESSAGE_LENGTH} characters. Press Enter to send, Shift+Enter for a new line.

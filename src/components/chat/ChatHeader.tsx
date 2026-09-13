@@ -78,7 +78,7 @@ export default function ChatHeader({
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem className="lg:hidden" onSelect={() => setDetailsOpen(true)}>
+            <DropdownMenuItem className="min-[1200px]:hidden" onSelect={() => setDetailsOpen(true)}>
               <Info aria-hidden="true" />
               Candidate details
             </DropdownMenuItem>
@@ -99,7 +99,7 @@ export default function ChatHeader({
       </header>
 
       <Sheet open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <SheetContent side="right" className="w-[320px] p-0 lg:hidden">
+        <SheetContent side="right" className="w-[320px] p-0 min-[1200px]:hidden">
           <SheetHeader className="sr-only">
             <SheetTitle>{displayName}</SheetTitle>
             <SheetDescription>Candidate details</SheetDescription>

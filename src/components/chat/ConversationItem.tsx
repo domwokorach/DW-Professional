@@ -48,11 +48,10 @@ export default function ConversationItem({
               {formatChatDate(conversation.lastMessageAt ?? conversation.createdAt)}
             </span>
           </span>
-          {conversation.email ? (
-            <span className="truncate text-xs font-normal text-muted">{conversation.email}</span>
-          ) : null}
-          {conversation.mobile ? (
-            <span className="truncate text-xs font-normal text-muted">{conversation.mobile}</span>
+          {conversation.companyName || conversation.email ? (
+            <span className="truncate text-xs font-normal text-muted">
+              {conversation.companyName || conversation.email}
+            </span>
           ) : null}
           <span className="flex items-center justify-between gap-2">
             <span className="truncate text-xs font-normal text-muted">{preview}</span>

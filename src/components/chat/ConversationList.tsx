@@ -85,7 +85,7 @@ export default function ConversationList({
   }, [filtered, onlineVisitorIds]);
 
   return (
-    <Sidebar collapsible="offcanvas" className="border-line md:border-r">
+    <Sidebar collapsible="none" className="h-full w-full border-line md:border-r">
       <SidebarHeader className="gap-3 border-b border-line p-3">
         <div className="flex items-center gap-2">
           <div className="relative min-w-0 flex-1">
