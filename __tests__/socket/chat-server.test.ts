@@ -85,6 +85,12 @@ describe('chat socket server', () => {
     (db.conversation.findUnique as jest.Mock).mockImplementation(async (args: { where: { id: string } }) =>
       buildConversation({ id: args.where.id })
     );
+    // Dedup check (sendMessage) and delivered-status update: default to "no
+    // existing clientMessageId" / "not assigned yet" so tests that don't
+    // care about these paths aren't affected by them.
+    (db.message.findUnique as jest.Mock).mockResolvedValue(null);
+    (db.message.update as jest.Mock).mockResolvedValue({});
+    (db.conversation.updateMany as jest.Mock).mockResolvedValue({ count: 0 });
     // Keep a control admin "online" (via the real in-memory presence map) by
     // default so tests that aren't specifically about the no-admin-online
     // bot fallback don't accidentally trigger it — that path has its own
@@ -341,17 +347,18 @@ describe('chat socket server', () => {
     );
   });
 
-  // Documents a real gap: there is no dedup logic on clientMessageId anywhere
-  // in the handler, so sending the same clientMessageId twice creates TWO
-  // persisted messages and two broadcasts. This is intentionally NOT a test
-  // that deduplication happens — it verifies today's actual (buggy) behavior
-  // so a future fix changes this test, rather than this test silently
-  // masking the gap.
-  it('documents the duplicate-clientMessageId gap: sending the same clientMessageId twice creates two messages', async () => {
+  it('dedupes on clientMessageId: sending the same clientMessageId twice persists and broadcasts only once', async () => {
     const conversationId = 'conv-dup-1';
-    (db.message.create as jest.Mock).mockImplementation(async (args: { data: { content: string } }) =>
-      buildMessage({ conversationId, sender: 'VISITOR', content: args.data.content })
+    const persisted = buildMessage({ conversationId, sender: 'VISITOR', content: 'First send', clientMessageId: 'same-client-id' });
+    let created = false;
+
+    (db.message.findUnique as jest.Mock).mockImplementation(async (args: { where: { clientMessageId?: string } }) =>
+      args.where.clientMessageId === 'same-client-id' && created ? persisted : null
     );
+    (db.message.create as jest.Mock).mockImplementation(async () => {
+      created = true;
+      return persisted;
+    });
     (db.conversation.update as jest.Mock).mockResolvedValue({});
     (db.conversation.findUnique as jest.Mock).mockResolvedValue(buildConversation({ id: conversationId }));
 
@@ -366,7 +373,62 @@ describe('chat socket server', () => {
     visitor.emit('chat:message', { conversationId, content: 'First send', clientMessageId: 'same-client-id' });
     await new Promise((resolve) => setTimeout(resolve, 150));
 
-    expect(db.message.create).toHaveBeenCalledTimes(2);
+    expect(db.message.create).toHaveBeenCalledTimes(1);
     expect(received).toHaveLength(2);
+    expect(received[0]).toEqual(received[1]);
+  });
+
+  it('admin:status broadcasts "online" to a visitor room when an admin connects', async () => {
+    await setAdminOffline('control-admin');
+
+    const conversationId = 'conv-status-1';
+    const visitor = connectClient(visitorToken(conversationId));
+    await once(visitor, 'connect');
+
+    // Listen from before the admin connects so the initial "offline" emit
+    // (sent to this socket the moment it connects) and the later "online"
+    // broadcast (once the admin connects) are both captured, regardless of
+    // exactly when each arrives relative to attaching this listener.
+    const statuses: string[] = [];
+    visitor.on('admin:status', (payload: { status: string }) => statuses.push(payload.status));
+
+    const admin = connectClient(adminToken());
+    await once(admin, 'connect');
+    await new Promise((resolve) => setTimeout(resolve, 150));
+
+    expect(statuses).toContain('online');
+
+    await setAdminOnline('control-admin');
+  });
+
+  it('chat:admin-open assigns the conversation and emits admin:joined only to that conversation room', async () => {
+    const conversationId = 'conv-open-1';
+    const otherConversationId = 'conv-open-2';
+
+    (db.conversation.updateMany as jest.Mock).mockResolvedValue({ count: 1 });
+    (db.conversation.findUnique as jest.Mock).mockImplementation(async (args: { where: { id: string } }) =>
+      buildConversation({ id: args.where.id, assignedAdminId: 'admin-1' })
+    );
+
+    const visitor = connectClient(visitorToken(conversationId));
+    await once(visitor, 'connect');
+    const otherVisitor = connectClient(visitorToken(otherConversationId));
+    await once(otherVisitor, 'connect');
+
+    let otherReceivedJoin = false;
+    otherVisitor.on('admin:joined', () => {
+      otherReceivedJoin = true;
+    });
+
+    const joinedPromise = once<{ conversationId: string; adminId: string }>(visitor, 'admin:joined');
+    const admin = connectClient(adminToken('admin-1'));
+    await once(admin, 'connect');
+    admin.emit('chat:admin-open', { conversationId });
+
+    const payload = await joinedPromise;
+    expect(payload).toEqual({ conversationId, adminId: 'admin-1' });
+
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    expect(otherReceivedJoin).toBe(false);
   });
 });

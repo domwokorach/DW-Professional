@@ -46,6 +46,10 @@ export const typingPayloadSchema = z.object({
   conversationId: conversationIdSchema,
 });
 
+export const adminOpenPayloadSchema = z.object({
+  conversationId: conversationIdSchema,
+});
+
 export const readPayloadSchema = z.object({
   conversationId: conversationIdSchema,
   reader: z.enum(["visitor", "admin"]),

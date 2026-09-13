@@ -2,15 +2,17 @@ import type { Server, Socket } from "socket.io";
 import { verifyLiveChatToken } from "@/lib/liveChatAuth";
 import { sanitizeMessage } from "@/lib/utils/sanitize-message";
 import { isRateLimited } from "@/lib/utils/rate-limit";
-import { sendMessage } from "@/lib/chat/send-message";
+import { sendMessage, markMessageDelivered } from "@/lib/chat/send-message";
 import { markAsRead } from "@/lib/chat/mark-as-read";
 import { getConversationById } from "@/lib/chat/get-conversations";
+import { assignConversationAdminIfUnset } from "@/lib/chat/update-conversation";
 import { updatePresence } from "@/lib/chat/update-presence";
 import { sendNewConversationEmail } from "@/lib/notifications/email";
 import { matchIntent } from "@/lib/portfolioAssistant/match";
 import { getResponseForIntent } from "@/lib/portfolioAssistant/responses";
 import {
   adminMessageSchema,
+  adminOpenPayloadSchema,
   candidateMessageSchema,
   joinPayloadSchema,
   readPayloadSchema,
@@ -18,11 +20,21 @@ import {
   typingPayloadSchema,
 } from "@/lib/chat/validation";
 import { SOCKET_EVENTS } from "./events";
-import { ADMIN_ROOM, getConversationRoom } from "./rooms";
+import { ADMIN_ROOM, PRESENCE_ROOM, getConversationRoom } from "./rooms";
 import type { ClientToServerEvents, ServerToClientEvents, SocketData } from "./types";
+import type { AdminPresenceState } from "@/types/socket";
 
 type ChatServer = Server<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>;
 type ChatSocket = Socket<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData>;
+
+// After this long without activity (mouse/keyboard/opening a conversation/
+// replying), an online admin is flipped to "away". Overridable for tests.
+const ADMIN_AWAY_AFTER_MS = Number(process.env.ADMIN_AWAY_AFTER_MS) || 5 * 60 * 1000;
+const INACTIVITY_SWEEP_INTERVAL_MS = 30_000;
+
+// Safety net: if a "stop typing" is ever lost (client crash, dropped
+// packet), the indicator on the other end must not get stuck forever.
+const TYPING_AUTO_STOP_MS = 6_000;
 
 /**
  * Wires every chat:* handler onto an already-constructed Socket.IO server.
@@ -34,6 +46,8 @@ export function attachChatHandlers(io: ChatServer): void {
   if (!secret) {
     throw new Error("SOCKET_SECRET must be set before starting the live chat server.");
   }
+
+  const typingTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
   io.use((socket, next) => {
     const token = socket.handshake.auth?.token;
@@ -54,18 +68,53 @@ export function attachChatHandlers(io: ChatServer): void {
   });
 
   io.on("connection", (socket: ChatSocket) => {
-    void handleConnection(io, socket);
+    void handleConnection(io, socket, typingTimers);
   });
+
+  const sweep = setInterval(() => {
+    void sweepInactiveAdmins(io);
+  }, INACTIVITY_SWEEP_INTERVAL_MS);
+  sweep.unref();
 }
 
-async function handleConnection(io: ChatServer, socket: ChatSocket) {
+async function broadcastAdminStatus(io: ChatServer, status: AdminPresenceState) {
+  const payload = { status, updatedAt: new Date().toISOString() };
+  io.to(PRESENCE_ROOM).emit(SOCKET_EVENTS.ADMIN_STATUS, payload);
+  io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.ADMIN_STATUS, payload);
+}
+
+async function sweepInactiveAdmins(io: ChatServer) {
+  const staleIds = await updatePresence.getStaleOnlineAdminIds(ADMIN_AWAY_AFTER_MS);
+  if (staleIds.length === 0) return;
+
+  for (const adminId of staleIds) {
+    await updatePresence.markAway(adminId);
+  }
+  const status = await updatePresence.getAggregateStatus();
+  await broadcastAdminStatus(io, status);
+}
+
+/** Marks the admin active and, if this actually flipped them away→online, broadcasts the new aggregate status. */
+async function noteAdminActivity(io: ChatServer, adminId: string) {
+  const wasAway = await updatePresence.touchActivity(adminId);
+  if (wasAway) {
+    const status = await updatePresence.getAggregateStatus();
+    await broadcastAdminStatus(io, status);
+  }
+}
+
+async function handleConnection(
+  io: ChatServer,
+  socket: ChatSocket,
+  typingTimers: Map<string, ReturnType<typeof setTimeout>>
+) {
   console.log("[socket] connected", { id: socket.id, role: socket.data.role });
 
   // Redis presence expires after 60 seconds. Refresh it while this socket is
   // connected so an active admin does not disappear and trigger bot replies.
   const presenceHeartbeat = setInterval(() => {
     const refresh = socket.data.role === "admin" && socket.data.adminId
-      ? updatePresence.markOnline(socket.data.adminId)
+      ? updatePresence.refreshTtl(socket.data.adminId)
       : socket.data.visitorId
         ? updatePresence.markVisitorOnline(socket.data.visitorId)
         : Promise.resolve();
@@ -77,11 +126,13 @@ async function handleConnection(io: ChatServer, socket: ChatSocket) {
   if (socket.data.role === "admin" && socket.data.adminId) {
     socket.join(ADMIN_ROOM);
     await updatePresence.markOnline(socket.data.adminId);
-    io.emit(SOCKET_EVENTS.ONLINE);
+    await broadcastAdminStatus(io, await updatePresence.getAggregateStatus());
   } else if (socket.data.role === "visitor" && socket.data.conversationId && socket.data.visitorId) {
     socket.join(getConversationRoom(socket.data.conversationId));
-    const anyAdminOnline = await updatePresence.isAnyAdminOnline();
-    if (anyAdminOnline) socket.emit(SOCKET_EVENTS.ONLINE);
+    socket.join(PRESENCE_ROOM);
+
+    const status = await updatePresence.getAggregateStatus();
+    socket.emit(SOCKET_EVENTS.ADMIN_STATUS, { status, updatedAt: new Date().toISOString() });
 
     await updatePresence.markVisitorOnline(socket.data.visitorId);
     io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.PRESENCE, { userId: socket.data.visitorId, online: true });
@@ -96,6 +147,17 @@ async function handleConnection(io: ChatServer, socket: ChatSocket) {
     socket.join(getConversationRoom(conversationId));
   });
 
+  socket.on(SOCKET_EVENTS.ADMIN_OPEN, (payload) => {
+    const parsed = safeParse(adminOpenPayloadSchema, payload);
+    if (!parsed || socket.data.role !== "admin" || !socket.data.adminId) return;
+    void handleAdminOpen(io, parsed.conversationId, socket.data.adminId);
+  });
+
+  socket.on(SOCKET_EVENTS.ADMIN_ACTIVITY, () => {
+    if (socket.data.role !== "admin" || !socket.data.adminId) return;
+    void noteAdminActivity(io, socket.data.adminId);
+  });
+
   socket.on(SOCKET_EVENTS.MESSAGE, async (payload) => {
     const parsed = safeParse(candidateMessageSchema, payload);
     if (!parsed) return;
@@ -107,19 +169,20 @@ async function handleConnection(io: ChatServer, socket: ChatSocket) {
     const parsed = safeParse(adminMessageSchema, payload);
     if (!parsed) return;
     if (socket.data.role !== "admin" || !socket.data.adminId) return;
-    await handleAdminReply(io, parsed.conversationId, parsed.content, socket.data.adminId);
+    await handleAdminReply(io, parsed.conversationId, parsed.content, socket.data.adminId, parsed.clientMessageId);
   });
 
   socket.on(SOCKET_EVENTS.TYPING, (payload) => {
     const parsed = safeParse(typingPayloadSchema, payload);
     if (!parsed) return;
-    broadcastTyping(io, socket, parsed.conversationId, true);
+    broadcastTyping(io, socket, parsed.conversationId, true, typingTimers);
   });
 
   socket.on(SOCKET_EVENTS.STOP_TYPING, (payload) => {
     const parsed = safeParse(typingPayloadSchema, payload);
     if (!parsed) return;
-    broadcastTyping(io, socket, parsed.conversationId, false);
+    clearTypingTimer(typingTimers, parsed.conversationId, socket.data.role);
+    broadcastTyping(io, socket, parsed.conversationId, false, typingTimers, true);
   });
 
   socket.on(SOCKET_EVENTS.READ, async (payload) => {
@@ -136,6 +199,18 @@ async function handleConnection(io: ChatServer, socket: ChatSocket) {
     console.log("[socket] disconnected", { id: socket.id, reason });
     void handleDisconnect(io, socket);
   });
+}
+
+async function handleAdminOpen(io: ChatServer, conversationId: string, adminId: string) {
+  await noteAdminActivity(io, adminId);
+  const assigned = await assignConversationAdminIfUnset(conversationId, adminId);
+  if (!assigned) return;
+
+  io.to(getConversationRoom(conversationId)).emit(SOCKET_EVENTS.ADMIN_JOINED, {
+    conversationId,
+    adminId,
+  });
+  io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.CONVERSATION_UPDATED, { conversation: assigned });
 }
 
 async function handleIncomingMessage(
@@ -156,36 +231,58 @@ async function handleIncomingMessage(
     sender: "visitor",
     senderId: socket.data.visitorId,
     content,
+    clientMessageId,
   });
 
   const room = getConversationRoom(conversationId);
-  io.to(room).emit(SOCKET_EVENTS.MESSAGE, { message, clientMessageId });
+  const aggregateStatus = await updatePresence.getAggregateStatus();
+  const isDelivered = aggregateStatus !== "offline" && message.status === "sent";
+  if (isDelivered) await markMessageDelivered(message.id);
+  const outgoing = isDelivered ? { ...message, status: "delivered" as const } : message;
+
+  io.to(room).emit(SOCKET_EVENTS.MESSAGE, { message: outgoing, clientMessageId });
 
   const conversation = await getConversationById(conversationId);
   if (!conversation) return;
   io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.NEW_CONVERSATION, { conversation });
 
-  const anyAdminOnline = await updatePresence.isAnyAdminOnline();
-  if (!anyAdminOnline) {
+  if (aggregateStatus === "offline") {
     await sendNewConversationEmail(conversation);
     await sendBotReply(io, conversationId, content);
   }
 }
 
-async function handleAdminReply(io: ChatServer, conversationId: string, rawContent: string, adminId: string) {
+async function handleAdminReply(
+  io: ChatServer,
+  conversationId: string,
+  rawContent: string,
+  adminId: string,
+  clientMessageId?: string
+) {
   const content = sanitizeMessage(rawContent);
   if (!content) return;
+
+  await noteAdminActivity(io, adminId);
 
   const message = await sendMessage({
     conversationId,
     sender: "admin",
     senderId: adminId,
     content,
+    clientMessageId,
   });
 
-  io.to(getConversationRoom(conversationId)).emit(SOCKET_EVENTS.MESSAGE, { message });
+  io.to(getConversationRoom(conversationId)).emit(SOCKET_EVENTS.MESSAGE, { message, clientMessageId });
 
-  const conversation = await getConversationById(conversationId);
+  // Replying without ever having explicitly "opened" the conversation
+  // (older client, or a reply sent straight from a notification) still
+  // counts as the admin having joined it.
+  const assigned = await assignConversationAdminIfUnset(conversationId, adminId);
+  if (assigned) {
+    io.to(getConversationRoom(conversationId)).emit(SOCKET_EVENTS.ADMIN_JOINED, { conversationId, adminId });
+  }
+
+  const conversation = assigned ?? (await getConversationById(conversationId));
   if (conversation) {
     io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.CONVERSATION_UPDATED, { conversation });
   }
@@ -211,20 +308,66 @@ async function sendBotReply(io: ChatServer, conversationId: string, visitorMessa
   io.to(room).emit(SOCKET_EVENTS.MESSAGE, { message });
 }
 
-function broadcastTyping(io: ChatServer, socket: ChatSocket, conversationId: string, isTyping: boolean) {
+function typingTimerKey(conversationId: string, sender: "visitor" | "admin"): string {
+  return `${conversationId}:${sender}`;
+}
+
+function clearTypingTimer(
+  typingTimers: Map<string, ReturnType<typeof setTimeout>>,
+  conversationId: string,
+  role: "visitor" | "admin" | undefined
+) {
+  if (!role) return;
+  const key = typingTimerKey(conversationId, role);
+  const timer = typingTimers.get(key);
+  if (timer) {
+    clearTimeout(timer);
+    typingTimers.delete(key);
+  }
+}
+
+function broadcastTyping(
+  io: ChatServer,
+  socket: ChatSocket,
+  conversationId: string,
+  isTyping: boolean,
+  typingTimers: Map<string, ReturnType<typeof setTimeout>>,
+  skipAutoStopTimer = false
+) {
   const sender = socket.data.role === "admin" ? "admin" : "visitor";
   socket.to(getConversationRoom(conversationId)).emit(SOCKET_EVENTS.TYPING, {
     conversationId,
     sender,
     isTyping,
   });
+
+  if (skipAutoStopTimer) return;
+
+  const key = typingTimerKey(conversationId, sender);
+  const existing = typingTimers.get(key);
+  if (existing) clearTimeout(existing);
+
+  if (isTyping) {
+    const timer = setTimeout(() => {
+      typingTimers.delete(key);
+      socket.to(getConversationRoom(conversationId)).emit(SOCKET_EVENTS.TYPING, {
+        conversationId,
+        sender,
+        isTyping: false,
+      });
+    }, TYPING_AUTO_STOP_MS);
+    timer.unref();
+    typingTimers.set(key, timer);
+  } else {
+    typingTimers.delete(key);
+  }
 }
 
 async function handleDisconnect(io: ChatServer, socket: ChatSocket) {
   if (socket.data.role === "admin" && socket.data.adminId) {
     await updatePresence.markOffline(socket.data.adminId);
-    const stillOnline = await updatePresence.isAnyAdminOnline();
-    if (!stillOnline) io.emit(SOCKET_EVENTS.OFFLINE);
+    const status = await updatePresence.getAggregateStatus();
+    await broadcastAdminStatus(io, status);
     return;
   }
 

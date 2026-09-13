@@ -190,16 +190,17 @@ model Conversation {
 }
 
 model Message {
-  id             String        @id @default(cuid())
-  conversationId String
-  sender         MessageSender
-  senderId       String?
-  content        String
-  status         MessageStatus @default(SENT)
-  createdAt      DateTime      @default(now())
-  readAt         DateTime?
+  id              String        @id @default(cuid())
+  conversationId  String
+  sender          MessageSender
+  senderId        String?
+  content         String
+  status          MessageStatus @default(SENT)
+  clientMessageId String?       @unique
+  createdAt       DateTime      @default(now())
+  readAt          DateTime?
 
-  conversation   Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversation    Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   @@index([conversationId, createdAt])
 }

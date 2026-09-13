@@ -1,8 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Minus, Send, X } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { Check, CheckCheck, Clock, Minus, Send, X } from "lucide-react";
 import type { ChatAction, ChatMessage, ConnectionState } from "@/types/chat";
+import type { AdminPresenceState } from "@/types/socket";
+import TypingIndicator from "@/components/chat/TypingIndicator";
+import PresenceBanner from "./PresenceBanner";
 
 const STATUS_LABEL: Record<ConnectionState, string> = {
   online: "Online",
@@ -29,10 +33,24 @@ function formatTimestamp(createdAt: string): string {
   }).format(new Date(createdAt));
 }
 
+const DRAFT_STORAGE_PREFIX = "live-chat-draft:";
+const NEAR_BOTTOM_THRESHOLD_PX = 80;
+
+const MESSAGE_STATUS_ICON = {
+  sending: Clock,
+  sent: Check,
+  delivered: CheckCheck,
+  read: CheckCheck,
+} as const;
+
 export default function LiveChatPanel({
   messages,
   typing,
   connectionState,
+  adminStatus,
+  adminJoined,
+  pendingMessageIds,
+  conversationId,
   onSend,
   onAction,
   onMinimise,
@@ -42,6 +60,10 @@ export default function LiveChatPanel({
   messages: ChatMessage[];
   typing: boolean;
   connectionState: ConnectionState;
+  adminStatus: AdminPresenceState;
+  adminJoined: boolean;
+  pendingMessageIds: Set<string>;
+  conversationId: string | null;
   onSend: (text: string) => void;
   onAction: (action: ChatAction) => void;
   onMinimise: () => void;
@@ -51,18 +73,42 @@ export default function LiveChatPanel({
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const canSend = connectionState === "online";
+  const wasNearBottomRef = useRef(true);
+  const reduceMotion = useReducedMotion();
+  const draftKey = conversationId ? `${DRAFT_STORAGE_PREFIX}${conversationId}` : null;
+
+  // Restore an in-progress draft (e.g. after a disconnect/reload) once the
+  // conversation id is known.
+  useEffect(() => {
+    if (!draftKey) return;
+    setInput(window.sessionStorage.getItem(draftKey) ?? "");
+  }, [draftKey]);
 
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    el.scrollTop = el.scrollHeight;
+    const handleScroll = () => {
+      wasNearBottomRef.current =
+        el.scrollHeight - el.scrollTop - el.clientHeight < NEAR_BOTTOM_THRESHOLD_PX;
+    };
+    el.addEventListener("scroll", handleScroll);
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    // Preserve scroll position when older/unrelated content changes; only
+    // snap to the newest message if the reader was already at (or near) the
+    // bottom, so scrolling up to read history is never yanked back down.
+    if (wasNearBottomRef.current) el.scrollTop = el.scrollHeight;
   }, [messages, typing]);
 
   const handleSend = () => {
-    if (!input.trim() || !canSend) return;
+    if (!input.trim()) return;
     onSend(input);
     setInput("");
+    if (draftKey) window.sessionStorage.removeItem(draftKey);
     if (textareaRef.current) textareaRef.current.style.height = "auto";
   };
 
@@ -123,62 +169,72 @@ export default function LiveChatPanel({
         </div>
       </header>
 
+      <PresenceBanner adminJoined={adminJoined} adminStatus={adminStatus} />
+
       <div
         ref={scrollRef}
         className="flex-1 space-y-3 overflow-y-auto overflow-x-hidden px-4 py-4"
         aria-live="polite"
         aria-relevant="additions"
       >
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex flex-col gap-1 ${
-              message.sender === "visitor" ? "items-end" : "items-start"
-            }`}
-          >
-            <div
-              className={`max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-4 py-2.5 text-sm ${
-                message.sender === "visitor"
-                  ? "bg-accent text-ink"
-                  : "border border-line bg-ink text-white"
+        {messages.map((message) => {
+          const isPending = pendingMessageIds.has(message.id);
+          const statusKey = isPending ? "sending" : message.status;
+          const StatusIcon = message.sender === "visitor" ? MESSAGE_STATUS_ICON[statusKey] : null;
+
+          return (
+            <motion.div
+              key={message.id}
+              initial={reduceMotion ? undefined : { opacity: 0, y: 8 }}
+              animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
+              className={`flex flex-col gap-1 ${
+                message.sender === "visitor" ? "items-end" : "items-start"
               }`}
             >
-              {message.content}
-            </div>
-            <span className="px-1 text-[11px] text-muted">
-              {formatTimestamp(message.createdAt)}
-            </span>
-            {message.actions?.length ? (
-              <div className="flex flex-wrap gap-2">
-                {message.actions.map((action) => (
-                  <button
-                    key={action.href + action.label}
-                    type="button"
-                    onClick={() => onAction(action)}
-                    className="rounded-full border border-accent/40 px-3 py-1.5 text-xs font-medium text-accent transition-colors duration-150 hover:bg-accent/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
-                  >
-                    {action.label}
-                  </button>
-                ))}
+              <div
+                className={`max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-4 py-2.5 text-sm ${
+                  message.sender === "visitor"
+                    ? "bg-accent text-ink"
+                    : "border border-line bg-ink text-white"
+                }`}
+              >
+                {message.content}
               </div>
-            ) : null}
-          </div>
-        ))}
+              <span className="flex items-center gap-1 px-1 text-[11px] text-muted">
+                {formatTimestamp(message.createdAt)}
+                {StatusIcon ? (
+                  <StatusIcon
+                    className={`h-3 w-3 ${statusKey === "read" ? "text-accent" : ""}`}
+                    aria-label={statusKey}
+                  />
+                ) : null}
+              </span>
+              {message.actions?.length ? (
+                <div className="flex flex-wrap gap-2">
+                  {message.actions.map((action) => (
+                    <button
+                      key={action.href + action.label}
+                      type="button"
+                      onClick={() => onAction(action)}
+                      className="rounded-full border border-accent/40 px-3 py-1.5 text-xs font-medium text-accent transition-colors duration-150 hover:bg-accent/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                    >
+                      {action.label}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+            </motion.div>
+          );
+        })}
 
-        {typing ? (
-          <div className="flex items-start" aria-hidden="true">
-            <div className="flex items-center gap-1 rounded-2xl border border-line bg-ink px-4 py-2.5 text-sm text-muted">
-              <span className="sr-only">Assistant is typing</span>
-              Typing…
-            </div>
-          </div>
-        ) : null}
+        {typing ? <TypingIndicator label="Admin is typing" /> : null}
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-1.5 border-t border-line px-3 py-3">
-        {!canSend ? (
+        {connectionState !== "online" ? (
           <p className="px-1 text-xs text-amber-400" role="status" aria-live="polite">
-            Reconnecting…
+            Reconnecting… your messages will send once you&rsquo;re back online.
           </p>
         ) : null}
         <div className="flex items-end gap-2">
@@ -191,6 +247,7 @@ export default function LiveChatPanel({
             value={input}
             onChange={(event) => {
               setInput(event.target.value);
+              if (draftKey) window.sessionStorage.setItem(draftKey, event.target.value);
               const el = event.target;
               el.style.height = "auto";
               el.style.height = `${Math.min(el.scrollHeight, 96)}px`;
@@ -203,7 +260,7 @@ export default function LiveChatPanel({
           />
           <button
             type="submit"
-            disabled={!input.trim() || !canSend}
+            disabled={!input.trim()}
             aria-label="Send message"
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-ink transition-opacity duration-150 disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
