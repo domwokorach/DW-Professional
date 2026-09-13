@@ -3,11 +3,8 @@
 import { useCallback, useState } from "react";
 import { MessageSquare } from "lucide-react";
 import ConnectionStatus from "./ConnectionStatus";
-import {
-  SidebarProvider,
-  SidebarTrigger,
-  useSidebar,
-} from "@/components/animate-ui/components/radix/sidebar";
+import { SidebarProvider } from "@/components/animate-ui/components/radix/sidebar";
+import { cn } from "@/lib/utils";
 import { useAdminSocket } from "@/hooks/use-admin-socket";
 import { useConversations } from "@/hooks/use-conversations";
 import { useAdminThread } from "@/hooks/use-admin-thread";
@@ -39,7 +36,6 @@ export default function AdminChat({
   } = useConversations(socketRef, connectionState);
   const onlineVisitorIds = useAdminPresence(socketRef);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const { conversation, messages, typing, loading: threadLoading, sendReply } = useAdminThread(
     socketRef,
@@ -76,12 +72,7 @@ export default function AdminChat({
   }, [conversation, refresh]);
 
   return (
-    <SidebarProvider
-      className="contents"
-      open={sidebarOpen}
-      onOpenChange={setSidebarOpen}
-      style={{ "--sidebar-width": "19rem" } as React.CSSProperties}
-    >
+    <SidebarProvider className="contents">
       <ChatShell
         adminId={adminId}
         adminName={adminName}
@@ -151,51 +142,62 @@ function ChatShell({
   onToggleStatus: () => void;
   onMarkUnread: () => void;
 }) {
-  const { isMobile, setOpenMobile } = useSidebar();
+  // Mobile has no room for list + conversation side by side, so the two
+  // panes are toggled by `selectedId` via CSS breakpoints instead of an
+  // overlay/drawer — at md+ both are always visible regardless of selection.
+  const handleSelect = useCallback((id: string) => setSelectedId(id), [setSelectedId]);
+  const handleBack = useCallback(() => setSelectedId(null), [setSelectedId]);
 
-  const handleSelect = useCallback(
-    (id: string) => {
-      setSelectedId(id);
-      if (isMobile) setOpenMobile(false);
-    },
-    [isMobile, setOpenMobile, setSelectedId]
-  );
-
-  const handleBack = useCallback(() => {
-    if (isMobile) {
-      setOpenMobile(true);
-    } else {
-      setSelectedId(null);
-    }
-  }, [isMobile, setOpenMobile, setSelectedId]);
+  const isClosed = conversation?.status === "closed";
+  const composerDisabledHint = isClosed
+    ? "This conversation has ended."
+    : connectionState === "unauthorized"
+      ? "Session expired"
+      : "Reconnecting…";
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden">
-      <header className="flex shrink-0 items-center gap-3 border-b border-line px-4 py-3 sm:px-6">
-        <SidebarTrigger aria-label="Toggle candidate list" />
+      <header
+        className={cn(
+          "shrink-0 items-center gap-3 border-b border-line px-4 py-3 sm:px-6",
+          selectedId ? "hidden md:flex" : "flex"
+        )}
+      >
         <h1 className="min-w-0 flex-1 truncate font-mono text-base font-semibold text-white sm:text-lg">
           Admin Chat
         </h1>
         <ConnectionStatus state={connectionState} />
       </header>
 
-      <div className="flex min-h-0 flex-1">
-        <ConversationList
-          conversations={conversations}
-          loading={listLoading}
-          error={listError}
-          onRetry={refresh}
-          selectedId={selectedId}
-          onlineVisitorIds={onlineVisitorIds}
-          adminName={adminName}
-          adminEmail={adminEmail}
-          currentAdminId={adminId}
-          onSelect={handleSelect}
-          onSignOut={onSignOut}
-        />
+      <div className="flex min-h-0 flex-1 overflow-hidden">
+        <div
+          className={cn(
+            "min-h-0 flex-col md:flex md:w-[280px] md:shrink-0 lg:w-[320px]",
+            selectedId ? "hidden md:flex" : "flex w-full"
+          )}
+        >
+          <ConversationList
+            conversations={conversations}
+            loading={listLoading}
+            error={listError}
+            onRetry={refresh}
+            selectedId={selectedId}
+            onlineVisitorIds={onlineVisitorIds}
+            adminName={adminName}
+            adminEmail={adminEmail}
+            currentAdminId={adminId}
+            onSelect={handleSelect}
+            onSignOut={onSignOut}
+          />
+        </div>
 
-        <div className="flex min-w-0 flex-1 lg:grid lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_360px]">
-          <div className="flex h-full min-h-0 min-w-0 flex-col">
+        <div className="flex min-w-0 flex-1 min-[1200px]:grid min-[1200px]:grid-cols-[minmax(0,1fr)_320px]">
+          <div
+            className={cn(
+              "min-h-0 min-w-0 flex-col",
+              selectedId ? "flex" : "hidden md:flex"
+            )}
+          >
             {!conversation ? (
               <div className="flex flex-1 flex-col items-center justify-center gap-2 px-6 text-center">
                 <MessageSquare className="h-10 w-10 text-muted" aria-hidden="true" />
@@ -218,21 +220,22 @@ function ChatShell({
                 <MessageList
                   messages={messages}
                   loading={threadLoading}
-                  typingLabel={typing ? "Candidate is typing…" : null}
+                  typingLabel={typing ? `${conversation.name || "Candidate"} is typing…` : null}
                 />
                 <MessageInput
                   onSend={sendReply}
                   onTyping={notifyTyping}
-                  placeholder="Reply to candidate…"
+                  placeholder={isClosed ? "This conversation has ended." : "Reply to candidate…"}
                   disabled={connectionState !== "online"}
-                  disabledHint={connectionState === "unauthorized" ? "Session expired" : "Reconnecting…"}
+                  disabledHint={composerDisabledHint}
+                  closed={isClosed}
                 />
               </>
             )}
           </div>
 
           {conversation ? (
-            <aside className="hidden h-full min-h-0 border-l border-line lg:block">
+            <aside className="hidden min-h-0 border-l border-line min-[1200px]:block">
               <CustomerDetails
                 conversation={conversation}
                 online={onlineVisitorIds.has(conversation.visitorId)}
