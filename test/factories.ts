@@ -118,6 +118,8 @@ export function buildConversation(overrides: Partial<Conversation> = {}): Conver
     visitorId: nextId('visitor'),
     name: 'Jane Visitor',
     email: 'jane@example.com',
+    mobile: null,
+    companyName: null,
     status: 'OPEN',
     assignedAdminId: null,
     unreadByAdmin: 0,
