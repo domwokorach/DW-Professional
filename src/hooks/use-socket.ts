@@ -108,7 +108,14 @@ export function useSocket(fetchToken: () => Promise<string>, enabled = true) {
 
     socket.connect();
 
+    // Signed out via useSignOut() — an httpOnly cookie clearing on the
+    // server doesn't itself close an already-open WebSocket, so this tears
+    // it down explicitly the moment sign-out completes.
+    const handleSignOut = () => socket.disconnect();
+    window.addEventListener("admin-sign-out", handleSignOut);
+
     return () => {
+      window.removeEventListener("admin-sign-out", handleSignOut);
       socket.off("connect", handleConnect);
       socket.off("disconnect", handleDisconnect);
       socket.off("connect_error", handleConnectError);

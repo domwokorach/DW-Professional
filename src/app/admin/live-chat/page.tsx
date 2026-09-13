@@ -1,5 +1,5 @@
 import AdminLiveChat from "@/components/admin/live-chat/AdminLiveChat";
-import { getAdminSession } from "@/lib/admin";
+import { getAdminSession } from "@/lib/auth/guard";
 
 export default async function AdminLiveChatPage() {
   const admin = await getAdminSession();

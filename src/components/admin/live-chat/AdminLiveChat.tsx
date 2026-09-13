@@ -1,13 +1,11 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
-import { useClerk } from "@clerk/nextjs";
 import { useAdminSocket } from "@/hooks/use-admin-socket";
 import { useConversations } from "@/hooks/use-conversations";
 import { useAdminThread } from "@/hooks/use-admin-thread";
-import { useLocale } from "@/i18n/LocaleProvider";
+import { useSignOut } from "@/hooks/use-sign-out";
 import ConnectionStatus from "@/components/chat/ConnectionStatus";
 import OnlineStatus from "@/components/chat/OnlineStatus";
 import ConversationList from "./ConversationList";
@@ -24,13 +22,11 @@ export default function AdminLiveChat({ adminName, adminEmail }: { adminName: st
     connectionState,
     refresh
   );
-  const { signOut } = useClerk();
-  const router = useRouter();
-  const { localiseHref } = useLocale();
+  const { signOut } = useSignOut();
 
   const handleSignOut = useCallback(() => {
-    signOut(() => router.push(localiseHref("/")));
-  }, [signOut, router, localiseHref]);
+    void signOut();
+  }, [signOut]);
 
   const handleToggleStatus = useCallback(async () => {
     if (!conversation) return;

@@ -25,6 +25,128 @@ enum MessageStatus {
   READ
 }
 
+enum Role {
+  ADMIN
+  SUPPORT
+  SUPER_ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DISABLED
+}
+
+enum AvailabilityStatus {
+  ONLINE
+  AWAY
+  BUSY
+  OFFLINE
+}
+
+enum SecurityEventType {
+  SIGN_IN
+  SIGN_OUT
+  FAILED_SIGN_IN
+  PASSWORD_CHANGED
+  PASSWORD_RESET_REQUESTED
+  PASSWORD_RESET_COMPLETED
+  EMAIL_CHANGE_REQUESTED
+  EMAIL_CHANGED
+  SESSION_REVOKED
+  ACCOUNT_LOCKED
+}
+
+model User {
+  id              String     @id @default(cuid())
+  name            String
+  email           String     @unique
+  passwordHash    String
+  role            Role       @default(ADMIN)
+  status          UserStatus @default(ACTIVE)
+  avatarUrl       String?
+  availability    AvailabilityStatus @default(OFFLINE)
+  preferences     Json       @default("{}")
+  emailVerifiedAt DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  lastLoginAt     DateTime?
+
+  sessions             Session[]
+  passwordResetTokens  PasswordResetToken[]
+  emailChangeRequests  EmailChangeRequest[]
+  securityEvents       SecurityEvent[]
+
+  @@index([email])
+}
+
+model Session {
+  id               String    @id @default(cuid())
+  userId           String
+  refreshTokenHash String    @unique
+  deviceId         String
+  deviceName       String
+  deviceType       String
+  operatingSystem  String
+  browser          String
+  ipAddress        String?
+  userAgent        String?
+  createdAt        DateTime  @default(now())
+  lastActiveAt     DateTime  @default(now())
+  expiresAt        DateTime
+  revokedAt        DateTime?
+
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  securityEvents  SecurityEvent[]
+
+  @@index([userId])
+  @@index([deviceId])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model EmailChangeRequest {
+  id         String    @id @default(cuid())
+  userId     String
+  oldEmail   String
+  newEmail   String
+  tokenHash  String    @unique
+  expiresAt  DateTime
+  verifiedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model SecurityEvent {
+  id        String            @id @default(cuid())
+  userId    String
+  sessionId String?
+  type      SecurityEventType
+  ipAddress String?
+  userAgent String?
+  metadata  Json?
+  createdAt DateTime          @default(now())
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  session Session? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+}
+
 model Conversation {
   id              String             @id @default(cuid())
   visitorId       String

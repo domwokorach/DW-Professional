@@ -1,4 +1,4 @@
-import { getAdminSession, type AdminSession } from "@/lib/admin";
+import { getAdminSession, type AdminSession } from "@/lib/auth/guard";
 import { getConversationById } from "@/lib/chat/get-conversations";
 import type { Conversation } from "@/types/conversation";
 

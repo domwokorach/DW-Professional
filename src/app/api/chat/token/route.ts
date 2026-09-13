@@ -6,7 +6,7 @@ import { safeParse, visitorIdSchema } from "@/lib/chat/validation";
 
 export const runtime = "nodejs";
 
-/** Issues a short-lived socket auth token: visitors get one bound to their conversation, admins to their Clerk session. */
+/** Issues a short-lived socket auth token: visitors get one bound to their conversation, admins to their authenticated session. */
 export async function POST(request: NextRequest) {
   const secret = process.env.SOCKET_SECRET;
   if (!secret) {
@@ -21,8 +21,8 @@ export async function POST(request: NextRequest) {
 
   const body = await request.json().catch(() => ({}));
 
-  // The admin socket explicitly requests an admin token so a lost Clerk
-  // session or a removal from ADMIN_EMAILS surfaces as an unambiguous 401
+  // The admin socket explicitly requests an admin token so a lost session
+  // or a disabled/suspended account surfaces as an unambiguous 401
   // instead of falling into the visitor path's "Invalid visitorId" 400 —
   // the client relies on this to distinguish "session expired" from a
   // transient network failure (see hooks/use-socket.ts).

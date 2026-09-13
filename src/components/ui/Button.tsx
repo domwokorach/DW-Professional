@@ -19,6 +19,7 @@ type ButtonAsButton = CommonProps & {
   href?: never;
   onClick?: () => void;
   type?: "button" | "submit";
+  disabled?: boolean;
 };
 
 type ButtonProps = ButtonAsLink | ButtonAsButton;
@@ -38,9 +39,10 @@ export default function Button({
   type = "button",
   variant = "primary",
   className,
-}: ButtonProps) {
+  disabled,
+}: ButtonProps & { disabled?: boolean }) {
   const classes = cn(
-    "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-medium transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2",
+    "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-medium transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60",
     variantClasses[variant],
     className
   );
@@ -62,7 +64,7 @@ export default function Button({
   }
 
   return (
-    <button type={type} onClick={onClick} className={classes}>
+    <button type={type} onClick={onClick} className={classes} disabled={disabled}>
       {children}
     </button>
   );
