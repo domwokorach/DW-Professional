@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search, LogOut } from "lucide-react";
+import { Search, LogOut, TriangleAlert } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -14,8 +14,10 @@ import {
   SidebarMenu,
 } from "@/components/animate-ui/components/radix/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Conversation, ConnectionState } from "@/types/chat";
-import ConnectionStatus from "./ConnectionStatus";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
+import { matchesFilter, type ConversationFilter } from "@/lib/chat/filters";
+import type { Conversation } from "@/types/chat";
+import ConversationFilters from "./ConversationFilters";
 import ConversationItem from "./ConversationItem";
 
 function matchesQuery(conversation: Conversation, term: string): boolean {
@@ -27,33 +29,41 @@ function matchesQuery(conversation: Conversation, term: string): boolean {
 export default function ConversationList({
   conversations,
   loading,
+  error,
+  onRetry,
   selectedId,
   onlineVisitorIds,
-  connectionState,
   adminName,
   adminEmail,
+  currentAdminId,
   className,
   onSelect,
   onSignOut,
 }: {
   conversations: Conversation[];
   loading: boolean;
+  error?: boolean;
+  onRetry?: () => void;
   selectedId: string | null;
   onlineVisitorIds: Set<string>;
-  connectionState: ConnectionState;
   adminName: string;
   adminEmail: string;
+  currentAdminId: string;
   className?: string;
   onSelect: (id: string) => void;
   onSignOut: () => void;
 }) {
   const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<ConversationFilter>("all");
+  const debouncedQuery = useDebouncedValue(query, 250);
 
   const filtered = useMemo(() => {
-    const term = query.trim().toLowerCase();
-    if (!term) return conversations;
-    return conversations.filter((conversation) => matchesQuery(conversation, term));
-  }, [conversations, query]);
+    const term = debouncedQuery.trim().toLowerCase();
+    return conversations.filter((conversation) => {
+      if (term && !matchesQuery(conversation, term)) return false;
+      return matchesFilter(conversation, filter, { onlineVisitorIds, currentAdminId });
+    });
+  }, [conversations, debouncedQuery, filter, onlineVisitorIds, currentAdminId]);
 
   // Presence is currently binary (online/offline; see hooks/use-admin-presence),
   // so "waiting" is approximated from unreadByAdmin rather than a distinct
@@ -78,29 +88,44 @@ export default function ConversationList({
   return (
     <Sidebar collapsible="none" className={className}>
       <SidebarHeader className="gap-3 border-b border-line p-3">
-        <ConnectionStatus state={connectionState} />
-
-        <div className="relative">
-          <Search
-            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
-            aria-hidden="true"
-          />
-          <label htmlFor="conversation-search" className="sr-only">
-            Search candidates
-          </label>
-          <SidebarInput
-            id="conversation-search"
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search candidates…"
-            className="pl-9"
-          />
+        <div className="flex items-center gap-2">
+          <div className="relative min-w-0 flex-1">
+            <Search
+              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
+              aria-hidden="true"
+            />
+            <label htmlFor="conversation-search" className="sr-only">
+              Search candidates
+            </label>
+            <SidebarInput
+              id="conversation-search"
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search candidates…"
+              className="pl-9"
+            />
+          </div>
+          <ConversationFilters value={filter} onChange={setFilter} />
         </div>
       </SidebarHeader>
 
       <SidebarContent className="gap-0">
-        {loading && conversations.length === 0 ? (
+        {error && conversations.length === 0 ? (
+          <div className="flex flex-col items-center gap-2 p-4 text-center">
+            <TriangleAlert className="h-5 w-5 text-amber-400" aria-hidden="true" />
+            <p className="text-sm text-muted">Unable to load conversations.</p>
+            {onRetry ? (
+              <button
+                type="button"
+                onClick={onRetry}
+                className="rounded-md border border-line px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+              >
+                Retry
+              </button>
+            ) : null}
+          </div>
+        ) : loading && conversations.length === 0 ? (
           <div className="space-y-2 p-4">
             <Skeleton className="h-14 w-full" />
             <Skeleton className="h-14 w-full" />
@@ -108,7 +133,11 @@ export default function ConversationList({
           </div>
         ) : filtered.length === 0 ? (
           <p className="p-4 text-sm text-muted">
-            {conversations.length === 0 ? "No candidates yet." : "No conversations match your search."}
+            {conversations.length === 0
+              ? "No conversations yet. New candidate messages will appear here."
+              : query.trim()
+                ? "No conversations match your search."
+                : "No conversations match this filter."}
           </p>
         ) : (
           <>

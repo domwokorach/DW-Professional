@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Send } from "lucide-react";
 import { MAX_MESSAGE_LENGTH } from "@/lib/chat/constants";
+
+const MAX_TEXTAREA_HEIGHT_PX = 160;
 
 export default function MessageInput({
   onSend,
@@ -19,14 +21,21 @@ export default function MessageInput({
   disabledHint?: string;
 }) {
   const [value, setValue] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const trimmed = value.trim();
   const canSend = trimmed.length > 0 && trimmed.length <= MAX_MESSAGE_LENGTH && !disabled;
+
+  const autoGrow = (el: HTMLTextAreaElement) => {
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, MAX_TEXTAREA_HEIGHT_PX)}px`;
+  };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (!canSend) return;
     onSend(trimmed);
     setValue("");
+    if (textareaRef.current) textareaRef.current.style.height = "auto";
   };
 
   return (
@@ -41,10 +50,12 @@ export default function MessageInput({
           Type your message
         </label>
         <textarea
+          ref={textareaRef}
           id="chat-message-input"
           value={value}
           onChange={(event) => {
             setValue(event.target.value);
+            autoGrow(event.target);
             onTyping?.();
           }}
           onKeyDown={(event) => {
@@ -57,7 +68,7 @@ export default function MessageInput({
           rows={1}
           maxLength={MAX_MESSAGE_LENGTH}
           aria-describedby="chat-message-limit"
-          className="min-h-11 max-h-24 flex-1 resize-none rounded-2xl border border-line bg-ink px-4 py-2.5 text-sm leading-normal text-white placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+          className="min-h-[44px] max-h-40 flex-1 resize-none overflow-y-auto rounded-2xl border border-line bg-ink px-4 py-2.5 text-sm leading-normal text-white placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
         />
         <span id="chat-message-limit" className="sr-only">
           Maximum {MAX_MESSAGE_LENGTH} characters. Press Enter to send, Shift+Enter for a new line.

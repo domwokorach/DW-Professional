@@ -9,26 +9,30 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/animate-ui/components/radix/sheet";
 import type { Conversation } from "@/types/chat";
-import { formatChatDate } from "@/lib/chat/helpers";
 import CandidateAvatar from "./CandidateAvatar";
 import OnlineStatus from "./OnlineStatus";
+import CustomerDetails from "./CustomerDetails";
 
 export default function ChatHeader({
   conversation,
   online,
+  currentAdminId,
+  currentAdminName,
   onBack,
   onToggleStatus,
   onMarkUnread,
 }: {
   conversation: Conversation;
   online: boolean;
+  currentAdminId: string;
+  currentAdminName: string;
   onBack?: () => void;
   onToggleStatus?: () => void;
   onMarkUnread?: () => void;
@@ -71,7 +75,7 @@ export default function ChatHeader({
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onSelect={() => setDetailsOpen(true)}>
+            <DropdownMenuItem className="lg:hidden" onSelect={() => setDetailsOpen(true)}>
               <Info aria-hidden="true" />
               Candidate details
             </DropdownMenuItem>
@@ -91,32 +95,20 @@ export default function ChatHeader({
         </DropdownMenu>
       </header>
 
-      <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{displayName}</DialogTitle>
-            <DialogDescription>Candidate details</DialogDescription>
-          </DialogHeader>
-          <dl className="space-y-3 text-sm">
-            <div>
-              <dt className="text-xs text-muted">Email</dt>
-              <dd className="text-white">{conversation.email || "Not provided"}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted">Visitor ID</dt>
-              <dd className="break-all text-white">{conversation.visitorId}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted">Status</dt>
-              <dd className="text-white capitalize">{conversation.status.toLowerCase()}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted">Started</dt>
-              <dd className="text-white">{formatChatDate(conversation.createdAt)}</dd>
-            </div>
-          </dl>
-        </DialogContent>
-      </Dialog>
+      <Sheet open={detailsOpen} onOpenChange={setDetailsOpen}>
+        <SheetContent side="right" className="w-[320px] p-0 lg:hidden">
+          <SheetHeader className="sr-only">
+            <SheetTitle>{displayName}</SheetTitle>
+            <SheetDescription>Candidate details</SheetDescription>
+          </SheetHeader>
+          <CustomerDetails
+            conversation={conversation}
+            online={online}
+            currentAdminId={currentAdminId}
+            currentAdminName={currentAdminName}
+          />
+        </SheetContent>
+      </Sheet>
     </>
   );
 }

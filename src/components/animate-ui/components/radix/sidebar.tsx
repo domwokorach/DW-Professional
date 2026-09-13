@@ -185,7 +185,7 @@ function Sidebar({
         <div
           data-slot="sidebar"
           className={cn(
-            'bg-ink text-white flex h-full w-(--sidebar-width) flex-col',
+            'bg-ink text-white flex h-full w-[var(--sidebar-width)] flex-col',
             className,
           )}
           {...props}
@@ -203,7 +203,7 @@ function Sidebar({
           data-sidebar="sidebar"
           data-slot="sidebar"
           data-mobile="true"
-          className="bg-ink text-white w-(--sidebar-width) p-0 [&>button]:hidden"
+          className="bg-ink text-white w-[var(--sidebar-width)] p-0 [&>button]:hidden"
           style={
             {
               '--sidebar-width': SIDEBAR_WIDTH_MOBILE,
@@ -243,25 +243,25 @@ function Sidebar({
       <div
         data-slot="sidebar-gap"
         className={cn(
-          'relative w-(--sidebar-width) bg-transparent transition-[width] duration-400 ease-[cubic-bezier(0.7,-0.15,0.25,1.15)]',
+          'relative w-[var(--sidebar-width)] bg-transparent transition-[width] duration-300 ease-in-out motion-reduce:transition-none',
           'group-data-[collapsible=offcanvas]:w-0',
           'group-data-[side=right]:rotate-180',
           variant === 'floating' || variant === 'inset'
-            ? 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]'
-            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)',
+            ? 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+1rem)]'
+            : 'group-data-[collapsible=icon]:w-[var(--sidebar-width-icon)]',
         )}
       />
       <div
         data-slot="sidebar-container"
         className={cn(
-          'fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-400 ease-[cubic-bezier(0.75,0,0.25,1)] md:flex',
+          'fixed inset-y-0 z-10 hidden h-svh w-[var(--sidebar-width)] transition-[left,right,width] duration-300 ease-in-out motion-reduce:transition-none md:flex',
           side === 'left'
             ? 'left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]'
             : 'right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]',
           // Adjust the padding for floating and inset variants.
           variant === 'floating' || variant === 'inset'
-            ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
-            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l',
+            ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+1rem+2px)]'
+            : 'group-data-[collapsible=icon]:w-[var(--sidebar-width-icon)] group-data-[side=left]:border-r group-data-[side=right]:border-l',
           className,
         )}
         {...props}
@@ -299,17 +299,17 @@ function SidebarTrigger({ className, onClick, ...props }: SidebarTriggerProps) {
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
       className={cn(
-        'flex size-7 items-center justify-center rounded-md text-muted transition-colors hover:bg-surface hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent',
+        'flex size-7 min-h-11 min-w-11 items-center justify-center rounded-md text-muted transition-colors hover:bg-surface hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent sm:min-h-7 sm:min-w-7',
         className,
       )}
+      aria-label="Toggle sidebar"
       onClick={(event) => {
         onClick?.(event);
         toggleSidebar();
       }}
       {...props}
     >
-      <PanelLeftIcon className="size-4" />
-      <span className="sr-only">Toggle Sidebar</span>
+      <PanelLeftIcon className="size-4" aria-hidden="true" />
     </button>
   );
 }
@@ -454,7 +454,7 @@ function SidebarGroupLabel({
       data-slot="sidebar-group-label"
       data-sidebar="group-label"
       className={cn(
-        'text-muted ring-accent/50 flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium outline-hidden transition-[margin,opacity] duration-300 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0',
+        'text-muted ring-accent/50 flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium outline-none transition-[margin,opacity] duration-300 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0',
         'group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0',
         className,
       )}
@@ -479,7 +479,7 @@ function SidebarGroupAction({
       data-slot="sidebar-group-action"
       data-sidebar="group-action"
       className={cn(
-        'text-white ring-accent/50 hover:bg-surface hover:text-white absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-hidden transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 dark:hover:bg-surface dark:hover:text-white',
+        'text-white ring-accent/50 hover:bg-surface hover:text-white absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-none transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 dark:hover:bg-surface dark:hover:text-white',
         // Increases the hit area of the button on mobile.
         'after:absolute after:-inset-2 md:after:hidden',
         'group-data-[collapsible=icon]:hidden',
@@ -549,7 +549,7 @@ const sidebarMenuButtonActiveVariants = cva(
 );
 
 const sidebarMenuButtonVariants = cva(
-  'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-hidden ring-accent/50 transition-[width,height,padding] [&:not([data-highlight])]:hover:bg-surface [&:not([data-highlight])]:hover:text-white focus-visible:ring-2 active:bg-surface active:text-white disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-surface data-[active=true]:font-medium data-[active=true]:text-white [&:not([data-highlight])]:data-[state=open]:hover:bg-surface [&:not([data-highlight])]:data-[state=open]:hover:text-white group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 dark:[&:not([data-highlight])]:hover:bg-surface dark:[&:not([data-highlight])]:hover:text-white dark:active:bg-surface dark:active:text-white dark:data-[active=true]:bg-surface dark:data-[active=true]:text-white dark:[&:not([data-highlight])]:data-[state=open]:hover:bg-surface dark:[&:not([data-highlight])]:data-[state=open]:hover:text-white',
+  'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-accent/50 transition-[width,height,padding] [&:not([data-highlight])]:hover:bg-surface [&:not([data-highlight])]:hover:text-white focus-visible:ring-2 active:bg-surface active:text-white disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-surface data-[active=true]:font-medium data-[active=true]:text-white [&:not([data-highlight])]:data-[state=open]:hover:bg-surface [&:not([data-highlight])]:data-[state=open]:hover:text-white group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 dark:[&:not([data-highlight])]:hover:bg-surface dark:[&:not([data-highlight])]:hover:text-white dark:active:bg-surface dark:active:text-white dark:data-[active=true]:bg-surface dark:data-[active=true]:text-white dark:[&:not([data-highlight])]:data-[state=open]:hover:bg-surface dark:[&:not([data-highlight])]:data-[state=open]:hover:text-white',
   {
     variants: {
       variant: {
@@ -641,7 +641,7 @@ function SidebarMenuAction({
       data-sidebar="menu-action"
       className={cn(
         // Increases the hit area of the button on mobile.
-        'z-[1] text-white ring-accent/50 hover:bg-surface hover:text-white peer-hover/menu-button:text-white absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-hidden transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 dark:hover:bg-surface dark:hover:text-white dark:peer-hover/menu-button:text-white',
+        'z-[1] text-white ring-accent/50 hover:bg-surface hover:text-white peer-hover/menu-button:text-white absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-none transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 dark:hover:bg-surface dark:hover:text-white dark:peer-hover/menu-button:text-white',
         'after:absolute after:-inset-2 md:after:hidden',
         'peer-data-[size=sm]/menu-button:top-1',
         'peer-data-[size=default]/menu-button:top-1.5',
@@ -705,7 +705,7 @@ function SidebarMenuSkeleton({
         />
       )}
       <Skeleton
-        className="h-4 max-w-(--skeleton-width) flex-1"
+        className="h-4 max-w-[var(--skeleton-width)] flex-1"
         data-sidebar="menu-skeleton-text"
         style={
           {
@@ -770,7 +770,7 @@ function SidebarMenuSubButton({
         data-size={size}
         data-active={isActive}
         className={cn(
-          'text-white ring-accent/50 [&:not([data-highlight])]:hover:bg-surface [&:not([data-highlight])]:hover:text-white active:bg-surface active:text-white [&>svg]:text-white flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 outline-hidden focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 dark:[&:not([data-highlight])]:hover:bg-surface dark:[&:not([data-highlight])]:hover:text-white dark:active:bg-surface dark:active:text-white dark:[&>svg]:text-white',
+          'text-white ring-accent/50 [&:not([data-highlight])]:hover:bg-surface [&:not([data-highlight])]:hover:text-white active:bg-surface active:text-white [&>svg]:text-white flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 dark:[&:not([data-highlight])]:hover:bg-surface dark:[&:not([data-highlight])]:hover:text-white dark:active:bg-surface dark:active:text-white dark:[&>svg]:text-white',
           'data-[active=true]:bg-surface data-[active=true]:text-white dark:data-[active=true]:bg-surface dark:data-[active=true]:text-white',
           size === 'sm' && 'text-xs',
           size === 'md' && 'text-sm',

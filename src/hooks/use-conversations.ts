@@ -20,6 +20,7 @@ export function useConversations(
 ) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -28,7 +29,12 @@ export function useConversations(
       if (res.ok) {
         const { conversations: list } = (await res.json()) as { conversations: Conversation[] };
         setConversations(list);
+        setError(false);
+      } else {
+        setError(true);
       }
+    } catch {
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -69,5 +75,5 @@ export function useConversations(
     };
   }, [socketRef]);
 
-  return { conversations, loading, refresh };
+  return { conversations, loading, error, refresh };
 }
