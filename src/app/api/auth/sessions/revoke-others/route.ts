@@ -4,8 +4,8 @@ import { revokeAllSessionsForUser } from "@/lib/auth/session";
 import { logSecurityEvent } from "@/lib/auth/securityEvents";
 import { extractClientIp } from "@/lib/auth/device";
 import { db } from "@/lib/database/db";
-import { sendTemplateEmail } from "@/lib/email/mailer";
-import SecurityAlertEmail from "@emails/templates/SecurityAlertEmail";
+import { getAppUrl } from "@/lib/auth/env";
+import { sendSecurityAlertEmail } from "@/services/email/email.service";
 
 export const runtime = "nodejs";
 
@@ -25,16 +25,13 @@ export async function POST(request: NextRequest) {
 
   const user = await db.user.findUnique({ where: { id: result.admin.userId } });
   if (user) {
-    void sendTemplateEmail({
+    void sendSecurityAlertEmail({
       to: user.email,
-      subject: "All other sessions were signed out",
-      template: SecurityAlertEmail({
-        title: "All other sessions were signed out",
-        message: "You (or someone with access to your account) signed out every other device from your admin account.",
-        occurredAt: new Date().toLocaleString("en-GB"),
-        actionUrl: `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/admin/devices`,
-        actionLabel: "Review devices",
-      }),
+      title: "All other sessions were signed out",
+      message: "You (or someone with access to your account) signed out every other device from your admin account.",
+      occurredAt: new Date().toLocaleString("en-GB"),
+      actionUrl: `${getAppUrl()}/admin/devices`,
+      actionLabel: "Review devices",
     });
   }
 

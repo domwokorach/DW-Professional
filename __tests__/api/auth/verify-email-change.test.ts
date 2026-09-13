@@ -3,10 +3,10 @@ import { db } from '@/lib/database/db';
 import { hashToken } from '@/lib/auth/tokens';
 import { buildEmailChangeRequest, buildUser } from '../../../test/factories';
 import { makeRequest } from '../../../test/testRequest';
-import { getMockedSendTemplateEmail } from '../../../test/mockEmail';
+import { getMockedEmailService } from '../../../test/mockEmail';
 
 jest.mock('@/lib/database/db');
-jest.mock('@/lib/email/mailer');
+jest.mock('@/services/email/email.service');
 
 function verifyRequest(body: unknown) {
   return makeRequest('/api/auth/verify-email-change', { method: 'POST', body });
@@ -106,14 +106,16 @@ describe('POST /api/auth/verify-email-change', () => {
       })
     );
 
-    const mockedSend = getMockedSendTemplateEmail();
-    expect(mockedSend).toHaveBeenCalledWith(
+    const mockedService = getMockedEmailService();
+    expect(mockedService.sendEmailChangedEmail).toHaveBeenCalledWith(
       expect.objectContaining({
         to: changeRequest.oldEmail,
-        subject: 'Your account email address was changed',
+        newEmail: changeRequest.newEmail,
       })
     );
-    expect(mockedSend).not.toHaveBeenCalledWith(expect.objectContaining({ to: changeRequest.newEmail }));
+    expect(mockedService.sendEmailChangedEmail).not.toHaveBeenCalledWith(
+      expect.objectContaining({ to: changeRequest.newEmail })
+    );
   });
 
   it('returns 422 validation_error for a missing token', async () => {

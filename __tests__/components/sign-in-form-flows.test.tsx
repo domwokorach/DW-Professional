@@ -91,7 +91,7 @@ describe('SignInForm', () => {
   });
 
   it('redirects to the redirect_url query param when present', async () => {
-    window.history.pushState({}, '', '/auth/sign-in?redirect_url=%2Fadmin%2Flive-chat');
+    window.history.pushState({}, '', '/auth/sign-in?redirect_url=%2Fadmin%2Fchat');
     mockFetchOnce(
       jsonResponse({ user: { id: 'u1', name: 'Dominic', email: 'a@b.com', role: 'ADMIN', avatarUrl: null } })
     );
@@ -103,7 +103,7 @@ describe('SignInForm', () => {
     await user.type(screen.getByLabelText('Password'), 'CorrectHorse9!Battery');
     await user.click(screen.getByRole('button', { name: /sign in/i }));
 
-    await waitFor(() => expect(__mockRouter.push).toHaveBeenCalledWith('/admin/live-chat'));
+    await waitFor(() => expect(__mockRouter.push).toHaveBeenCalledWith('/admin/chat'));
   });
 
   it('renders a Forgot password? link pointing at the forgot-password route', () => {

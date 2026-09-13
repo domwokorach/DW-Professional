@@ -4,10 +4,10 @@ import { verifyPassword } from '@/lib/auth/passwords';
 import { hashToken } from '@/lib/auth/tokens';
 import { buildPasswordResetToken, buildUser } from '../../../test/factories';
 import { makeRequest } from '../../../test/testRequest';
-import { getMockedSendTemplateEmail } from '../../../test/mockEmail';
+import { getMockedEmailService } from '../../../test/mockEmail';
 
 jest.mock('@/lib/database/db');
-jest.mock('@/lib/email/mailer');
+jest.mock('@/services/email/email.service');
 
 const NEW_PASSWORD = 'BrandNewPassw0rd!';
 
@@ -57,9 +57,9 @@ describe('POST /api/auth/reset-password', () => {
       })
     );
 
-    const mockedSend = getMockedSendTemplateEmail();
-    expect(mockedSend).toHaveBeenCalledWith(
-      expect.objectContaining({ to: user.email, subject: 'Your password was changed' })
+    const mockedService = getMockedEmailService();
+    expect(mockedService.sendPasswordChangedEmail).toHaveBeenCalledWith(
+      expect.objectContaining({ to: user.email })
     );
   });
 

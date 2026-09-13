@@ -2,10 +2,10 @@ import { POST } from '@/app/api/auth/change-email/route';
 import { db } from '@/lib/database/db';
 import { buildUserWithPassword, buildSession, FIXTURE_PASSWORD } from '../../../test/factories';
 import { makeRequest, authCookiesFor, clearMockAuthCookies } from '../../../test/testRequest';
-import { getMockedSendTemplateEmail } from '../../../test/mockEmail';
+import { getMockedEmailService } from '../../../test/mockEmail';
 
 jest.mock('@/lib/database/db');
-jest.mock('@/lib/email/mailer');
+jest.mock('@/services/email/email.service');
 
 const NEW_EMAIL = 'brand-new-address@example.com';
 
@@ -133,9 +133,9 @@ describe('POST /api/auth/change-email', () => {
       })
     );
 
-    const mockedSend = getMockedSendTemplateEmail();
-    expect(mockedSend).toHaveBeenCalledWith(
-      expect.objectContaining({ to: NEW_EMAIL, subject: 'Confirm your new email address' })
+    const mockedService = getMockedEmailService();
+    expect(mockedService.sendEmailChangeVerificationEmail).toHaveBeenCalledWith(
+      expect.objectContaining({ to: NEW_EMAIL, newEmail: NEW_EMAIL })
     );
   });
 

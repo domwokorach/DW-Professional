@@ -22,3 +22,9 @@ export const EMAIL_CHANGE_TTL_MS = 60 * 60 * 1000; // 1 hour
 export function isProduction(): boolean {
   return process.env.NODE_ENV === "production";
 }
+
+/** Canonical origin used to build absolute links in transactional emails. Falls back to the public app URL for back-compat. No trailing slash. */
+export function getAppUrl(): string {
+  const url = process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || "";
+  return url.replace(/\/$/, "");
+}

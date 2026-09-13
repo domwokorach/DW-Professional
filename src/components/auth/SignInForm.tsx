@@ -15,7 +15,7 @@ import { useLocale } from "@/i18n/LocaleProvider";
 export default function SignInForm() {
   const router = useRouter();
   const { localiseHref } = useLocale();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("dominic.wokorach-o@outlook.com");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);

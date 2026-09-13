@@ -2,10 +2,10 @@ import { POST } from '@/app/api/auth/sessions/revoke-others/route';
 import { db } from '@/lib/database/db';
 import { buildUser, buildSession } from '../../../test/factories';
 import { makeRequest, authCookiesFor, clearMockAuthCookies } from '../../../test/testRequest';
-import { getMockedSendTemplateEmail } from '../../../test/mockEmail';
+import { getMockedEmailService } from '../../../test/mockEmail';
 
 jest.mock('@/lib/database/db');
-jest.mock('@/lib/email/mailer');
+jest.mock('@/services/email/email.service');
 
 async function authedRequest(opts: { origin?: string; host?: string } = {}) {
   const user = buildUser();
@@ -72,9 +72,9 @@ describe('POST /api/auth/sessions/revoke-others', () => {
       })
     );
 
-    const mockedSend = getMockedSendTemplateEmail();
-    expect(mockedSend).toHaveBeenCalledWith(
-      expect.objectContaining({ to: user.email, subject: 'All other sessions were signed out' })
+    const mockedService = getMockedEmailService();
+    expect(mockedService.sendSecurityAlertEmail).toHaveBeenCalledWith(
+      expect.objectContaining({ to: user.email, title: 'All other sessions were signed out' })
     );
   });
 });

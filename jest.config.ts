@@ -64,10 +64,6 @@ const config: Config = {
     // feature that happens to live under src/app/api/chat/, not part of the
     // admin live-chat system this suite covers.
     '!src/app/api/chat/route.ts',
-    // An alternate/legacy admin chat UI not linked from AdminShell's nav
-    // (which points at /admin/chat → components/chat/AdminChat.tsx instead) —
-    // out of scope for this pass; flagged to the team building it.
-    '!src/components/admin/live-chat/**',
     // Type-only declarations, no runtime code to exercise.
     '!src/lib/socket/types.ts',
     '!**/node_modules/**',
@@ -108,6 +104,7 @@ const config: Config = {
         '<rootDir>/__tests__/chat/**/*.test.{ts,tsx}',
         '<rootDir>/__tests__/socket/**/*.test.{ts,tsx}',
         '<rootDir>/__tests__/security/**/*.test.{ts,tsx}',
+        '<rootDir>/__tests__/services/**/*.test.{ts,tsx}',
         '<rootDir>/__tests__/utils/**/*.test.{ts,tsx}',
         '<rootDir>/src/**/*.test.{ts,tsx}',
       ],

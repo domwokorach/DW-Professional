@@ -3,10 +3,10 @@ import { db } from '@/lib/database/db';
 import { ACCESS_COOKIE, REFRESH_COOKIE, DEVICE_COOKIE } from '@/lib/auth/cookies';
 import { buildUserWithPassword, buildSession, FIXTURE_PASSWORD } from '../../../test/factories';
 import { makeRequest } from '../../../test/testRequest';
-import { getMockedSendTemplateEmail } from '../../../test/mockEmail';
+import { getMockedEmailService } from '../../../test/mockEmail';
 
 jest.mock('@/lib/database/db');
-jest.mock('@/lib/email/mailer');
+jest.mock('@/services/email/email.service');
 
 function signInRequest(body: unknown, opts: { ip?: string; cookies?: Record<string, string> } = {}) {
   return makeRequest('/api/auth/sign-in', {
@@ -59,9 +59,9 @@ describe('POST /api/auth/sign-in', () => {
       expect.objectContaining({ data: expect.objectContaining({ userId: user.id, type: 'SIGN_IN' }) })
     );
 
-    const mockedSend = getMockedSendTemplateEmail();
-    expect(mockedSend).toHaveBeenCalledWith(
-      expect.objectContaining({ to: user.email, subject: 'New sign-in to your admin account' })
+    const mockedService = getMockedEmailService();
+    expect(mockedService.sendNewDeviceSignInEmail).toHaveBeenCalledWith(
+      expect.objectContaining({ to: user.email })
     );
   });
 
@@ -80,8 +80,8 @@ describe('POST /api/auth/sign-in', () => {
     ));
 
     expect(response.status).toBe(200);
-    const mockedSend = getMockedSendTemplateEmail();
-    expect(mockedSend).not.toHaveBeenCalled();
+    const mockedService = getMockedEmailService();
+    expect(mockedService.sendNewDeviceSignInEmail).not.toHaveBeenCalled();
   });
 
   it('returns 401 invalid_credentials and logs FAILED_SIGN_IN on wrong password', async () => {

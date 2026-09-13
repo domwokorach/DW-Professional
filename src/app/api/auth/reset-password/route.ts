@@ -7,8 +7,7 @@ import { hashPassword } from "@/lib/auth/passwords";
 import { revokeAllSessionsForUser } from "@/lib/auth/session";
 import { logSecurityEvent } from "@/lib/auth/securityEvents";
 import { extractClientIp } from "@/lib/auth/device";
-import { sendTemplateEmail } from "@/lib/email/mailer";
-import PasswordChangedEmail from "@emails/templates/PasswordChangedEmail";
+import { sendPasswordChangedEmail } from "@/services/email/email.service";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -49,10 +48,10 @@ export async function POST(request: NextRequest) {
     userAgent: request.headers.get("user-agent"),
   });
 
-  void sendTemplateEmail({
+  void sendPasswordChangedEmail({
     to: user.email,
-    subject: "Your password was changed",
-    template: PasswordChangedEmail({ occurredAt: new Date().toLocaleString("en-GB"), ipAddress: ip }),
+    occurredAt: new Date().toLocaleString("en-GB"),
+    ipAddress: ip,
   });
 
   return NextResponse.json({ ok: true, message: "Password reset. Please sign in again." });
