@@ -24,6 +24,15 @@ const config: Config = {
         "grid-fade":
           "linear-gradient(to bottom, transparent, rgba(9,9,9,0.95) 88%)",
       },
+      keyframes: {
+        marquee: {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(calc(-100% - var(--gap)))" },
+        },
+      },
+      animation: {
+        marquee: "marquee var(--duration) linear infinite",
+      },
     },
   },
   plugins: [],

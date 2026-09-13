@@ -21,6 +21,10 @@ dist-ssr
 .next
 *.tsbuildinfo
 
+# Test output
+coverage
+test-results
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
