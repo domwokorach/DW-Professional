@@ -1,29 +1,25 @@
-import { auth } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { defaultLocale, localisedPathname, normaliseLocale } from "@/i18n/config";
-import { getAdminSession } from "@/lib/admin";
+import { getAdminSession } from "@/lib/auth/guard";
+import AdminShell from "@/components/admin/AdminShell";
 
-// The middleware already redirects unauthenticated/non-admin requests before
+// Middleware already redirects requests with no valid access token before
 // they reach this layout (see src/middleware.ts's isAdminRoute check). This
 // re-checks server-side as defense in depth — a route guard must never rely
-// solely on middleware or the client — rather than as the primary gate.
+// solely on middleware or the client — including the live account status,
+// which middleware's stateless JWT check cannot see.
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const requestHeaders = await headers();
   const locale = normaliseLocale(requestHeaders.get("x-portfolio-locale")) ?? defaultLocale;
 
-  const { userId } = await auth();
-  if (!userId) {
+  const admin = await getAdminSession();
+  if (!admin) {
     const redirectTarget = requestHeaders.get("x-portfolio-path") ?? localisedPathname("/admin/chat", locale);
     redirect(
-      `${localisedPathname("/sign-in", locale)}?redirect_url=${encodeURIComponent(redirectTarget)}`
+      `${localisedPathname("/auth/sign-in", locale)}?redirect_url=${encodeURIComponent(redirectTarget)}`
     );
   }
 
-  const admin = await getAdminSession();
-  if (!admin) {
-    redirect(localisedPathname("/unauthorized", locale));
-  }
-
-  return <>{children}</>;
+  return <AdminShell admin={admin}>{children}</AdminShell>;
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
-import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 import { LocaleProvider } from "@/i18n/LocaleProvider";
 import { defaultLocale, isRtlLocale, normaliseLocale } from "@/i18n/config";
@@ -75,33 +75,32 @@ export default async function RootLayout({
   const locale = normaliseLocale(requestHeaders.get("x-portfolio-locale")) ?? defaultLocale;
 
   return (
-    <ClerkProvider>
-      <html
-        lang={locale}
-        dir={isRtlLocale(locale) ? "rtl" : "ltr"}
-        className={`${inter.variable} ${jetbrains.variable}`}
-        suppressHydrationWarning
-      >
-        <head>
-          <Script id="theme-preference" strategy="beforeInteractive">
-            {`(() => {
-              let preference = "system";
-              try {
-                const saved = localStorage.getItem("theme-preference-v1");
-                if (saved === "light" || saved === "dark" || saved === "system") {
-                  preference = saved;
-                }
-              } catch {}
-              const isDark = preference === "dark" ||
-                (preference === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
-              document.documentElement.dataset.theme = isDark ? "dark" : "light";
-            })();`}
-          </Script>
-        </head>
-        <body className="font-sans antialiased">
-          <LocaleProvider initialLocale={locale}>{children}</LocaleProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+    <html
+      lang={locale}
+      dir={isRtlLocale(locale) ? "rtl" : "ltr"}
+      className={`${inter.variable} ${jetbrains.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <Script id="theme-preference" strategy="beforeInteractive">
+          {`(() => {
+            let preference = "system";
+            try {
+              const saved = localStorage.getItem("theme-preference-v1");
+              if (saved === "light" || saved === "dark" || saved === "system") {
+                preference = saved;
+              }
+            } catch {}
+            const isDark = preference === "dark" ||
+              (preference === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+            document.documentElement.dataset.theme = isDark ? "dark" : "light";
+          })();`}
+        </Script>
+      </head>
+      <body className="font-sans antialiased">
+        <LocaleProvider initialLocale={locale}>{children}</LocaleProvider>
+        <Toaster />
+      </body>
+    </html>
   );
 }

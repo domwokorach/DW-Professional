@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { ShieldAlert } from "lucide-react";
-import { useClerk } from "@clerk/nextjs";
 import { useLocale } from "@/i18n/LocaleProvider";
+import { useSignOut } from "@/hooks/use-sign-out";
 
 type Variant = "signed-out" | "forbidden";
 
@@ -19,10 +18,9 @@ const copy: Record<Variant, { description: string }> = {
 
 export default function AdminUnauthorized({ variant }: { variant: Variant }) {
   const { localiseHref } = useLocale();
-  const { signOut } = useClerk();
-  const router = useRouter();
+  const { signOut, signingOut } = useSignOut();
 
-  const signInHref = `${localiseHref("/sign-in")}?redirect_url=${encodeURIComponent(
+  const signInHref = `${localiseHref("/auth/sign-in")}?redirect_url=${encodeURIComponent(
     localiseHref("/admin/chat")
   )}`;
 
@@ -56,10 +54,11 @@ export default function AdminUnauthorized({ variant }: { variant: Variant }) {
           ) : (
             <button
               type="button"
-              onClick={() => signOut(() => router.push(signInHref))}
-              className="inline-flex min-h-11 items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+              disabled={signingOut}
+              onClick={() => void signOut()}
+              className="inline-flex min-h-11 items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent disabled:opacity-60"
             >
-              Sign out and use another account
+              {signingOut ? "Signing out…" : "Sign out and use another account"}
             </button>
           )}
           <Link

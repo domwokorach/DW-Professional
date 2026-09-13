@@ -2,7 +2,7 @@
 
 The portfolio stays on Vercel. Import the repository root `render.yaml` as a Render Blueprint to create the Frankfurt free Web Service, `dw-professional`.
 
-During Blueprint setup, supply `SOCKET_SECRET`, `DATABASE_URL`, and `REDIS_URL`. Use exactly the same server-only `SOCKET_SECRET` as Vercel. Never use `NEXT_PUBLIC_SOCKET_SECRET`. The Blueprint intentionally contains no credentials. Email notifications are optional; the socket server runs without Resend or Clerk keys.
+During Blueprint setup, supply `SOCKET_SECRET`, `DATABASE_URL`, and `REDIS_URL`. Use exactly the same server-only `SOCKET_SECRET` as Vercel. Never use `NEXT_PUBLIC_SOCKET_SECRET`. The Blueprint intentionally contains no credentials. Email notifications are optional; the socket server runs without Resend keys, and it never needs the JWT signing secrets either — it only verifies the short-lived `SOCKET_SECRET`-signed tokens issued by `/api/chat/token`.
 
 After Render is reachable, set Vercel production `NEXT_PUBLIC_SOCKET_URL=https://dw-professional.onrender.com` and redeploy Vercel, since this public value is bundled at build time. Do not append `/socket.io/`. Local development may override the URL with `http://localhost:4001`.
 

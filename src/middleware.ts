@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { clerkMiddleware, clerkClient } from "@clerk/nextjs/server";
+import { jwtVerify } from "jose";
 import {
   defaultLocale,
   isLocale,
@@ -8,23 +8,32 @@ import {
   normaliseLocale,
   stripLocale,
 } from "@/i18n/config";
+import { ACCESS_COOKIE } from "@/lib/auth/cookies";
 
 function isAdminRoute(remainingPath: string) {
   return remainingPath === "/admin" || remainingPath.startsWith("/admin/");
 }
 
-async function isAdminUser(userId: string): Promise<boolean> {
-  const client = await clerkClient();
-  const user = await client.users.getUser(userId);
+/**
+ * Edge-safe check: verifies the access token's signature and expiry only.
+ * This is the first gate (fast redirect for the common case); the admin
+ * layout and every admin API route re-check the live user/session against
+ * the database as defense in depth, since a token can be valid but its
+ * session or account may have since been revoked/disabled.
+ */
+async function hasValidAccessToken(request: NextRequest): Promise<boolean> {
+  const token = request.cookies.get(ACCESS_COOKIE)?.value;
+  if (!token) return false;
 
-  if (user.publicMetadata?.role === "admin") return true;
+  const secret = process.env.JWT_ACCESS_SECRET;
+  if (!secret) return false;
 
-  const allowedEmails = (process.env.ADMIN_EMAILS ?? "")
-    .split(",")
-    .map((email) => email.trim().toLowerCase())
-    .filter(Boolean);
-  const email = user.primaryEmailAddress?.emailAddress?.toLowerCase();
-  return Boolean(email && allowedEmails.includes(email));
+  try {
+    await jwtVerify(token, new TextEncoder().encode(secret));
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function preferredLocale(request: NextRequest) {
@@ -39,11 +48,9 @@ function preferredLocale(request: NextRequest) {
   return defaultLocale;
 }
 
-export default clerkMiddleware(async (auth, request) => {
+export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // API routes need clerkMiddleware() to wrap them (so auth() works inside
-  // route handlers), but never take part in the locale rewrite below.
   if (pathname.startsWith("/api")) {
     return NextResponse.next();
   }
@@ -68,21 +75,12 @@ export default clerkMiddleware(async (auth, request) => {
   const remainingPath = stripLocale(pathname);
 
   if (isAdminRoute(remainingPath)) {
-    const { userId } = await auth();
-
-    if (!userId) {
+    if (!(await hasValidAccessToken(request))) {
       const signInUrl = request.nextUrl.clone();
-      signInUrl.pathname = localisedPathname("/sign-in", locale);
+      signInUrl.pathname = localisedPathname("/auth/sign-in", locale);
       signInUrl.search = "";
       signInUrl.searchParams.set("redirect_url", `${localisedPathname(remainingPath, locale)}${request.nextUrl.search}`);
       return NextResponse.redirect(signInUrl);
-    }
-
-    if (!(await isAdminUser(userId))) {
-      const unauthorizedUrl = request.nextUrl.clone();
-      unauthorizedUrl.pathname = localisedPathname("/unauthorized", locale);
-      unauthorizedUrl.search = "";
-      return NextResponse.redirect(unauthorizedUrl);
     }
   }
 
@@ -103,7 +101,7 @@ export default clerkMiddleware(async (auth, request) => {
     secure: process.env.NODE_ENV === "production",
   });
   return response;
-});
+}
 
 export const config = {
   matcher: ["/((?!_next|favicon\\.svg|robots\\.txt|sitemap\\.xml|.*\\.[^/]+$).*)"],

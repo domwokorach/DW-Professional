@@ -1,16 +1,14 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { useRouter } from "next/navigation";
 import { MessageSquare } from "lucide-react";
-import { useClerk } from "@clerk/nextjs";
 import { SidebarProvider } from "@/components/animate-ui/components/radix/sidebar";
 import { useAdminSocket } from "@/hooks/use-admin-socket";
 import { useConversations } from "@/hooks/use-conversations";
 import { useAdminThread } from "@/hooks/use-admin-thread";
 import { useAdminPresence } from "@/hooks/use-admin-presence";
 import { useTyping } from "@/hooks/use-typing";
-import { useLocale } from "@/i18n/LocaleProvider";
+import { useSignOut } from "@/hooks/use-sign-out";
 import ConversationList from "./ConversationList";
 import ChatHeader from "./ChatHeader";
 import MessageList from "./MessageList";
@@ -29,13 +27,11 @@ export default function AdminChat({ adminName, adminEmail }: { adminName: string
     refresh
   );
   const { notifyTyping } = useTyping(socketRef, selectedId, "visitor");
-  const { signOut } = useClerk();
-  const router = useRouter();
-  const { localiseHref } = useLocale();
+  const { signOut } = useSignOut();
 
   const handleSignOut = useCallback(() => {
-    signOut(() => router.push(localiseHref("/")));
-  }, [signOut, router, localiseHref]);
+    void signOut();
+  }, [signOut]);
 
   const handleToggleStatus = useCallback(async () => {
     if (!conversation) return;

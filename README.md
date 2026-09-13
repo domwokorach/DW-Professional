@@ -208,6 +208,27 @@ The repository includes fictional sample documents in `docs/sample-knowledge-bas
 
 If you already have a compatible vector store, set its ID directly and skip the setup script.
 
+### Admin Chat authentication setup
+
+The `/admin/*` dashboard (Chat, Account, Settings, Devices) uses its own JWT + server-side session
+authentication system — see `src/lib/auth/` for the implementation. There is no public sign-up route;
+admin accounts are provisioned directly.
+
+1. Set up PostgreSQL and point `DATABASE_URL` at it (a Prisma Postgres or Neon database both work).
+2. Set `JWT_ACCESS_SECRET` and `JWT_REFRESH_PEPPER` in `.env.local` to two distinct long random strings,
+   e.g. `node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"`.
+3. Set `NEXT_PUBLIC_APP_URL` to your app's origin (used to build links in transactional emails).
+4. Apply the database schema: `npx prisma migrate deploy` (or `npx prisma migrate dev` locally).
+5. Create the first admin account:
+   ```bash
+   npm run auth:create-admin -- "Your Name" you@example.com "a-strong-password" SUPER_ADMIN
+   ```
+6. Sign in at `/auth/sign-in`. Change the generated password immediately from Settings → Security.
+
+Password-reset, email-change-verification, password-changed, email-changed, and new-device-sign-in
+emails are sent via Resend (`RESEND_API_KEY`, `RESEND_FROM_EMAIL`) using the templates in `emails/templates/`.
+Without `RESEND_API_KEY` set, emails are logged to the console instead of sent — fine for local development.
+
 ## Environment Variables
 
 All environment variables are server-only and must never be prefixed with `NEXT_PUBLIC_`.
@@ -216,6 +237,12 @@ All environment variables are server-only and must never be prefixed with `NEXT_
 OPENAI_API_KEY=
 OPENAI_VECTOR_STORE_ID=
 OPENWEATHER_API_KEY=
+DATABASE_URL=
+JWT_ACCESS_SECRET=
+JWT_REFRESH_PEPPER=
+NEXT_PUBLIC_APP_URL=
+RESEND_API_KEY=
+RESEND_FROM_EMAIL=
 ```
 
 | Variable | Used by | Required for |
@@ -223,6 +250,11 @@ OPENWEATHER_API_KEY=
 | `OPENAI_API_KEY` | `src/app/api/chat/route.ts` | AI Search Assistant demo |
 | `OPENAI_VECTOR_STORE_ID` | `src/app/api/chat/route.ts` | AI Search Assistant demo |
 | `OPENWEATHER_API_KEY` | `src/app/api/weather/route.ts` | Weather widget |
+| `DATABASE_URL` | `prisma/schema.prisma`, `src/lib/database/db.ts` | Admin Chat auth, live chat |
+| `JWT_ACCESS_SECRET` | `src/lib/auth/tokens.ts`, `src/middleware.ts` | Admin Chat auth (access tokens) |
+| `JWT_REFRESH_PEPPER` | `src/lib/auth/env.ts` | Admin Chat auth (reserved) |
+| `NEXT_PUBLIC_APP_URL` | `src/lib/email/mailer.ts` callers | Links in auth emails |
+| `RESEND_API_KEY` / `RESEND_FROM_EMAIL` | `src/lib/email/mailer.ts` | Auth transactional emails |
 
 > Keep API keys server-side. Never commit `.env.local` or add real values to `.env.example`, README.md, or a client component.
 
@@ -235,6 +267,9 @@ OPENWEATHER_API_KEY=
 | `npm run start` | Serve the production build |
 | `npm run lint` | Run ESLint with zero warnings allowed |
 | `npm run setup:vector-store` | Upload the sample documents and create an OpenAI vector store |
+| `npm run auth:create-admin -- "<name>" <email> <password> [role]` | Provision or update an Admin Chat account (no public sign-up route) |
+| `npx prisma migrate dev` | Apply Prisma schema changes to the local database |
+| `npx prisma migrate deploy` | Apply migrations in production (also run automatically by `npm run build`) |
 
 There is no automated test suite yet — validate changes with `npm run lint` and `npm run build` (see [CONTRIBUTING.md](CONTRIBUTING.md)).
 

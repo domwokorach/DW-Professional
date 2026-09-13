@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/admin";
+import { requireAdminApi } from "@/lib/auth/guard";
 import { updatePresence } from "@/lib/chat/update-presence";
 
 export const runtime = "nodejs";

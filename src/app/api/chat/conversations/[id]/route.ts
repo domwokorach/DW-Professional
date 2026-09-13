@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/admin";
+import { requireAdminApi } from "@/lib/auth/guard";
 import { getConversationById } from "@/lib/chat/get-conversations";
 import { getMessages } from "@/lib/chat/get-messages";
 import { markAsRead } from "@/lib/chat/mark-as-read";

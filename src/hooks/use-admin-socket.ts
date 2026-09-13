@@ -21,10 +21,10 @@ async function fetchAdminToken(): Promise<string> {
 
 /**
  * Owns the admin's realtime connection: joins the admin room and receives
- * every conversation's events. Re-verifies Clerk/ADMIN_EMAILS authorization
- * on every (re)connect via fetchAdminToken; if that authorization has been
+ * every conversation's events. Re-verifies JWT session authorization on
+ * every (re)connect via fetchAdminToken; if that authorization has been
  * revoked, useSocket reports "unauthorized" and this hook redirects to the
- * locale-aware unauthorized page rather than retrying forever.
+ * locale-aware sign-in page rather than retrying forever.
  */
 export function useAdminSocket() {
   const fetchToken = useCallback(fetchAdminToken, []);
