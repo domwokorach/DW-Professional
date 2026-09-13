@@ -8,9 +8,8 @@ import { createSession, contextFromRequest } from "@/lib/auth/session";
 import { setAccessCookie, setRefreshCookie, setDeviceCookie } from "@/lib/auth/cookies";
 import { extractClientIp } from "@/lib/auth/device";
 import { logSecurityEvent } from "@/lib/auth/securityEvents";
-import { sendTemplateEmail } from "@/lib/email/mailer";
-import NewDeviceSignInEmail from "@emails/templates/NewDeviceSignInEmail";
-import { ACCESS_TOKEN_TTL_SECONDS } from "@/lib/auth/env";
+import { sendNewDeviceSignInEmail } from "@/services/email/email.service";
+import { ACCESS_TOKEN_TTL_SECONDS, getAppUrl } from "@/lib/auth/env";
 
 export const runtime = "nodejs";
 
@@ -78,17 +77,14 @@ export async function POST(request: NextRequest) {
   });
 
   if (isNewDevice) {
-    void sendTemplateEmail({
+    void sendNewDeviceSignInEmail({
       to: user.email,
-      subject: "New sign-in to your admin account",
-      template: NewDeviceSignInEmail({
-        deviceName: session.deviceName,
-        browser: session.browser,
-        operatingSystem: session.operatingSystem,
-        ipAddress: ip,
-        occurredAt: new Date().toLocaleString("en-GB"),
-        devicesUrl: `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/admin/devices`,
-      }),
+      deviceName: session.deviceName,
+      browser: session.browser,
+      operatingSystem: session.operatingSystem,
+      ipAddress: ip,
+      occurredAt: new Date().toLocaleString("en-GB"),
+      devicesUrl: `${getAppUrl()}/admin/devices`,
     });
   }
 

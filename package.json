@@ -10,14 +10,19 @@
     "lint": "eslint src scripts --max-warnings=0",
     "test:accessibility": "playwright test",
     "setup:vector-store": "node --env-file=.env.local scripts/setup-vector-store.mjs",
-    "email:dev": "email dev --dir emails",
+    "email:dev": "email dev --dir src/services/email/templates",
+    "email:dev:resume": "email dev --dir emails",
     "socket:dev": "tsx watch --env-file=.env.local server/socket-server.ts",
     "socket:start": "tsx server/socket-server.ts",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:ci": "jest --ci --coverage --runInBand --reporters=default",
-    "auth:create-admin": "node --env-file=.env.local scripts/create-admin.mjs"
+    "auth:create-admin": "node --env-file=.env.local scripts/create-admin.mjs",
+    "db:seed": "tsx --env-file=.env.local prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "tsx --env-file=.env.local prisma/seed.ts"
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.20",
@@ -66,7 +71,6 @@
     "socket.io-client": "^4.8.3",
     "sonner": "^2.0.8",
     "tailwind-merge": "^3.6.0",
-    "tsx": "^4.23.13",
     "ua-parser-js": "^2.0.0",
     "zod": "^4.6.2"
   },
@@ -104,6 +108,7 @@
     "react-email": "^6.9.3",
     "supertest": "^7.2.2",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.23.13",
     "typescript": "^5.7.2"
   },
   "optionalDependencies": {

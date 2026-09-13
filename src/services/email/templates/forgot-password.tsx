@@ -1,17 +1,18 @@
 import { Text } from "@react-email/components";
 import { EmailLayout, emailTextStyles } from "./Layout";
 
-export interface PasswordResetEmailProps {
+export interface ForgotPasswordEmailProps {
   resetUrl: string;
   expiresInMinutes?: number;
+  name?: string | null;
 }
 
-export default function PasswordResetEmail({ resetUrl, expiresInMinutes = 60 }: PasswordResetEmailProps) {
+export default function ForgotPasswordEmail({ resetUrl, expiresInMinutes = 60, name }: ForgotPasswordEmailProps) {
   return (
-    <EmailLayout preview="Reset your admin password" heading="Reset your password">
+    <EmailLayout preview="Reset your password" heading="Reset your password">
       <Text style={emailTextStyles.paragraph}>
-        We received a request to reset the password for your admin account. Click the button below to
-        choose a new one.
+        {name ? `Hi ${name},` : "Hi,"} we received a request to reset the password for your admin account.
+        Click the button below to choose a new one.
       </Text>
       <div style={emailTextStyles.buttonWrap}>
         <a href={resetUrl} style={emailTextStyles.button}>
@@ -29,7 +30,8 @@ export default function PasswordResetEmail({ resetUrl, expiresInMinutes = 60 }: 
   );
 }
 
-PasswordResetEmail.PreviewProps = {
+ForgotPasswordEmail.PreviewProps = {
   resetUrl: "https://example.com/auth/reset-password?token=preview",
   expiresInMinutes: 60,
-} satisfies PasswordResetEmailProps;
+  name: "Dominic",
+} satisfies ForgotPasswordEmailProps;

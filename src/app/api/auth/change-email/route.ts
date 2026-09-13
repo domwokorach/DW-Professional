@@ -5,11 +5,10 @@ import { changeEmailSchema } from "@/lib/auth/validation";
 import { apiError, validationError } from "@/lib/auth/apiError";
 import { verifyPassword } from "@/lib/auth/passwords";
 import { generateOpaqueToken, hashToken } from "@/lib/auth/tokens";
-import { EMAIL_CHANGE_TTL_MS } from "@/lib/auth/env";
+import { EMAIL_CHANGE_TTL_MS, getAppUrl } from "@/lib/auth/env";
 import { logSecurityEvent } from "@/lib/auth/securityEvents";
 import { extractClientIp } from "@/lib/auth/device";
-import { sendTemplateEmail } from "@/lib/email/mailer";
-import EmailChangeVerificationEmail from "@emails/templates/EmailChangeVerificationEmail";
+import { sendEmailChangeVerificationEmail } from "@/services/email/email.service";
 
 export const runtime = "nodejs";
 
@@ -63,15 +62,12 @@ export async function POST(request: NextRequest) {
     userAgent: request.headers.get("user-agent"),
   });
 
-  const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/auth/verify-email-change?token=${token}`;
-  void sendTemplateEmail({
+  const verifyUrl = `${getAppUrl()}/auth/verify-email-change?token=${token}`;
+  void sendEmailChangeVerificationEmail({
     to: parsed.data.newEmail,
-    subject: "Confirm your new email address",
-    template: EmailChangeVerificationEmail({
-      verifyUrl,
-      newEmail: parsed.data.newEmail,
-      expiresInMinutes: Math.round(EMAIL_CHANGE_TTL_MS / 60000),
-    }),
+    verifyUrl,
+    newEmail: parsed.data.newEmail,
+    expiresInMinutes: Math.round(EMAIL_CHANGE_TTL_MS / 60000),
   });
 
   return NextResponse.json({

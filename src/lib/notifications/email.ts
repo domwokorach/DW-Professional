@@ -1,6 +1,4 @@
-import { Resend } from "resend";
-
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+import { resendProvider } from "@/services/email/resend.provider";
 
 const ADMIN_NOTIFICATION_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL;
 
@@ -10,12 +8,31 @@ export async function sendNewConversationEmail(conversation: {
   name?: string | null;
   email?: string | null;
 }): Promise<void> {
-  if (!resend || !ADMIN_NOTIFICATION_EMAIL) return;
+  if (!ADMIN_NOTIFICATION_EMAIL) return;
 
-  await resend.emails.send({
-    from: "Live Chat <live-chat@dominicwokorach.me>",
+  const text = `${conversation.name ?? "A visitor"} (${conversation.email ?? "no email"}) started a conversation.\n\nOpen it in the admin dashboard: /admin/chat?conversation=${conversation.id}`;
+
+  const result = await resendProvider.send({
     to: ADMIN_NOTIFICATION_EMAIL,
     subject: "New live chat message",
-    text: `${conversation.name ?? "A visitor"} (${conversation.email ?? "no email"}) started a conversation.\n\nOpen it in the admin dashboard: /admin/live-chat?conversation=${conversation.id}`,
+    html: `<p>${text.replace(/\n/g, "<br />")}</p>`,
+    text,
+  });
+
+  if (!result.ok) {
+    console.error("[email] provider request failed", {
+      provider: "resend",
+      template: "new-conversation-alert",
+      status: "failed",
+      error: result.error,
+    });
+    return;
+  }
+
+  console.log("[email] sent", {
+    provider: "resend",
+    template: "new-conversation-alert",
+    status: "success",
+    resendMessageId: result.id,
   });
 }

@@ -6,8 +6,7 @@ import { hashToken } from "@/lib/auth/tokens";
 import { revokeAllSessionsForUser } from "@/lib/auth/session";
 import { logSecurityEvent } from "@/lib/auth/securityEvents";
 import { extractClientIp } from "@/lib/auth/device";
-import { sendTemplateEmail } from "@/lib/email/mailer";
-import EmailChangedEmail from "@emails/templates/EmailChangedEmail";
+import { sendEmailChangedEmail } from "@/services/email/email.service";
 
 export const runtime = "nodejs";
 
@@ -54,10 +53,10 @@ export async function POST(request: NextRequest) {
     metadata: { oldEmail: changeRequest.oldEmail, newEmail: changeRequest.newEmail },
   });
 
-  void sendTemplateEmail({
+  void sendEmailChangedEmail({
     to: changeRequest.oldEmail,
-    subject: "Your account email address was changed",
-    template: EmailChangedEmail({ newEmail: changeRequest.newEmail, occurredAt: new Date().toLocaleString("en-GB") }),
+    newEmail: changeRequest.newEmail,
+    occurredAt: new Date().toLocaleString("en-GB"),
   });
 
   return NextResponse.json({ ok: true, message: "Email address updated. Please sign in again." });

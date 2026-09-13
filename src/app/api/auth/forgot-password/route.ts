@@ -5,10 +5,9 @@ import { validationError } from "@/lib/auth/apiError";
 import { checkRateLimit } from "@/lib/auth/rateLimit";
 import { extractClientIp } from "@/lib/auth/device";
 import { generateOpaqueToken, hashToken } from "@/lib/auth/tokens";
-import { PASSWORD_RESET_TTL_MS } from "@/lib/auth/env";
+import { PASSWORD_RESET_TTL_MS, getAppUrl } from "@/lib/auth/env";
 import { logSecurityEvent } from "@/lib/auth/securityEvents";
-import { sendTemplateEmail } from "@/lib/email/mailer";
-import PasswordResetEmail from "@emails/templates/PasswordResetEmail";
+import { sendForgotPasswordEmail } from "@/services/email/email.service";
 
 export const runtime = "nodejs";
 
@@ -50,11 +49,12 @@ export async function POST(request: NextRequest) {
       userAgent: request.headers.get("user-agent"),
     });
 
-    const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/auth/reset-password?token=${token}`;
-    void sendTemplateEmail({
+    const resetUrl = `${getAppUrl()}/auth/reset-password?token=${token}`;
+    void sendForgotPasswordEmail({
       to: user.email,
-      subject: "Reset your admin password",
-      template: PasswordResetEmail({ resetUrl, expiresInMinutes: Math.round(PASSWORD_RESET_TTL_MS / 60000) }),
+      name: user.name,
+      resetUrl,
+      expiresInMinutes: Math.round(PASSWORD_RESET_TTL_MS / 60000),
     });
   }
 

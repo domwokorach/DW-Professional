@@ -2,10 +2,10 @@ import { POST } from '@/app/api/auth/forgot-password/route';
 import { db } from '@/lib/database/db';
 import { buildUser } from '../../../test/factories';
 import { makeRequest } from '../../../test/testRequest';
-import { getMockedSendTemplateEmail } from '../../../test/mockEmail';
+import { getMockedEmailService } from '../../../test/mockEmail';
 
 jest.mock('@/lib/database/db');
-jest.mock('@/lib/email/mailer');
+jest.mock('@/services/email/email.service');
 
 const GENERIC_MESSAGE = 'If an account exists for that email, a password reset link has been sent.';
 
@@ -41,9 +41,13 @@ describe('POST /api/auth/forgot-password', () => {
       })
     );
 
-    const mockedSend = getMockedSendTemplateEmail();
-    expect(mockedSend).toHaveBeenCalledWith(
-      expect.objectContaining({ to: user.email, subject: 'Reset your admin password' })
+    const mockedService = getMockedEmailService();
+    expect(mockedService.sendForgotPasswordEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: user.email,
+        name: user.name,
+        resetUrl: expect.stringContaining('/auth/reset-password?token='),
+      })
     );
   });
 
@@ -56,8 +60,8 @@ describe('POST /api/auth/forgot-password', () => {
     expect(response.status).toBe(200);
     expect(body.message).toBe(GENERIC_MESSAGE);
     expect(db.passwordResetToken.create).not.toHaveBeenCalled();
-    const mockedSend = getMockedSendTemplateEmail();
-    expect(mockedSend).not.toHaveBeenCalled();
+    const mockedService = getMockedEmailService();
+    expect(mockedService.sendForgotPasswordEmail).not.toHaveBeenCalled();
   });
 
   it('returns the same generic response for a SUSPENDED user, without creating a token', async () => {
