@@ -41,12 +41,15 @@ export default function AdminChat({
   useAdminActivity(socketRef);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const { conversation, messages, typing, loading: threadLoading, sendReply } = useAdminThread(
-    socketRef,
-    selectedId,
-    connectionState,
-    refresh
-  );
+  const {
+    conversation,
+    messages,
+    typing,
+    loading: threadLoading,
+    sendReply,
+    deleteMessage,
+    setStatus,
+  } = useAdminThread(socketRef, selectedId, connectionState, refresh);
   const { notifyTyping } = useTyping(socketRef, selectedId, "visitor");
   const { signOut } = useSignOut();
 
@@ -63,16 +66,11 @@ export default function AdminChat({
     void signOut();
   }, [signOut]);
 
-  const handleToggleStatus = useCallback(async () => {
+  const handleToggleStatus = useCallback(() => {
     if (!conversation) return;
     const nextStatus = conversation.status === "closed" ? "open" : "closed";
-    const res = await fetch(`/api/chat/conversations/${conversation.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: nextStatus }),
-    });
-    if (res.ok) refresh();
-  }, [conversation, refresh]);
+    setStatus(nextStatus);
+  }, [conversation, setStatus]);
 
   const handleMarkUnread = useCallback(async () => {
     if (!conversation) return;
@@ -104,6 +102,7 @@ export default function AdminChat({
           typing={typing}
           threadLoading={threadLoading}
           sendReply={sendReply}
+          deleteMessage={deleteMessage}
           notifyTyping={notifyTyping}
           onSignOut={handleSignOut}
           onToggleStatus={handleToggleStatus}
@@ -131,6 +130,7 @@ function ChatShell({
   typing,
   threadLoading,
   sendReply,
+  deleteMessage,
   notifyTyping,
   onSignOut,
   onToggleStatus,
@@ -152,6 +152,7 @@ function ChatShell({
   typing: boolean;
   threadLoading: boolean;
   sendReply: (content: string) => void;
+  deleteMessage: (messageId: string) => void;
   notifyTyping: () => void;
   onSignOut: () => void;
   onToggleStatus: () => void;
@@ -239,6 +240,7 @@ function ChatShell({
                   messages={messages}
                   loading={threadLoading}
                   typingLabel={typing ? `${conversation.name || "Candidate"} is typing…` : null}
+                  onDeleteMessage={deleteMessage}
                 />
                 <MessageInput
                   onSend={sendReply}

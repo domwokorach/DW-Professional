@@ -84,22 +84,22 @@ export async function getOnlineAdminIds(): Promise<string[]> {
 /** Admin ids whose presence record's lastActivityAt is older than `maxAgeMs` and are currently "online". */
 export async function getStaleOnlineAdminIds(maxAgeMs: number): Promise<string[]> {
   const ids = await getOnlineAdminIds();
+  const records = await Promise.all(ids.map(readAdminRecord));
   const stale: string[] = [];
-  for (const id of ids) {
-    const record = await readAdminRecord(id);
+  records.forEach((record, index) => {
     if (record && record.status === "online" && Date.now() - record.lastActivityAt > maxAgeMs) {
-      stale.push(id);
+      stale.push(ids[index]);
     }
-  }
+  });
   return stale;
 }
 
 export async function getAdminAggregateStatus(): Promise<"online" | "away" | "offline"> {
   const ids = await getOnlineAdminIds();
   if (ids.length === 0) return "offline";
+  const records = await Promise.all(ids.map(readAdminRecord));
   let sawAway = false;
-  for (const id of ids) {
-    const record = await readAdminRecord(id);
+  for (const record of records) {
     if (record?.status === "online") return "online";
     if (record?.status === "away") sawAway = true;
   }

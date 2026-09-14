@@ -17,4 +17,5 @@ export interface ChatMessage {
   status: MessageStatus;
   createdAt: string;
   actions?: ChatAction[];
+  deleted?: boolean;
 }

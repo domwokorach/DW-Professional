@@ -28,6 +28,7 @@ describe('getConversations', () => {
           OR: [
             { name: { contains: 'Jane', mode: 'insensitive' } },
             { email: { contains: 'Jane', mode: 'insensitive' } },
+            { mobile: { contains: 'Jane', mode: 'insensitive' } },
           ],
         }),
       })

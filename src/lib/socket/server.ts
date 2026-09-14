@@ -2,10 +2,10 @@ import type { Server, Socket } from "socket.io";
 import { verifyLiveChatToken } from "@/lib/liveChatAuth";
 import { sanitizeMessage } from "@/lib/utils/sanitize-message";
 import { isRateLimited } from "@/lib/utils/rate-limit";
-import { sendMessage, markMessageDelivered } from "@/lib/chat/send-message";
+import { sendMessage, markMessageDelivered, deleteMessage } from "@/lib/chat/send-message";
 import { markAsRead } from "@/lib/chat/mark-as-read";
 import { getConversationById } from "@/lib/chat/get-conversations";
-import { assignConversationAdminIfUnset } from "@/lib/chat/update-conversation";
+import { assignConversationAdminIfUnset, updateConversation } from "@/lib/chat/update-conversation";
 import { updatePresence } from "@/lib/chat/update-presence";
 import { sendNewConversationEmail } from "@/lib/notifications/email";
 import { matchIntent } from "@/lib/portfolioAssistant/match";
@@ -14,9 +14,11 @@ import {
   adminMessageSchema,
   adminOpenPayloadSchema,
   candidateMessageSchema,
+  deleteMessagePayloadSchema,
   joinPayloadSchema,
   readPayloadSchema,
   safeParse,
+  setStatusPayloadSchema,
   typingPayloadSchema,
 } from "@/lib/chat/validation";
 import { SOCKET_EVENTS } from "./events";
@@ -185,6 +187,18 @@ async function handleConnection(
     broadcastTyping(io, socket, parsed.conversationId, false, typingTimers, true);
   });
 
+  socket.on(SOCKET_EVENTS.SET_STATUS, async (payload) => {
+    const parsed = safeParse(setStatusPayloadSchema, payload);
+    if (!parsed || socket.data.role !== "admin" || !socket.data.adminId) return;
+    await handleSetStatus(io, parsed.conversationId, parsed.status);
+  });
+
+  socket.on(SOCKET_EVENTS.DELETE_MESSAGE, async (payload) => {
+    const parsed = safeParse(deleteMessagePayloadSchema, payload);
+    if (!parsed || socket.data.role !== "admin" || !socket.data.adminId) return;
+    await handleDeleteMessage(io, parsed.conversationId, parsed.messageId);
+  });
+
   socket.on(SOCKET_EVENTS.READ, async (payload) => {
     const parsed = safeParse(readPayloadSchema, payload);
     if (!parsed) return;
@@ -213,6 +227,31 @@ async function handleAdminOpen(io: ChatServer, conversationId: string, adminId: 
   io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.CONVERSATION_UPDATED, { conversation: assigned });
 }
 
+async function handleSetStatus(io: ChatServer, conversationId: string, status: "open" | "closed") {
+  const conversation = await updateConversation(conversationId, { status });
+
+  io.to(getConversationRoom(conversationId)).emit(SOCKET_EVENTS.CONVERSATION_STATUS, {
+    conversationId,
+    status,
+  });
+  io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.CONVERSATION_UPDATED, { conversation });
+}
+
+async function handleDeleteMessage(io: ChatServer, conversationId: string, messageId: string) {
+  const deleted = await deleteMessage(messageId, conversationId);
+  if (!deleted) return;
+
+  io.to(getConversationRoom(conversationId)).emit(SOCKET_EVENTS.MESSAGE_DELETED, {
+    conversationId,
+    messageId,
+  });
+
+  const conversation = await getConversationById(conversationId);
+  if (conversation) {
+    io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.CONVERSATION_UPDATED, { conversation });
+  }
+}
+
 async function handleIncomingMessage(
   io: ChatServer,
   socket: ChatSocket,
@@ -226,6 +265,9 @@ async function handleIncomingMessage(
   const rateLimitKey = socket.data.visitorId ?? socket.id;
   if (isRateLimited(rateLimitKey)) return;
 
+  const conversation = await getConversationById(conversationId);
+  if (conversation?.status === "closed") return;
+
   const message = await sendMessage({
     conversationId,
     sender: "visitor",
@@ -234,22 +276,33 @@ async function handleIncomingMessage(
     clientMessageId,
   });
 
+  // Broadcast immediately once the message is persisted — everything below
+  // (delivered-status flip, admin-list refresh, offline bot reply) is
+  // secondary and must never sit in front of the client actually seeing the
+  // message. Presence lookups in particular are N+1 Redis round-trips and
+  // used to block this emit.
   const room = getConversationRoom(conversationId);
-  const aggregateStatus = await updatePresence.getAggregateStatus();
-  const isDelivered = aggregateStatus !== "offline" && message.status === "sent";
-  if (isDelivered) await markMessageDelivered(message.id);
-  const outgoing = isDelivered ? { ...message, status: "delivered" as const } : message;
+  io.to(room).emit(SOCKET_EVENTS.MESSAGE, { message, clientMessageId });
 
-  io.to(room).emit(SOCKET_EVENTS.MESSAGE, { message: outgoing, clientMessageId });
+  void (async () => {
+    const aggregateStatus = await updatePresence.getAggregateStatus();
+    if (aggregateStatus !== "offline" && message.status === "sent") {
+      await markMessageDelivered(message.id);
+      io.to(room).emit(SOCKET_EVENTS.MESSAGE, {
+        message: { ...message, status: "delivered" },
+        clientMessageId,
+      });
+    }
 
-  const conversation = await getConversationById(conversationId);
-  if (!conversation) return;
-  io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.NEW_CONVERSATION, { conversation });
+    const updatedConversation = await getConversationById(conversationId);
+    if (!updatedConversation) return;
+    io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.NEW_CONVERSATION, { conversation: updatedConversation });
 
-  if (aggregateStatus === "offline") {
-    await sendNewConversationEmail(conversation);
-    await sendBotReply(io, conversationId, content);
-  }
+    if (aggregateStatus === "offline") {
+      await sendNewConversationEmail(updatedConversation);
+      await sendBotReply(io, conversationId, content);
+    }
+  })().catch((error) => console.error("[socket] post-broadcast follow-up failed", error));
 }
 
 async function handleAdminReply(
@@ -263,6 +316,9 @@ async function handleAdminReply(
   if (!content) return;
 
   await noteAdminActivity(io, adminId);
+
+  const existingConversation = await getConversationById(conversationId);
+  if (existingConversation?.status === "closed") return;
 
   const message = await sendMessage({
     conversationId,

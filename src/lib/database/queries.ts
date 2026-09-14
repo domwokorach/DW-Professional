@@ -17,20 +17,26 @@ export function toConversation(
     unreadByAdmin: row.unreadByAdmin,
     unreadByVisitor: row.unreadByVisitor,
     lastMessageAt: row.lastMessageAt?.toISOString() ?? null,
-    lastMessagePreview: row.messages?.[0]?.content ?? null,
+    lastMessagePreview: row.messages?.[0]
+      ? row.messages[0].deletedAt
+        ? "Message deleted"
+        : row.messages[0].content
+      : null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };
 }
 
 export function toMessage(row: PrismaMessage): ChatMessage {
+  const deleted = Boolean(row.deletedAt);
   return {
     id: row.id,
     conversationId: row.conversationId,
     sender: row.sender.toLowerCase() as ChatMessage["sender"],
     senderId: row.senderId ?? undefined,
-    content: row.content,
+    content: deleted ? "" : row.content,
     status: row.status.toLowerCase() as ChatMessage["status"],
     createdAt: row.createdAt.toISOString(),
+    deleted,
   };
 }

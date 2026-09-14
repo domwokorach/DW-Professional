@@ -44,6 +44,7 @@ describe('GET /api/chat/conversations', () => {
           OR: [
             { name: { contains: 'jane', mode: 'insensitive' } },
             { email: { contains: 'jane', mode: 'insensitive' } },
+            { mobile: { contains: 'jane', mode: 'insensitive' } },
           ],
         }),
       })

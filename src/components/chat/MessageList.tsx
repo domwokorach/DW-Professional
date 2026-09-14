@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useStickToBottomContext } from "use-stick-to-bottom";
 import { ChatContainerRoot, ChatContainerContent, ChatContainerScrollAnchor } from "@/components/ui/chat-container";
 import { ScrollButton } from "@/components/ui/scroll-button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -8,16 +9,47 @@ import type { ChatMessage } from "@/types/chat";
 import MessageBubble from "./MessageBubble";
 import TypingIndicator from "./TypingIndicator";
 
+/** "↓ N new message(s)" pill next to the scroll-to-bottom button — counts
+ *  messages that arrived while the admin was scrolled up reading history. */
+function NewMessagesIndicator({ messageCount }: { messageCount: number }) {
+  const { isAtBottom, scrollToBottom } = useStickToBottomContext();
+  const [newCount, setNewCount] = useState(0);
+  const prevCount = useRef(messageCount);
+
+  useEffect(() => {
+    if (isAtBottom) {
+      setNewCount(0);
+    } else if (messageCount > prevCount.current) {
+      setNewCount((count) => count + (messageCount - prevCount.current));
+    }
+    prevCount.current = messageCount;
+  }, [messageCount, isAtBottom]);
+
+  if (newCount === 0 || isAtBottom) return null;
+
+  return (
+    <button
+      type="button"
+      onClick={() => scrollToBottom()}
+      className="pointer-events-auto absolute bottom-14 left-1/2 -translate-x-1/2 rounded-full border border-accent/40 bg-surface px-3 py-1.5 text-xs font-medium text-accent shadow-md transition-colors hover:bg-accent/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+    >
+      ↓ {newCount} new message{newCount === 1 ? "" : "s"}
+    </button>
+  );
+}
+
 const PAGE_SIZE = 40;
 
 export default function MessageList({
   messages,
   loading,
   typingLabel,
+  onDeleteMessage,
 }: {
   messages: ChatMessage[];
   loading: boolean;
   typingLabel: string | null;
+  onDeleteMessage?: (messageId: string) => void;
 }) {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
@@ -69,13 +101,14 @@ export default function MessageList({
                 </div>
               ) : null}
               {visible.map((message) => (
-                <MessageBubble key={message.id} message={message} />
+                <MessageBubble key={message.id} message={message} onDelete={onDeleteMessage} />
               ))}
             </>
           )}
           {typingLabel ? <TypingIndicator label={typingLabel} /> : null}
         </ChatContainerContent>
         <ChatContainerScrollAnchor />
+        <NewMessagesIndicator messageCount={messages.length} />
         <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center">
           <ScrollButton />
         </div>

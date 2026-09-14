@@ -74,6 +74,22 @@ export async function sendMessage({
 }
 
 /**
+ * Soft-deletes a message: blanks its content and stamps `deletedAt` rather
+ * than removing the row, so ordering/context in the thread is preserved and
+ * the deletion itself can be broadcast and replayed safely. Returns false
+ * (no-op) if the message doesn't exist or doesn't belong to the given
+ * conversation — callers must not trust a client-supplied conversationId
+ * without this check.
+ */
+export async function deleteMessage(messageId: string, conversationId: string): Promise<boolean> {
+  const { count } = await db.message.updateMany({
+    where: { id: messageId, conversationId, deletedAt: null },
+    data: { content: "", deletedAt: new Date() },
+  });
+  return count > 0;
+}
+
+/**
  * Persists the delivered status. Doesn't rely on the update's return value —
  * the caller already holds the full, correct message it just created and
  * only needs to flip one field on it for the emitted payload.

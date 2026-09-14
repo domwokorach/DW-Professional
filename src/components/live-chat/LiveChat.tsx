@@ -42,6 +42,7 @@ export default function LiveChat() {
     connectionState,
     adminStatus,
     adminJoined,
+    conversationStatus,
     pendingMessageIds,
     messages,
     typing,
@@ -158,6 +159,7 @@ export default function LiveChat() {
                 connectionState={connectionState}
                 adminStatus={adminStatus}
                 adminJoined={adminJoined}
+                conversationStatus={conversationStatus}
                 pendingMessageIds={pendingMessageIds}
                 conversationId={conversationId}
                 onSend={sendMessage}

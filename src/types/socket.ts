@@ -63,3 +63,23 @@ export interface AdminJoinedPayload {
 export interface AdminOpenPayload {
   conversationId: string;
 }
+
+export interface SetStatusPayload {
+  conversationId: string;
+  status: "open" | "closed";
+}
+
+export interface ConversationStatusPayload {
+  conversationId: string;
+  status: "open" | "closed";
+}
+
+export interface DeleteMessagePayload {
+  conversationId: string;
+  messageId: string;
+}
+
+export interface MessageDeletedPayload {
+  conversationId: string;
+  messageId: string;
+}

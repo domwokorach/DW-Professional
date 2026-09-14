@@ -3,10 +3,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChatSocket } from "@/lib/socket/client";
 import { SOCKET_EVENTS } from "@/lib/socket/events";
+import { generateId } from "@/lib/utils/generate-id";
 import type { ChatMessage } from "@/types/message";
 import type { ConversationWithMessages } from "@/types/conversation";
 import type { ConnectionState } from "@/types/chat";
-import type { MessageEventPayload, TypingEventPayload } from "@/types/socket";
+import type {
+  ConversationStatusPayload,
+  MessageDeletedPayload,
+  MessageEventPayload,
+  TypingEventPayload,
+} from "@/types/socket";
 
 function mergeById(prev: ChatMessage[], incoming: ChatMessage[]): ChatMessage[] {
   const byId = new Map(prev.map((message) => [message.id, message]));
@@ -91,10 +97,21 @@ export function useAdminThread(
     const socket = socketRef.current;
     if (!socket || !conversationId) return;
 
-    const handleMessage = ({ message }: MessageEventPayload) => {
+    const handleMessage = ({ message, clientMessageId }: MessageEventPayload) => {
       if (message.conversationId !== conversationId) return;
       setTyping(false);
-      setMessages((prev) => (prev.some((m) => m.id === message.id) ? prev : [...prev, message]));
+      setMessages((prev) => {
+        if (prev.some((m) => m.id === message.id)) return prev;
+        if (clientMessageId) {
+          const optimisticIndex = prev.findIndex((m) => m.id === clientMessageId);
+          if (optimisticIndex !== -1) {
+            const next = prev.slice();
+            next[optimisticIndex] = message;
+            return next;
+          }
+        }
+        return [...prev, message];
+      });
     };
 
     const handleTyping = (payload: TypingEventPayload) => {
@@ -102,11 +119,27 @@ export function useAdminThread(
       setTyping(payload.isTyping);
     };
 
+    const handleMessageDeleted = (payload: MessageDeletedPayload) => {
+      if (payload.conversationId !== conversationId) return;
+      setMessages((prev) =>
+        prev.map((m) => (m.id === payload.messageId ? { ...m, deleted: true, content: "" } : m))
+      );
+    };
+
+    const handleStatus = (payload: ConversationStatusPayload) => {
+      if (payload.conversationId !== conversationId) return;
+      setConversation((prev) => (prev ? { ...prev, status: payload.status } : prev));
+    };
+
     socket.on(SOCKET_EVENTS.MESSAGE, handleMessage);
     socket.on(SOCKET_EVENTS.TYPING, handleTyping);
+    socket.on(SOCKET_EVENTS.MESSAGE_DELETED, handleMessageDeleted);
+    socket.on(SOCKET_EVENTS.CONVERSATION_STATUS, handleStatus);
     return () => {
       socket.off(SOCKET_EVENTS.MESSAGE, handleMessage);
       socket.off(SOCKET_EVENTS.TYPING, handleTyping);
+      socket.off(SOCKET_EVENTS.MESSAGE_DELETED, handleMessageDeleted);
+      socket.off(SOCKET_EVENTS.CONVERSATION_STATUS, handleStatus);
     };
   }, [socketRef, conversationId]);
 
@@ -117,10 +150,42 @@ export function useAdminThread(
 
       const socket = socketRef.current;
       if (!socket?.connected) return;
-      socket.emit(SOCKET_EVENTS.REPLY, { conversationId, content: trimmed });
+
+      const clientMessageId = generateId();
+      const optimistic: ChatMessage = {
+        id: clientMessageId,
+        conversationId,
+        sender: "admin",
+        content: trimmed,
+        status: "sent",
+        createdAt: new Date().toISOString(),
+      };
+      setMessages((prev) => [...prev, optimistic]);
+
+      socket.emit(SOCKET_EVENTS.REPLY, { conversationId, content: trimmed, clientMessageId });
     },
     [socketRef, conversationId]
   );
 
-  return { conversation, messages, typing, loading, sendReply };
+  const deleteMessage = useCallback(
+    (messageId: string) => {
+      if (!conversationId) return;
+      const socket = socketRef.current;
+      if (!socket?.connected) return;
+      socket.emit(SOCKET_EVENTS.DELETE_MESSAGE, { conversationId, messageId });
+    },
+    [socketRef, conversationId]
+  );
+
+  const setStatus = useCallback(
+    (status: "open" | "closed") => {
+      if (!conversationId) return;
+      const socket = socketRef.current;
+      if (!socket?.connected) return;
+      socket.emit(SOCKET_EVENTS.SET_STATUS, { conversationId, status });
+    },
+    [socketRef, conversationId]
+  );
+
+  return { conversation, messages, typing, loading, sendReply, deleteMessage, setStatus };
 }
