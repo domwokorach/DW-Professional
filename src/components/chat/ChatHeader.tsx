@@ -21,6 +21,7 @@ import { getPresenceStatus } from "@/lib/chat/helpers";
 import CandidateAvatar from "./CandidateAvatar";
 import OnlineStatus from "./OnlineStatus";
 import CustomerDetails from "./CustomerDetails";
+import ConfirmDialog from "./ConfirmDialog";
 
 export default function ChatHeader({
   conversation,
@@ -40,7 +41,17 @@ export default function ChatHeader({
   onMarkUnread?: () => void;
 }) {
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [confirmCloseOpen, setConfirmCloseOpen] = useState(false);
   const displayName = conversation.name || conversation.visitorId;
+  const isClosed = conversation.status === "closed";
+
+  const handleStatusSelect = () => {
+    if (isClosed) {
+      onToggleStatus?.();
+    } else {
+      setConfirmCloseOpen(true);
+    }
+  };
 
   return (
     <>
@@ -94,9 +105,9 @@ export default function ChatHeader({
               </DropdownMenuItem>
             ) : null}
             {onToggleStatus ? (
-              <DropdownMenuItem onSelect={onToggleStatus}>
+              <DropdownMenuItem onSelect={handleStatusSelect}>
                 <Archive aria-hidden="true" />
-                {conversation.status === "closed" ? "Reopen conversation" : "Close conversation"}
+                {isClosed ? "Reopen conversation" : "Close conversation"}
               </DropdownMenuItem>
             ) : null}
           </DropdownMenuContent>
@@ -117,6 +128,19 @@ export default function ChatHeader({
           />
         </SheetContent>
       </Sheet>
+
+      <ConfirmDialog
+        open={confirmCloseOpen}
+        onOpenChange={setConfirmCloseOpen}
+        title="Close conversation?"
+        description={`This will end the active chat with ${displayName}.`}
+        confirmLabel="Close conversation"
+        destructive
+        onConfirm={() => {
+          setConfirmCloseOpen(false);
+          onToggleStatus?.();
+        }}
+      />
     </>
   );
 }

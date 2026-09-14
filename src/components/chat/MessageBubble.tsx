@@ -1,8 +1,19 @@
-import { Check, CheckCheck } from "lucide-react";
+"use client";
+
+import { useState } from "react";
+import { Check, CheckCheck, Copy, EllipsisVertical, Trash2 } from "lucide-react";
 import { Message, MessageContent } from "@/components/ui/message";
+import { ChatButton } from "@/components/ui/chat-button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import type { ChatMessage } from "@/types/chat";
 import { formatChatDate } from "@/lib/chat/helpers";
+import ConfirmDialog from "./ConfirmDialog";
 
 const SENDER_LABEL: Record<ChatMessage["sender"], string> = {
   admin: "Dominic",
@@ -10,23 +21,69 @@ const SENDER_LABEL: Record<ChatMessage["sender"], string> = {
   bot: "Assistant",
 };
 
-export default function MessageBubble({ message }: { message: ChatMessage }) {
+export default function MessageBubble({
+  message,
+  onDelete,
+}: {
+  message: ChatMessage;
+  onDelete?: (messageId: string) => void;
+}) {
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const isAdmin = message.sender === "admin";
+  const isDeleted = Boolean(message.deleted);
+
+  const handleCopy = () => {
+    void navigator.clipboard?.writeText(message.content);
+  };
 
   return (
-    <Message className={cn("flex-col gap-1", isAdmin ? "items-end" : "items-start")}>
-      <span className="px-1 text-[11px] font-medium text-muted">{SENDER_LABEL[message.sender]}</span>
+    <Message className={cn("group/message flex-col gap-1", isAdmin ? "items-end" : "items-start")}>
+      <div className={cn("flex w-full items-center gap-1", isAdmin ? "flex-row-reverse" : "flex-row")}>
+        <span className="px-1 text-[11px] font-medium text-muted">{SENDER_LABEL[message.sender]}</span>
+        {!isDeleted && onDelete ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <ChatButton
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label="Message actions"
+                className="h-6 w-6 opacity-0 transition-opacity focus-visible:opacity-100 group-hover/message:opacity-100"
+              >
+                <EllipsisVertical className="h-3.5 w-3.5" aria-hidden="true" />
+              </ChatButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align={isAdmin ? "end" : "start"}>
+              <DropdownMenuItem onSelect={handleCopy}>
+                <Copy aria-hidden="true" />
+                Copy
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-red-400 focus:text-red-400"
+                onSelect={() => setConfirmOpen(true)}
+              >
+                <Trash2 aria-hidden="true" />
+                Delete message
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : null}
+      </div>
       <MessageContent
         className={cn(
           "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm md:max-w-[75%] lg:max-w-[65%]",
-          isAdmin ? "bg-accent text-ink" : "border border-line bg-ink text-white"
+          isDeleted
+            ? "border border-dashed border-line italic text-muted"
+            : isAdmin
+              ? "bg-accent text-ink"
+              : "border border-line bg-ink text-white"
         )}
       >
-        {message.content}
+        {isDeleted ? "Message deleted" : message.content}
       </MessageContent>
       <span className="flex items-center gap-1 px-1 text-[11px] text-muted">
         {formatChatDate(message.createdAt)}
-        {isAdmin ? (
+        {isAdmin && !isDeleted ? (
           message.status === "read" ? (
             <CheckCheck className="h-3 w-3 text-accent3" aria-label="Read" />
           ) : (
@@ -34,6 +91,19 @@ export default function MessageBubble({ message }: { message: ChatMessage }) {
           )
         ) : null}
       </span>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Delete message?"
+        description="This message will be removed from the conversation."
+        confirmLabel="Delete"
+        destructive
+        onConfirm={() => {
+          setConfirmOpen(false);
+          onDelete?.(message.id);
+        }}
+      />
     </Message>
   );
 }

@@ -15,6 +15,8 @@ import type {
   AdminJoinedPayload,
   AdminPresenceState,
   AdminStatusPayload,
+  ConversationStatusPayload,
+  MessageDeletedPayload,
   MessageEventPayload,
   TypingEventPayload,
 } from "@/types/socket";
@@ -62,6 +64,7 @@ export function useLiveChat() {
   const [registrationError, setRegistrationError] = useState<string | null>(null);
   const [adminStatus, setAdminStatus] = useState<AdminPresenceState>("offline");
   const [adminJoined, setAdminJoined] = useState(false);
+  const [conversationStatus, setConversationStatus] = useState<"open" | "closed">("open");
   const [pendingMessageIds, setPendingMessageIds] = useState<Set<string>>(new Set());
   const pendingDetailsRef = useRef<CandidateDetails | null>(null);
   const outboxRef = useRef<Map<string, { conversationId: string; content: string }>>(new Map());
@@ -101,12 +104,13 @@ export function useLiveChat() {
         });
         if (!conversationRes.ok) throw new Error("Unable to start chat");
         const { conversation } = (await conversationRes.json()) as {
-          conversation: { id: string; assignedAdminId?: string | null };
+          conversation: { id: string; assignedAdminId?: string | null; status?: "open" | "closed" };
         };
         if (cancelled) return;
 
         setConversationId(conversation.id);
         setAdminJoined(Boolean(conversation.assignedAdminId));
+        setConversationStatus(conversation.status ?? "open");
         window.sessionStorage.setItem(CONVERSATION_ID_STORAGE_KEY, conversation.id);
         window.sessionStorage.setItem(REGISTERED_STORAGE_KEY, "1");
 
@@ -231,22 +235,38 @@ export function useLiveChat() {
       setAdminJoined(true);
     };
 
+    const handleMessageDeleted = (payload: MessageDeletedPayload) => {
+      if (payload.conversationId !== conversationId) return;
+      setMessages((prev) =>
+        prev.map((m) => (m.id === payload.messageId ? { ...m, deleted: true, content: "" } : m))
+      );
+    };
+
+    const handleConversationStatus = (payload: ConversationStatusPayload) => {
+      if (payload.conversationId !== conversationId) return;
+      setConversationStatus(payload.status);
+    };
+
     socket.on(SOCKET_EVENTS.MESSAGE, handleMessage);
     socket.on(SOCKET_EVENTS.TYPING, handleTyping);
     socket.on(SOCKET_EVENTS.ADMIN_STATUS, handleAdminStatus);
     socket.on(SOCKET_EVENTS.ADMIN_JOINED, handleAdminJoined);
+    socket.on(SOCKET_EVENTS.MESSAGE_DELETED, handleMessageDeleted);
+    socket.on(SOCKET_EVENTS.CONVERSATION_STATUS, handleConversationStatus);
     return () => {
       socket.off(SOCKET_EVENTS.MESSAGE, handleMessage);
       socket.off(SOCKET_EVENTS.TYPING, handleTyping);
       socket.off(SOCKET_EVENTS.ADMIN_STATUS, handleAdminStatus);
       socket.off(SOCKET_EVENTS.ADMIN_JOINED, handleAdminJoined);
+      socket.off(SOCKET_EVENTS.MESSAGE_DELETED, handleMessageDeleted);
+      socket.off(SOCKET_EVENTS.CONVERSATION_STATUS, handleConversationStatus);
     };
   }, [socketRef, conversationId]);
 
   const sendMessage = useCallback(
     (content: string) => {
       const trimmed = content.trim();
-      if (!trimmed || !conversationId) return;
+      if (!trimmed || !conversationId || conversationStatus === "closed") return;
 
       const optimistic: ChatMessage = {
         id: generateId(),
@@ -268,13 +288,14 @@ export function useLiveChat() {
         clientMessageId: optimistic.id,
       });
     },
-    [socketRef, conversationId]
+    [socketRef, conversationId, conversationStatus]
   );
 
   return {
     connectionState,
     adminStatus,
     adminJoined,
+    conversationStatus,
     pendingMessageIds,
     messages,
     typing,

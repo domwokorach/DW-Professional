@@ -12,6 +12,10 @@ export const SOCKET_EVENTS = {
   ADMIN_JOINED: "admin:joined",
   ADMIN_ACTIVITY: "admin:activity",
   ADMIN_OPEN: "chat:admin-open",
+  SET_STATUS: "chat:set-status",
+  CONVERSATION_STATUS: "chat:conversation-status",
+  DELETE_MESSAGE: "chat:delete-message",
+  MESSAGE_DELETED: "chat:message-deleted",
 } as const;
 
 export type SocketEventName = (typeof SOCKET_EVENTS)[keyof typeof SOCKET_EVENTS];

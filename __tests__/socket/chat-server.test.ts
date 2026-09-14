@@ -373,9 +373,16 @@ describe('chat socket server', () => {
     visitor.emit('chat:message', { conversationId, content: 'First send', clientMessageId: 'same-client-id' });
     await new Promise((resolve) => setTimeout(resolve, 150));
 
+    // Each send now broadcasts twice: an immediate "sent" emit right after
+    // persistence, followed by a "delivered" emit once the (now
+    // non-blocking) presence/delivered-status lookup resolves — see
+    // src/lib/socket/server.ts's handleIncomingMessage. Still only one
+    // underlying message is ever created, and both sends broadcast the same
+    // deduped message content.
     expect(db.message.create).toHaveBeenCalledTimes(1);
-    expect(received).toHaveLength(2);
-    expect(received[0]).toEqual(received[1]);
+    expect(received).toHaveLength(4);
+    expect(received[0]).toEqual(received[2]);
+    expect(received[1]).toEqual(received[3]);
   });
 
   it('admin:status broadcasts "online" to a visitor room when an admin connects', async () => {
@@ -430,5 +437,106 @@ describe('chat socket server', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 150));
     expect(otherReceivedJoin).toBe(false);
+  });
+
+  it('admin closes a conversation via chat:set-status — broadcasts to the room and to other admins', async () => {
+    const conversationId = 'conv-close-1';
+    (db.conversation.update as jest.Mock).mockResolvedValue(
+      buildConversation({ id: conversationId, status: 'CLOSED' as never })
+    );
+    (db.conversation.findUnique as jest.Mock).mockImplementation(async (args: { where: { id: string } }) =>
+      buildConversation({ id: args.where.id, status: 'CLOSED' as never })
+    );
+
+    const visitor = connectClient(visitorToken(conversationId));
+    await once(visitor, 'connect');
+    const admin = connectClient(adminToken('admin-close'));
+    await once(admin, 'connect');
+    const otherAdmin = connectClient(adminToken('admin-observer'));
+    await once(otherAdmin, 'connect');
+
+    const statusPromise = once<{ conversationId: string; status: string }>(visitor, 'chat:conversation-status');
+    const updatedPromise = once<{ conversation: { id: string; status: string } }>(
+      otherAdmin,
+      'chat:conversation-updated'
+    );
+
+    admin.emit('chat:set-status', { conversationId, status: 'closed' });
+
+    const status = await statusPromise;
+    expect(status).toEqual({ conversationId, status: 'closed' });
+
+    const updated = await updatedPromise;
+    expect(updated.conversation.status).toBe('closed');
+    expect(db.conversation.update).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { id: conversationId }, data: expect.objectContaining({ status: 'CLOSED' }) })
+    );
+  });
+
+  it('a visitor cannot close a conversation via chat:set-status', async () => {
+    const conversationId = 'conv-close-2';
+    const visitor = connectClient(visitorToken(conversationId));
+    await once(visitor, 'connect');
+
+    visitor.emit('chat:set-status', { conversationId, status: 'closed' });
+    await new Promise((resolve) => setTimeout(resolve, 150));
+
+    expect(db.conversation.update).not.toHaveBeenCalled();
+  });
+
+  it('a closed conversation rejects new visitor messages and does not reopen', async () => {
+    const conversationId = 'conv-closed-guard-1';
+    (db.conversation.findUnique as jest.Mock).mockImplementation(async (args: { where: { id: string } }) =>
+      buildConversation({ id: args.where.id, status: 'CLOSED' as never })
+    );
+
+    const visitor = connectClient(visitorToken(conversationId));
+    await once(visitor, 'connect');
+
+    let received = false;
+    visitor.on('chat:message', () => {
+      received = true;
+    });
+
+    visitor.emit('chat:message', { conversationId, content: 'Are you still there?' });
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    expect(received).toBe(false);
+    expect(db.message.create).not.toHaveBeenCalled();
+  });
+
+  it('admin deletes a message via chat:delete-message — broadcasts message-deleted to the room', async () => {
+    const conversationId = 'conv-delete-1';
+    const messageId = 'msg-to-delete';
+    (db.message.updateMany as jest.Mock).mockResolvedValue({ count: 1 });
+    (db.conversation.findUnique as jest.Mock).mockImplementation(async (args: { where: { id: string } }) =>
+      buildConversation({ id: args.where.id })
+    );
+
+    const visitor = connectClient(visitorToken(conversationId));
+    await once(visitor, 'connect');
+    const admin = connectClient(adminToken('admin-delete'));
+    await once(admin, 'connect');
+
+    const deletedPromise = once<{ conversationId: string; messageId: string }>(visitor, 'chat:message-deleted');
+    admin.emit('chat:delete-message', { conversationId, messageId });
+
+    const payload = await deletedPromise;
+    expect(payload).toEqual({ conversationId, messageId });
+    expect(db.message.updateMany).toHaveBeenCalledWith({
+      where: { id: messageId, conversationId, deletedAt: null },
+      data: { content: '', deletedAt: expect.any(Date) },
+    });
+  });
+
+  it('a visitor cannot delete a message via chat:delete-message', async () => {
+    const conversationId = 'conv-delete-2';
+    const visitor = connectClient(visitorToken(conversationId));
+    await once(visitor, 'connect');
+
+    visitor.emit('chat:delete-message', { conversationId, messageId: 'some-message' });
+    await new Promise((resolve) => setTimeout(resolve, 150));
+
+    expect(db.message.updateMany).not.toHaveBeenCalled();
   });
 });

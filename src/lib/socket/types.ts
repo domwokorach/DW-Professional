@@ -3,12 +3,16 @@ import type {
   AdminOpenPayload,
   AdminStatusPayload,
   ConversationEventPayload,
+  ConversationStatusPayload,
+  DeleteMessagePayload,
   JoinPayload,
+  MessageDeletedPayload,
   MessageEventPayload,
   PresencePayload,
   ReadPayload,
   ReplyPayload,
   SendMessagePayload,
+  SetStatusPayload,
   TypingEventPayload,
   TypingPayload,
 } from "@/types/socket";
@@ -21,6 +25,8 @@ export interface ClientToServerEvents {
   "chat:stop-typing": (payload: TypingPayload) => void;
   "chat:read": (payload: ReadPayload) => void;
   "chat:admin-open": (payload: AdminOpenPayload) => void;
+  "chat:set-status": (payload: SetStatusPayload) => void;
+  "chat:delete-message": (payload: DeleteMessagePayload) => void;
   "admin:activity": () => void;
 }
 
@@ -30,6 +36,8 @@ export interface ServerToClientEvents {
   "chat:presence": (payload: PresencePayload) => void;
   "chat:new-conversation": (payload: ConversationEventPayload) => void;
   "chat:conversation-updated": (payload: ConversationEventPayload) => void;
+  "chat:conversation-status": (payload: ConversationStatusPayload) => void;
+  "chat:message-deleted": (payload: MessageDeletedPayload) => void;
   "admin:status": (payload: AdminStatusPayload) => void;
   "admin:joined": (payload: AdminJoinedPayload) => void;
 }

@@ -62,8 +62,19 @@ export const createConversationSchema = candidateSchema.extend({
 export const conversationStatusSchema = z.enum(["open", "closed"]);
 
 export const conversationPatchSchema = z.object({
-  status: conversationStatusSchema.optional(),
   markUnread: z.boolean().optional(),
+});
+
+export const setStatusPayloadSchema = z.object({
+  conversationId: conversationIdSchema,
+  status: conversationStatusSchema,
+});
+
+export const messageIdSchema = z.string().trim().min(1, "Message id is required");
+
+export const deleteMessagePayloadSchema = z.object({
+  conversationId: conversationIdSchema,
+  messageId: messageIdSchema,
 });
 
 /** Parses `value` against `schema`, returning `null` instead of throwing on failure — the caller decides the HTTP/socket response. */

@@ -137,11 +137,13 @@ describe('conversationStatusSchema / conversationPatchSchema', () => {
     expect(conversationStatusSchema.safeParse('pending').success).toBe(false);
   });
 
-  it('conversationPatchSchema accepts status and/or markUnread, both optional', () => {
-    expect(conversationPatchSchema.safeParse({ status: 'closed' }).success).toBe(true);
+  // Status changes (close/reopen) now go over Socket.IO (`chat:set-status`,
+  // src/lib/socket/server.ts) so they can broadcast live — this REST schema
+  // only covers the single-admin-local "mark as unread" action.
+  it('conversationPatchSchema accepts markUnread, optional', () => {
     expect(conversationPatchSchema.safeParse({ markUnread: true }).success).toBe(true);
     expect(conversationPatchSchema.safeParse({}).success).toBe(true);
-    expect(conversationPatchSchema.safeParse({ status: 'archived' }).success).toBe(false);
+    expect(conversationPatchSchema.safeParse({ markUnread: 'yes' }).success).toBe(false);
   });
 });
 

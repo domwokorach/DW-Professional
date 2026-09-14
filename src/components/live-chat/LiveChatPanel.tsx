@@ -49,6 +49,7 @@ export default function LiveChatPanel({
   connectionState,
   adminStatus,
   adminJoined,
+  conversationStatus,
   pendingMessageIds,
   conversationId,
   onSend,
@@ -62,6 +63,7 @@ export default function LiveChatPanel({
   connectionState: ConnectionState;
   adminStatus: AdminPresenceState;
   adminJoined: boolean;
+  conversationStatus: "open" | "closed";
   pendingMessageIds: Set<string>;
   conversationId: string | null;
   onSend: (text: string) => void;
@@ -104,8 +106,10 @@ export default function LiveChatPanel({
     if (wasNearBottomRef.current) el.scrollTop = el.scrollHeight;
   }, [messages, typing]);
 
+  const isClosed = conversationStatus === "closed";
+
   const handleSend = () => {
-    if (!input.trim()) return;
+    if (!input.trim() || isClosed) return;
     onSend(input);
     setInput("");
     if (draftKey) window.sessionStorage.removeItem(draftKey);
@@ -194,12 +198,14 @@ export default function LiveChatPanel({
             >
               <div
                 className={`max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-4 py-2.5 text-sm ${
-                  message.sender === "visitor"
-                    ? "bg-accent text-ink"
-                    : "border border-line bg-ink text-white"
+                  message.deleted
+                    ? "border border-dashed border-line text-muted italic"
+                    : message.sender === "visitor"
+                      ? "bg-accent text-ink"
+                      : "border border-line bg-ink text-white"
                 }`}
               >
-                {message.content}
+                {message.deleted ? "Message deleted" : message.content}
               </div>
               <span className="flex items-center gap-1 px-1 text-[11px] text-muted">
                 {formatTimestamp(message.createdAt)}
@@ -232,7 +238,11 @@ export default function LiveChatPanel({
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-1.5 border-t border-line px-3 py-3">
-        {connectionState !== "online" ? (
+        {isClosed ? (
+          <p className="px-1 text-xs text-muted" role="status" aria-live="polite">
+            This conversation has been closed.
+          </p>
+        ) : connectionState !== "online" ? (
           <p className="px-1 text-xs text-amber-400" role="status" aria-live="polite">
             Reconnecting… your messages will send once you&rsquo;re back online.
           </p>
@@ -245,6 +255,7 @@ export default function LiveChatPanel({
             ref={textareaRef}
             id="live-chat-input"
             value={input}
+            disabled={isClosed}
             onChange={(event) => {
               setInput(event.target.value);
               if (draftKey) window.sessionStorage.setItem(draftKey, event.target.value);
@@ -253,14 +264,14 @@ export default function LiveChatPanel({
               el.style.height = `${Math.min(el.scrollHeight, 96)}px`;
             }}
             onKeyDown={handleKeyDown}
-            placeholder="Type a message…"
+            placeholder={isClosed ? "This conversation has ended." : "Type a message…"}
             rows={1}
             maxLength={2000}
-            className="min-h-11 max-h-24 flex-1 resize-none rounded-2xl border border-line bg-ink px-4 py-2.5 text-sm leading-normal text-white placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            className="min-h-11 max-h-24 flex-1 resize-none rounded-2xl border border-line bg-ink px-4 py-2.5 text-sm leading-normal text-white placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
           />
           <button
             type="submit"
-            disabled={!input.trim()}
+            disabled={!input.trim() || isClosed}
             aria-label="Send message"
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-ink transition-opacity duration-150 disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >

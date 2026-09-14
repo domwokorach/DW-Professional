@@ -98,22 +98,12 @@ describe('PATCH /api/chat/conversations/[id]', () => {
     expect(db.conversation.update).not.toHaveBeenCalled();
   });
 
-  it('validates the body — rejects an invalid status value', async () => {
+  // Status changes (close/reopen) now go over Socket.IO (`chat:set-status`,
+  // src/lib/socket/server.ts) so they can broadcast to every connected admin
+  // and the candidate live — a REST route can't reach the standalone socket
+  // server, so this route no longer accepts a status field at all.
+  it('validates the body — rejects a status-only patch (status is no longer accepted here)', async () => {
     await authAsAdmin();
-
-    const request = makeRequest('http://localhost:3000/api/chat/conversations/conv-1', {
-      method: 'PATCH',
-      body: { status: 'archived' },
-    });
-
-    const response = await PATCH(request, paramsFor('conv-1'));
-
-    expect(response.status).toBe(400);
-  });
-
-  it('updates status', async () => {
-    await authAsAdmin();
-    (db.conversation.update as jest.Mock).mockResolvedValue(buildConversation({ id: 'conv-1', status: 'CLOSED' as never }));
 
     const request = makeRequest('http://localhost:3000/api/chat/conversations/conv-1', {
       method: 'PATCH',
@@ -121,14 +111,9 @@ describe('PATCH /api/chat/conversations/[id]', () => {
     });
 
     const response = await PATCH(request, paramsFor('conv-1'));
-    const body = await response.json();
 
-    expect(response.status).toBe(200);
-    expect(db.conversation.update).toHaveBeenCalledWith({
-      where: { id: 'conv-1' },
-      data: { status: 'CLOSED', assignedAdminId: undefined, unreadByAdmin: undefined },
-    });
-    expect(body.conversation.id).toBe('conv-1');
+    expect(response.status).toBe(400);
+    expect(db.conversation.update).not.toHaveBeenCalled();
   });
 
   it('updates unread via markUnread:true', async () => {

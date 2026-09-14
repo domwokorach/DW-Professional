@@ -48,12 +48,6 @@ export default function ConversationItem({
               {formatChatDate(conversation.lastMessageAt ?? conversation.createdAt)}
             </span>
           </span>
-          {conversation.companyName || conversation.email || conversation.mobile ? (
-            <span className="truncate text-xs font-normal text-muted">
-              {conversation.companyName ||
-                [conversation.email, conversation.mobile].filter(Boolean).join(" · ")}
-            </span>
-          ) : null}
           <span className="flex items-center justify-between gap-2">
             <span className="truncate text-xs font-normal text-muted">{preview}</span>
             <UnreadBadge count={conversation.unreadByAdmin} />
