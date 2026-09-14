@@ -168,7 +168,7 @@ function ChatShell({
       : "Reconnecting…";
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background">
       {/* AdminShell already renders its own "Admin Chat" bar below md, so this
           title row would otherwise duplicate it — only shown at md+ where
           AdminShell's app-level nav lives in a permanent side rail instead.

@@ -49,7 +49,7 @@ export default function MessageList({
   return (
     <ScrollArea className="flex-1">
       <div
-        className="space-y-3 px-4 py-4"
+        className="mx-auto flex w-full max-w-4xl flex-col gap-3 px-4 py-6 lg:px-8"
         role="log"
         aria-live="polite"
         aria-relevant="additions"
