@@ -168,8 +168,8 @@ export default function AdminShell({
         </SidebarFooter>
       </Sidebar>
 
-      <SidebarInset className="min-h-dvh">
-        <div className="flex items-center gap-2 border-b border-line px-3 py-2 md:hidden">
+      <SidebarInset className="min-h-dvh bg-background">
+        <div className="flex items-center gap-2 border-b border-line bg-sidebar/80 px-3 py-3 md:hidden">
           <SidebarTrigger />
           <span className="font-mono text-sm font-semibold text-white">Admin Chat</span>
         </div>
