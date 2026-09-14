@@ -168,10 +168,14 @@ function ChatShell({
       : "Reconnecting…";
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       {/* AdminShell already renders its own "Admin Chat" bar below md, so this
           title row would otherwise duplicate it — only shown at md+ where
-          AdminShell's app-level nav lives in a permanent side rail instead. */}
+          AdminShell's app-level nav lives in a permanent side rail instead.
+          Sized via flex-1/min-h-0 (not h-dvh) so it fills exactly whatever
+          space AdminShell's flex column leaves after its mobile top bar,
+          instead of adding its own 100dvh on top and forcing the whole page
+          to scroll. */}
       <header className="hidden shrink-0 items-center gap-3 border-b border-line px-4 py-3 sm:px-6 md:flex">
         <h1 className="min-w-0 flex-1 truncate font-mono text-base font-semibold text-white sm:text-lg">
           Admin Chat
