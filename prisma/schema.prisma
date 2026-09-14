@@ -185,6 +185,11 @@ model Conversation {
 
   messages        Message[]
 
+  // A partial unique index on (visitorId) WHERE status IN (OPEN, PENDING)
+  // also exists (see migration 20260914162500_conversation_visitor_active_unique)
+  // enforcing at most one active conversation per visitor. Prisma's schema
+  // language can't express a partial index, so it isn't declared here —
+  // findOrCreateConversation relies on it to resolve concurrent create races.
   @@index([visitorId])
   @@index([status, lastMessageAt])
 }

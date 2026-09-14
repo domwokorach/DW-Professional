@@ -25,6 +25,22 @@ export function formatChatDate(value: string | Date | null | undefined): string 
     : new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric" }).format(date);
 }
 
+export function formatDateSeparator(value: string | Date): string {
+  const date = typeof value === "string" ? new Date(value) : value;
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+
+  if (date.toDateString() === today.toDateString()) return "Today";
+  if (date.toDateString() === yesterday.toDateString()) return "Yesterday";
+
+  return new Intl.DateTimeFormat(undefined, {
+    day: "numeric",
+    month: "long",
+    year: date.getFullYear() === today.getFullYear() ? undefined : "numeric",
+  }).format(date);
+}
+
 export function getMessagePreview(content: string, maxLength = PREVIEW_LENGTH): string {
   const trimmed = content.trim();
   return trimmed.length > maxLength ? `${trimmed.slice(0, maxLength - 1)}…` : trimmed;

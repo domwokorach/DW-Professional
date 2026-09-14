@@ -56,13 +56,25 @@ export default function ConversationList({
   const [filter, setFilter] = useState<ConversationFilter>("all");
   const debouncedQuery = useDebouncedValue(query, 250);
 
-  const filtered = useMemo(() => {
+  const searched = useMemo(() => {
     const term = debouncedQuery.trim().toLowerCase();
-    return conversations.filter((conversation) => {
-      if (term && !matchesQuery(conversation, term)) return false;
-      return matchesFilter(conversation, filter, { onlineVisitorIds, currentAdminId });
-    });
-  }, [conversations, debouncedQuery, filter, onlineVisitorIds, currentAdminId]);
+    if (!term) return conversations;
+    return conversations.filter((conversation) => matchesQuery(conversation, term));
+  }, [conversations, debouncedQuery]);
+
+  const counts = useMemo(() => {
+    let waiting = 0;
+    let closed = 0;
+    for (const conversation of searched) {
+      if (conversation.status === "closed") closed++;
+      if (onlineVisitorIds.has(conversation.visitorId) && conversation.unreadByAdmin > 0) waiting++;
+    }
+    return { all: searched.length, waiting, active: searched.length - closed, closed };
+  }, [searched, onlineVisitorIds]);
+
+  const filtered = useMemo(() => {
+    return searched.filter((conversation) => matchesFilter(conversation, filter, { onlineVisitorIds, currentAdminId }));
+  }, [searched, filter, onlineVisitorIds, currentAdminId]);
 
   const { waiting, active, offline } = useMemo(() => {
     const waiting: Conversation[] = [];
@@ -86,27 +98,25 @@ export default function ConversationList({
 
   return (
     <Sidebar collapsible="none" className="h-full w-full border-line md:border-r">
-      <SidebarHeader className="gap-3 border-b border-line p-3">
-        <div className="flex items-center gap-2">
-          <div className="relative min-w-0 flex-1">
-            <Search
-              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
-              aria-hidden="true"
-            />
-            <label htmlFor="conversation-search" className="sr-only">
-              Search candidates
-            </label>
-            <SidebarInput
-              id="conversation-search"
-              type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search candidates…"
-              className="pl-9"
-            />
-          </div>
-          <ConversationFilters value={filter} onChange={setFilter} />
+      <SidebarHeader className="gap-2.5 border-b border-line p-3">
+        <div className="relative min-w-0">
+          <Search
+            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
+            aria-hidden="true"
+          />
+          <label htmlFor="conversation-search" className="sr-only">
+            Search candidates
+          </label>
+          <SidebarInput
+            id="conversation-search"
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search candidates…"
+            className="pl-9"
+          />
         </div>
+        <ConversationFilters value={filter} onChange={setFilter} counts={counts} />
       </SidebarHeader>
 
       <SidebarContent className="gap-0">

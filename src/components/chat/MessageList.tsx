@@ -6,8 +6,49 @@ import { ChatContainerRoot, ChatContainerContent, ChatContainerScrollAnchor } fr
 import { ScrollButton } from "@/components/ui/scroll-button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { ChatMessage } from "@/types/chat";
+import { formatDateSeparator } from "@/lib/chat/helpers";
 import MessageBubble from "./MessageBubble";
 import TypingIndicator from "./TypingIndicator";
+
+const GROUP_GAP_MS = 5 * 60 * 1000;
+
+type ListItem =
+  | { type: "date"; key: string; label: string }
+  | { type: "message"; key: string; message: ChatMessage; showMeta: boolean };
+
+/** Collapses consecutive messages from the same sender (within a short gap) so
+ *  the sender label only appears once per run, and inserts a date separator
+ *  whenever the calendar day changes — keeps a long thread scannable instead
+ *  of repeating the same name/avatar on every line. */
+function buildListItems(messages: ChatMessage[]): ListItem[] {
+  const items: ListItem[] = [];
+  let prev: ChatMessage | null = null;
+
+  for (const message of messages) {
+    const date = new Date(message.createdAt);
+    const isNewDay = !prev || new Date(prev.createdAt).toDateString() !== date.toDateString();
+    if (isNewDay) {
+      items.push({ type: "date", key: `date-${message.id}`, label: formatDateSeparator(date) });
+    }
+
+    const gapMs = prev ? date.getTime() - new Date(prev.createdAt).getTime() : Infinity;
+    const showMeta = isNewDay || prev?.sender !== message.sender || gapMs > GROUP_GAP_MS;
+    items.push({ type: "message", key: message.id, message, showMeta });
+    prev = message;
+  }
+
+  return items;
+}
+
+function DateSeparator({ label }: { label: string }) {
+  return (
+    <div className="flex items-center gap-3 py-1" role="separator" aria-label={label}>
+      <span className="h-px flex-1 bg-line" aria-hidden="true" />
+      <span className="shrink-0 text-[11px] font-medium text-muted">{label}</span>
+      <span className="h-px flex-1 bg-line" aria-hidden="true" />
+    </div>
+  );
+}
 
 /** "↓ N new message(s)" pill next to the scroll-to-bottom button — counts
  *  messages that arrived while the admin was scrolled up reading history. */
@@ -79,7 +120,7 @@ export default function MessageList({
           position back down if they've scrolled up to read older history. */}
       <ChatContainerRoot className="h-full">
         <ChatContainerContent
-          className="space-y-3 px-4 py-4"
+          className="px-4 py-4"
           role="log"
           aria-live="polite"
           aria-relevant="additions"
@@ -100,9 +141,18 @@ export default function MessageList({
                   </button>
                 </div>
               ) : null}
-              {visible.map((message) => (
-                <MessageBubble key={message.id} message={message} onDelete={onDeleteMessage} />
-              ))}
+              {buildListItems(visible).map((item) =>
+                item.type === "date" ? (
+                  <DateSeparator key={item.key} label={item.label} />
+                ) : (
+                  <MessageBubble
+                    key={item.key}
+                    message={item.message}
+                    showMeta={item.showMeta}
+                    onDelete={onDeleteMessage}
+                  />
+                )
+              )}
             </>
           )}
           {typingLabel ? <TypingIndicator label={typingLabel} /> : null}
