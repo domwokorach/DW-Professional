@@ -387,7 +387,7 @@ export const caseStudies: CaseStudy[] = [
     slug: "innovation-x-org-graph",
     number: "08",
     title: "Innovation X",
-    subtitle: "An interactive organisation intelligence and workforce visualisation platform.",
+    subtitle: "An interactive organisation intelligence and workforce analytics platform.",
     label: "Concept Platform",
     categories: ["D3.js", "Data Visualisation", "Org Design", "Frontend"],
     summary:

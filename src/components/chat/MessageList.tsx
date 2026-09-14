@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { useEffect, useState } from "react";
+import { ChatContainerRoot, ChatContainerContent, ChatContainerScrollAnchor } from "@/components/ui/chat-container";
+import { ScrollButton } from "@/components/ui/scroll-button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { ChatMessage } from "@/types/chat";
 import MessageBubble from "./MessageBubble";
@@ -18,19 +19,12 @@ export default function MessageList({
   loading: boolean;
   typingLabel: string | null;
 }) {
-  const bottomRef = useRef<HTMLDivElement>(null);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   useEffect(() => {
     // Reset the window whenever the thread changes size downward (new conversation).
     setVisibleCount((prev) => (messages.length < prev ? PAGE_SIZE : prev));
   }, [messages.length]);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ block: "end" });
-    // Only auto-scroll on genuinely new messages/typing changes, not when
-    // revealing older history (which would otherwise yank the view back down).
-  }, [messages.length, typingLabel]);
 
   if (loading) {
     return (
@@ -47,37 +41,45 @@ export default function MessageList({
   const visible = hasOlder ? messages.slice(messages.length - visibleCount) : messages;
 
   return (
-    <ScrollArea className="flex-1">
-      <div
-        className="space-y-3 px-4 py-4"
-        role="log"
-        aria-live="polite"
-        aria-relevant="additions"
-        aria-label="Conversation messages"
-      >
-        {messages.length === 0 ? (
-          <p className="text-sm text-muted">No messages yet.</p>
-        ) : (
-          <>
-            {hasOlder ? (
-              <div className="flex justify-center pb-2">
-                <button
-                  type="button"
-                  onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
-                  className="rounded-full border border-line px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-surface hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
-                >
-                  Load older messages
-                </button>
-              </div>
-            ) : null}
-            {visible.map((message) => (
-              <MessageBubble key={message.id} message={message} />
-            ))}
-          </>
-        )}
-        {typingLabel ? <TypingIndicator label={typingLabel} /> : null}
-        <div ref={bottomRef} />
-      </div>
-    </ScrollArea>
+    <div className="relative min-h-0 flex-1">
+      {/* StickToBottom keeps the view pinned to the latest message only while
+          the admin is already at the bottom — it never yanks the scroll
+          position back down if they've scrolled up to read older history. */}
+      <ChatContainerRoot className="h-full">
+        <ChatContainerContent
+          className="space-y-3 px-4 py-4"
+          role="log"
+          aria-live="polite"
+          aria-relevant="additions"
+          aria-label="Conversation messages"
+        >
+          {messages.length === 0 ? (
+            <p className="text-sm text-muted">No messages yet.</p>
+          ) : (
+            <>
+              {hasOlder ? (
+                <div className="flex justify-center pb-2">
+                  <button
+                    type="button"
+                    onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
+                    className="rounded-full border border-line px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-surface hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                  >
+                    Load older messages
+                  </button>
+                </div>
+              ) : null}
+              {visible.map((message) => (
+                <MessageBubble key={message.id} message={message} />
+              ))}
+            </>
+          )}
+          {typingLabel ? <TypingIndicator label={typingLabel} /> : null}
+        </ChatContainerContent>
+        <ChatContainerScrollAnchor />
+        <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center">
+          <ScrollButton />
+        </div>
+      </ChatContainerRoot>
+    </div>
   );
 }

@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ChatButton } from "@/components/ui/chat-button";
 import {
   Sheet,
   SheetContent,
@@ -45,14 +46,16 @@ export default function ChatHeader({
     <>
       <header className="flex items-center gap-2 border-b border-line px-2 py-2 sm:px-4 sm:py-3">
         {onBack ? (
-          <button
+          <ChatButton
             type="button"
+            variant="ghost"
+            size="icon"
             onClick={onBack}
             aria-label="Back to conversations"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-muted hover:text-white md:hidden"
+            className="h-11 w-11 shrink-0 md:hidden"
           >
             <ChevronLeft className="h-5 w-5" aria-hidden="true" />
-          </button>
+          </ChatButton>
         ) : null}
 
         <CandidateAvatar label={displayName} className="hidden h-9 w-9 sm:flex" />
@@ -69,13 +72,15 @@ export default function ChatHeader({
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button
+            <ChatButton
               type="button"
+              variant="ghost"
+              size="icon"
               aria-label="Conversation actions"
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-muted transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+              className="h-11 w-11 shrink-0"
             >
               <EllipsisVertical className="h-5 w-5" aria-hidden="true" />
-            </button>
+            </ChatButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem className="min-[1200px]:hidden" onSelect={() => setDetailsOpen(true)}>

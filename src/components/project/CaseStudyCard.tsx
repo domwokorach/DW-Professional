@@ -7,14 +7,8 @@ import ReconstructionVisual from "./ReconstructionVisual";
 import OrgGraphPreview from "./OrgGraphPreview";
 
 export default function CaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
-  const isLarge = caseStudy.size === "large";
-
   return (
-    <article
-      className={`hover-lift group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-white/[0.03] transition-colors duration-200 hover:border-accent/40 ${
-        isLarge ? "md:col-span-2" : ""
-      }`}
-    >
+    <article className="hover-lift group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white/[0.03] transition-colors duration-200 hover:border-accent/40">
       {caseStudy.mediaType && (
         <div
           className={`relative w-full overflow-hidden border-b border-line bg-surface ${

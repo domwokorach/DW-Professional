@@ -13,16 +13,6 @@ export const navigation: NavItem[] = [
     label: "02 / Expertise",
     href: "#expertise",
     items: [
-      { id: "frontend", label: "Frontend", href: "#frontend" },
-      { id: "backend-api", label: "Backend & APIs", href: "#backend-api" },
-      { id: "database-orm", label: "Database & ORM", href: "#database-orm" },
-      { id: "cloud-devops", label: "Cloud & DevOps", href: "#cloud-devops" },
-      { id: "testing-quality", label: "Testing & Quality", href: "#testing-quality" },
-      {
-        id: "security-authentication",
-        label: "Security & Authentication",
-        href: "#security-authentication",
-      },
       { id: "ui-ux-design", label: "UI/UX Design", href: "#ui-ux-design" },
       { id: "css-styling", label: "CSS & Styling", href: "#css-styling" },
       { id: "development-tools", label: "Development Tools", href: "#development-tools" },
@@ -116,35 +106,6 @@ export const navigation: NavItem[] = [
     id: "experience",
     label: "05 / Experience",
     href: "#experience",
-    items: [
-      {
-        id: "trainee-digital-transformation",
-        label: "Trainee Digital Transformation",
-        href: "#trainee-digital-transformation",
-      },
-      {
-        id: "junior-ui-delivery",
-        label: "Junior UI Delivery & Transformation",
-        href: "#junior-ui-delivery",
-      },
-      { id: "senior-web-developer", label: "Senior Web Developer", href: "#senior-web-developer" },
-      {
-        id: "senior-frontend-developer",
-        label: "Senior Frontend Developer",
-        href: "#senior-frontend-developer",
-      },
-      { id: "career-break", label: "Career Break", href: "#career-break" },
-      {
-        id: "professional-development",
-        label: "Professional Development",
-        href: "#professional-development",
-      },
-      {
-        id: "freelance-software-developer",
-        label: "Freelance Software Developer",
-        href: "#freelance-software-developer",
-      },
-    ],
   },
   { id: "contact", label: "Contact", href: "#contact" },
 ];

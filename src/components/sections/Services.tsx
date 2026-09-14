@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Grid from "@mui/material/Grid";
 import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
@@ -41,37 +42,42 @@ export default function Services() {
           </ProtectedParagraph>
         </MotionReveal>
 
-        <div className="mt-16 divide-y divide-line border-t border-line">
+        <Grid
+          container
+          className="mt-16"
+          rowSpacing={{ xs: 2, sm: 3, md: 4 }}
+          columnSpacing={{ xs: 2, sm: 3, md: 4 }}
+        >
           {services.map((service, i) => (
-            <MotionReveal
-              key={service.title}
-              id={SERVICE_ANCHORS[service.title]}
-              variants={fadeUp}
-              delay={0.04 * i}
-              className="scroll-mt-24"
-            >
-              <motion.article
-                whileHover="hover"
-                className="group grid gap-6 py-10 sm:grid-cols-[minmax(0,280px)_1fr] sm:gap-10"
+            <Grid key={service.title} size={{ xs: 12, sm: 6, md: 4 }}>
+              <MotionReveal
+                id={SERVICE_ANCHORS[service.title]}
+                variants={fadeUp}
+                delay={0.04 * i}
+                className="block h-full scroll-mt-24"
               >
-                <div className="flex items-start justify-between sm:flex-col sm:items-start sm:justify-start">
-                  <h3 className="text-2xl font-medium text-white transition-colors duration-200 group-hover:text-accent">
-                    {service.title}
-                  </h3>
-                  <motion.span
-                    variants={{ hover: { x: 6 } }}
-                    transition={{ duration: 0.2 }}
-                    className="mt-1 text-xl text-muted sm:mt-4"
-                    aria-hidden
-                  >
-                    →
-                  </motion.span>
-                </div>
+                <motion.article
+                  whileHover="hover"
+                  className="group flex h-full flex-col rounded-2xl border border-line bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.04]"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <h3 className="break-words text-xl font-medium text-white transition-colors duration-200 group-hover:text-accent">
+                      {service.title}
+                    </h3>
+                    <motion.span
+                      variants={{ hover: { x: 6 } }}
+                      transition={{ duration: 0.2 }}
+                      className="shrink-0 text-xl text-muted"
+                      aria-hidden
+                    >
+                      →
+                    </motion.span>
+                  </div>
 
-                <div>
-                  <ProtectedParagraph className="max-w-xl text-sm leading-[1.7] text-muted">
+                  <ProtectedParagraph className="mt-3 flex-1 text-sm leading-[1.7] text-muted">
                     {service.description}
                   </ProtectedParagraph>
+
                   <ul className="mt-5 flex flex-wrap gap-2">
                     {service.items.map((item) => (
                       <li
@@ -82,11 +88,11 @@ export default function Services() {
                       </li>
                     ))}
                   </ul>
-                </div>
-              </motion.article>
-            </MotionReveal>
+                </motion.article>
+              </MotionReveal>
+            </Grid>
           ))}
-        </div>
+        </Grid>
 
         <div id="ai-professional" className="mt-24 scroll-mt-24">
           <MotionReveal>

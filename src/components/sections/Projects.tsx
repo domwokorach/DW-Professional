@@ -1,3 +1,6 @@
+"use client";
+
+import Grid from "@mui/material/Grid";
 import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
@@ -9,7 +12,6 @@ import { projects } from "@/data/projects";
 import { caseStudies } from "@/data/caseStudies";
 import { projectReveal } from "@/lib/animations";
 import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
-import { cn } from "@/lib/utils";
 
 const CASE_STUDY_ANCHORS: Record<string, string> = {
   "innovation-x": "innovation-x-internal-search",
@@ -42,9 +44,6 @@ const CASE_STUDY_DROPDOWN_ITEMS = [
 ];
 
 export default function Projects() {
-  const newsProject = projects.find((p) => p.slug === "news");
-  const otherProjects = projects.filter((p) => p.slug !== "news");
-
   const orgGraphCaseStudy = caseStudies.find((c) => c.slug === "innovation-x-org-graph");
   const otherCaseStudies = caseStudies.filter((c) => c.slug !== "innovation-x-org-graph");
 
@@ -93,33 +92,25 @@ export default function Projects() {
             </ProtectedParagraph>
           </MotionReveal>
 
-          {newsProject && (
-            <MotionReveal id="news" className="mt-8 scroll-mt-24">
-              <FeaturedProjectCard
-                title={newsProject.title}
-                subtitle="Modern News Web Application"
-                description="A modern news web application focused on presenting current stories through a clean, responsive and easy-to-navigate interface."
-                image={newsProject.image}
-                imageAlt={newsProject.imageAlt}
-                liveUrl={newsProject.liveUrl}
-                browserLabel="the-daily-wire-two.vercel.app"
-              />
-            </MotionReveal>
-          )}
-
-          <div className="mt-8 grid gap-6 md:grid-cols-2">
-            {otherProjects.map((project, i) => (
-              <MotionReveal
-                key={project.slug}
-                id={project.slug}
-                variants={projectReveal}
-                delay={0.05 * i}
-                className="scroll-mt-24"
-              >
-                <ProjectCard project={project} index={i + 1} />
-              </MotionReveal>
+          <Grid
+            container
+            className="mt-8"
+            rowSpacing={{ xs: 2, sm: 3, md: 4 }}
+            columnSpacing={{ xs: 2, sm: 3, md: 4 }}
+          >
+            {projects.map((project, i) => (
+              <Grid key={project.slug} size={{ xs: 12, sm: 6, md: 4 }}>
+                <MotionReveal
+                  id={project.slug}
+                  variants={projectReveal}
+                  delay={0.05 * i}
+                  className="block h-full scroll-mt-24"
+                >
+                  <ProjectCard project={project} index={i} />
+                </MotionReveal>
+              </Grid>
             ))}
-          </div>
+          </Grid>
         </div>
 
         <div id="case-studies" className="mt-24 scroll-mt-24">
@@ -151,22 +142,25 @@ export default function Projects() {
             </MotionReveal>
           )}
 
-          <div className="mt-8 grid gap-6 md:grid-cols-2">
+          <Grid
+            container
+            className="mt-8"
+            rowSpacing={{ xs: 2, sm: 3, md: 4 }}
+            columnSpacing={{ xs: 2, sm: 3, md: 4 }}
+          >
             {otherCaseStudies.map((caseStudy, i) => (
-              <MotionReveal
-                key={caseStudy.slug}
-                id={CASE_STUDY_ANCHORS[caseStudy.slug]}
-                variants={projectReveal}
-                delay={0.06 * i}
-                className={cn(
-                  "scroll-mt-24",
-                  caseStudy.size === "large" ? "md:col-span-2" : ""
-                )}
-              >
-                <CaseStudyCard caseStudy={caseStudy} />
-              </MotionReveal>
+              <Grid key={caseStudy.slug} size={{ xs: 12, sm: 6, md: 4 }}>
+                <MotionReveal
+                  id={CASE_STUDY_ANCHORS[caseStudy.slug]}
+                  variants={projectReveal}
+                  delay={0.06 * i}
+                  className="block h-full scroll-mt-24"
+                >
+                  <CaseStudyCard caseStudy={caseStudy} />
+                </MotionReveal>
+              </Grid>
             ))}
-          </div>
+          </Grid>
         </div>
       </Container>
     </section>
