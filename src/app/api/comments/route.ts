@@ -45,10 +45,25 @@ export async function GET() {
  * Public submission. Every comment starts PENDING and is invisible on the
  * site until an admin approves it (see /api/admin/comments/[id]) — this
  * route never sets status itself.
+ *
+ * Every dependency below (Redis/rate-limit, Blob, Postgres) can throw on a
+ * misconfigured or degraded environment (e.g. a missing env var in a given
+ * Vercel environment). Route Handlers turn an uncaught throw into a non-JSON
+ * 500 response, which breaks `res.json()` on the client and surfaces as a
+ * misleading "network error" there instead of the real cause — so every
+ * fallible step here is caught individually and turned into a proper JSON
+ * error response.
  */
 export async function POST(request: NextRequest) {
   const ip = extractClientIp(request.headers) ?? "unknown";
-  const limit = await checkRateLimit(`comment-submit:ip:${ip}`, 5, 60 * 60);
+
+  let limit;
+  try {
+    limit = await checkRateLimit(`comment-submit:ip:${ip}`, 5, 60 * 60);
+  } catch (error) {
+    console.error("[api/comments] rate limit check failed:", error);
+    return apiError("internal_error", "Something went wrong. Please try again shortly.", 500);
+  }
   if (!limit.allowed) {
     return apiError("rate_limited", "Too many submissions. Please try again later.", 429);
   }
@@ -82,23 +97,38 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const extension = avatar.type.split("/")[1] ?? "jpg";
-    const blob = await put(`comment-avatars/${crypto.randomUUID()}.${extension}`, avatar, {
-      access: "public",
-      contentType: avatar.type,
-    });
-    avatarUrl = blob.url;
+    try {
+      const extension = avatar.type.split("/")[1] ?? "jpg";
+      const blob = await put(`comment-avatars/${crypto.randomUUID()}.${extension}`, avatar, {
+        access: "public",
+        contentType: avatar.type,
+      });
+      avatarUrl = blob.url;
+    } catch (error) {
+      console.error("[api/comments] avatar upload failed:", error);
+      return apiError(
+        "avatar_upload_failed",
+        "We couldn't upload your photo. Please try again without it, or with a different image.",
+        502
+      );
+    }
   }
 
-  const comment = await db.comment.create({
-    data: {
-      fullName: parsed.data.fullName,
-      company: parsed.data.company ?? null,
-      body: parsed.data.body,
-      avatarUrl,
-      status: "PENDING",
-    },
-  });
+  let comment;
+  try {
+    comment = await db.comment.create({
+      data: {
+        fullName: parsed.data.fullName,
+        company: parsed.data.company ?? null,
+        body: parsed.data.body,
+        avatarUrl,
+        status: "PENDING",
+      },
+    });
+  } catch (error) {
+    console.error("[api/comments] failed to save comment:", error);
+    return apiError("internal_error", "We couldn't save your comment. Please try again shortly.", 500);
+  }
 
   return NextResponse.json(
     { ok: true, comment: toPublicComment(comment), message: "Thanks! Your comment is awaiting review." },

@@ -66,17 +66,36 @@ export default function CommentForm() {
       formData.set("body", body);
       if (avatarFile) formData.set("avatar", avatarFile);
 
-      const res = await fetch("/api/comments", { method: "POST", body: formData });
-      const data = await res.json();
+      let res: Response;
+      try {
+        res = await fetch("/api/comments", { method: "POST", body: formData });
+      } catch (fetchError) {
+        // fetch() itself only rejects for a genuine network failure (offline,
+        // DNS, CORS) — this is the one case that's actually "check your
+        // connection", so it keeps that message and nothing else does.
+        console.error("[comments] fetch failed:", fetchError);
+        throw new Error("Network error. Please check your connection and try again.");
+      }
+
+      let data: { ok?: boolean; error?: { message?: string } } | null = null;
+      try {
+        data = await res.json();
+      } catch (parseError) {
+        // The server responded, but not with JSON — e.g. a platform error
+        // page for an unhandled exception. This is a real server-side
+        // failure, not a client network issue, so it gets its own message.
+        console.error("[comments] unexpected response body:", parseError);
+        throw new Error("Unexpected response from the server. Please try again shortly.");
+      }
 
       if (!res.ok) {
-        setErrorMessage(data?.error?.message ?? "Something went wrong. Please try again.");
-        return;
+        throw new Error(data?.error?.message ?? "Something went wrong. Please try again.");
       }
 
       setSubmitted(true);
-    } catch {
-      setErrorMessage("Network error. Please check your connection and try again.");
+    } catch (error) {
+      console.error("[comments] submit failed:", error);
+      setErrorMessage(error instanceof Error ? error.message : "Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
     }

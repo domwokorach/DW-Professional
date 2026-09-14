@@ -23,9 +23,12 @@ const SENDER_LABEL: Record<ChatMessage["sender"], string> = {
 
 export default function MessageBubble({
   message,
+  showMeta = true,
   onDelete,
 }: {
   message: ChatMessage;
+  /** False for messages grouped under the previous one (same sender, no date/gap break) — hides the repeated sender label and tightens spacing. */
+  showMeta?: boolean;
   onDelete?: (messageId: string) => void;
 }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -37,9 +40,17 @@ export default function MessageBubble({
   };
 
   return (
-    <Message className={cn("group/message flex-col gap-1", isAdmin ? "items-end" : "items-start")}>
+    <Message
+      className={cn(
+        "group/message flex-col gap-1",
+        isAdmin ? "items-end" : "items-start",
+        showMeta ? "mt-3" : "mt-0.5"
+      )}
+    >
       <div className={cn("flex w-full items-center gap-1", isAdmin ? "flex-row-reverse" : "flex-row")}>
-        <span className="px-1 text-[11px] font-medium text-muted">{SENDER_LABEL[message.sender]}</span>
+        {showMeta ? (
+          <span className="px-1 text-[11px] font-medium text-muted">{SENDER_LABEL[message.sender]}</span>
+        ) : null}
         {!isDeleted && onDelete ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

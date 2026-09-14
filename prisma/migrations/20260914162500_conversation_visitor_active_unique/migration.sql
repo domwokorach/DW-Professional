@@ -1,0 +1,12 @@
+-- Prevents the race in findOrCreateConversation (src/lib/chat/create-conversation.ts)
+-- where two concurrent requests for the same visitor (the socket auth token
+-- fetch and the conversation-bootstrap POST, which fire together as soon as a
+-- candidate registers) each see "no existing open conversation" and insert
+-- their own row. That produced two different conversation ids for one
+-- visitor: the JWT embeds one, the chat UI uses the other, and the socket
+-- server's strict conversationId check then silently drops every message and
+-- join from that visitor. Only one OPEN/PENDING conversation per visitor is
+-- ever valid, so enforce it at the database level; the second insert now
+-- fails with a unique violation that the application layer catches and
+-- resolves to the winning row instead of forking a duplicate.
+CREATE UNIQUE INDEX "Conversation_visitorId_active_key" ON "Conversation"("visitorId") WHERE "status" IN ('OPEN', 'PENDING');
