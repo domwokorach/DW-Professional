@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { MessageSquare } from "lucide-react";
 import ConnectionStatus, { ConnectionBanner } from "./ConnectionStatus";
 import { SidebarProvider } from "@/components/animate-ui/components/radix/sidebar";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useAdminSocket } from "@/hooks/use-admin-socket";
 import { useConversations } from "@/hooks/use-conversations";
@@ -84,30 +85,32 @@ export default function AdminChat({
   }, [conversation, refresh]);
 
   return (
-    <SidebarProvider className="contents">
-      <ChatShell
-        adminId={adminId}
-        adminName={adminName}
-        adminEmail={adminEmail}
-        connectionState={connectionState}
-        conversations={conversations}
-        listLoading={listLoading}
-        listError={listError}
-        refresh={refresh}
-        onlineVisitorIds={onlineVisitorIds}
-        selectedId={selectedId}
-        setSelectedId={setSelectedId}
-        conversation={conversation}
-        messages={messages}
-        typing={typing}
-        threadLoading={threadLoading}
-        sendReply={sendReply}
-        notifyTyping={notifyTyping}
-        onSignOut={handleSignOut}
-        onToggleStatus={handleToggleStatus}
-        onMarkUnread={handleMarkUnread}
-      />
-    </SidebarProvider>
+    <TooltipProvider delayDuration={300}>
+      <SidebarProvider className="contents">
+        <ChatShell
+          adminId={adminId}
+          adminName={adminName}
+          adminEmail={adminEmail}
+          connectionState={connectionState}
+          conversations={conversations}
+          listLoading={listLoading}
+          listError={listError}
+          refresh={refresh}
+          onlineVisitorIds={onlineVisitorIds}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+          conversation={conversation}
+          messages={messages}
+          typing={typing}
+          threadLoading={threadLoading}
+          sendReply={sendReply}
+          notifyTyping={notifyTyping}
+          onSignOut={handleSignOut}
+          onToggleStatus={handleToggleStatus}
+          onMarkUnread={handleMarkUnread}
+        />
+      </SidebarProvider>
+    </TooltipProvider>
   );
 }
 

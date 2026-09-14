@@ -1,7 +1,7 @@
 import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
-import GallerySlider from "@/components/gallery/GallerySlider";
+import GalleryGrid from "@/components/gallery/GalleryGrid";
 import { galleryCollections } from "@/data/gallery";
 
 export default function Gallery() {
@@ -23,10 +23,8 @@ export default function Gallery() {
           </p>
         </MotionReveal>
 
-        <div className="mt-12 space-y-16">
-          {galleryCollections.map((collection) => (
-            <GallerySlider key={collection.id} collection={collection} />
-          ))}
+        <div className="mt-12">
+          <GalleryGrid collections={galleryCollections} />
         </div>
       </Container>
     </section>
