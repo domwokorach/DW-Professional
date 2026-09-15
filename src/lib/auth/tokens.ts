@@ -1,4 +1,4 @@
-import { randomBytes, createHmac } from "crypto";
+import { randomBytes, randomInt, createHmac } from "crypto";
 import { SignJWT, jwtVerify, type JWTPayload } from "jose";
 import { getAccessTokenSecret, getTokenHashPepper, ACCESS_TOKEN_TTL_SECONDS } from "./env";
 import type { Role } from "@prisma/client";
@@ -35,6 +35,11 @@ export async function verifyAccessToken(token: string): Promise<AccessTokenClaim
 /** Opaque, high-entropy refresh/reset/verification tokens: only a keyed hash is ever persisted. */
 export function generateOpaqueToken(): string {
   return randomBytes(32).toString("base64url");
+}
+
+/** Short numeric code for email-delivered verification (e.g. comment submission). Hash with hashToken() before storing. */
+export function generatePin(): string {
+  return randomInt(0, 1_000_000).toString().padStart(6, "0");
 }
 
 /**

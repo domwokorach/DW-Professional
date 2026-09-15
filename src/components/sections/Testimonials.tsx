@@ -3,6 +3,7 @@ import Container from "@/components/ui/Container";
 import SectionHeading from "@/components/ui/SectionHeading";
 import CommentsMarquee from "@/components/comments/CommentsMarquee";
 import CommentForm from "@/components/comments/CommentForm";
+import { toPublicComment } from "@/lib/comments/toPublicComment";
 import type { PublicComment } from "@/types/comment";
 
 async function getApprovedComments(): Promise<PublicComment[]> {
@@ -11,14 +12,7 @@ async function getApprovedComments(): Promise<PublicComment[]> {
     orderBy: { createdAt: "desc" },
     take: 60,
   });
-  return comments.map((c) => ({
-    id: c.id,
-    fullName: c.fullName,
-    company: c.company,
-    body: c.body,
-    avatarUrl: c.avatarUrl,
-    createdAt: c.createdAt.toISOString(),
-  }));
+  return comments.map(toPublicComment);
 }
 
 export default async function Testimonials() {

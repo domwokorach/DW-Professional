@@ -8,8 +8,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import Button from "@/components/ui/Button";
+import CompanyAutocomplete from "@/components/comments/CompanyAutocomplete";
 import { COMMENT_BODY_MAX_LENGTH, ALLOWED_AVATAR_TYPES, AVATAR_MAX_BYTES } from "@/lib/comments/validation";
 import { cn } from "@/lib/utils";
+import type { CompanySearchResult } from "@/types/company";
 
 function initials(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -20,13 +22,19 @@ function initials(name: string): string {
 export default function CommentForm() {
   const [fullName, setFullName] = useState("");
   const [company, setCompany] = useState("");
+  const [companyMeta, setCompanyMeta] = useState<CompanySearchResult | null>(null);
   const [body, setBody] = useState("");
+  const [email, setEmail] = useState("");
+  const [mobile, setMobile] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [avatarError, setAvatarError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [requestId, setRequestId] = useState<string | null>(null);
+  const [pin, setPin] = useState("");
+  const [verifying, setVerifying] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function handleAvatarChange(file: File | null) {
@@ -62,13 +70,20 @@ export default function CommentForm() {
     try {
       const formData = new FormData();
       formData.set("fullName", fullName);
-      formData.set("company", company);
+      if (company.trim()) formData.set("company", company.trim());
+      if (companyMeta?.id) formData.set("companyId", companyMeta.id);
+      if (companyMeta?.domain) formData.set("companyDomain", companyMeta.domain);
+      if (companyMeta?.logo) formData.set("companyLogo", companyMeta.logo);
+      if (companyMeta?.industry) formData.set("companyIndustry", companyMeta.industry);
+      if (companyMeta?.location) formData.set("companyLocation", companyMeta.location);
       formData.set("body", body);
+      formData.set("email", email);
+      formData.set("mobile", mobile);
       if (avatarFile) formData.set("avatar", avatarFile);
 
       let res: Response;
       try {
-        res = await fetch("/api/comments", { method: "POST", body: formData });
+        res = await fetch("/api/comments/send-pin", { method: "POST", body: formData });
       } catch (fetchError) {
         // fetch() itself only rejects for a genuine network failure (offline,
         // DNS, CORS) — this is the one case that's actually "check your
@@ -77,7 +92,7 @@ export default function CommentForm() {
         throw new Error("Network error. Please check your connection and try again.");
       }
 
-      let data: { ok?: boolean; error?: { message?: string } } | null = null;
+      let data: { ok?: boolean; requestId?: string; error?: { message?: string } } | null = null;
       try {
         data = await res.json();
       } catch (parseError) {
@@ -88,16 +103,56 @@ export default function CommentForm() {
         throw new Error("Unexpected response from the server. Please try again shortly.");
       }
 
-      if (!res.ok) {
+      if (!res.ok || !data?.requestId) {
         throw new Error(data?.error?.message ?? "Something went wrong. Please try again.");
       }
 
-      setSubmitted(true);
+      setRequestId(data.requestId);
     } catch (error) {
       console.error("[comments] submit failed:", error);
       setErrorMessage(error instanceof Error ? error.message : "Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleVerifyPin(event: FormEvent) {
+    event.preventDefault();
+    if (!requestId) return;
+    setVerifying(true);
+    setErrorMessage(null);
+
+    try {
+      let res: Response;
+      try {
+        res = await fetch("/api/comments/verify-pin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ requestId, pin }),
+        });
+      } catch (fetchError) {
+        console.error("[comments] verify fetch failed:", fetchError);
+        throw new Error("Network error. Please check your connection and try again.");
+      }
+
+      let data: { ok?: boolean; error?: { message?: string } } | null = null;
+      try {
+        data = await res.json();
+      } catch (parseError) {
+        console.error("[comments] unexpected verify response body:", parseError);
+        throw new Error("Unexpected response from the server. Please try again shortly.");
+      }
+
+      if (!res.ok) {
+        throw new Error(data?.error?.message ?? "That code isn't right. Please check and try again.");
+      }
+
+      setSubmitted(true);
+    } catch (error) {
+      console.error("[comments] verify failed:", error);
+      setErrorMessage(error instanceof Error ? error.message : "Something went wrong. Please try again.");
+    } finally {
+      setVerifying(false);
     }
   }
 
@@ -110,6 +165,54 @@ export default function CommentForm() {
           It&rsquo;s been submitted for review and will appear here once approved.
         </p>
       </div>
+    );
+  }
+
+  if (requestId) {
+    return (
+      <form
+        className="rounded-2xl border border-line bg-surface p-6 text-center sm:p-8"
+        onSubmit={handleVerifyPin}
+        noValidate
+      >
+        {errorMessage ? (
+          <Alert variant="destructive" role="alert" className="mb-4 text-left">
+            <AlertDescription>{errorMessage}</AlertDescription>
+          </Alert>
+        ) : null}
+        <h3 className="text-lg font-semibold text-white">Check your email</h3>
+        <p className="mx-auto mt-1 max-w-sm text-sm text-muted">
+          We sent a 6-digit code to {email}. Enter it below to confirm your comment.
+        </p>
+        <div className="mx-auto mt-6 max-w-[220px] space-y-2 text-left">
+          <Label htmlFor="comment-pin">Verification code</Label>
+          <Input
+            id="comment-pin"
+            required
+            inputMode="numeric"
+            maxLength={6}
+            className="text-center tracking-[0.4em]"
+            value={pin}
+            onChange={(e) => setPin(e.target.value.replace(/\D/g, "").slice(0, 6))}
+            placeholder="000000"
+          />
+        </div>
+        <Button type="submit" className="mt-6 w-full sm:w-auto" disabled={verifying || pin.length !== 6}>
+          {verifying ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+          {verifying ? "Verifying…" : "Confirm code"}
+        </Button>
+        <button
+          type="button"
+          onClick={() => {
+            setRequestId(null);
+            setPin("");
+            setErrorMessage(null);
+          }}
+          className="mt-3 block w-full text-xs text-muted hover:text-white"
+        >
+          Use a different email
+        </button>
+      </form>
     );
   }
 
@@ -176,12 +279,40 @@ export default function CommentForm() {
         </div>
         <div className="space-y-2">
           <Label htmlFor="comment-company">Company (optional)</Label>
-          <Input
+          <CompanyAutocomplete
             id="comment-company"
             maxLength={160}
             value={company}
-            onChange={(e) => setCompany(e.target.value)}
+            onChange={setCompany}
+            onSelect={setCompanyMeta}
             placeholder="Lloyds Banking Group"
+          />
+        </div>
+      </div>
+
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="space-y-2">
+          <Label htmlFor="comment-email">Email</Label>
+          <Input
+            id="comment-email"
+            type="email"
+            required
+            maxLength={254}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="sarah@example.com"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="comment-mobile">Mobile number</Label>
+          <Input
+            id="comment-mobile"
+            type="tel"
+            required
+            maxLength={20}
+            value={mobile}
+            onChange={(e) => setMobile(e.target.value)}
+            placeholder="+44 7000 000000"
           />
         </div>
       </div>
@@ -209,13 +340,20 @@ export default function CommentForm() {
         />
       </div>
 
+      <p className="mt-4 text-xs text-muted">
+        When you click &ldquo;Submit Comment&rdquo;, we will use your email address and mobile number to
+        verify your details. A verification PIN will be sent to your email address. Please enter the PIN
+        to confirm your submission. After verification, your comment will be sent to the administrator for
+        review. Your comment will only appear publicly on the website after it has been approved.
+      </p>
+
       <Button
         type="submit"
-        className="mt-6 w-full sm:w-auto"
-        disabled={submitting || !fullName.trim() || !body.trim()}
+        className="mt-4 w-full sm:w-auto"
+        disabled={submitting || !fullName.trim() || !body.trim() || !email.trim() || !mobile.trim()}
       >
         {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-        {submitting ? "Submitting…" : "Submit Comment"}
+        {submitting ? "Sending code…" : "Submit Comment"}
       </Button>
     </form>
   );

@@ -8,6 +8,7 @@ import EmailChangeVerificationEmail from "./templates/verify-email-change";
 import EmailChangedEmail from "./templates/email-changed";
 import NewDeviceSignInEmail from "./templates/new-device";
 import SecurityAlertEmail from "./templates/security-alert";
+import CommentPinEmail from "./templates/comment-pin";
 
 const provider: EmailProvider = resendProvider;
 
@@ -69,6 +70,27 @@ export function sendNewDeviceSignInEmail(params: {
 }): Promise<SendEmailResult> {
   const { to, ...template } = params;
   return sendTemplate(to, "New sign-in to your account", NewDeviceSignInEmail(template));
+}
+
+/**
+ * Unlike the fire-and-forget notification emails above (password reset,
+ * new-device alert, etc.), this one gates a user-visible step — the caller
+ * shows "check your email" only after this resolves, so a provider failure
+ * must surface as a thrown error rather than a swallowed `{ ok: false }`,
+ * or the UI would claim a code was sent when it wasn't.
+ */
+export async function sendCommentPinEmail(params: {
+  to: string;
+  pin: string;
+  expiresInMinutes: number;
+  fullName?: string | null;
+}): Promise<SendEmailResult> {
+  const { to, pin, expiresInMinutes, fullName } = params;
+  const result = await sendTemplate(to, "Confirm your comment", CommentPinEmail({ pin, expiresInMinutes, fullName }));
+  if (!result.ok) {
+    throw new Error(`Failed to send comment verification email: ${result.error ?? "unknown error"}`);
+  }
+  return result;
 }
 
 export function sendSecurityAlertEmail(params: {
