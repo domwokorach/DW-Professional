@@ -89,20 +89,24 @@ html[data-theme="dark"] {
   background: #090909;
 }
 
-html[data-theme="light"] body,
-html[data-theme="light"] [class*="bg-ink"],
-html[data-theme="light"] [class*="bg-black"],
-html[data-theme="light"] [class*="bg-neutral"] {
+html[data-theme="light"] body {
   background-color: #f8fafc !important;
   color: #172033 !important;
 }
 
-html[data-theme="light"] [class*="bg-surface"],
-html[data-theme="light"] [class*="bg-white"] {
+html[data-theme="light"] [class*="bg-ink"]:not(:hover):not(:focus):not(:focus-visible):not(:active),
+html[data-theme="light"] [class*="bg-black"]:not(:hover):not(:focus):not(:focus-visible):not(:active),
+html[data-theme="light"] [class*="bg-neutral"]:not(:hover):not(:focus):not(:focus-visible):not(:active) {
+  background-color: #f8fafc !important;
+  color: #172033 !important;
+}
+
+html[data-theme="light"] [class*="bg-surface"]:not(:hover):not(:focus):not(:focus-visible):not(:active),
+html[data-theme="light"] [class*="bg-white"]:not(:hover):not(:focus):not(:focus-visible):not(:active) {
   background-color: #ffffff !important;
 }
 
-html[data-theme="light"] [class*="text-white"] {
+html[data-theme="light"] [class*="text-white"]:not(:hover):not(:focus):not(:focus-visible):not(:active) {
   color: #172033 !important;
 }
 
