@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
+import GlyphMatrixBackground from "@/components/magicui/glyph-matrix-background";
 import { social } from "@/data/navigation";
 
 const projectTypes = [
@@ -94,8 +95,11 @@ export default function Contact() {
     <section id="contact" className="relative border-t border-line py-28 sm:py-36">
       <Container>
         <div className="grid gap-16 lg:grid-cols-2 lg:gap-20">
-          <div>
-            <SectionHeading index="08" label="Contact" heading="Have a project in mind?" />
+          <div className="relative overflow-hidden">
+            <GlyphMatrixBackground className="opacity-50" fadeBottom={0.85} />
+
+            <div className="relative z-10">
+              <SectionHeading index="08" label="Contact" heading="Have a project in mind?" />
 
             <MotionReveal delay={0.1} className="mt-8 max-w-md">
               <p className="text-base leading-[1.7] text-muted">
@@ -138,6 +142,7 @@ export default function Contact() {
                 Portfolio
               </a>
             </MotionReveal>
+            </div>
           </div>
 
           <MotionReveal delay={0.1}>
