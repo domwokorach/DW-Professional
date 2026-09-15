@@ -446,13 +446,11 @@ html[data-high-contrast="true"] :focus-visible {
   animation: float-blob-c 20s ease-in-out infinite;
 }
 
-@theme inline {
-  @keyframes move-x {
+@keyframes move-x {
   from {
-    transform: translateX(-100%);
-    }
+    transform: translateX(var(--move-x-from));
+  }
   to {
-    transform: translateX(100%);
-    }
+    transform: translateX(var(--move-x-to));
   }
 }
