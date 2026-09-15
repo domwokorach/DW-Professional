@@ -1,8 +1,8 @@
 import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
-import GalleryGrid from "@/components/gallery/GalleryGrid";
-import { galleryCollections } from "@/data/gallery";
+import AccordionGallery from "@/components/gallery/AccordionGallery";
+import { galleryAccordionItems, galleryCollections } from "@/data/gallery";
 
 export default function Gallery() {
   return (
@@ -31,7 +31,7 @@ export default function Gallery() {
         </MotionReveal>
 
         <div className="mt-12">
-          <GalleryGrid collections={galleryCollections} />
+          <AccordionGallery items={galleryAccordionItems} />
         </div>
       </Container>
     </section>

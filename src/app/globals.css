@@ -445,3 +445,14 @@ html[data-high-contrast="true"] :focus-visible {
 .animated-blob-c {
   animation: float-blob-c 20s ease-in-out infinite;
 }
+
+@theme inline {
+  @keyframes move-x {
+  from {
+    transform: translateX(-100%);
+    }
+  to {
+    transform: translateX(100%);
+    }
+  }
+}

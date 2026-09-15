@@ -11,3 +11,12 @@ export type GalleryCollection = {
   description: string;
   media: GalleryMedia[];
 };
+
+export type GalleryItem = {
+  id: string;
+  image: string;
+  alt: string;
+  title?: string;
+  description?: string;
+  category?: string;
+};
