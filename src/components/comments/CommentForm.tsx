@@ -366,7 +366,7 @@ export default function CommentForm() {
             value={company}
             onChange={setCompany}
             onSelect={setCompanyMeta}
-            placeholder="Lloyds Banking Group"
+            placeholder="Search for your company…"
           />
         </div>
       </div>

@@ -194,7 +194,7 @@ export default function CompanyAutocomplete({
           }}
           onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
-          placeholder={placeholder ?? "Search company…"}
+          placeholder={placeholder ?? "Search for your company…"}
           className={status === "loading" ? "pr-9" : undefined}
         />
         {status === "loading" ? (
