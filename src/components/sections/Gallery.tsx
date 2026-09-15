@@ -8,7 +8,14 @@ export default function Gallery() {
   return (
     <section id="gallery" className="relative scroll-mt-24 border-t border-line py-28 sm:py-36">
       <Container>
-        <SectionHeading index="06" label="Gallery" heading="Gallery" />
+        <SectionHeading
+          index="06"
+          label="Gallery"
+          heading="Gallery"
+          animateHeading
+          headingEffect="typing"
+          typingSpeed={32}
+        />
 
         <MotionReveal delay={0.1} className="mt-8 max-w-2xl">
           <p className="text-base leading-[1.7] text-muted">

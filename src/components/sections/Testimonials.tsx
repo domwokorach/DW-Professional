@@ -25,6 +25,8 @@ export default async function Testimonials() {
           index="07"
           label="Testimonials"
           heading="What candidates & colleagues say."
+          animateHeading
+          headingEffect="typing"
         />
       </Container>
 

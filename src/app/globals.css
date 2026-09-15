@@ -162,6 +162,132 @@ html[data-theme="light"] :focus-visible {
   }
 }
 
+@property --border-glow-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.border-glow {
+  --border-glow-a: rgba(91, 141, 239, 0.9);
+  --border-glow-b: rgba(139, 123, 240, 0.85);
+  --border-glow-c: rgba(110, 231, 255, 0.8);
+}
+
+.border-glow::before,
+.border-glow::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--border-glow-angle),
+    transparent 0deg,
+    var(--border-glow-a) 70deg,
+    var(--border-glow-b) 160deg,
+    var(--border-glow-c) 250deg,
+    transparent 320deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: border-glow-spin 7s linear infinite;
+}
+
+.border-glow::after {
+  inset: -4px;
+  padding: 4px;
+  filter: blur(7px);
+  opacity: 0.5;
+}
+
+@keyframes border-glow-spin {
+  to {
+    --border-glow-angle: 360deg;
+  }
+}
+
+html[data-theme="light"] .border-glow {
+  --border-glow-a: rgba(29, 78, 216, 0.55);
+  --border-glow-b: rgba(109, 40, 217, 0.5);
+  --border-glow-c: rgba(15, 118, 110, 0.45);
+}
+
+html[data-theme="light"] .border-glow::after {
+  opacity: 0.35;
+}
+
+@keyframes gradient-text-shift {
+  to {
+    background-position: -200% center;
+  }
+}
+
+.gradient-text {
+  --gradient-text-a: #e5e7eb;
+  --gradient-text-b: #5b8def;
+  --gradient-text-c: #8b7bf0;
+  background-image: linear-gradient(
+    90deg,
+    var(--gradient-text-a),
+    var(--gradient-text-b),
+    var(--gradient-text-c),
+    var(--gradient-text-a)
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-text-shift 6s linear infinite;
+}
+
+.gradient-text-button {
+  --gradient-text-a: #111827;
+  --gradient-text-b: #1d4ed8;
+  --gradient-text-c: #5b8def;
+  background-image: linear-gradient(
+    90deg,
+    var(--gradient-text-a),
+    var(--gradient-text-b),
+    var(--gradient-text-c),
+    var(--gradient-text-a)
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-text-shift 6s linear infinite;
+}
+
+/* Hovering the submit button reverts to its original solid ink-on-accent
+   treatment so the accent hover background keeps full text contrast. */
+.group:hover .gradient-text-button,
+.group:active .gradient-text-button {
+  background-image: none;
+  color: inherit;
+  -webkit-text-fill-color: currentColor;
+  animation: none;
+}
+
+html[data-theme="light"] .gradient-text {
+  --gradient-text-a: #1f2937;
+  --gradient-text-b: #1d4ed8;
+  --gradient-text-c: #6d28d9;
+}
+
+html[data-high-contrast="true"] .gradient-text,
+html[data-high-contrast="true"] .gradient-text-button {
+  background-image: none !important;
+  color: inherit !important;
+  -webkit-text-fill-color: currentColor !important;
+  animation: none !important;
+}
+
 html[data-theme="light"] .grid-bg {
   background-image: linear-gradient(
       to right,

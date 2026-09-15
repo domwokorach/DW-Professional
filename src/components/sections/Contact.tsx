@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import SectionHeading from "@/components/ui/SectionHeading";
+import GradientText from "@/components/ui/GradientText";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
 import GlyphMatrixBackground from "@/components/magicui/glyph-matrix-background";
@@ -99,7 +100,13 @@ export default function Contact() {
             <GlyphMatrixBackground className="opacity-50" fadeBottom={0.85} />
 
             <div className="relative z-10">
-              <SectionHeading index="08" label="Contact" heading="Have a project in mind?" />
+              <SectionHeading
+                index="08"
+                label="Contact"
+                heading="Have a project in mind?"
+                animateHeading
+                headingEffect="typing"
+              />
 
             <MotionReveal delay={0.1} className="mt-8 max-w-md">
               <p className="text-base leading-[1.7] text-muted">
@@ -165,7 +172,8 @@ export default function Contact() {
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
                   <label htmlFor="name" className="mb-2 block text-sm text-muted">
-                    Name <span aria-hidden="true">(required)</span>
+                    <GradientText>Name</GradientText>{" "}
+                    <span aria-hidden="true">(required)</span>
                   </label>
                   <input
                     id="name"
@@ -186,7 +194,8 @@ export default function Contact() {
                 </div>
                 <div>
                   <label htmlFor="email" className="mb-2 block text-sm text-muted">
-                    Email <span aria-hidden="true">(required)</span>
+                    <GradientText>Email</GradientText>{" "}
+                    <span aria-hidden="true">(required)</span>
                   </label>
                   <input
                     id="email"
@@ -210,7 +219,8 @@ export default function Contact() {
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
                   <label htmlFor="company" className="mb-2 block text-sm text-muted">
-                    Company <span className="text-xs">(optional)</span>
+                    <GradientText>Company</GradientText>{" "}
+                    <span className="text-xs">(optional)</span>
                   </label>
                   <input
                     id="company"
@@ -223,7 +233,8 @@ export default function Contact() {
                 </div>
                 <div>
                   <label htmlFor="budget" className="mb-2 block text-sm text-muted">
-                    Budget <span className="text-xs">(optional)</span>
+                    <GradientText>Budget</GradientText>{" "}
+                    <span className="text-xs">(optional)</span>
                   </label>
                   <input
                     id="budget"
@@ -237,7 +248,8 @@ export default function Contact() {
 
               <div>
                 <label htmlFor="projectType" className="mb-2 block text-sm text-muted">
-                  Project Type <span className="text-xs">(optional)</span>
+                  <GradientText>Project Type</GradientText>{" "}
+                  <span className="text-xs">(optional)</span>
                 </label>
                 <select
                   id="projectType"
@@ -256,7 +268,8 @@ export default function Contact() {
 
               <div>
                 <label htmlFor="message" className="mb-2 block text-sm text-muted">
-                  Message <span aria-hidden="true">(required)</span>
+                  <GradientText>Message</GradientText>{" "}
+                  <span aria-hidden="true">(required)</span>
                 </label>
                 <textarea
                   id="message"
@@ -278,9 +291,13 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={status === "submitting"}
-                className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-60"
+                className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {status === "submitting" ? "Sending…" : "Send Enquiry →"}
+                {status === "submitting" ? (
+                  "Sending…"
+                ) : (
+                  <GradientText variant="button">Send Enquiry →</GradientText>
+                )}
               </button>
 
               <p

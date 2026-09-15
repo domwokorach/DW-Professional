@@ -52,6 +52,14 @@ export async function GET(request: NextRequest) {
       if (error.status === 429) {
         return apiError("rate_limited", "Unable to search companies. You can still enter the company manually.", 429);
       }
+      if (error.status === 500) {
+        console.error("[api/companies/search] misconfigured:", error.message);
+        return apiError(
+          "internal_error",
+          "Unable to search companies. You can still enter the company manually.",
+          500
+        );
+      }
       console.error("[api/companies/search] provider error:", error.message);
       return apiError(
         "provider_error",

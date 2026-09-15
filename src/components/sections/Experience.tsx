@@ -29,7 +29,14 @@ export default function Experience() {
   return (
     <section id="experience" className="relative border-t border-line py-28 sm:py-36">
       <Container>
-        <SectionHeading index="05" label="Experience" heading="Experience" />
+        <SectionHeading
+          index="05"
+          label="Experience"
+          heading="Experience"
+          animateHeading
+          headingEffect="typing"
+          typingSpeed={32}
+        />
 
         <ol className="mt-16">
           {experience.map((item) => (
