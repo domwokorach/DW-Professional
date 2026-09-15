@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import { navigation, flattenNavIds, buildTopLevelMap } from "@/data/navigation";
+import { navigation, headerNavigation, flattenNavIds, buildTopLevelMap } from "@/data/navigation";
 import MobileNavigation from "./MobileNavigation";
 import ResumeDownloadModal from "@/components/resume/ResumeDownloadModal";
 import ThemeModeButton from "@/components/ui/ThemeModeButton";
@@ -87,6 +87,24 @@ export default function Header() {
         >
           Dominic<span className="text-accent">.</span>
         </button>
+
+        <div className="hidden items-center gap-1 md:flex">
+          {headerNavigation.map((item) => {
+            const isActive = activeGroup === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleNavigate(item.id)}
+                aria-current={isActive ? "page" : undefined}
+                className={`min-h-11 rounded px-3 py-2 font-mono text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${
+                  isActive ? "text-white" : "text-muted hover:text-white"
+                }`}
+              >
+                {item.label}
+              </button>
+            );
+          })}
+        </div>
 
         <div className="flex items-center gap-2 md:gap-3">
           <div className="hidden md:block">

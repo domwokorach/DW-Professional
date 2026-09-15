@@ -10,13 +10,9 @@ import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
 const CATEGORY_ANCHORS: Record<string, string> = {
   Frontend: "frontend",
   "Backend & APIs": "backend-api",
-  "Databases & ORM": "database-orm",
   "Cloud & DevOps": "cloud-devops",
   "Testing & Quality": "testing-quality",
-  "Security & Authentication": "security-authentication",
-  "UI/UX & Design": "ui-ux-design",
-  "CSS & Styling": "css-styling",
-  "Development Tools": "development-tools",
+  "UI/UX, Design & Accessibility": "ui-ux-design",
 };
 
 export default function Expertise() {
@@ -28,8 +24,8 @@ export default function Expertise() {
         <MotionReveal delay={0.1} className="mt-8 max-w-2xl">
           <ProtectedParagraph className="text-base leading-[1.7] text-muted">
             A modern engineering stack spanning frontend development, backend
-            services, databases, cloud infrastructure, testing, security and
-            UX/UI. Highlighted items reflect my core, day-to-day stack.
+            services and APIs, cloud infrastructure, testing and UX/UI design
+            and accessibility. Highlighted items reflect my core, day-to-day stack.
           </ProtectedParagraph>
         </MotionReveal>
 

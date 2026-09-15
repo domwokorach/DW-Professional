@@ -10,7 +10,7 @@ import { certifications, education, experience } from "@/data/experience";
 const ROLE_ANCHORS: Record<string, string> = {
   "Trainee Digital Transformation": "trainee-digital-transformation",
   "Junior UI Delivery and Transformation": "junior-ui-delivery",
-  "Senior Web Developer": "senior-web-developer",
+  "Senior Web Developer, Backend, Innovation & Architecture and Strategy": "senior-web-developer",
   "Senior Frontend Developer": "senior-frontend-developer",
   "Career Break": "career-break",
   "Professional Development": "professional-development",
