@@ -1,8 +1,9 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { headerNavigation, type NavItem } from "@/data/navigation";
+import { headerNavigation, social, type NavItem } from "@/data/navigation";
 import { Highlighter } from "@/components/magicui/highlighter";
+import { GithubIcon, LinkedinIcon } from "@/components/icons/SocialIcons";
 import LanguageSelector from "./LanguageSelector";
 
 function MobileNavItem({
@@ -74,8 +75,31 @@ export default function MobileNavigation({
               onClick={onOpenResume}
               className="min-h-11 w-full rounded-full border border-line px-4 py-3 text-sm text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
             >
-              Resume
+              View Resume
             </button>
+
+            <div className="mt-5 flex items-center justify-center gap-2">
+              <a
+                href={social.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="GitHub"
+                aria-label="Visit Dominic Wokorach on GitHub (opens in a new tab)"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-white focus-visible:text-white"
+              >
+                <GithubIcon aria-hidden="true" className="h-[22px] w-[22px]" />
+              </a>
+              <a
+                href={social.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="LinkedIn"
+                aria-label="Visit Dominic Wokorach on LinkedIn (opens in a new tab)"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-white focus-visible:text-white"
+              >
+                <LinkedinIcon aria-hidden="true" className="h-[22px] w-[22px]" />
+              </a>
+            </div>
           </div>
         </motion.div>
       )}

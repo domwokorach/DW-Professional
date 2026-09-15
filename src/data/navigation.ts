@@ -7,15 +7,17 @@ export type NavItem = {
 
 export const navigation: NavItem[] = [
   { id: "home", label: "Home", href: "#home" },
-  { id: "about", label: "About", href: "#about" },
+  { id: "about", label: "01 / About", href: "#about" },
   {
     id: "expertise",
     label: "02 / Expertise",
     href: "#expertise",
     items: [
-      { id: "ui-ux-design", label: "UI/UX Design", href: "#ui-ux-design" },
-      { id: "css-styling", label: "CSS & Styling", href: "#css-styling" },
-      { id: "development-tools", label: "Development Tools", href: "#development-tools" },
+      { id: "frontend", label: "Frontend", href: "#frontend" },
+      { id: "backend-api", label: "Backend & APIs", href: "#backend-api" },
+      { id: "cloud-devops", label: "Cloud & DevOps", href: "#cloud-devops" },
+      { id: "testing-quality", label: "Testing & Quality", href: "#testing-quality" },
+      { id: "ui-ux-design", label: "UI/UX, Design & Accessibility", href: "#ui-ux-design" },
     ],
   },
   {
@@ -70,7 +72,7 @@ export const navigation: NavItem[] = [
   },
   {
     id: "projects",
-    label: "04 / Projects",
+    label: "03 / Projects",
     href: "#projects",
     items: [
       { id: "innovation-x", label: "Innovation X", href: "#innovation-x" },
@@ -104,22 +106,14 @@ export const navigation: NavItem[] = [
   },
   {
     id: "experience",
-    label: "05 / Experience",
+    label: "04 / Experience",
     href: "#experience",
   },
-  { id: "contact", label: "Contact", href: "#contact" },
+  { id: "contact", label: "05 / Contact", href: "#contact" },
 ];
 
 /** Top-level ids to hide from the header/mobile navigation while keeping their sections and data intact. */
-const HEADER_HIDDEN_IDS = new Set([
-  "home",
-  "about",
-  "expertise",
-  "services",
-  "ai-professional",
-  "projects",
-  "experience",
-]);
+const HEADER_HIDDEN_IDS = new Set(["home", "services", "ai-professional"]);
 
 /** Top-level items shown in the header and mobile navigation. */
 export const headerNavigation: NavItem[] = navigation.filter(

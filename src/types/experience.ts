@@ -7,4 +7,6 @@ export interface ExperienceItem {
   focus: string;
   points: string[];
   tags: string[];
+  /** Reduces visual emphasis for non-engineering entries (e.g. a career break) while keeping the timeline transparent. */
+  muted?: boolean;
 }

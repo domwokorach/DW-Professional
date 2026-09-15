@@ -4,11 +4,9 @@ import Container from "@/components/ui/Container";
 import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
 
 const paragraphs = [
-  "I'm a Software Engineer and Frontend Developer with commercial experience creating modern, accessible and scalable web applications.",
-  "My background spans frontend engineering, software development, digital transformation, accessibility, cloud-native development and UX/UI prototyping.",
-  "I specialise in React, TypeScript and JavaScript, with experience building reusable component architectures, design systems, responsive interfaces and API-driven applications.",
-  "I've contributed to technology teams at organisations including Sky and Lloyds Banking Group, working across frontend development, cloud systems, accessibility, automation and innovation.",
-  "I care about more than making interfaces look good. My work focuses on balancing usability, accessibility, performance, maintainability and visual quality.",
+  "Frontend Software Engineer with commercial experience at Sky and Lloyds Banking Group, specialising in React, TypeScript and accessible digital products.",
+  "Proven track record of delivering scalable web applications, improving user experiences and collaborating with Agile teams.",
+  "Passionate about technology, innovation and creating inclusive solutions for diverse audiences.",
 ];
 
 export default function About() {
@@ -23,7 +21,7 @@ export default function About() {
           />
 
           <div>
-            <div className="grid gap-6 sm:grid-cols-2">
+            <div className="grid max-w-2xl gap-6">
               {paragraphs.map((p, i) => (
                 <MotionReveal key={p} delay={0.05 * i}>
                   <ProtectedParagraph className="text-base leading-[1.7] text-muted">

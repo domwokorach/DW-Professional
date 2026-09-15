@@ -34,11 +34,18 @@ export default function ExperienceAccordionItem({
           className="flex w-full min-h-11 items-start justify-between gap-4 py-6 text-left transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-[-2px]"
         >
           <span className="min-w-0">
-            <span className="block font-mono text-xs text-accent">{item.period}</span>
+            <span
+              className={cn(
+                "block font-mono text-xs",
+                item.muted ? "text-muted" : "text-accent"
+              )}
+            >
+              {item.period}
+            </span>
             <span
               className={cn(
                 "mt-2 block text-lg font-medium transition-colors",
-                isOpen ? "text-white" : "text-white/90"
+                item.muted ? "text-white/70" : isOpen ? "text-white" : "text-white/90"
               )}
             >
               {item.role}
