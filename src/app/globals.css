@@ -199,6 +199,10 @@ html[data-high-contrast="true"] {
   background: #000;
 }
 
+html[data-high-contrast="true"] .glyph-matrix-bg {
+  display: none;
+}
+
 html[data-high-contrast="true"] body,
 html[data-high-contrast="true"] [class*="bg-ink"],
 html[data-high-contrast="true"] [class*="bg-surface"],

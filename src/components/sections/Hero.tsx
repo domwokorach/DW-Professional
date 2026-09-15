@@ -6,6 +6,7 @@ import { EASE } from "@/lib/animations";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import AnimatedBackground from "@/components/ui/AnimatedBackground";
+import GlyphMatrixBackground from "@/components/magicui/glyph-matrix-background";
 import UKGreeting from "@/components/ui/UKGreeting";
 import WeatherWidget from "@/components/weather/WeatherWidget";
 import DecryptedText from "@/components/ui/DecryptedText";
@@ -32,9 +33,11 @@ export default function Hero() {
       id="home"
       className="relative flex min-h-[100svh] items-center overflow-hidden pt-24"
     >
-      <AnimatedBackground />
+      <GlyphMatrixBackground className="opacity-60" />
 
-      <div className="absolute inset-y-0 right-0 w-full lg:w-[48%]" aria-hidden>
+      <AnimatedBackground className="z-10" />
+
+      <div className="absolute inset-y-0 right-0 z-10 w-full lg:w-[48%]" aria-hidden>
         <div className="relative h-full w-full">
           <Image
             src="/images/dominic/portrait.jpg"
@@ -62,7 +65,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <Container className="relative z-10">
+      <Container className="relative z-20">
         <div className="max-w-2xl">
           <UKGreeting className="mb-2" />
           <WeatherWidget className="mb-5" />
