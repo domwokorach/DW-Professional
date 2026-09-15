@@ -19,6 +19,7 @@ export const REFRESH_TOKEN_TTL_SECONDS_REMEMBER = 30 * 24 * 60 * 60; // 30 days
 export const PASSWORD_RESET_TTL_MS = 60 * 60 * 1000; // 1 hour
 export const EMAIL_CHANGE_TTL_MS = 60 * 60 * 1000; // 1 hour
 export const COMMENT_PIN_TTL_MS = 10 * 60 * 1000; // 10 minutes
+export const COMMENT_PIN_RESEND_COOLDOWN_SECONDS = 60;
 
 export function isProduction(): boolean {
   return process.env.NODE_ENV === "production";

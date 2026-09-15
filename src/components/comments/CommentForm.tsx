@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { CheckCircle2, ImagePlus, Loader2, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,11 @@ import CompanyAutocomplete from "@/components/comments/CompanyAutocomplete";
 import { COMMENT_BODY_MAX_LENGTH, ALLOWED_AVATAR_TYPES, AVATAR_MAX_BYTES } from "@/lib/comments/validation";
 import { cn } from "@/lib/utils";
 import type { CompanySearchResult } from "@/types/company";
+
+// Mirrors COMMENT_PIN_RESEND_COOLDOWN_SECONDS in src/lib/auth/env.ts — kept as
+// a plain constant here rather than importing that (server-oriented) module
+// into a client component.
+const COMMENT_PIN_RESEND_COOLDOWN_SECONDS = 60;
 
 function initials(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -35,7 +40,16 @@ export default function CommentForm() {
   const [requestId, setRequestId] = useState<string | null>(null);
   const [pin, setPin] = useState("");
   const [verifying, setVerifying] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [resendMessage, setResendMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = setInterval(() => setResendCooldown((s) => Math.max(0, s - 1)), 1000);
+    return () => clearInterval(timer);
+  }, [resendCooldown]);
 
   function handleAvatarChange(file: File | null) {
     setAvatarError(null);
@@ -108,6 +122,7 @@ export default function CommentForm() {
       }
 
       setRequestId(data.requestId);
+      setResendCooldown(COMMENT_PIN_RESEND_COOLDOWN_SECONDS);
     } catch (error) {
       console.error("[comments] submit failed:", error);
       setErrorMessage(error instanceof Error ? error.message : "Something went wrong. Please try again.");
@@ -156,6 +171,49 @@ export default function CommentForm() {
     }
   }
 
+  async function handleResendPin() {
+    if (!requestId || resendCooldown > 0 || resending) return;
+    setResending(true);
+    setErrorMessage(null);
+    setResendMessage(null);
+
+    try {
+      let res: Response;
+      try {
+        res = await fetch("/api/comments/resend-pin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ requestId }),
+        });
+      } catch (fetchError) {
+        console.error("[comments] resend fetch failed:", fetchError);
+        throw new Error("Network error. Please check your connection and try again.");
+      }
+
+      let data: { ok?: boolean; retryAfterSeconds?: number; error?: { message?: string } } | null = null;
+      try {
+        data = await res.json();
+      } catch (parseError) {
+        console.error("[comments] unexpected resend response body:", parseError);
+        throw new Error("Unexpected response from the server. Please try again shortly.");
+      }
+
+      if (!res.ok) {
+        setResendCooldown(data?.retryAfterSeconds ?? COMMENT_PIN_RESEND_COOLDOWN_SECONDS);
+        throw new Error(data?.error?.message ?? "We couldn't resend the code. Please try again.");
+      }
+
+      setPin("");
+      setResendCooldown(data?.retryAfterSeconds ?? COMMENT_PIN_RESEND_COOLDOWN_SECONDS);
+      setResendMessage("We've sent a new code to your email.");
+    } catch (error) {
+      console.error("[comments] resend failed:", error);
+      setErrorMessage(error instanceof Error ? error.message : "Something went wrong. Please try again.");
+    } finally {
+      setResending(false);
+    }
+  }
+
   if (submitted) {
     return (
       <div className="flex flex-col items-center gap-3 rounded-2xl border border-line bg-surface p-8 text-center">
@@ -201,14 +259,37 @@ export default function CommentForm() {
           {verifying ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
           {verifying ? "Verifying…" : "Confirm code"}
         </Button>
+
+        {resendMessage ? (
+          <p className="mt-3 text-xs text-accent" role="status" aria-live="polite">
+            {resendMessage}
+          </p>
+        ) : null}
+
+        <button
+          type="button"
+          onClick={handleResendPin}
+          disabled={resending || resendCooldown > 0}
+          className="mt-3 flex w-full items-center justify-center gap-1.5 text-xs text-muted hover:text-white disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:text-muted"
+        >
+          {resending ? <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" /> : null}
+          {resending
+            ? "Resending…"
+            : resendCooldown > 0
+              ? `Resend PIN in ${resendCooldown}s`
+              : "Resend PIN"}
+        </button>
+
         <button
           type="button"
           onClick={() => {
             setRequestId(null);
             setPin("");
             setErrorMessage(null);
+            setResendMessage(null);
+            setResendCooldown(0);
           }}
-          className="mt-3 block w-full text-xs text-muted hover:text-white"
+          className="mt-2 block w-full text-xs text-muted hover:text-white"
         >
           Use a different email
         </button>
