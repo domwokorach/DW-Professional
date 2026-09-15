@@ -19,7 +19,13 @@ export default function Expertise() {
   return (
     <section id="expertise" className="relative border-t border-line py-28 sm:py-36">
       <Container>
-        <SectionHeading index="02" label="Expertise" heading="Technologies I work with." />
+        <SectionHeading
+          index="02"
+          label="Expertise"
+          heading="Technologies I work with."
+          animateHeading
+          headingEffect="typing"
+        />
 
         <MotionReveal delay={0.1} className="mt-8 max-w-2xl">
           <ProtectedParagraph className="text-base leading-[1.7] text-muted">

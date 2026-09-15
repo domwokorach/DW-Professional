@@ -24,6 +24,7 @@ export default function ConversationItem({
     ? getMessagePreview(conversation.lastMessagePreview, 48)
     : "No messages yet";
   const status = getPresenceStatus(conversation, online);
+  const contact = [conversation.email, conversation.mobile].filter(Boolean).join(" · ");
 
   return (
     <SidebarMenuItem>
@@ -32,7 +33,7 @@ export default function ConversationItem({
         onClick={onSelect}
         size="lg"
         className="h-auto items-start gap-2.5 py-2.5"
-        aria-label={`Open conversation with ${displayName}${
+        aria-label={`Open conversation with ${displayName}${contact ? `, ${contact}` : ""}${
           conversation.unreadByAdmin > 0 ? `, ${conversation.unreadByAdmin} unread messages` : ""
         }, ${presenceLabel(status)}`}
       >
@@ -48,6 +49,9 @@ export default function ConversationItem({
               {formatChatDate(conversation.lastMessageAt ?? conversation.createdAt)}
             </span>
           </span>
+          {contact ? (
+            <span className="truncate text-[11px] font-normal text-muted/80">{contact}</span>
+          ) : null}
           <span className="flex items-center justify-between gap-2">
             <span className="truncate text-xs font-normal text-muted">{preview}</span>
             <UnreadBadge count={conversation.unreadByAdmin} />

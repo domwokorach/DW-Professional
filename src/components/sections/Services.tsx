@@ -5,6 +5,7 @@ import Grid from "@mui/material/Grid";
 import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
+import TextType from "@/components/ui/TextType";
 import { services } from "@/data/services";
 import { aiCapabilities } from "@/data/aiServices";
 import { fadeUp } from "@/lib/animations";
@@ -32,7 +33,13 @@ export default function Services() {
   return (
     <section id="services" className="relative border-t border-line py-28 sm:py-36">
       <Container>
-        <SectionHeading index="03" label="Services" heading="What I can build for you." />
+        <SectionHeading
+          index="03"
+          label="Services"
+          heading="What I can build for you."
+          animateHeading
+          headingEffect="typing"
+        />
 
         <MotionReveal delay={0.1} className="mt-8 max-w-2xl">
           <ProtectedParagraph className="text-base leading-[1.7] text-muted">
@@ -97,7 +104,7 @@ export default function Services() {
         <div id="ai-professional" className="mt-24 scroll-mt-24">
           <MotionReveal>
             <h3 className="text-2xl font-medium text-white sm:text-3xl">
-              AI Developer Professional
+              <TextType text="AI Developer Professional" />
             </h3>
           </MotionReveal>
 

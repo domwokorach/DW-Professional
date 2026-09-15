@@ -50,7 +50,14 @@ export default function Projects() {
   return (
     <section id="projects" className="relative scroll-mt-24 border-t border-line py-28 sm:py-36">
       <Container>
-        <SectionHeading index="04" label="Projects" heading="Selected Work" />
+        <SectionHeading
+          index="04"
+          label="Projects"
+          heading="Selected Work"
+          animateHeading
+          headingEffect="typing"
+          typingSpeed={32}
+        />
 
         <MotionReveal delay={0.1} className="mt-8 max-w-2xl">
           <ProtectedParagraph className="text-base leading-[1.7] text-muted">

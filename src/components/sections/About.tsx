@@ -18,6 +18,8 @@ export default function About() {
             index="01"
             label="About"
             heading="Engineering thoughtful digital experiences."
+            animateHeading
+            headingEffect="typing"
           />
 
           <div>
