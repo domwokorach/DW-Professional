@@ -154,18 +154,46 @@ model SecurityEvent {
 }
 
 model Comment {
-  id         String        @id @default(cuid())
-  fullName   String
-  company    String?
-  body       String
-  avatarUrl  String?
-  status     CommentStatus @default(PENDING)
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
-  reviewedAt DateTime?
-  reviewedBy String?
+  id              String        @id @default(cuid())
+  fullName        String
+  company         String?
+  companyId       String?
+  companyDomain   String?
+  companyLogo     String?
+  companyIndustry String?
+  companyLocation String?
+  body            String
+  avatarUrl       String?
+  status          CommentStatus @default(PENDING)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  reviewedAt      DateTime?
+  reviewedBy      String?
 
   @@index([status, createdAt])
+}
+
+/** Holds a pending comment submission until its email PIN is verified; only then is a Comment row created. */
+model CommentVerification {
+  id              String    @id @default(cuid())
+  email           String
+  mobile          String
+  fullName        String
+  company         String?
+  companyId       String?
+  companyDomain   String?
+  companyLogo     String?
+  companyIndustry String?
+  companyLocation String?
+  body            String
+  avatarUrl       String?
+  pinHash         String
+  attempts        Int       @default(0)
+  expiresAt       DateTime
+  verifiedAt      DateTime?
+  createdAt       DateTime  @default(now())
+
+  @@index([email, createdAt])
 }
 
 model Conversation {

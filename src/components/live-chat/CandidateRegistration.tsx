@@ -155,6 +155,7 @@ export default function CandidateRegistration({
             error={errors.companyName}
             onChange={handleChange("companyName")}
             autoComplete="organization"
+            placeholder="Lloyds Banking Group"
           />
 
           {submitError ? (
@@ -184,6 +185,7 @@ function Field({
   onChange,
   type = "text",
   autoComplete,
+  placeholder,
 }: {
   id: string;
   label: string;
@@ -192,6 +194,7 @@ function Field({
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   type?: string;
   autoComplete?: string;
+  placeholder?: string;
 }) {
   const errorId = `${id}-error`;
   return (
@@ -205,6 +208,7 @@ function Field({
         value={value}
         onChange={onChange}
         autoComplete={autoComplete}
+        placeholder={placeholder}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
         className="h-11 rounded-2xl border border-line bg-ink px-4 text-sm text-white placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
