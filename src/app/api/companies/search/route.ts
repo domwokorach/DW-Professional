@@ -45,8 +45,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const results = await searchCompanies(query);
-    return NextResponse.json({ results });
+    const companies = await searchCompanies(query);
+    return NextResponse.json({ companies });
   } catch (error) {
     if (error instanceof CompanyProviderError) {
       if (error.status === 429) {

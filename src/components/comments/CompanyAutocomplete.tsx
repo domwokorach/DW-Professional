@@ -89,8 +89,8 @@ export default function CompanyAutocomplete({
           setResults([]);
           return;
         }
-        const data: { results?: CompanySearchResult[] } = await res.json();
-        const found = data.results ?? [];
+        const data: { companies?: CompanySearchResult[] } = await res.json();
+        const found = data.companies ?? [];
         searchCache.set(cacheKey, found);
         setResults(found);
         setStatus("idle");
@@ -170,7 +170,7 @@ export default function CompanyAutocomplete({
   const statusMessage = useMemo(() => {
     if (status === "loading") return "Searching companies…";
     if (status === "error") return "We couldn't load company suggestions. You can continue by entering the company name manually.";
-    if (status === "idle" && results.length === 0) return "No companies found.";
+    if (status === "idle" && results.length === 0) return "No matching company found.";
     return null;
   }, [status, results.length]);
 
@@ -287,7 +287,7 @@ export default function CompanyAutocomplete({
                     activeIndex === manualOptionIndex ? "bg-accent/20 text-white" : "text-muted hover:bg-accent/10 hover:text-white"
                   )}
                 >
-                  <span className="font-medium text-accent">+</span> Use &ldquo;{trimmedValue}&rdquo; as entered
+                  <span className="font-medium text-accent">+</span> Use &ldquo;{trimmedValue}&rdquo; as company
                 </li>
               ) : null}
             </>
