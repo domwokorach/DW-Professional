@@ -1,4 +1,4 @@
-import type { GalleryCollection } from "@/types/gallery";
+import type { GalleryCollection, GalleryItem } from "@/types/gallery";
 
 export const galleryCollections: GalleryCollection[] = [
   {
@@ -81,3 +81,16 @@ export const galleryCollections: GalleryCollection[] = [
     ],
   },
 ];
+
+export const galleryAccordionItems: GalleryItem[] = galleryCollections.flatMap((collection) =>
+  collection.media
+    .filter((item) => item.type === "image")
+    .map((item, i) => ({
+      id: `${collection.id}-${i}`,
+      image: item.src,
+      alt: item.alt,
+      title: collection.title,
+      description: collection.description,
+      category: String(collection.year),
+    }))
+);
