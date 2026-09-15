@@ -183,17 +183,26 @@ async function translateWithServiceAccount(texts: string[], target: string) {
     clearTimeout(timeout);
   }
 
-  if (response.status === 429) throw new Error("Translation provider rate limit exceeded");
-  if (!response.ok) throw new Error(`Translation provider returned ${response.status}`);
-
-  const payload = (await response.json()) as {
+  const payload = (await response.json().catch(() => null)) as {
     translations?: Array<{ translatedText?: string }>;
-  };
-  return payload.translations?.map((item) => item.translatedText ?? "") ?? null;
+    error?: { message?: string; status?: string };
+  } | null;
+
+  if (!response.ok) {
+    console.error("Google Translation v3 API error:", {
+      status: response.status,
+      message: payload?.error?.message,
+      reason: payload?.error?.status,
+    });
+    if (response.status === 429) throw new Error("Translation provider rate limit exceeded");
+    throw new Error(payload?.error?.message || `Translation provider returned ${response.status}`);
+  }
+
+  return payload?.translations?.map((item) => item.translatedText ?? "") ?? null;
 }
 
 async function translateWithGoogle(texts: string[], target: string) {
-  const apiKey = process.env.TRANSLATION_API_KEY;
+  const apiKey = process.env.GOOGLE_CLOUD_TRANSLATION_API_KEY;
   if (!apiKey) return null;
 
   const endpoint = process.env.TRANSLATION_API_URL || "https://translation.googleapis.com/language/translate/v2";
@@ -223,13 +232,22 @@ async function translateWithGoogle(texts: string[], target: string) {
     clearTimeout(timeout);
   }
 
-  if (response.status === 429) throw new Error("Translation provider rate limit exceeded");
-  if (!response.ok) throw new Error(`Translation provider returned ${response.status}`);
-
-  const payload = (await response.json()) as {
+  const payload = (await response.json().catch(() => null)) as {
     data?: { translations?: Array<{ translatedText?: string }> };
-  };
-  return payload.data?.translations?.map((item) => item.translatedText ?? "") ?? null;
+    error?: { message?: string; errors?: Array<{ reason?: string }> };
+  } | null;
+
+  if (!response.ok) {
+    console.error("Google Translation v2 API error:", {
+      status: response.status,
+      message: payload?.error?.message,
+      reason: payload?.error?.errors?.[0]?.reason,
+    });
+    if (response.status === 429) throw new Error("Translation provider rate limit exceeded");
+    throw new Error(payload?.error?.message || `Translation provider returned ${response.status}`);
+  }
+
+  return payload?.data?.translations?.map((item) => item.translatedText ?? "") ?? null;
 }
 
 async function translate(texts: string[], target: string) {

@@ -4,15 +4,22 @@ import { motion } from "framer-motion";
 import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
+import { LogoTimeline } from "@/components/ui/logo-timeline";
 import { skillCategories } from "@/data/skills";
+import { techLogoItems } from "@/data/techLogos";
 import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
 
 const CATEGORY_ANCHORS: Record<string, string> = {
   Frontend: "frontend",
   "Backend & APIs": "backend-api",
-  "Cloud & DevOps": "cloud-devops",
   "Testing & Quality": "testing-quality",
-  "UI/UX, Design & Accessibility": "ui-ux-design",
+  "Cloud & DevOps": "cloud-devops",
+  "Databases & ORM": "databases-orm",
+  "Development Tools": "development-tools",
+  "AI & LLM": "ai-llm",
+  "Security & Authentication": "security-authentication",
+  "UI/UX & Design": "ui-ux-design",
+  "CSS & Styling": "css-styling",
 };
 
 export default function Expertise() {
@@ -108,6 +115,17 @@ export default function Expertise() {
           </span>
           <span className="h-2 w-2 rounded-full border border-white/10 bg-white/[0.03]" aria-hidden />
           Additional technologies
+        </MotionReveal>
+
+        <MotionReveal delay={0.2} className="mt-16">
+          <p className="font-mono text-xs tracking-widest text-muted">FULL STACK OVERVIEW</p>
+          <div className="mt-6 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
+            <LogoTimeline
+              items={techLogoItems}
+              height="h-[460px] sm:h-[560px]"
+              className="py-4"
+            />
+          </div>
         </MotionReveal>
       </Container>
     </section>
