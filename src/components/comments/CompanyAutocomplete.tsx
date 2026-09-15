@@ -134,7 +134,7 @@ export default function CompanyAutocomplete({
     setActiveIndex(-1);
   }
 
-  function useAsEntered() {
+  function applyManualEntry() {
     onSelect?.(null);
     setIsOpen(false);
     setActiveIndex(-1);
@@ -157,7 +157,7 @@ export default function CompanyAutocomplete({
       if (activeIndex < 0) return;
       event.preventDefault();
       if (activeIndex === manualOptionIndex && showManualOption) {
-        useAsEntered();
+        applyManualEntry();
       } else if (results[activeIndex]) {
         selectCompany(results[activeIndex]);
       }
@@ -279,7 +279,7 @@ export default function CompanyAutocomplete({
                   aria-selected={activeIndex === manualOptionIndex}
                   onMouseDown={(e) => {
                     e.preventDefault();
-                    useAsEntered();
+                    applyManualEntry();
                   }}
                   onMouseEnter={() => setActiveIndex(manualOptionIndex)}
                   className={cn(
