@@ -31,6 +31,12 @@ const commentFieldsSchema = {
  */
 const companyMetaFieldsSchema = {
   companyId: optionalTrimmed(120),
+  companyNumber: optionalTrimmed(20),
+  companyStatus: optionalTrimmed(40),
+  companySource: z
+    .enum(["companies-house", "manual", ""])
+    .nullish()
+    .transform((v) => (v ? v : undefined)),
   companyDomain: optionalTrimmed(253),
   companyLogo: z
     .string()

@@ -9,6 +9,7 @@ export const COMPANY_SEARCH_RESULT_LIMIT = 8;
 interface CompaniesHouseSearchItem {
   title?: string;
   company_number?: string;
+  company_status?: string;
   address_snippet?: string;
   registered_office_address?: {
     address_line_1?: string;
@@ -19,6 +20,11 @@ interface CompaniesHouseSearchItem {
 
 interface CompaniesHouseSearchResponse {
   items?: CompaniesHouseSearchItem[];
+}
+
+interface CompaniesHouseProfile {
+  company_status?: string;
+  sic_codes?: string[];
 }
 
 function formatLocation(item: CompaniesHouseSearchItem): string | undefined {
@@ -35,7 +41,9 @@ function normalize(item: CompaniesHouseSearchItem, index: number): CompanySearch
     id: item.company_number ?? `${item.title}-${index}`,
     name: item.title,
     companyNumber: item.company_number,
+    status: item.company_status,
     location: formatLocation(item),
+    source: "companies-house",
   };
 }
 
@@ -93,4 +101,52 @@ export async function searchCompanies(query: string): Promise<CompanySearchResul
     .map(normalize)
     .filter((result): result is CompanySearchResult => result !== null)
     .slice(0, COMPANY_SEARCH_RESULT_LIMIT);
+}
+
+const COMPANY_NUMBER_PATTERN = /^[A-Z0-9]{1,10}$/i;
+
+/**
+ * Server-side only: fetches a single company's profile (status + SIC codes)
+ * so the UI can show the industry/status only after the candidate has
+ * picked a specific company, rather than on every search result.
+ */
+export async function fetchCompanyProfile(companyNumber: string): Promise<{
+  status?: string;
+  sicCodes?: string[];
+}> {
+  const apiKey = process.env.COMPANIES_HOUSE_API_KEY;
+  if (!apiKey) {
+    throw new CompanyProviderError("Company search is not configured.", 500);
+  }
+  if (!COMPANY_NUMBER_PATTERN.test(companyNumber)) {
+    throw new CompanyProviderError("Invalid company number.", 400);
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(
+      `https://api.company-information.service.gov.uk/company/${encodeURIComponent(companyNumber)}`,
+      {
+        headers: {
+          Authorization: `Basic ${Buffer.from(`${apiKey}:`).toString("base64")}`,
+        },
+        signal: AbortSignal.timeout(5000),
+      }
+    );
+  } catch (error) {
+    throw new CompanyProviderError(
+      error instanceof Error ? error.message : "Company profile request failed.",
+      502
+    );
+  }
+
+  if (response.status === 429) {
+    throw new CompanyProviderError("Company search rate limit reached.", 429);
+  }
+  if (!response.ok) {
+    throw new CompanyProviderError(`Company profile failed with status ${response.status}.`, 502);
+  }
+
+  const data: CompaniesHouseProfile = await response.json();
+  return { status: data.company_status, sicCodes: data.sic_codes };
 }

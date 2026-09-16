@@ -35,6 +35,28 @@ export default function CommentForm() {
   const [companyMeta, setCompanyMeta] = useState<CompanySearchResult | null>(
     null,
   );
+
+  async function handleCompanySelect(selected: CompanySearchResult | null) {
+    setCompanyMeta(selected);
+    if (!selected?.companyNumber) return;
+    try {
+      const res = await fetch(
+        `/api/companies/profile?number=${encodeURIComponent(selected.companyNumber)}`,
+      );
+      if (!res.ok) return;
+      const profile: { status?: string; industry?: string } = await res.json();
+      setCompanyMeta((current) =>
+        current?.companyNumber === selected.companyNumber
+          ? { ...current, status: profile.status ?? current.status, industry: profile.industry ?? current.industry }
+          : current,
+      );
+    } catch (error) {
+      // Enrichment is optional — the base selection (name, number, location)
+      // already came back from search, so a failed profile fetch just means
+      // the industry/status badge won't show.
+      console.error("[comments] company profile enrichment failed:", error);
+    }
+  }
   const [body, setBody] = useState("");
   const [email, setEmail] = useState("");
   const [mobile, setMobile] = useState("");
@@ -96,6 +118,9 @@ export default function CommentForm() {
       formData.set("fullName", fullName);
       if (company.trim()) formData.set("company", company.trim());
       if (companyMeta?.id) formData.set("companyId", companyMeta.id);
+      if (companyMeta?.companyNumber)
+        formData.set("companyNumber", companyMeta.companyNumber);
+      if (companyMeta?.status) formData.set("companyStatus", companyMeta.status);
       if (companyMeta?.domain)
         formData.set("companyDomain", companyMeta.domain);
       if (companyMeta?.logo) formData.set("companyLogo", companyMeta.logo);
@@ -103,6 +128,10 @@ export default function CommentForm() {
         formData.set("companyIndustry", companyMeta.industry);
       if (companyMeta?.location)
         formData.set("companyLocation", companyMeta.location);
+      formData.set(
+        "companySource",
+        company.trim() ? (companyMeta ? companyMeta.source : "manual") : "",
+      );
       formData.set("body", body);
       formData.set("email", email);
       formData.set("mobile", mobile);
@@ -456,8 +485,8 @@ export default function CommentForm() {
               maxLength={160}
               value={company}
               onChange={setCompany}
-              onSelect={setCompanyMeta}
-              placeholder="Search for your company…"
+              onSelect={handleCompanySelect}
+              placeholder="Search UK company..."
             />
           </div>
         </div>

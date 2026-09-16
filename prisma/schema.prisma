@@ -158,6 +158,9 @@ model Comment {
   fullName        String
   company         String?
   companyId       String?
+  companyNumber   String?
+  companyStatus   String?
+  companySource   String?
   companyDomain   String?
   companyLogo     String?
   companyIndustry String?
@@ -181,6 +184,9 @@ model CommentVerification {
   fullName        String
   company         String?
   companyId       String?
+  companyNumber   String?
+  companyStatus   String?
+  companySource   String?
   companyDomain   String?
   companyLogo     String?
   companyIndustry String?

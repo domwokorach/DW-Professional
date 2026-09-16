@@ -85,20 +85,24 @@ export default function Footer() {
             </h2>
             <ul className="mt-3 space-y-1">
               <li>
-                <Link
-                  href={localiseHref("/privacy")}
-                  className="inline-flex min-h-11 items-center rounded px-1 text-sm text-muted transition-colors hover:text-white"
+                <a
+                  href="https://www.dominicwokorach.me/en-gb/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-11 items-center rounded px-1 text-sm text-muted transition-colors duration-150 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
                 >
                   Privacy Policy
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
-                  href={localiseHref("/terms")}
-                  className="inline-flex min-h-11 items-center rounded px-1 text-sm text-muted transition-colors hover:text-white"
+                <a
+                  href="https://www.dominicwokorach.me/en-gb"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-11 items-center rounded px-1 text-sm text-muted transition-colors duration-150 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
                 >
-                  Terms of Use
-                </Link>
+                  Terms and Conditions
+                </a>
               </li>
               <li>
                 <Link

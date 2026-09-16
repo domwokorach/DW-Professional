@@ -202,20 +202,13 @@ export const AnimatedThemeToggler = ({
   }, [isControlled])
 
   const toggleTheme = useCallback(() => {
-    console.log("DEBUG toggleTheme called", { isDark, isControlled, theme })
     const button = buttonRef.current
     if (
       !button ||
       isTransitioningRef.current ||
       document.documentElement.dataset.magicuiThemeVt === "active"
-    ) {
-      console.log("DEBUG toggleTheme early return", {
-        hasButton: !!button,
-        isTransitioning: isTransitioningRef.current,
-        vtActive: document.documentElement.dataset.magicuiThemeVt,
-      })
+    )
       return
-    }
 
     // innerWidth/innerHeight (not visualViewport): percentages must resolve
     // against the snapshot reference box, which includes classic scrollbars.
@@ -294,12 +287,7 @@ export const AnimatedThemeToggler = ({
 
     isTransitioningRef.current = true
     const transition = document.startViewTransition(() => {
-      try {
-        flushSync(applyTheme)
-      } catch (e) {
-        console.error("DEBUG applyTheme threw", e)
-        throw e
-      }
+      flushSync(applyTheme)
     })
     if (typeof transition?.finished?.finally === "function") {
       transition.finished.finally(cleanup).catch(() => {})
@@ -341,9 +329,15 @@ export const AnimatedThemeToggler = ({
     <button
       type="button"
       ref={buttonRef}
-      onClick={toggleTheme}
-      className={cn(className)}
       {...props}
+      // Composed (not just spread before) so a consumer's own onClick, or one
+      // injected by a wrapper like Radix's Slot/asChild (e.g. a Tooltip
+      // trigger), can't silently clobber the toggle behavior.
+      onClick={(event) => {
+        props.onClick?.(event)
+        toggleTheme()
+      }}
+      className={cn(className)}
     >
       {isDark ? <Sun /> : <Moon />}
       <span className="sr-only">Toggle theme</span>
