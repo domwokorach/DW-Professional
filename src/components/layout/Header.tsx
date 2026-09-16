@@ -6,7 +6,7 @@ import { Menu, X } from "lucide-react";
 import { navigation, headerNavigation, flattenNavIds, buildTopLevelMap } from "@/data/navigation";
 import MobileNavigation from "./MobileNavigation";
 import ResumeDownloadModal from "@/components/resume/ResumeDownloadModal";
-import ThemeModeButton from "@/components/ui/ThemeModeButton";
+import { ThemeToggle } from "@/components/theme-toggle";
 import LanguageSelector from "./LanguageSelector";
 import { localisedPathname, stripLocale } from "@/i18n/config";
 import { useLocale } from "@/i18n/LocaleProvider";
@@ -110,7 +110,7 @@ export default function Header() {
           <div className="hidden md:block">
             <LanguageSelector />
           </div>
-          <ThemeModeButton />
+          <ThemeToggle />
           <button
             onClick={() => setResumeOpen(true)}
             className="hidden md:inline-flex items-center rounded-full border border-line px-4 py-2 text-sm text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
