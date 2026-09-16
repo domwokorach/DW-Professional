@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import Script from "next/script";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/theme-provider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 import { LocaleProvider } from "@/i18n/LocaleProvider";
 import { defaultLocale, isRtlLocale, normaliseLocale } from "@/i18n/config";
@@ -81,25 +82,18 @@ export default async function RootLayout({
       className={`${inter.variable} ${jetbrains.variable}`}
       suppressHydrationWarning
     >
-      <head>
-        <Script id="theme-preference" strategy="beforeInteractive">
-          {`(() => {
-            let preference = "system";
-            try {
-              const saved = localStorage.getItem("theme-preference-v1");
-              if (saved === "light" || saved === "dark" || saved === "system") {
-                preference = saved;
-              }
-            } catch {}
-            const isDark = preference === "dark" ||
-              (preference === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
-            document.documentElement.dataset.theme = isDark ? "dark" : "light";
-          })();`}
-        </Script>
-      </head>
       <body className="font-sans antialiased">
-        <LocaleProvider initialLocale={locale}>{children}</LocaleProvider>
-        <Toaster />
+        <ThemeProvider
+          attribute="data-theme"
+          defaultTheme="system"
+          enableSystem
+          storageKey="theme-preference-v1"
+        >
+          <TooltipProvider delayDuration={200}>
+            <LocaleProvider initialLocale={locale}>{children}</LocaleProvider>
+            <Toaster />
+          </TooltipProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

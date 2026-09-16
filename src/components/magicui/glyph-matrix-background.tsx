@@ -30,8 +30,8 @@ function readTheme(): "dark" | "light" {
  * content-critical contrast requirements on top of it. Skips the animated
  * canvas entirely under prefers-reduced-motion so it never introduces motion
  * for users who've asked to avoid it. Tracks the `data-theme` attribute set
- * by ThemeModeButton (this project has no next-themes context) so the glyph
- * colour follows the same light/dark switch as the rest of the UI.
+ * by next-themes (see components/theme-provider.tsx) so the glyph colour
+ * follows the same light/dark switch as the rest of the UI.
  */
 export default function GlyphMatrixBackground({
   className,

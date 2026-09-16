@@ -5,6 +5,7 @@ import { headerNavigation, social, type NavItem } from "@/data/navigation";
 import { Highlighter } from "@/components/magicui/highlighter";
 import { GithubIcon, LinkedinIcon } from "@/components/icons/SocialIcons";
 import LanguageSelector from "./LanguageSelector";
+import { ThemeToggleMobile } from "@/components/theme-toggle";
 
 function MobileNavItem({
   item,
@@ -68,6 +69,13 @@ export default function MobileNavigation({
           </nav>
 
           <div className="mx-auto w-full max-w-content px-6 pb-6 sm:px-8">
+            <div className="mb-3 border-t border-line pt-4">
+              <p className="mb-2 px-3 text-xs font-medium uppercase tracking-wide text-muted">
+                Theme
+              </p>
+              <ThemeToggleMobile />
+            </div>
+
             <div className="mb-3">
               <LanguageSelector mobile />
             </div>
