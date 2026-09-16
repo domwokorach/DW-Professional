@@ -1,0 +1,11 @@
+import { chromium } from "playwright";
+const browser = await chromium.launch();
+const page = await browser.newPage();
+page.on("pageerror", (err) => console.log("ERR:", err.message));
+page.on("console", (msg) => console.log("LOG:", msg.text()));
+await page.goto("http://localhost:3000/en-gb/privacy", { waitUntil: "load", timeout: 60000 });
+await page.waitForSelector('button[aria-label="Toggle theme"]:not([disabled])');
+await page.click('button[aria-label="Toggle theme"]:not([disabled])');
+await page.waitForTimeout(1000);
+console.log("theme after:", await page.evaluate(() => document.documentElement.getAttribute("data-theme")));
+await browser.close();
