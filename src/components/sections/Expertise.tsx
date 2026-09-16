@@ -4,9 +4,8 @@ import { motion } from "framer-motion";
 import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
-import { LogoTimeline } from "@/components/ui/logo-timeline";
+import FullStackOverview from "@/components/sections/FullStackOverview";
 import { skillCategories } from "@/data/skills";
-import { techLogoItems } from "@/data/techLogos";
 import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
 
 const CATEGORY_ANCHORS: Record<string, string> = {
@@ -117,16 +116,7 @@ export default function Expertise() {
           Additional technologies
         </MotionReveal>
 
-        <MotionReveal delay={0.2} className="mt-16">
-          <p className="font-mono text-xs tracking-widest text-muted">FULL STACK OVERVIEW</p>
-          <div className="mt-6 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
-            <LogoTimeline
-              items={techLogoItems}
-              height="h-[460px] sm:h-[560px]"
-              className="py-4"
-            />
-          </div>
-        </MotionReveal>
+        <FullStackOverview />
       </Container>
     </section>
   );
