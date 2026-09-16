@@ -202,13 +202,20 @@ export const AnimatedThemeToggler = ({
   }, [isControlled])
 
   const toggleTheme = useCallback(() => {
+    console.log("DEBUG toggleTheme called", { isDark, isControlled, theme })
     const button = buttonRef.current
     if (
       !button ||
       isTransitioningRef.current ||
       document.documentElement.dataset.magicuiThemeVt === "active"
-    )
+    ) {
+      console.log("DEBUG toggleTheme early return", {
+        hasButton: !!button,
+        isTransitioning: isTransitioningRef.current,
+        vtActive: document.documentElement.dataset.magicuiThemeVt,
+      })
       return
+    }
 
     // innerWidth/innerHeight (not visualViewport): percentages must resolve
     // against the snapshot reference box, which includes classic scrollbars.
