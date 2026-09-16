@@ -45,11 +45,14 @@ export default function CommentForm() {
       );
       if (!res.ok) return;
       const profile: { status?: string; industry?: string } = await res.json();
-      setCompanyMeta((current) =>
-        current?.companyNumber === selected.companyNumber
-          ? { ...current, status: profile.status ?? current.status, industry: profile.industry ?? current.industry }
-          : current,
-      );
+      setCompanyMeta((current) => {
+        if (!current || current.companyNumber !== selected.companyNumber) return current;
+        return {
+          ...current,
+          status: profile.status ?? current.status,
+          industry: profile.industry ?? current.industry,
+        };
+      });
     } catch (error) {
       // Enrichment is optional — the base selection (name, number, location)
       // already came back from search, so a failed profile fetch just means
