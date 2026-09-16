@@ -80,9 +80,14 @@ export default function CookieConsentManager() {
             </p>
 
             <p className="mt-3 text-sm">
-              <Link href="/privacy" className="text-muted underline hover:text-white transition-colors">
+              <a
+                href="https://www.dominicwokorach.me/en-gb/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted underline transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+              >
                 Privacy Policy
-              </Link>
+              </a>
               <span className="mx-2 text-muted">·</span>
               <Link href="/cookies" className="text-muted underline hover:text-white transition-colors">
                 Cookie Policy
