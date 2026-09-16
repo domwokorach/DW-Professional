@@ -458,3 +458,7 @@ html[data-high-contrast="true"] :focus-visible {
     transform: translateX(var(--move-x-to));
   }
 }
+  ::view-transition-old(root), ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
