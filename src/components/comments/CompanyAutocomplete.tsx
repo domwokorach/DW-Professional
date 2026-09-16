@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Building2, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { cn } from "@/lib/utils";
-import type { CompanySearchResult } from "@/types/company";
+import type { CompanySearchResult, CompanyStatus } from "@/types/company";
 
 const MIN_QUERY_LENGTH = 2;
 const DEBOUNCE_MS = 400;
@@ -33,6 +34,20 @@ function highlightMatch(name: string, term: string) {
       {name.slice(index + term.length)}
     </>
   );
+}
+
+function formatStatus(status: CompanyStatus | undefined): string | null {
+  if (!status) return null;
+  return status
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function statusVariant(status: CompanyStatus | undefined): "secondary" | "outline" | "destructive" {
+  if (status === "active") return "secondary";
+  if (status === "dissolved" || status === "liquidation" || status === "administration") return "destructive";
+  return "outline";
 }
 
 // Module-level so results survive re-renders (and re-mounts within the same
@@ -120,8 +135,7 @@ export default function CompanyAutocomplete({
 
   const trimmedValue = value.trim();
   const showDropdown = isOpen && trimmedValue.length >= MIN_QUERY_LENGTH;
-  const showManualOption =
-    showDropdown && status !== "loading" && trimmedValue.length > 0 && !results.some((c) => c.name === trimmedValue);
+  const showManualOption = showDropdown && status !== "loading" && trimmedValue.length > 0;
   const manualOptionIndex = results.length;
 
   const activeDescendant =
@@ -168,11 +182,11 @@ export default function CompanyAutocomplete({
   }
 
   const statusMessage = useMemo(() => {
-    if (status === "loading") return "Searching companies…";
-    if (status === "error") return "We couldn't load company suggestions. You can continue by entering the company name manually.";
-    if (status === "idle" && results.length === 0) return "No matching company found.";
+    if (status === "loading") return "Searching UK companies…";
+    if (status === "error") return "Unable to search companies right now. You can still enter your company manually.";
+    if (status === "idle" && results.length === 0) return `No UK companies found for "${trimmedValue}".`;
     return null;
-  }, [status, results.length]);
+  }, [status, results.length, trimmedValue]);
 
   return (
     <div ref={containerRef} className="relative">
@@ -194,7 +208,7 @@ export default function CompanyAutocomplete({
           }}
           onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
-          placeholder={placeholder ?? "Search for your company…"}
+          placeholder={placeholder ?? "Search UK company..."}
           className={status === "loading" ? "pr-9" : undefined}
         />
         {status === "loading" ? (
@@ -222,7 +236,7 @@ export default function CompanyAutocomplete({
           {status === "loading" && results.length === 0 ? (
             <li className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted">
               <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
-              Searching companies…
+              Searching UK companies…
             </li>
           ) : (
             <>
@@ -231,45 +245,60 @@ export default function CompanyAutocomplete({
                   {statusMessage}
                 </li>
               ) : (
-                results.map((company, index) => (
-                  <li
-                    key={company.id}
-                    id={`${listboxId}-option-${index}`}
-                    role="option"
-                    aria-selected={index === activeIndex}
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      selectCompany(company);
-                    }}
-                    onMouseEnter={() => setActiveIndex(index)}
-                    className={cn(
-                      "flex cursor-pointer items-start gap-2.5 px-3 py-2.5 text-sm transition-colors",
-                      index === activeIndex ? "bg-accent/20 text-white" : "text-white hover:bg-accent/10"
-                    )}
-                  >
-                    {company.logo ? (
-                      // eslint-disable-next-line @next/next/no-img-element -- external, unpredictable-domain logos; not worth Image's remote-pattern config for a small autocomplete thumbnail
-                      <img
-                        src={company.logo}
-                        alt=""
-                        className="mt-0.5 h-6 w-6 shrink-0 rounded-full border border-line object-cover"
-                      />
-                    ) : null}
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate font-medium">{highlightMatch(company.name, value)}</div>
-                      {(company.industry || company.location) && (
-                        <div className="mt-0.5 truncate text-xs text-muted">
-                          {[company.industry, company.location].filter(Boolean).join(" · ")}
-                        </div>
+                results.map((company, index) => {
+                  const statusLabel = formatStatus(company.status);
+                  return (
+                    <li
+                      key={company.id}
+                      id={`${listboxId}-option-${index}`}
+                      role="option"
+                      aria-selected={index === activeIndex}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        selectCompany(company);
+                      }}
+                      onMouseEnter={() => setActiveIndex(index)}
+                      className={cn(
+                        "flex cursor-pointer items-start gap-2.5 px-3 py-2.5 text-sm transition-colors",
+                        index === activeIndex ? "bg-accent/20 text-white" : "text-white hover:bg-accent/10"
                       )}
-                      {company.domain ? (
-                        <div className="truncate text-xs text-muted/80">{company.domain}</div>
-                      ) : company.companyNumber ? (
-                        <div className="truncate text-xs text-muted/80">No. {company.companyNumber}</div>
-                      ) : null}
-                    </div>
-                  </li>
-                ))
+                    >
+                      {company.logo ? (
+                        // eslint-disable-next-line @next/next/no-img-element -- external, unpredictable-domain logos; not worth Image's remote-pattern config for a small autocomplete thumbnail
+                        <img
+                          src={company.logo}
+                          alt=""
+                          className="mt-0.5 h-6 w-6 shrink-0 rounded-full border border-line object-cover"
+                        />
+                      ) : (
+                        <Building2
+                          className="mt-0.5 h-6 w-6 shrink-0 rounded-full border border-line p-1 text-muted"
+                          aria-hidden="true"
+                        />
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-2">
+                          <span className="truncate font-medium">{highlightMatch(company.name, value)}</span>
+                          {statusLabel ? (
+                            <Badge variant={statusVariant(company.status)} className="shrink-0">
+                              {statusLabel}
+                            </Badge>
+                          ) : null}
+                        </div>
+                        {company.companyNumber ? (
+                          <div className="mt-0.5 truncate text-xs text-muted/80">
+                            Company No. {company.companyNumber}
+                          </div>
+                        ) : null}
+                        {(company.industry || company.location) && (
+                          <div className="mt-0.5 truncate text-xs text-muted">
+                            {[company.industry, company.location].filter(Boolean).join(" · ")}
+                          </div>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })
               )}
 
               {showManualOption ? (
@@ -287,7 +316,17 @@ export default function CompanyAutocomplete({
                     activeIndex === manualOptionIndex ? "bg-accent/20 text-white" : "text-muted hover:bg-accent/10 hover:text-white"
                   )}
                 >
-                  <span className="font-medium text-accent">+</span> Use &ldquo;{trimmedValue}&rdquo; as company
+                  {results.length === 0 ? (
+                    <>
+                      Can&rsquo;t find your company?{" "}
+                      <span className="font-medium text-accent">Enter &ldquo;{trimmedValue}&rdquo; manually</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="font-medium text-accent">Can&rsquo;t find your company?</span> Enter &ldquo;
+                      {trimmedValue}&rdquo; manually
+                    </>
+                  )}
                 </li>
               ) : null}
             </>
