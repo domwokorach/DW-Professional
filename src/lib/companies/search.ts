@@ -1,6 +1,9 @@
 import type { CompanySearchResult } from "@/types/company";
 
-const COMPANIES_HOUSE_SEARCH_URL = "https://api.company-information.service.gov.uk/search/companies";
+// TEMP: pointed at the Companies House sandbox host until a genuine Live
+// REST application key is provisioned (the current key only works here).
+const COMPANIES_HOUSE_BASE_URL = "https://api-sandbox.company-information.service.gov.uk";
+const COMPANIES_HOUSE_SEARCH_URL = `${COMPANIES_HOUSE_BASE_URL}/search/companies`;
 
 export const COMPANY_SEARCH_MIN_QUERY_LENGTH = 2;
 export const COMPANY_SEARCH_MAX_QUERY_LENGTH = 160;
@@ -125,7 +128,7 @@ export async function fetchCompanyProfile(companyNumber: string): Promise<{
   let response: Response;
   try {
     response = await fetch(
-      `https://api.company-information.service.gov.uk/company/${encodeURIComponent(companyNumber)}`,
+      `${COMPANIES_HOUSE_BASE_URL}/company/${encodeURIComponent(companyNumber)}`,
       {
         headers: {
           Authorization: `Basic ${Buffer.from(`${apiKey}:`).toString("base64")}`,
