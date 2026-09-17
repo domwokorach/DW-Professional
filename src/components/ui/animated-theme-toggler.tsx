@@ -15,7 +15,7 @@ export type TransitionVariant =
   | "rectangle"
   | "star"
 
-interface AnimatedThemeTogglerProps extends React.ComponentPropsWithoutRef<"button"> {
+interface AnimatedThemeTogglerProps extends React.ComponentProps<"button"> {
   duration?: number
   variant?: TransitionVariant
   /** When true, the transition expands from the viewport center instead of the button center. */
@@ -157,6 +157,7 @@ export const AnimatedThemeToggler = ({
   fromCenter = false,
   theme,
   onThemeChange,
+  ref: forwardedRef,
   ...props
 }: AnimatedThemeTogglerProps) => {
   const shape = variant ?? "circle"
@@ -328,11 +329,20 @@ export const AnimatedThemeToggler = ({
   return (
     <button
       type="button"
-      ref={buttonRef}
       {...props}
-      // Composed (not just spread before) so a consumer's own onClick, or one
-      // injected by a wrapper like Radix's Slot/asChild (e.g. a Tooltip
-      // trigger), can't silently clobber the toggle behavior.
+      // Composed (not just spread before) so a consumer's own ref/onClick, or
+      // one injected by a wrapper like Radix's Slot/asChild (e.g. a Tooltip
+      // trigger merging its own ref/onClick via React 19's ref-as-prop),
+      // can't silently clobber this component's own DOM ref or click
+      // behavior.
+      ref={(node) => {
+        buttonRef.current = node
+        if (typeof forwardedRef === "function") {
+          forwardedRef(node)
+        } else if (forwardedRef) {
+          forwardedRef.current = node
+        }
+      }}
       onClick={(event) => {
         props.onClick?.(event)
         toggleTheme()
