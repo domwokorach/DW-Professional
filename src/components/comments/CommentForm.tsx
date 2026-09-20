@@ -489,7 +489,7 @@ export default function CommentForm() {
               value={company}
               onChange={setCompany}
               onSelect={handleCompanySelect}
-              placeholder="Search UK company..."
+              placeholder="Search UK companies"
             />
           </div>
         </div>

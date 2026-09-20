@@ -228,6 +228,32 @@ model Conversation {
   @@index([status, lastMessageAt])
 }
 
+// Local mirror of Companies House's free "Basic Company Data" bulk CSV
+// export (https://download.companieshouse.gov.uk/en_output.html), imported
+// via scripts/import-companies-house-csv.mjs. Company search reads from this
+// table instead of calling the Companies House REST API — no API key or
+// network dependency at request time.
+model CompanyRecord {
+  id                String    @id @default(cuid())
+  companyNumber     String    @unique
+  name              String
+  status            String?
+  category          String?
+  incorporationDate DateTime?
+  addressLine1      String?
+  addressLine2      String?
+  locality          String?
+  region            String?
+  postalCode        String?
+  country           String?
+  sicCodes          String[]  @default([])
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([name])
+  @@index([status])
+}
+
 model Message {
   id              String        @id @default(cuid())
   conversationId  String

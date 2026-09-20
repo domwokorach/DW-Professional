@@ -8,10 +8,9 @@ import { mapSicCodesToIndustry } from "@/lib/companies/sic";
 export const runtime = "nodejs";
 
 /**
- * Proxies a single Companies House company profile lookup, used only after
- * the candidate has selected a company from search — it enriches the
- * selection with status + an industry derived from SIC codes. Never call
- * this from the browser with the API key; it stays server-side.
+ * Looks up a single company in the local CompanyRecord table, used only
+ * after the candidate has selected a company from search — it enriches the
+ * selection with status + an industry derived from SIC codes.
  */
 export async function GET(request: NextRequest) {
   const ip = extractClientIp(request.headers) ?? "unknown";
