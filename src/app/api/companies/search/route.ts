@@ -7,6 +7,7 @@ import {
   COMPANY_SEARCH_MIN_QUERY_LENGTH,
   COMPANY_SEARCH_MAX_QUERY_LENGTH,
   COMPANY_SEARCH_LETTER_PATTERN,
+  COMPANY_SEARCH_RESULT_LIMIT,
 } from "@/lib/companies/search";
 import type { CompanySearchResult } from "@/types/company";
 
@@ -67,7 +68,13 @@ export async function GET(request: NextRequest) {
 
   try {
     const { companies, totalResults } = await searchCompanies(query, startIndex);
-    return companyResponse(companies, { totalResults });
+    // start_index is capped above, so nothing past that offset is ever
+    // reachable — report the total as capped too, or "Load more" (which
+    // compares results.length against totalResults) would never disable
+    // once the cap is hit, and would keep re-appending the same clamped
+    // page of results forever.
+    const reachableTotal = Math.min(totalResults, MAX_START_INDEX + COMPANY_SEARCH_RESULT_LIMIT);
+    return companyResponse(companies, { totalResults: reachableTotal });
   } catch (error) {
     if (error instanceof CompanyProviderError) {
       if (error.status === 400) {
