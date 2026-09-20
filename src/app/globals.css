@@ -89,6 +89,33 @@ html[data-theme="dark"] {
   background: #090909;
 }
 
+/* Companies House autocomplete status badges — accessible in both themes. */
+.bg-status-active-bg {
+  background-color: rgba(34, 197, 94, 0.16);
+}
+.text-status-active-fg {
+  color: #4ade80;
+}
+.bg-status-negative-bg {
+  background-color: rgba(248, 113, 113, 0.16);
+}
+.text-status-negative-fg {
+  color: #f87171;
+}
+
+html[data-theme="light"] .bg-status-active-bg {
+  background-color: #dcfce7 !important;
+}
+html[data-theme="light"] .text-status-active-fg {
+  color: #15803d !important;
+}
+html[data-theme="light"] .bg-status-negative-bg {
+  background-color: #fee2e2 !important;
+}
+html[data-theme="light"] .text-status-negative-fg {
+  color: #b91c1c !important;
+}
+
 html[data-theme="light"] body {
   background-color: #f8fafc !important;
   color: #172033 !important;

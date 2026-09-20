@@ -1,51 +1,66 @@
+import { db } from "@/lib/database/db";
 import type { CompanySearchResult } from "@/types/company";
-
-// TEMP: pointed at the Companies House sandbox host until a genuine Live
-// REST application key is provisioned (the current key only works here).
-const COMPANIES_HOUSE_BASE_URL = "https://api-sandbox.company-information.service.gov.uk";
-const COMPANIES_HOUSE_SEARCH_URL = `${COMPANIES_HOUSE_BASE_URL}/search/companies`;
 
 export const COMPANY_SEARCH_MIN_QUERY_LENGTH = 2;
 export const COMPANY_SEARCH_MAX_QUERY_LENGTH = 160;
-export const COMPANY_SEARCH_RESULT_LIMIT = 8;
+export const COMPANY_SEARCH_RESULT_LIMIT = 20;
 
-interface CompaniesHouseSearchItem {
-  title?: string;
-  company_number?: string;
-  company_status?: string;
-  address_snippet?: string;
-  registered_office_address?: {
-    address_line_1?: string;
-    locality?: string;
-    postal_code?: string;
+// A single A–Z browse letter is a valid query on its own even though it's
+// shorter than COMPANY_SEARCH_MIN_QUERY_LENGTH — see the A–Z filter in
+// CompanyAutocomplete.
+export const COMPANY_SEARCH_LETTER_PATTERN = /^[A-Z]$/i;
+
+export interface CompanySearchPage {
+  companies: CompanySearchResult[];
+  totalResults: number;
+}
+
+interface CompanyRecordRow {
+  companyNumber: string;
+  name: string;
+  status: string | null;
+  category: string | null;
+  incorporationDate: Date | null;
+  addressLine1: string | null;
+  addressLine2: string | null;
+  locality: string | null;
+  region: string | null;
+  postalCode: string | null;
+  country: string | null;
+  sicCodes: string[];
+}
+
+function normalizeAddress(row: CompanyRecordRow) {
+  const { addressLine1, addressLine2, locality, region, postalCode, country } = row;
+  if (!addressLine1 && !addressLine2 && !locality && !region && !postalCode && !country) {
+    return undefined;
+  }
+  return {
+    addressLine1: addressLine1 ?? undefined,
+    addressLine2: addressLine2 ?? undefined,
+    locality: locality ?? undefined,
+    region: region ?? undefined,
+    postalCode: postalCode ?? undefined,
+    country: country ?? undefined,
   };
 }
 
-interface CompaniesHouseSearchResponse {
-  items?: CompaniesHouseSearchItem[];
-}
-
-interface CompaniesHouseProfile {
-  company_status?: string;
-  sic_codes?: string[];
-}
-
-function formatLocation(item: CompaniesHouseSearchItem): string | undefined {
-  if (item.address_snippet) return item.address_snippet;
-  const office = item.registered_office_address;
-  if (!office) return undefined;
-  const parts = [office.address_line_1, office.locality, office.postal_code].filter(Boolean);
+function formatLocation(row: CompanyRecordRow): string | undefined {
+  const parts = [row.locality, row.postalCode].filter(Boolean);
   return parts.length > 0 ? parts.join(", ") : undefined;
 }
 
-function normalize(item: CompaniesHouseSearchItem, index: number): CompanySearchResult | null {
-  if (!item.title) return null;
+function normalize(row: CompanyRecordRow): CompanySearchResult {
   return {
-    id: item.company_number ?? `${item.title}-${index}`,
-    name: item.title,
-    companyNumber: item.company_number,
-    status: item.company_status,
-    location: formatLocation(item),
+    id: row.companyNumber,
+    name: row.name,
+    companyNumber: row.companyNumber,
+    status: row.status ?? undefined,
+    type: row.category ?? undefined,
+    dateOfCreation: row.incorporationDate?.toISOString().slice(0, 10),
+    address: normalizeAddress(row),
+    location: formatLocation(row),
+    sicCodes: row.sicCodes,
     source: "companies-house",
   };
 }
@@ -61,95 +76,62 @@ export class CompanyProviderError extends Error {
 }
 
 /**
- * Server-side only: calls the Companies House public search API with the
- * API key as the Basic Auth username (no password) per their auth scheme,
- * and normalizes the response to just what the UI needs. Never call this
- * from the browser — COMPANIES_HOUSE_API_KEY must stay server-only.
+ * Searches the local CompanyRecord table — a mirror of Companies House's
+ * free "Basic Company Data" bulk CSV export, imported via
+ * scripts/import-companies-house-csv.mjs — instead of calling the Companies
+ * House REST API. No API key, no rate limit from an upstream provider, no
+ * network dependency at request time.
  */
-export async function searchCompanies(query: string): Promise<CompanySearchResult[]> {
-  const apiKey = process.env.COMPANIES_HOUSE_API_KEY;
-  if (!apiKey) {
-    throw new CompanyProviderError("Company search is not configured.", 500);
-  }
+export async function searchCompanies(query: string, startIndex = 0): Promise<CompanySearchPage> {
+  const isLetterBrowse = COMPANY_SEARCH_LETTER_PATTERN.test(query);
 
-  const url = new URL(COMPANIES_HOUSE_SEARCH_URL);
-  url.searchParams.set("q", query);
-  url.searchParams.set("items_per_page", String(COMPANY_SEARCH_RESULT_LIMIT));
+  const where = {
+    status: "active",
+    name: isLetterBrowse ? { startsWith: query, mode: "insensitive" as const } : { contains: query, mode: "insensitive" as const },
+  };
 
-  let response: Response;
   try {
-    response = await fetch(url.toString(), {
-      headers: {
-        Authorization: `Basic ${Buffer.from(`${apiKey}:`).toString("base64")}`,
-      },
-      signal: AbortSignal.timeout(5000),
-    });
+    const [rows, totalResults] = await Promise.all([
+      db.companyRecord.findMany({
+        where,
+        orderBy: { name: "asc" },
+        skip: startIndex,
+        take: COMPANY_SEARCH_RESULT_LIMIT,
+      }),
+      db.companyRecord.count({ where }),
+    ]);
+
+    return { companies: rows.map(normalize), totalResults };
   } catch (error) {
     throw new CompanyProviderError(
-      error instanceof Error ? error.message : "Company search request failed.",
+      error instanceof Error ? error.message : "Company search query failed.",
       502
     );
   }
-
-  if (response.status === 429) {
-    throw new CompanyProviderError("Company search rate limit reached.", 429);
-  }
-  if (!response.ok) {
-    throw new CompanyProviderError(`Company search failed with status ${response.status}.`, 502);
-  }
-
-  const data: CompaniesHouseSearchResponse = await response.json();
-  const items = data.items ?? [];
-  return items
-    .map(normalize)
-    .filter((result): result is CompanySearchResult => result !== null)
-    .slice(0, COMPANY_SEARCH_RESULT_LIMIT);
 }
 
 const COMPANY_NUMBER_PATTERN = /^[A-Z0-9]{1,10}$/i;
 
 /**
- * Server-side only: fetches a single company's profile (status + SIC codes)
- * so the UI can show the industry/status only after the candidate has
- * picked a specific company, rather than on every search result.
+ * Fetches a single company's profile (status + SIC codes) from the local
+ * table so the UI can enrich a selection with industry/status details.
  */
 export async function fetchCompanyProfile(companyNumber: string): Promise<{
   status?: string;
   sicCodes?: string[];
 }> {
-  const apiKey = process.env.COMPANIES_HOUSE_API_KEY;
-  if (!apiKey) {
-    throw new CompanyProviderError("Company search is not configured.", 500);
-  }
   if (!COMPANY_NUMBER_PATTERN.test(companyNumber)) {
     throw new CompanyProviderError("Invalid company number.", 400);
   }
 
-  let response: Response;
   try {
-    response = await fetch(
-      `${COMPANIES_HOUSE_BASE_URL}/company/${encodeURIComponent(companyNumber)}`,
-      {
-        headers: {
-          Authorization: `Basic ${Buffer.from(`${apiKey}:`).toString("base64")}`,
-        },
-        signal: AbortSignal.timeout(5000),
-      }
-    );
+    const row = await db.companyRecord.findUnique({ where: { companyNumber } });
+    if (!row) return {};
+    return { status: row.status ?? undefined, sicCodes: row.sicCodes };
   } catch (error) {
     throw new CompanyProviderError(
-      error instanceof Error ? error.message : "Company profile request failed.",
+      error instanceof Error ? error.message : "Company profile query failed.",
       502
     );
   }
-
-  if (response.status === 429) {
-    throw new CompanyProviderError("Company search rate limit reached.", 429);
-  }
-  if (!response.ok) {
-    throw new CompanyProviderError(`Company profile failed with status ${response.status}.`, 502);
-  }
-
-  const data: CompaniesHouseProfile = await response.json();
-  return { status: data.company_status, sicCodes: data.sic_codes };
 }
