@@ -82,12 +82,22 @@ export class CompanyProviderError extends Error {
  * House REST API. No API key, no rate limit from an upstream provider, no
  * network dependency at request time.
  */
+// Prisma's `contains`/`startsWith` filters interpolate the value straight
+// into a Postgres ILIKE pattern without escaping it — a query containing a
+// literal "%" or "_" would otherwise act as a SQL wildcard instead of a
+// literal character. Postgres's default LIKE escape character is "\", so
+// escaping that first (then the two metacharacters) neutralizes it.
+function escapeLikePattern(value: string): string {
+  return value.replace(/\\/g, "\\\\").replace(/%/g, "\\%").replace(/_/g, "\\_");
+}
+
 export async function searchCompanies(query: string, startIndex = 0): Promise<CompanySearchPage> {
   const isLetterBrowse = COMPANY_SEARCH_LETTER_PATTERN.test(query);
+  const pattern = escapeLikePattern(query);
 
   const where = {
     status: "active",
-    name: isLetterBrowse ? { startsWith: query, mode: "insensitive" as const } : { contains: query, mode: "insensitive" as const },
+    name: isLetterBrowse ? { startsWith: pattern, mode: "insensitive" as const } : { contains: pattern, mode: "insensitive" as const },
   };
 
   try {
