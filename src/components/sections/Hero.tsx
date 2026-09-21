@@ -39,16 +39,23 @@ export default function Hero() {
       <AnimatedBackground className="z-10" />
 
       <div className="absolute inset-y-0 right-0 z-10 w-full lg:w-[48%]" aria-hidden>
-        <div className="relative h-full w-full">
-          <Image
-            src="/images/dominic/portrait.jpg"
-            alt=""
-            fill
-            priority
-            quality={80}
-            sizes="(min-width: 1024px) 48vw, 100vw"
-            className="object-cover object-top opacity-[0.35] lg:opacity-90"
-          />
+        <div className="relative h-full w-full overflow-hidden">
+          <motion.div
+            className="absolute inset-0 origin-center"
+            initial={{ scale: 1 }}
+            animate={{ scale: reduceMotion === false ? 1.015 : 1 }}
+            transition={{ duration: reduceMotion === false ? 16 : 0, ease: "easeInOut" }}
+          >
+            <Image
+              src="https://res.cloudinary.com/dkkuwmr42/image/upload/v1790020464/dominic_ie0owj.png"
+              alt=""
+              fill
+              priority
+              quality={80}
+              sizes="(min-width: 1024px) 48vw, 100vw"
+              className="object-cover object-top opacity-[0.35] lg:opacity-90"
+            />
+          </motion.div>
           <div
             className="absolute inset-0 hidden lg:block"
             style={{
