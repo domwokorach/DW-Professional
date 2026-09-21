@@ -10,6 +10,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import Button from "@/components/ui/Button";
 import BorderGlow from "@/components/ui/BorderGlow";
 import CompanyAutocomplete from "@/components/comments/CompanyAutocomplete";
+import MobileNumberInput, {
+  type MobileNumberChange,
+} from "@/components/comments/MobileNumberInput";
 import {
   COMMENT_BODY_MAX_LENGTH,
   ALLOWED_AVATAR_TYPES,
@@ -62,7 +65,11 @@ export default function CommentForm() {
   }
   const [body, setBody] = useState("");
   const [email, setEmail] = useState("");
-  const [mobile, setMobile] = useState("");
+  const [mobile, setMobile] = useState<MobileNumberChange>({
+    raw: "",
+    e164: null,
+    isValid: false,
+  });
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [avatarError, setAvatarError] = useState<string | null>(null);
@@ -137,7 +144,7 @@ export default function CommentForm() {
       );
       formData.set("body", body);
       formData.set("email", email);
-      formData.set("mobile", mobile);
+      formData.set("mobile", mobile.e164 ?? mobile.raw);
       if (avatarFile) formData.set("avatar", avatarFile);
 
       let res: Response;
@@ -509,15 +516,7 @@ export default function CommentForm() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="comment-mobile">Mobile number</Label>
-            <Input
-              id="comment-mobile"
-              type="tel"
-              required
-              maxLength={20}
-              value={mobile}
-              onChange={(e) => setMobile(e.target.value)}
-              placeholder="+44 7000 000000"
-            />
+            <MobileNumberInput id="comment-mobile" required onChange={setMobile} />
           </div>
         </div>
 
@@ -563,7 +562,7 @@ export default function CommentForm() {
             !fullName.trim() ||
             !body.trim() ||
             !email.trim() ||
-            !mobile.trim()
+            !mobile.isValid
           }
         >
           {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
