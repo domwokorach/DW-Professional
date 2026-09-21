@@ -10,6 +10,7 @@ import GlyphMatrixBackground from "@/components/magicui/glyph-matrix-background"
 import UKGreeting from "@/components/ui/UKGreeting";
 import WeatherWidget from "@/components/weather/WeatherWidget";
 import DecryptedText from "@/components/ui/DecryptedText";
+import { PulseDot } from "@/components/loading-ui/pulse-dot";
 
 const headlineLines = ["Software Engineer", "& Frontend Developer"];
 
@@ -133,7 +134,10 @@ export default function Hero() {
             transition={{ duration: 0.7, delay: 1 }}
             className="tablet-white mt-10 flex items-center gap-2 text-xs text-muted"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden />
+            <PulseDot
+              aria-label="Available"
+              className="h-1.5 w-1.5 text-emerald-500 dark:text-emerald-400"
+            />
             Available for freelance opportunities
           </motion.div>
         </div>
