@@ -13,8 +13,7 @@ import type { CompanySearchResult } from "@/types/company";
 
 export const runtime = "nodejs";
 
-const UNAVAILABLE_MESSAGE =
-  "Company search is temporarily unavailable. You can continue without selecting a company.";
+const UNAVAILABLE_MESSAGE = "Unable to load companies. Please try again.";
 const RATE_LIMITED_MESSAGE = "Too many company searches. Please try again shortly.";
 const MAX_START_INDEX = 500;
 
@@ -27,12 +26,11 @@ function companyResponse(
 }
 
 /**
- * Searches the local CompanyRecord table (a mirror of Companies House's free
- * bulk CSV export — see scripts/import-companies-house-csv.mjs) rather than
- * calling the Companies House REST API. A query failure (DB unavailable,
- * etc.) is always reported as a soft error alongside an empty `companies`
- * array — the field is optional, so nothing here may block the surrounding
- * form from submitting.
+ * Proxies UK company name search to the Companies House REST API
+ * (see src/lib/companies/search.ts) so the API key stays server-side. A
+ * query failure (bad key, upstream outage, etc.) is always reported as a
+ * soft error alongside an empty `companies` array — the field is optional,
+ * so nothing here may block the surrounding form from submitting.
  */
 export async function GET(request: NextRequest) {
   const ip = extractClientIp(request.headers) ?? "unknown";
