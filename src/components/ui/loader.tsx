@@ -15,7 +15,8 @@ export interface LoaderProps {
     | "terminal"
     | "text-blink"
     | "text-shimmer"
-    | "loading-dots";
+    | "loading-dots"
+    | "orbit";
   size?: "sm" | "md" | "lg";
   text?: string;
   className?: string;
@@ -311,6 +312,42 @@ export function TextDotsLoader({
   );
 }
 
+export function OrbitRingLoader({
+  className,
+  size = "md",
+  label = "Loading",
+}: {
+  className?: string;
+  size?: "sm" | "md" | "lg";
+  label?: string;
+}) {
+  const sizeClasses = { sm: "size-6", md: "size-10", lg: "size-14" };
+
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className={cn("orbit-ring relative shrink-0", sizeClasses[size], className)}
+    >
+      <span className="sr-only">{label}</span>
+    </div>
+  );
+}
+
+export function FullPageLoader({
+  label = "Loading",
+  className,
+}: {
+  label?: string;
+  className?: string;
+}) {
+  return (
+    <div className={cn("flex min-h-dvh w-full items-center justify-center px-6 py-16", className)}>
+      <OrbitRingLoader size="md" label={label} className="size-10 sm:size-12 lg:size-16" />
+    </div>
+  );
+}
+
 function Loader({ variant = "circular", size = "md", text, className }: LoaderProps) {
   switch (variant) {
     case "circular":
@@ -337,6 +374,8 @@ function Loader({ variant = "circular", size = "md", text, className }: LoaderPr
       return <TextShimmerLoader text={text} size={size} className={className} />;
     case "loading-dots":
       return <TextDotsLoader text={text} size={size} className={className} />;
+    case "orbit":
+      return <OrbitRingLoader size={size} className={className} label={text} />;
     default:
       return <CircularLoader size={size} className={className} />;
   }

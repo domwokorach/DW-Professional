@@ -20,6 +20,7 @@
   "registries": {
     "@animate-ui": "https://animate-ui.com/r/{name}.json",
     "@magicui": "https://magicui.design/r/{name}",
-    "@eldoraui": "https://eldoraui.site/r/{name}.json"
+    "@eldoraui": "https://eldoraui.site/r/{name}.json",
+    "@loading-ui": "https://loading-ui.com/r/{name}.json"
   }
 }
