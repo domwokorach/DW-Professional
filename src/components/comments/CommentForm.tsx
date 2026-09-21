@@ -10,9 +10,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import Button from "@/components/ui/Button";
 import BorderGlow from "@/components/ui/BorderGlow";
 import CompanyAutocomplete from "@/components/comments/CompanyAutocomplete";
-import MobileNumberInput, {
-  type MobileNumberChange,
-} from "@/components/comments/MobileNumberInput";
 import {
   COMMENT_BODY_MAX_LENGTH,
   ALLOWED_AVATAR_TYPES,
@@ -32,11 +29,8 @@ function initials(name: string): string {
   return (parts[0][0] + (parts[1]?.[0] ?? "")).toUpperCase();
 }
 
-type VerificationChannel = "email" | "sms";
-
 export default function CommentForm() {
   const [fullName, setFullName] = useState("");
-  const [channel, setChannel] = useState<VerificationChannel>("email");
   const [company, setCompany] = useState("");
   const [companyMeta, setCompanyMeta] = useState<CompanySearchResult | null>(
     null,
@@ -68,11 +62,6 @@ export default function CommentForm() {
   }
   const [body, setBody] = useState("");
   const [email, setEmail] = useState("");
-  const [mobile, setMobile] = useState<MobileNumberChange>({
-    raw: "",
-    e164: null,
-    isValid: false,
-  });
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [avatarError, setAvatarError] = useState<string | null>(null);
@@ -147,8 +136,6 @@ export default function CommentForm() {
       );
       formData.set("body", body);
       formData.set("email", email);
-      formData.set("mobile", mobile.e164 ?? mobile.raw);
-      formData.set("channel", channel);
       if (avatarFile) formData.set("avatar", avatarFile);
 
       let res: Response;
@@ -161,7 +148,7 @@ export default function CommentForm() {
         // fetch() itself only rejects for a genuine network failure (offline,
         // DNS, CORS) — this is the one case that's actually "check your
         // connection", so it keeps that message and nothing else does.
-        console.error("[comments] fetch failed:", fetchError);
+        console.warn("[comments] fetch failed:", fetchError);
         throw new Error(
           "Network error. Please check your connection and try again.",
         );
@@ -178,7 +165,7 @@ export default function CommentForm() {
         // The server responded, but not with JSON — e.g. a platform error
         // page for an unhandled exception. This is a real server-side
         // failure, not a client network issue, so it gets its own message.
-        console.error("[comments] unexpected response body:", parseError);
+        console.warn("[comments] unexpected response body:", parseError);
         throw new Error(
           "Unexpected response from the server. Please try again shortly.",
         );
@@ -193,7 +180,7 @@ export default function CommentForm() {
       setRequestId(data.requestId);
       setResendCooldown(COMMENT_PIN_RESEND_COOLDOWN_SECONDS);
     } catch (error) {
-      console.error("[comments] submit failed:", error);
+      console.warn("[comments] submit failed:", error);
       setErrorMessage(
         error instanceof Error
           ? error.message
@@ -219,7 +206,7 @@ export default function CommentForm() {
           body: JSON.stringify({ requestId, pin }),
         });
       } catch (fetchError) {
-        console.error("[comments] verify fetch failed:", fetchError);
+        console.warn("[comments] verify fetch failed:", fetchError);
         throw new Error(
           "Network error. Please check your connection and try again.",
         );
@@ -229,7 +216,7 @@ export default function CommentForm() {
       try {
         data = await res.json();
       } catch (parseError) {
-        console.error(
+        console.warn(
           "[comments] unexpected verify response body:",
           parseError,
         );
@@ -247,7 +234,7 @@ export default function CommentForm() {
 
       setSubmitted(true);
     } catch (error) {
-      console.error("[comments] verify failed:", error);
+      console.warn("[comments] verify failed:", error);
       setErrorMessage(
         error instanceof Error
           ? error.message
@@ -273,7 +260,7 @@ export default function CommentForm() {
           body: JSON.stringify({ requestId }),
         });
       } catch (fetchError) {
-        console.error("[comments] resend fetch failed:", fetchError);
+        console.warn("[comments] resend fetch failed:", fetchError);
         throw new Error(
           "Network error. Please check your connection and try again.",
         );
@@ -287,7 +274,7 @@ export default function CommentForm() {
       try {
         data = await res.json();
       } catch (parseError) {
-        console.error(
+        console.warn(
           "[comments] unexpected resend response body:",
           parseError,
         );
@@ -312,7 +299,7 @@ export default function CommentForm() {
       );
       setResendMessage("We've sent a new code to your email.");
     } catch (error) {
-      console.error("[comments] resend failed:", error);
+      console.warn("[comments] resend failed:", error);
       setErrorMessage(
         error instanceof Error
           ? error.message
@@ -351,12 +338,11 @@ export default function CommentForm() {
           </Alert>
         ) : null}
         <h3 className="text-lg font-semibold text-white">
-          {channel === "sms" ? "Check your phone" : "Check your email"}
+          Check your email
         </h3>
         <p className="mx-auto mt-1 max-w-sm text-sm text-muted">
-          We sent a 6-digit code to{" "}
-          {channel === "sms" ? mobile.e164 ?? mobile.raw : email}. Enter it
-          below to confirm your comment.
+          We sent a 6-digit code to {email}. Enter it below to confirm your
+          comment.
         </p>
         <div className="mx-auto mt-6 max-w-[220px] space-y-2 text-left">
           <Label htmlFor="comment-pin">Verification code</Label>
@@ -419,7 +405,7 @@ export default function CommentForm() {
           }}
           className="mt-2 block w-full text-xs text-muted hover:text-white"
         >
-          {channel === "sms" ? "Use a different number" : "Use a different email"}
+          Use a different email
         </button>
       </form>
     );
@@ -521,38 +507,6 @@ export default function CommentForm() {
               placeholder="sarah@example.com"
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="comment-mobile">Mobile number</Label>
-            <MobileNumberInput id="comment-mobile" required onChange={setMobile} />
-          </div>
-        </div>
-
-        <div className="mt-4 space-y-2">
-          <span className="block text-sm font-medium">Send my verification code by</span>
-          <div role="radiogroup" aria-label="Verification code delivery method" className="flex gap-2">
-            {(
-              [
-                { value: "email", label: "Email" },
-                { value: "sms", label: "Text message" },
-              ] as const
-            ).map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                role="radio"
-                aria-checked={channel === option.value}
-                onClick={() => setChannel(option.value)}
-                className={cn(
-                  "rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors",
-                  channel === option.value
-                    ? "border-accent bg-accent/15 text-accent"
-                    : "border-line text-muted hover:border-accent/60 hover:text-white",
-                )}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
         </div>
 
         <div className="mt-4 space-y-2">
@@ -582,13 +536,11 @@ export default function CommentForm() {
 
         <p className="mt-4 text-xs text-muted">
           When you click &ldquo;Submit Comment&rdquo;, we will use your email
-          address and mobile number to verify your details. A verification PIN
-          will be sent to{" "}
-          {channel === "sms" ? "your mobile number by text message" : "your email address"}
-          . Please enter the PIN to confirm your submission. After
-          verification, your comment will be sent to the administrator for
-          review. Your comment will only appear publicly on the website after
-          it has been approved.
+          address to verify your details. A verification PIN will be sent to
+          your email address. Please enter the PIN to confirm your
+          submission. After verification, your comment will be sent to the
+          administrator for review. Your comment will only appear publicly on
+          the website after it has been approved.
         </p>
 
         <Button
@@ -598,8 +550,7 @@ export default function CommentForm() {
             submitting ||
             !fullName.trim() ||
             !body.trim() ||
-            !email.trim() ||
-            !mobile.isValid
+            !email.trim()
           }
         >
           {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}

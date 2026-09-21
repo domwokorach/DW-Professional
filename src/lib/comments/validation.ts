@@ -51,20 +51,11 @@ const companyMetaFieldsSchema = {
 
 export const submitCommentSchema = z.object(commentFieldsSchema);
 
-export const commentVerificationChannelSchema = z.enum(["email", "sms"]).default("email");
-
-/** Step 1: submit the comment plus contact details, which triggers a PIN by email or SMS (visitor's choice). */
+/** Step 1: submit the comment plus contact details, which triggers a PIN by email. */
 export const sendCommentPinSchema = z.object({
   ...commentFieldsSchema,
   ...companyMetaFieldsSchema,
   email: z.string().trim().toLowerCase().email("Enter a valid email address.").max(254),
-  mobile: z
-    .string()
-    .trim()
-    .min(7, "Enter a valid mobile number.")
-    .max(20, "Enter a valid mobile number.")
-    .regex(/^[0-9+()\s-]+$/, "Enter a valid mobile number."),
-  channel: commentVerificationChannelSchema,
 });
 
 /** Step 2: confirm the PIN sent to the submitter's email. */

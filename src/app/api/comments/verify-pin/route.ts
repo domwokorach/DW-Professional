@@ -3,7 +3,6 @@ import { db } from "@/lib/database/db";
 import { apiError, validationError } from "@/lib/auth/apiError";
 import { checkRateLimit } from "@/lib/auth/rateLimit";
 import { hashToken } from "@/lib/auth/tokens";
-import { checkCommentPinSms } from "@/services/sms/sms.service";
 import { verifyCommentPinSchema } from "@/lib/comments/validation";
 import { toPublicComment } from "@/lib/comments/toPublicComment";
 
@@ -45,17 +44,7 @@ export async function POST(request: NextRequest) {
     return apiError("too_many_attempts", "Too many incorrect attempts. Please submit your comment again.", 429);
   }
 
-  let codeIsCorrect: boolean;
-  if (verification.channel === "SMS") {
-    try {
-      codeIsCorrect = await checkCommentPinSms(verification.mobile, pin);
-    } catch (error) {
-      console.error("[api/comments/verify-pin] SMS verification check failed:", error);
-      return apiError("internal_error", "We couldn't verify that code. Please try again shortly.", 502);
-    }
-  } else {
-    codeIsCorrect = hashToken(pin) === verification.pinHash;
-  }
+  const codeIsCorrect = hashToken(pin) === verification.pinHash;
 
   if (!codeIsCorrect) {
     await db.commentVerification.update({
