@@ -1,11 +1,13 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Grid from "@mui/material/Grid";
 import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
 import TextType from "@/components/ui/TextType";
+import ShowMoreButton from "@/components/ui/ShowMoreButton";
+import { useExpandable } from "@/hooks/use-expandable";
 import { services } from "@/data/services";
 import { aiCapabilities } from "@/data/aiServices";
 import { fadeUp } from "@/lib/animations";
@@ -29,7 +31,14 @@ const AI_CAPABILITY_ANCHORS: Record<string, string> = {
   "Deployment & Production Readiness": "production-readiness",
 };
 
+const COLLAPSE_TRANSITION = { duration: 0.28, ease: [0.4, 0, 0.2, 1] } as const;
+
+const MotionGrid = motion.create(Grid);
+
 export default function Services() {
+  const servicesList = useExpandable(services, { base: 4, sm: 6, md: 6 });
+  const aiCapabilitiesList = useExpandable(aiCapabilities, { base: 4, sm: 6, md: 6 });
+
   return (
     <section id="services" className="relative border-t border-line py-28 sm:py-36">
       <Container>
@@ -50,56 +59,74 @@ export default function Services() {
         </MotionReveal>
 
         <Grid
+          id={servicesList.listId}
           container
           className="mt-16"
           rowSpacing={{ xs: 2, sm: 3, md: 4 }}
           columnSpacing={{ xs: 2, sm: 3, md: 4 }}
         >
-          {services.map((service, i) => (
-            <Grid key={service.title} size={{ xs: 12, sm: 6, md: 4 }}>
-              <MotionReveal
-                id={SERVICE_ANCHORS[service.title]}
-                variants={fadeUp}
-                delay={0.04 * i}
-                className="block h-full scroll-mt-24"
+          <AnimatePresence initial={false}>
+            {servicesList.visibleItems.map((service, i) => (
+              <MotionGrid
+                key={service.title}
+                size={{ xs: 12, sm: 6, md: 4 }}
+                exit={{ opacity: 0, y: 8, transition: COLLAPSE_TRANSITION }}
               >
-                <motion.article
-                  whileHover="hover"
-                  className="group flex h-full flex-col rounded-2xl border border-line bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.04]"
+                <MotionReveal
+                  id={SERVICE_ANCHORS[service.title]}
+                  variants={fadeUp}
+                  delay={0.04 * i}
+                  className="block h-full scroll-mt-24"
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <h3 className="break-words text-xl font-medium text-white transition-colors duration-200 group-hover:text-accent">
-                      {service.title}
-                    </h3>
-                    <motion.span
-                      variants={{ hover: { x: 6 } }}
-                      transition={{ duration: 0.2 }}
-                      className="shrink-0 text-xl text-muted"
-                      aria-hidden
-                    >
-                      →
-                    </motion.span>
-                  </div>
-
-                  <ProtectedParagraph className="mt-3 flex-1 text-sm leading-[1.7] text-muted">
-                    {service.description}
-                  </ProtectedParagraph>
-
-                  <ul className="mt-5 flex flex-wrap gap-2">
-                    {service.items.map((item) => (
-                      <li
-                        key={item}
-                        className="rounded-full border border-line px-3 py-1 text-xs font-mono text-muted"
+                  <motion.article
+                    whileHover="hover"
+                    className="group flex h-full flex-col rounded-2xl border border-line bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.04]"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <h3 className="break-words text-xl font-medium text-white transition-colors duration-200 group-hover:text-accent">
+                        {service.title}
+                      </h3>
+                      <motion.span
+                        variants={{ hover: { x: 6 } }}
+                        transition={{ duration: 0.2 }}
+                        className="shrink-0 text-xl text-muted"
+                        aria-hidden
                       >
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </motion.article>
-              </MotionReveal>
-            </Grid>
-          ))}
+                        →
+                      </motion.span>
+                    </div>
+
+                    <ProtectedParagraph className="mt-3 flex-1 text-sm leading-[1.7] text-muted">
+                      {service.description}
+                    </ProtectedParagraph>
+
+                    <ul className="mt-5 flex flex-wrap gap-2">
+                      {service.items.map((item) => (
+                        <li
+                          key={item}
+                          className="rounded-full border border-line px-3 py-1 text-xs font-mono text-muted"
+                        >
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </motion.article>
+                </MotionReveal>
+              </MotionGrid>
+            ))}
+          </AnimatePresence>
         </Grid>
+
+        {servicesList.hasMore && (
+          <div className="mt-8 flex justify-center">
+            <ShowMoreButton
+              expanded={servicesList.expanded}
+              onToggle={servicesList.toggle}
+              controls={servicesList.listId}
+              label="services"
+            />
+          </div>
+        )}
 
         <div id="ai-professional" className="mt-24 scroll-mt-24">
           <MotionReveal>
@@ -118,13 +145,18 @@ export default function Services() {
             </ProtectedParagraph>
           </MotionReveal>
 
-          <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {aiCapabilities.map((group, i) => (
+          <div
+            id={aiCapabilitiesList.listId}
+            className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
+          >
+            <AnimatePresence initial={false}>
+            {aiCapabilitiesList.visibleItems.map((group, i) => (
               <motion.article
                 key={group.title}
                 id={AI_CAPABILITY_ANCHORS[group.title]}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8, transition: COLLAPSE_TRANSITION }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{
                   duration: 0.6,
@@ -167,7 +199,19 @@ export default function Services() {
                 </ul>
               </motion.article>
             ))}
+            </AnimatePresence>
           </div>
+
+          {aiCapabilitiesList.hasMore && (
+            <div className="mt-8 flex justify-center">
+              <ShowMoreButton
+                expanded={aiCapabilitiesList.expanded}
+                onToggle={aiCapabilitiesList.toggle}
+                controls={aiCapabilitiesList.listId}
+                label="AI capabilities"
+              />
+            </div>
+          )}
         </div>
       </Container>
     </section>

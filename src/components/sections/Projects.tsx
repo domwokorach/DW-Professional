@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import Grid from "@mui/material/Grid";
 import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
@@ -8,10 +9,16 @@ import ProjectCard from "@/components/project/ProjectCard";
 import FeaturedProjectCard from "@/components/project/FeaturedProjectCard";
 import CaseStudyCard from "@/components/project/CaseStudyCard";
 import ProjectDropdownFilter from "@/components/project/ProjectDropdownFilter";
+import ShowMoreButton from "@/components/ui/ShowMoreButton";
+import { useExpandable } from "@/hooks/use-expandable";
 import { projects } from "@/data/projects";
 import { caseStudies } from "@/data/caseStudies";
 import { projectReveal } from "@/lib/animations";
 import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
+
+const COLLAPSE_TRANSITION = { duration: 0.28, ease: [0.4, 0, 0.2, 1] } as const;
+
+const MotionGrid = motion.create(Grid);
 
 const CASE_STUDY_ANCHORS: Record<string, string> = {
   "innovation-x": "innovation-x-internal-search",
@@ -46,6 +53,9 @@ const CASE_STUDY_DROPDOWN_ITEMS = [
 export default function Projects() {
   const orgGraphCaseStudy = caseStudies.find((c) => c.slug === "innovation-x-org-graph");
   const otherCaseStudies = caseStudies.filter((c) => c.slug !== "innovation-x-org-graph");
+
+  const projectsList = useExpandable(projects, { base: 4, sm: 6, md: 6 });
+  const caseStudiesList = useExpandable(otherCaseStudies, { base: 4, sm: 6, md: 6 });
 
   return (
     <section id="projects" className="relative scroll-mt-24 border-t border-line py-28 sm:py-36">
@@ -100,24 +110,42 @@ export default function Projects() {
           </MotionReveal>
 
           <Grid
+            id={projectsList.listId}
             container
             className="mt-8"
             rowSpacing={{ xs: 2, sm: 3, md: 4 }}
             columnSpacing={{ xs: 2, sm: 3, md: 4 }}
           >
-            {projects.map((project, i) => (
-              <Grid key={project.slug} size={{ xs: 12, sm: 6, md: 4 }}>
-                <MotionReveal
-                  id={project.slug}
-                  variants={projectReveal}
-                  delay={0.05 * i}
-                  className="block h-full scroll-mt-24"
+            <AnimatePresence initial={false}>
+              {projectsList.visibleItems.map((project, i) => (
+                <MotionGrid
+                  key={project.slug}
+                  size={{ xs: 12, sm: 6, md: 4 }}
+                  exit={{ opacity: 0, y: 8, transition: COLLAPSE_TRANSITION }}
                 >
-                  <ProjectCard project={project} index={i} />
-                </MotionReveal>
-              </Grid>
-            ))}
+                  <MotionReveal
+                    id={project.slug}
+                    variants={projectReveal}
+                    delay={0.05 * i}
+                    className="block h-full scroll-mt-24"
+                  >
+                    <ProjectCard project={project} index={i} />
+                  </MotionReveal>
+                </MotionGrid>
+              ))}
+            </AnimatePresence>
           </Grid>
+
+          {projectsList.hasMore && (
+            <div className="mt-8 flex justify-center">
+              <ShowMoreButton
+                expanded={projectsList.expanded}
+                onToggle={projectsList.toggle}
+                controls={projectsList.listId}
+                label="freelance projects"
+              />
+            </div>
+          )}
         </div>
 
         <div id="case-studies" className="mt-24 scroll-mt-24">
@@ -150,13 +178,19 @@ export default function Projects() {
           )}
 
           <Grid
+            id={caseStudiesList.listId}
             container
             className="mt-8"
             rowSpacing={{ xs: 2, sm: 3, md: 4 }}
             columnSpacing={{ xs: 2, sm: 3, md: 4 }}
           >
-            {otherCaseStudies.map((caseStudy, i) => (
-              <Grid key={caseStudy.slug} size={{ xs: 12, sm: 6, md: 4 }}>
+            <AnimatePresence initial={false}>
+            {caseStudiesList.visibleItems.map((caseStudy, i) => (
+              <MotionGrid
+                key={caseStudy.slug}
+                size={{ xs: 12, sm: 6, md: 4 }}
+                exit={{ opacity: 0, y: 8, transition: COLLAPSE_TRANSITION }}
+              >
                 <MotionReveal
                   id={CASE_STUDY_ANCHORS[caseStudy.slug]}
                   variants={projectReveal}
@@ -165,9 +199,21 @@ export default function Projects() {
                 >
                   <CaseStudyCard caseStudy={caseStudy} />
                 </MotionReveal>
-              </Grid>
+              </MotionGrid>
             ))}
+            </AnimatePresence>
           </Grid>
+
+          {caseStudiesList.hasMore && (
+            <div className="mt-8 flex justify-center">
+              <ShowMoreButton
+                expanded={caseStudiesList.expanded}
+                onToggle={caseStudiesList.toggle}
+                controls={caseStudiesList.listId}
+                label="case studies"
+              />
+            </div>
+          )}
         </div>
       </Container>
     </section>

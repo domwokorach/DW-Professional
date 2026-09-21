@@ -1,10 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
 import FullStackOverview from "@/components/sections/FullStackOverview";
+import ShowMoreButton from "@/components/ui/ShowMoreButton";
+import { useExpandable } from "@/hooks/use-expandable";
 import { skillCategories } from "@/data/skills";
 import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
 
@@ -22,6 +24,12 @@ const CATEGORY_ANCHORS: Record<string, string> = {
 };
 
 export default function Expertise() {
+  const { visibleItems, hasMore, expanded, toggle, listId } = useExpandable(skillCategories, {
+    base: 4,
+    sm: 6,
+    md: 8,
+  });
+
   return (
     <section id="expertise" className="relative border-t border-line py-28 sm:py-36">
       <Container>
@@ -41,13 +49,15 @@ export default function Expertise() {
           </ProtectedParagraph>
         </MotionReveal>
 
-        <div className="mt-16 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {skillCategories.map((category, i) => (
+        <div id={listId} className="mt-16 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <AnimatePresence initial={false}>
+          {visibleItems.map((category, i) => (
             <motion.article
               key={category.title}
               id={CATEGORY_ANCHORS[category.title]}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8, transition: { duration: 0.28, ease: [0.4, 0, 0.2, 1] } }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: (i % 3) * 0.06 }}
               className="group relative scroll-mt-24 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.04]"
@@ -104,7 +114,19 @@ export default function Expertise() {
               </ul>
             </motion.article>
           ))}
+          </AnimatePresence>
         </div>
+
+        {hasMore && (
+          <div className="mt-8 flex justify-center">
+            <ShowMoreButton
+              expanded={expanded}
+              onToggle={toggle}
+              controls={listId}
+              label="technology categories"
+            />
+          </div>
+        )}
 
         <MotionReveal delay={0.15} className="mt-10 flex items-center gap-2 text-xs text-muted">
           <span className="h-2 w-2 rounded-full border border-white/20 bg-white/[0.05]" aria-hidden />
