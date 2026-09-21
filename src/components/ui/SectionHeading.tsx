@@ -1,6 +1,7 @@
 import MotionReveal from "./MotionReveal";
 import TrueFocus from "./TrueFocus";
 import TextType from "./TextType";
+import HeadingHighlighter from "./HeadingHighlighter";
 import { titleReveal } from "@/lib/animations";
 
 const HEADING_CLASSNAME =
@@ -35,18 +36,22 @@ export default function SectionHeading({
       <MotionReveal variants={titleReveal} delay={0.05}>
         {animateHeading ? (
           <h2 className={HEADING_CLASSNAME}>
-            {headingEffect === "typing" ? (
-              <TextType
-                text={heading}
-                typingSpeed={typingSpeed}
-                initialDelay={typingDelay}
-              />
-            ) : (
-              <TrueFocus sentence={heading} />
-            )}
+            <HeadingHighlighter>
+              {headingEffect === "typing" ? (
+                <TextType
+                  text={heading}
+                  typingSpeed={typingSpeed}
+                  initialDelay={typingDelay}
+                />
+              ) : (
+                <TrueFocus sentence={heading} />
+              )}
+            </HeadingHighlighter>
           </h2>
         ) : (
-          <h2 className={HEADING_CLASSNAME}>{heading}</h2>
+          <h2 className={HEADING_CLASSNAME}>
+            <HeadingHighlighter>{heading}</HeadingHighlighter>
+          </h2>
         )}
       </MotionReveal>
     </div>
