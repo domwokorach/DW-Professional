@@ -13,11 +13,6 @@ enum CommentStatus {
   REJECTED
 }
 
-enum CommentVerificationChannel {
-  EMAIL
-  SMS
-}
-
 enum ConversationStatus {
   OPEN
   PENDING
@@ -185,7 +180,6 @@ model Comment {
 model CommentVerification {
   id              String    @id @default(cuid())
   email           String
-  mobile          String
   fullName        String
   company         String?
   companyId       String?
@@ -198,7 +192,6 @@ model CommentVerification {
   companyLocation String?
   body            String
   avatarUrl       String?
-  channel         CommentVerificationChannel @default(EMAIL)
   pinHash         String?
   attempts        Int       @default(0)
   expiresAt       DateTime

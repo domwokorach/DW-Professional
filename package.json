@@ -73,7 +73,6 @@
     "framer-motion": "^11.15.0",
     "ioredis": "^6.0.0",
     "jose": "^6.0.10",
-    "libphonenumber-js": "^1.13.13",
     "lucide-react": "^1.33.0",
     "motion": "^13.2.0",
     "nanoid": "^5.0.9",

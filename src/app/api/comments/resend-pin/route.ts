@@ -5,7 +5,6 @@ import { checkRateLimit } from "@/lib/auth/rateLimit";
 import { generatePin, hashToken } from "@/lib/auth/tokens";
 import { COMMENT_PIN_TTL_MS, COMMENT_PIN_RESEND_COOLDOWN_SECONDS } from "@/lib/auth/env";
 import { sendCommentPinEmail } from "@/services/email/email.service";
-import { sendCommentPinSms } from "@/services/sms/sms.service";
 import { resendCommentPinSchema } from "@/lib/comments/validation";
 
 export const runtime = "nodejs";
@@ -58,26 +57,19 @@ export async function POST(request: NextRequest) {
     return apiError("invalid_request", "This verification request is invalid or already used.", 400);
   }
 
-  const isSms = verification.channel === "SMS";
-  const pin = isSms ? null : generatePin();
+  const pin = generatePin();
   try {
-    if (isSms) {
-      await sendCommentPinSms(verification.mobile);
-    } else {
-      await sendCommentPinEmail({
-        to: verification.email,
-        pin: pin!,
-        expiresInMinutes: Math.round(COMMENT_PIN_TTL_MS / 60000),
-        fullName: verification.fullName,
-      });
-    }
+    await sendCommentPinEmail({
+      to: verification.email,
+      pin,
+      expiresInMinutes: Math.round(COMMENT_PIN_TTL_MS / 60000),
+      fullName: verification.fullName,
+    });
   } catch (error) {
-    console.error(`[api/comments/resend-pin] failed to send PIN ${verification.channel}:`, error);
+    console.error("[api/comments/resend-pin] failed to send PIN email:", error);
     return apiError(
-      isSms ? "sms_send_failed" : "email_send_failed",
-      isSms
-        ? "We couldn't send a verification text. Please try again shortly."
-        : "We couldn't send a verification email. Please check the address and try again.",
+      "email_send_failed",
+      "We couldn't send a verification email. Please check the address and try again.",
       502
     );
   }
@@ -86,7 +78,7 @@ export async function POST(request: NextRequest) {
     await db.commentVerification.update({
       where: { id: verification.id },
       data: {
-        pinHash: pin ? hashToken(pin) : null,
+        pinHash: hashToken(pin),
         attempts: 0,
         expiresAt: new Date(Date.now() + COMMENT_PIN_TTL_MS),
       },
@@ -99,6 +91,6 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({
     ok: true,
     retryAfterSeconds: COMMENT_PIN_RESEND_COOLDOWN_SECONDS,
-    message: isSms ? "We've texted you a new verification code." : "We've emailed you a new verification code.",
+    message: "We've emailed you a new verification code.",
   });
 }
