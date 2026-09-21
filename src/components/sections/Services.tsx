@@ -7,6 +7,7 @@ import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
 import TextType from "@/components/ui/TextType";
 import ShowMoreButton from "@/components/ui/ShowMoreButton";
+import ExpandableCardDetails from "@/components/ui/ExpandableCardDetails";
 import { useExpandable } from "@/hooks/use-expandable";
 import { services } from "@/data/services";
 import { aiCapabilities } from "@/data/aiServices";
@@ -32,6 +33,16 @@ const AI_CAPABILITY_ANCHORS: Record<string, string> = {
 };
 
 const COLLAPSE_TRANSITION = { duration: 0.28, ease: [0.4, 0, 0.2, 1] } as const;
+
+/** Number of tags shown before the rest are tucked behind Show more. */
+const SUMMARY_ITEM_COUNT = 3;
+
+function splitItems<T>(items: readonly T[]) {
+  return {
+    summary: items.slice(0, SUMMARY_ITEM_COUNT),
+    rest: items.slice(SUMMARY_ITEM_COUNT),
+  };
+}
 
 const MotionGrid = motion.create(Grid);
 
@@ -66,7 +77,9 @@ export default function Services() {
           columnSpacing={{ xs: 2, sm: 3, md: 4 }}
         >
           <AnimatePresence initial={false}>
-            {servicesList.visibleItems.map((service, i) => (
+            {servicesList.visibleItems.map((service, i) => {
+              const { summary, rest } = splitItems(service.items);
+              return (
               <MotionGrid
                 key={service.title}
                 size={{ xs: 12, sm: 6, md: 4 }}
@@ -101,7 +114,7 @@ export default function Services() {
                     </ProtectedParagraph>
 
                     <ul className="mt-5 flex flex-wrap gap-2">
-                      {service.items.map((item) => (
+                      {summary.map((item) => (
                         <li
                           key={item}
                           className="rounded-full border border-line px-3 py-1 text-xs font-mono text-muted"
@@ -110,10 +123,26 @@ export default function Services() {
                         </li>
                       ))}
                     </ul>
+
+                    {rest.length > 0 && (
+                      <ExpandableCardDetails title={service.title}>
+                        <ul className="flex flex-wrap gap-2 pt-1">
+                          {rest.map((item) => (
+                            <li
+                              key={item}
+                              className="rounded-full border border-line px-3 py-1 text-xs font-mono text-muted"
+                            >
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </ExpandableCardDetails>
+                    )}
                   </motion.article>
                 </MotionReveal>
               </MotionGrid>
-            ))}
+              );
+            })}
           </AnimatePresence>
         </Grid>
 
@@ -150,7 +179,8 @@ export default function Services() {
             className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
           >
             <AnimatePresence initial={false}>
-            {aiCapabilitiesList.visibleItems.map((group, i) => (
+            {aiCapabilitiesList.visibleItems.map((group, i) => {
+              return (
               <motion.article
                 key={group.title}
                 id={AI_CAPABILITY_ANCHORS[group.title]}
@@ -198,7 +228,8 @@ export default function Services() {
                   ))}
                 </ul>
               </motion.article>
-            ))}
+              );
+            })}
             </AnimatePresence>
           </div>
 

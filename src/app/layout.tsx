@@ -4,6 +4,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import LoadingScreen from "@/components/ui/loading-screen";
 import "./globals.css";
 import { LocaleProvider } from "@/i18n/LocaleProvider";
 import { defaultLocale, isRtlLocale, normaliseLocale } from "@/i18n/config";
@@ -90,7 +91,9 @@ export default async function RootLayout({
           storageKey="theme-preference-v1"
         >
           <TooltipProvider delayDuration={200}>
-            <LocaleProvider initialLocale={locale}>{children}</LocaleProvider>
+            <LocaleProvider initialLocale={locale}>
+              <LoadingScreen>{children}</LoadingScreen>
+            </LocaleProvider>
             <Toaster />
           </TooltipProvider>
         </ThemeProvider>
