@@ -1,5 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
+import { apiError, validationError } from "@/lib/auth/apiError";
+import { checkRateLimit } from "@/lib/auth/rateLimit";
+import { extractClientIp } from "@/lib/auth/device";
+import { contactFormSchema, BUDGET_CURRENCIES } from "@/lib/contact/validation";
+import {
+  ATTACHMENT_SIZE_ERROR,
+  ATTACHMENT_TYPE_ERROR,
+  validateAttachmentMeta,
+  verifyAttachmentSignature,
+} from "@/lib/contact/attachments";
+
+export const runtime = "nodejs";
 
 function adminRecipients(): string[] {
   if (process.env.ADMIN_NOTIFICATION_EMAIL) return [process.env.ADMIN_NOTIFICATION_EMAIL];
@@ -10,29 +22,73 @@ function adminRecipients(): string[] {
     .filter(Boolean);
 }
 
+function budgetSymbol(currency: string | undefined): string {
+  return BUDGET_CURRENCIES.find((c) => c.value === currency)?.symbol ?? "";
+}
+
+/**
+ * Handles the "Have a project in mind?" enquiry form. Always multipart —
+ * even when no file is attached — so the same parsing path is used whether
+ * or not a project brief was uploaded.
+ */
 export async function POST(request: NextRequest) {
-  let body: Record<string, unknown>;
+  const ip = extractClientIp(request.headers) ?? "unknown";
 
+  const contentType = request.headers.get("content-type") ?? "";
+  if (!contentType.includes("multipart/form-data")) {
+    return apiError("invalid_request", "Expected a multipart form submission.", 400);
+  }
+
+  const form = await request.formData().catch(() => null);
+  if (!form) return apiError("invalid_request", "Couldn't read the submitted form.", 400);
+
+  const parsed = contactFormSchema.safeParse({
+    name: form.get("name"),
+    email: form.get("email"),
+    company: form.get("company"),
+    budgetAmount: form.get("budgetAmount"),
+    budgetCurrency: form.get("budgetCurrency"),
+    budgetCurrencyOther: form.get("budgetCurrencyOther"),
+    projectType: form.get("projectType"),
+    message: form.get("message"),
+  });
+  if (!parsed.success) return validationError(parsed.error);
+  const data = parsed.data;
+
+  let ipLimit, emailLimit;
   try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+    ipLimit = await checkRateLimit(`contact-form:ip:${ip}`, 8, 60 * 60);
+    emailLimit = await checkRateLimit(`contact-form:email:${data.email}`, 5, 60 * 60);
+  } catch (error) {
+    console.error("[api/contact] rate limit check failed:", error);
+    return apiError("internal_error", "Something went wrong. Please try again shortly.", 500);
+  }
+  if (!ipLimit.allowed || !emailLimit.allowed) {
+    return apiError("rate_limited", "Too many submissions. Please try again later.", 429);
   }
 
-  const name = typeof body.name === "string" ? body.name.trim() : "";
-  const email = typeof body.email === "string" ? body.email.trim() : "";
-  const message = typeof body.message === "string" ? body.message.trim() : "";
-  const company = typeof body.company === "string" ? body.company.trim() : "";
-  const budget = typeof body.budget === "string" ? body.budget.trim() : "";
-  const projectType = typeof body.projectType === "string" ? body.projectType.trim() : "";
+  let attachment: { name: string; size: number; type: string; buffer: Buffer } | null = null;
+  const rawFile = form.get("attachment");
+  if (rawFile instanceof File && rawFile.size > 0) {
+    const metaError = validateAttachmentMeta(rawFile);
+    if (metaError) {
+      const code = metaError === ATTACHMENT_SIZE_ERROR ? "attachment_too_large" : "invalid_attachment";
+      return apiError(code, metaError, 400, { attachment: metaError });
+    }
 
-  if (!name || !message) {
-    return NextResponse.json({ error: "Name and message are required" }, { status: 400 });
-  }
+    const signatureOk = await verifyAttachmentSignature(rawFile).catch(() => false);
+    if (!signatureOk) {
+      return apiError("invalid_attachment", ATTACHMENT_TYPE_ERROR, 400, {
+        attachment: ATTACHMENT_TYPE_ERROR,
+      });
+    }
 
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailPattern.test(email)) {
-    return NextResponse.json({ error: "Invalid email address" }, { status: 400 });
+    attachment = {
+      name: rawFile.name,
+      size: rawFile.size,
+      type: rawFile.type,
+      buffer: Buffer.from(await rawFile.arrayBuffer()),
+    };
   }
 
   const resendApiKey = process.env.RESEND_API_KEY;
@@ -40,38 +96,51 @@ export async function POST(request: NextRequest) {
   const recipients = adminRecipients();
 
   if (!resendApiKey || !fromEmail || recipients.length === 0) {
-    return NextResponse.json({ error: "Contact form is not configured" }, { status: 500 });
+    return apiError("not_configured", "Contact form is not configured.", 500);
   }
 
   const resend = new Resend(resendApiKey);
 
+  const budgetLine = data.budgetAmount
+    ? data.budgetCurrency === "OTHER"
+      ? `${data.budgetAmount} ${data.budgetCurrencyOther ?? ""}`.trim()
+      : `${budgetSymbol(data.budgetCurrency)}${data.budgetAmount}`
+    : null;
+
   const detailLines = [
-    `Name: ${name}`,
-    `Email: ${email}`,
-    company && `Company: ${company}`,
-    budget && `Budget: ${budget}`,
-    projectType && `Project Type: ${projectType}`,
+    `Name: ${data.name}`,
+    `Email: ${data.email}`,
+    data.company && `Company: ${data.company}`,
+    budgetLine && `Budget: ${budgetLine}`,
+    data.projectType && `Project Type: ${data.projectType}`,
+    attachment && `Attachment: ${attachment.name} (${(attachment.size / 1024).toFixed(0)} KB)`,
     "",
-    message,
+    data.message,
   ].filter((line): line is string => Boolean(line) || line === "");
 
   try {
     const { error } = await resend.emails.send({
       from: fromEmail,
       to: recipients,
-      replyTo: email,
-      subject: `New enquiry from ${name}`,
+      replyTo: data.email,
+      subject: `New enquiry from ${data.name}`,
       text: detailLines.join("\n"),
+      attachments: attachment
+        ? [{ filename: attachment.name, content: attachment.buffer, contentType: attachment.type }]
+        : undefined,
     });
 
     if (error) {
-      console.error("Resend email error:", error);
-      return NextResponse.json({ error: "Failed to send your message" }, { status: 502 });
+      console.error("[api/contact] Resend email error:", error);
+      return apiError("email_send_failed", "Failed to send your message.", 502);
     }
   } catch (err) {
-    console.error("Resend email error:", err);
-    return NextResponse.json({ error: "Failed to send your message" }, { status: 500 });
+    console.error("[api/contact] Resend email error:", err);
+    return apiError("email_send_failed", "Failed to send your message.", 500);
   }
 
-  return NextResponse.json({ success: true });
+  return NextResponse.json({
+    success: true,
+    attachment: attachment ? { name: attachment.name, size: attachment.size, type: attachment.type } : null,
+  });
 }

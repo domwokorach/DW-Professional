@@ -1,12 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type FormEvent } from "react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import GradientText from "@/components/ui/GradientText";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
 import GlyphMatrixBackground from "@/components/magicui/glyph-matrix-background";
+import FileUploadField from "@/components/ui/FileUploadField";
+import BudgetInput from "@/components/ui/BudgetInput";
+import CompanyCsvAutocomplete from "@/components/contact/CompanyCsvAutocomplete";
 import { social } from "@/data/navigation";
+import { MESSAGE_MAX_WORDS, clampToWordLimit, countWords } from "@/lib/contact/words";
+import type { BudgetCurrency } from "@/lib/contact/validation";
 
 const projectTypes = [
   "Frontend Development",
@@ -22,19 +27,51 @@ const projectTypes = [
 const inputClasses =
   "w-full rounded-lg border border-line bg-transparent px-4 py-3 text-white placeholder:text-muted/60 outline-none transition-colors focus:border-accent";
 
+interface SubmittedAttachment {
+  name: string;
+  size: number;
+}
+
 export default function Contact() {
   const [status, setStatus] = useState<"idle" | "submitting" | "sent" | "error">(
     "idle"
   );
   const [errorMessage, setErrorMessage] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [message, setMessage] = useState("");
+  const [company, setCompany] = useState("");
+  const [budgetAmount, setBudgetAmount] = useState("");
+  const [budgetCurrency, setBudgetCurrency] = useState<BudgetCurrency | "">("");
+  const [budgetCurrencyOther, setBudgetCurrencyOther] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const [submittedAttachment, setSubmittedAttachment] = useState<SubmittedAttachment | null>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
   const successRef = useRef<HTMLHeadingElement>(null);
+  const messageHelpId = useId();
+  const companyHelpId = useId();
+
+  const wordCount = useMemo(() => countWords(message), [message]);
+  const atWordLimit = wordCount >= MESSAGE_MAX_WORDS;
 
   useEffect(() => {
     if (status === "error") errorRef.current?.focus();
     if (status === "sent") successRef.current?.focus();
   }, [status]);
+
+  function handleMessageChange(next: string) {
+    setMessage(clampToWordLimit(next, MESSAGE_MAX_WORDS));
+  }
+
+  function handleFileChange(next: File | null) {
+    setFile(next);
+    setFieldErrors((prev) => {
+      if (!prev.attachment) return prev;
+      const rest = { ...prev };
+      delete rest.attachment;
+      return rest;
+    });
+  }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -46,17 +83,29 @@ export default function Contact() {
 
     const name = String(data.get("name") || "").trim();
     const email = String(data.get("email") || "").trim();
-    const message = String(data.get("message") || "").trim();
+    const trimmedMessage = message.trim();
 
     const nextFieldErrors: Record<string, string> = {};
     if (!name) nextFieldErrors.name = "Enter your name.";
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) nextFieldErrors.email = "Enter your email address.";
-    if (!message) nextFieldErrors.message = "Enter a message.";
+    else if (!emailPattern.test(email)) nextFieldErrors.email = "Enter a valid email address.";
+    if (!trimmedMessage) nextFieldErrors.message = "Enter a message.";
+    else if (countWords(trimmedMessage) > MESSAGE_MAX_WORDS) {
+      nextFieldErrors.message = `Keep your message under ${MESSAGE_MAX_WORDS.toLocaleString()} words.`;
+    }
+    if (fileError) nextFieldErrors.attachment = fileError;
+    if (budgetAmount && !budgetCurrency) {
+      nextFieldErrors.budgetCurrency = "Choose a currency for your budget.";
+    }
+    if (budgetCurrency === "OTHER" && !budgetCurrencyOther.trim()) {
+      nextFieldErrors.budgetCurrencyOther = "Enter your currency (e.g. JPY, AUD).";
+    }
 
     if (Object.keys(nextFieldErrors).length > 0) {
       setFieldErrors(nextFieldErrors);
       setStatus("error");
-      setErrorMessage("Please correct the required fields below.");
+      setErrorMessage("Please correct the highlighted fields below.");
       return;
     }
 
@@ -67,22 +116,18 @@ export default function Contact() {
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          message,
-          company: String(data.get("company") || ""),
-          budget: String(data.get("budget") || ""),
-          projectType: String(data.get("projectType") || ""),
-        }),
+        body: data,
       });
 
       const result = await response.json().catch(() => null);
       if (!response.ok || !result?.success) {
-        throw new Error(result?.error || "Failed to send your message");
+        const message: string = result?.error?.message ?? result?.error ?? "Failed to send your message";
+        const fields: Record<string, string> = result?.error?.fields ?? {};
+        setFieldErrors(fields);
+        throw new Error(message);
       }
 
+      setSubmittedAttachment(result.attachment ?? null);
       setStatus("sent");
     } catch (err) {
       setStatus("error");
@@ -157,7 +202,7 @@ export default function Contact() {
               <div
                 role="status"
                 aria-live="polite"
-                className="flex min-h-[200px] items-center justify-center rounded-lg border border-line px-6 py-16 text-center"
+                className="flex min-h-[200px] flex-col items-center justify-center gap-2 rounded-lg border border-line px-6 py-16 text-center"
               >
                 <h3
                   ref={successRef}
@@ -166,6 +211,12 @@ export default function Contact() {
                 >
                   Thank you
                 </h3>
+                <p className="max-w-xs text-sm text-muted">
+                  Your message has been sent. I&rsquo;ll get back to you soon.
+                  {submittedAttachment
+                    ? ` I've received your file: ${submittedAttachment.name}.`
+                    : ""}
+                </p>
               </div>
             ) : (
             <form onSubmit={handleSubmit} className="space-y-5" noValidate>
@@ -187,7 +238,7 @@ export default function Contact() {
                     style={{ fontSize: "16px" }}
                   />
                   {fieldErrors.name && (
-                    <p id="name-error" className="mt-2 text-sm text-red-300">
+                    <p id="name-error" role="alert" className="mt-2 text-sm text-red-300">
                       {fieldErrors.name}
                     </p>
                   )}
@@ -209,7 +260,7 @@ export default function Contact() {
                     style={{ fontSize: "16px" }}
                   />
                   {fieldErrors.email && (
-                    <p id="email-error" className="mt-2 text-sm text-red-300">
+                    <p id="email-error" role="alert" className="mt-2 text-sm text-red-300">
                       {fieldErrors.email}
                     </p>
                   )}
@@ -222,28 +273,27 @@ export default function Contact() {
                     <GradientText>Company</GradientText>{" "}
                     <span className="text-xs">(optional)</span>
                   </label>
-                  <input
+                  <CompanyCsvAutocomplete
                     id="company"
                     name="company"
-                    type="text"
-                    autoComplete="organization"
-                    className={inputClasses}
-                    style={{ fontSize: "16px" }}
+                    value={company}
+                    onChange={setCompany}
+                    inputClassName={inputClasses}
+                    helperId={companyHelpId}
                   />
+                  <p id={companyHelpId} className="mt-1.5 text-xs text-muted">
+                    Start typing to search UK companies
+                  </p>
                 </div>
-                <div>
-                  <label htmlFor="budget" className="mb-2 block text-sm text-muted">
-                    <GradientText>Budget</GradientText>{" "}
-                    <span className="text-xs">(optional)</span>
-                  </label>
-                  <input
-                    id="budget"
-                    name="budget"
-                    type="text"
-                    className={inputClasses}
-                    style={{ fontSize: "16px" }}
-                  />
-                </div>
+                <BudgetInput
+                  amount={budgetAmount}
+                  currency={budgetCurrency}
+                  otherCurrency={budgetCurrencyOther}
+                  onAmountChange={setBudgetAmount}
+                  onCurrencyChange={setBudgetCurrency}
+                  onOtherCurrencyChange={setBudgetCurrencyOther}
+                  error={fieldErrors.budgetCurrency || fieldErrors.budgetCurrencyOther || fieldErrors.budgetAmount}
+                />
               </div>
 
               <div>
@@ -266,6 +316,16 @@ export default function Contact() {
                 </select>
               </div>
 
+              <FileUploadField
+                id="attachment"
+                name="attachment"
+                label="Project brief, screenshots or specs"
+                file={file}
+                onFileChange={handleFileChange}
+                error={fileError || fieldErrors.attachment || undefined}
+                onError={setFileError}
+              />
+
               <div>
                 <label htmlFor="message" className="mb-2 block text-sm text-muted">
                   <GradientText>Message</GradientText>{" "}
@@ -276,16 +336,31 @@ export default function Contact() {
                   name="message"
                   rows={5}
                   required
+                  value={message}
+                  onChange={(e) => handleMessageChange(e.target.value)}
                   className={inputClasses}
                   aria-invalid={Boolean(fieldErrors.message)}
-                  aria-describedby={fieldErrors.message ? "message-error" : undefined}
+                  aria-describedby={[messageHelpId, fieldErrors.message ? "message-error" : null]
+                    .filter(Boolean)
+                    .join(" ")}
                   style={{ fontSize: "16px" }}
                 />
-                {fieldErrors.message && (
-                  <p id="message-error" className="mt-2 text-sm text-red-300">
-                    {fieldErrors.message}
+                <div className="mt-1.5 flex items-center justify-between gap-3">
+                  {fieldErrors.message ? (
+                    <p id="message-error" role="alert" className="text-sm text-red-300">
+                      {fieldErrors.message}
+                    </p>
+                  ) : (
+                    <span />
+                  )}
+                  <p
+                    id={messageHelpId}
+                    aria-live="polite"
+                    className={`shrink-0 text-xs ${atWordLimit ? "text-red-300" : "text-muted"}`}
+                  >
+                    {wordCount.toLocaleString()} / {MESSAGE_MAX_WORDS.toLocaleString()} words
                   </p>
-                )}
+                </div>
               </div>
 
               <button
