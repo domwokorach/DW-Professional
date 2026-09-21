@@ -10,11 +10,9 @@ import type { CompanySearchResult, CompanyStatus } from "@/types/company";
 
 const MIN_QUERY_LENGTH = 2;
 const DEBOUNCE_MS = 350;
-const LETTER_PATTERN = /^[A-Z]$/i;
-const LETTERS = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
 
 function isValidQuery(term: string): boolean {
-  return term.length >= MIN_QUERY_LENGTH || LETTER_PATTERN.test(term);
+  return term.length >= MIN_QUERY_LENGTH;
 }
 
 interface CompanyAutocompleteProps {
@@ -103,7 +101,6 @@ export default function CompanyAutocomplete({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [selected, setSelected] = useState<CompanySearchResult | null>(null);
-  const [activeLetter, setActiveLetter] = useState<string | null>(null);
   const [totalResults, setTotalResults] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
   const debouncedValue = useDebouncedValue(value, DEBOUNCE_MS);
@@ -113,7 +110,7 @@ export default function CompanyAutocomplete({
   const listboxId = useId();
   const helperId = `${id}-helper`;
 
-  const effectiveTerm = activeLetter ?? debouncedValue.trim();
+  const effectiveTerm = debouncedValue.trim();
 
   useEffect(() => {
     const term = effectiveTerm;
@@ -202,17 +199,9 @@ export default function CompanyAutocomplete({
   }, []);
 
   const trimmedValue = value.trim();
-  const showDropdown = isOpen && (trimmedValue.length >= MIN_QUERY_LENGTH || activeLetter !== null);
+  const showDropdown = isOpen && trimmedValue.length >= MIN_QUERY_LENGTH;
   const showManualOption = showDropdown && status !== "loading" && trimmedValue.length > 0;
   const manualOptionIndex = results.length;
-
-  function selectLetter(letter: string | null) {
-    setActiveLetter(letter);
-    onChange("");
-    if (selected) onSelect?.(null);
-    setIsOpen(true);
-    inputRef.current?.focus();
-  }
 
   const activeDescendant =
     activeIndex >= 0 ? `${listboxId}-option-${activeIndex}` : undefined;
@@ -234,7 +223,6 @@ export default function CompanyAutocomplete({
 
   function clearSelection() {
     setSelected(null);
-    setActiveLetter(null);
     onChange("");
     onSelect?.(null);
     setResults([]);
@@ -328,42 +316,6 @@ export default function CompanyAutocomplete({
 
   return (
     <div ref={containerRef} className="relative">
-      <div
-        role="group"
-        aria-label="Browse UK companies alphabetically"
-        className="mb-2 flex flex-wrap gap-1"
-      >
-        <button
-          type="button"
-          onClick={() => selectLetter(null)}
-          aria-pressed={activeLetter === null}
-          className={cn(
-            "rounded-md px-1.5 py-0.5 text-[11px] font-medium transition-colors",
-            activeLetter === null
-              ? "bg-accent/25 text-accent"
-              : "text-muted hover:bg-accent/10 hover:text-white"
-          )}
-        >
-          All
-        </button>
-        {LETTERS.map((letter) => (
-          <button
-            key={letter}
-            type="button"
-            onClick={() => selectLetter(letter)}
-            aria-pressed={activeLetter === letter}
-            aria-label={`Browse companies starting with ${letter}`}
-            className={cn(
-              "rounded-md px-1.5 py-0.5 text-[11px] font-medium transition-colors",
-              activeLetter === letter
-                ? "bg-accent/25 text-accent"
-                : "text-muted hover:bg-accent/10 hover:text-white"
-            )}
-          >
-            {letter}
-          </button>
-        ))}
-      </div>
       <div className="relative">
         <Input
           ref={inputRef}
@@ -379,7 +331,6 @@ export default function CompanyAutocomplete({
           value={value}
           onChange={(e) => {
             onChange(e.target.value);
-            if (activeLetter) setActiveLetter(null);
             if (selected) onSelect?.(null);
             setIsOpen(true);
           }}

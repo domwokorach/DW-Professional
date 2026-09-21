@@ -1,8 +1,24 @@
 {
   "name": "dominic-wokorach-portfolio",
-  "private": true,
   "version": "1.0.0",
+  "private": true,
+  "description": "A modern professional portfolio showcasing my work as a Software Engineer & Frontend Developer.",
+  "homepage": "https://github.com/domwokorach/DW-Professional#readme",
+  "bugs": {
+    "url": "https://github.com/domwokorach/DW-Professional/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/domwokorach/DW-Professional.git"
+  },
   "license": "MIT",
+  "author": "Dominic Wokorach Olanya",
+  "type": "commonjs",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
   "scripts": {
     "dev": "next dev",
     "postinstall": "prisma generate --schema prisma/schema.prisma",
@@ -21,9 +37,6 @@
     "test:ci": "jest --ci --coverage --runInBand --reporters=default",
     "auth:create-admin": "node --env-file=.env.local scripts/create-admin.mjs",
     "db:seed": "tsx --env-file=.env.local prisma/seed.ts"
-  },
-  "prisma": {
-    "seed": "tsx --env-file=.env.local prisma/seed.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -60,6 +73,7 @@
     "framer-motion": "^11.15.0",
     "ioredis": "^6.0.0",
     "jose": "^6.0.10",
+    "libphonenumber-js": "^1.13.13",
     "lucide-react": "^1.33.0",
     "motion": "^13.2.0",
     "nanoid": "^5.0.9",
@@ -120,5 +134,8 @@
   "optionalDependencies": {
     "bufferutil": "^4.1.0",
     "utf-8-validate": "^6.0.6"
+  },
+  "prisma": {
+    "seed": "tsx --env-file=.env.local prisma/seed.ts"
   }
 }
