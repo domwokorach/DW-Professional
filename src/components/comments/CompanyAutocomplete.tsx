@@ -152,10 +152,7 @@ export default function CompanyAutocomplete({
         }
         if (!res.ok) {
           setStatus("error");
-          setErrorMessage(
-            data?.error ??
-              "Company search is temporarily unavailable. You can continue without selecting a company."
-          );
+          setErrorMessage(data?.error ?? "Unable to load companies. Please try again.");
           setResults([]);
           setTotalResults(0);
           return;
@@ -169,9 +166,7 @@ export default function CompanyAutocomplete({
       } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError") return;
         setStatus("error");
-        setErrorMessage(
-          "Company search is temporarily unavailable. You can continue without selecting a company."
-        );
+        setErrorMessage("Unable to load companies. Please try again.");
         setResults([]);
         setTotalResults(0);
       }
@@ -280,9 +275,9 @@ export default function CompanyAutocomplete({
   }
 
   const statusMessage = useMemo(() => {
-    if (status === "loading") return "Searching Companies House…";
-    if (status === "error") return errorMessage ?? "Company search is temporarily unavailable. You can still continue without selecting a company.";
-    if (status === "idle" && results.length === 0) return "No UK companies found";
+    if (status === "loading") return "Searching companies...";
+    if (status === "error") return errorMessage ?? "Unable to load companies. Please try again.";
+    if (status === "idle" && results.length === 0) return "No companies found.";
     return null;
   }, [status, errorMessage, results.length]);
 
@@ -367,7 +362,7 @@ export default function CompanyAutocomplete({
           {status === "loading" && results.length === 0 ? (
             <li className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted">
               <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
-              Searching Companies House…
+              Searching companies...
             </li>
           ) : (
             <>
