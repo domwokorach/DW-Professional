@@ -6,9 +6,18 @@ import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
 import FullStackOverview from "@/components/sections/FullStackOverview";
 import ShowMoreButton from "@/components/ui/ShowMoreButton";
+import ExpandableCardDetails from "@/components/ui/ExpandableCardDetails";
 import { useExpandable } from "@/hooks/use-expandable";
-import { skillCategories } from "@/data/skills";
+import { skillCategories, type SkillItem } from "@/data/skills";
 import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
+
+/** Core items stay visible by default; the rest sit behind Show more. */
+function splitSkillItems(items: SkillItem[]) {
+  const core = items.filter((item) => item.core);
+  const summary = core.length > 0 ? core : items.slice(0, Math.min(2, items.length));
+  const rest = items.filter((item) => !summary.includes(item));
+  return { summary, rest };
+}
 
 const CATEGORY_ANCHORS: Record<string, string> = {
   Frontend: "frontend",
@@ -51,7 +60,9 @@ export default function Expertise() {
 
         <div id={listId} className="mt-16 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           <AnimatePresence initial={false}>
-          {visibleItems.map((category, i) => (
+          {visibleItems.map((category, i) => {
+            const { summary, rest } = splitSkillItems(category.items);
+            return (
             <motion.article
               key={category.title}
               id={CATEGORY_ANCHORS[category.title]}
@@ -99,7 +110,7 @@ export default function Expertise() {
               </ProtectedParagraph>
 
               <ul className="relative mt-5 flex flex-wrap gap-2">
-                {category.items.map((item) => (
+                {summary.map((item) => (
                   <li
                     key={item.name}
                     className={`rounded-full border px-3 py-1.5 text-sm ${
@@ -112,8 +123,24 @@ export default function Expertise() {
                   </li>
                 ))}
               </ul>
+
+              {rest.length > 0 && (
+                <ExpandableCardDetails title={category.title} className="relative">
+                  <ul className="flex flex-wrap gap-2 pt-1">
+                    {rest.map((item) => (
+                      <li
+                        key={item.name}
+                        className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-sm text-neutral-400"
+                      >
+                        {item.name}
+                      </li>
+                    ))}
+                  </ul>
+                </ExpandableCardDetails>
+              )}
             </motion.article>
-          ))}
+            );
+          })}
           </AnimatePresence>
         </div>
 
