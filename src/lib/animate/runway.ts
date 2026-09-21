@@ -12,14 +12,13 @@ export function getRunwayClient(): RunwayML {
   return client;
 }
 
+/** Runway caps promptText at 1000 UTF-16 characters for gen4_turbo — keep this under that. */
 export const PORTRAIT_ANIMATION_PROMPT =
   "Animate only the person in this portrait; keep the background completely static and unchanged. " +
-  "Preserve their exact facial identity, facial structure, skin tone, hairstyle, hairline, smile, and " +
-  "recognizable features. Add subtle, realistic motion: gentle blinking, eyes moving slightly upward then " +
-  "downward then returning to a relaxed position, tiny natural eyebrow movement, subtle facial micro-expressions, " +
-  "slight natural breathing, a very small head tilt, and a gentle relaxed smile. Keep all motion smooth, " +
-  "controlled, realistic, and minimal. Do not animate, move, distort, blur, zoom, pan, or shift the background " +
-  "or any background objects, colors, lighting, or gradients. No parallax effect, no environmental movement, " +
-  "no background flicker. Keep the camera locked and stable: no zoom, no pan, no tilt, no shake, no reframing. " +
-  "Maintain the original centered head-and-shoulders composition. Keep facial features consistent frame to " +
-  "frame with no face warping, identity drift, eye distortion, or flickering.";
+  "Preserve their exact facial identity, structure, skin tone, hairstyle, and smile. Add subtle, realistic " +
+  "motion: gentle blinking, eyes moving slightly up then down then relaxing, tiny eyebrow movement, subtle " +
+  "micro-expressions, slight breathing, a very small head tilt, and a gentle relaxed smile. Keep motion smooth, " +
+  "controlled, and minimal. Do not move, distort, blur, zoom, pan, or shift the background or its objects, " +
+  "colors, or lighting. No parallax, no environmental movement, no flicker. Keep the camera locked: no zoom, " +
+  "pan, tilt, shake, or reframing. Maintain the centered head-and-shoulders composition. Keep facial features " +
+  "consistent frame to frame with no warping, identity drift, or eye distortion.";
