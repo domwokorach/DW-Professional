@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import ScrollVelocityText from "./ScrollVelocityText";
 
 const timeFormatter = new Intl.DateTimeFormat("en-GB", {
   timeZone: "Europe/London",
@@ -117,7 +118,7 @@ export default function UKGreeting({
               <time dateTime={iso} className="tabular-nums">
                 {zone} {time}
               </time>{" "}
-              | {date}
+              | <ScrollVelocityText className="date-text">{date}</ScrollVelocityText>
             </span>
           )}
         </motion.p>
