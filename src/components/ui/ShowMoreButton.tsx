@@ -1,9 +1,9 @@
 "use client";
 
 import { useRef } from "react";
-import { ChevronDown } from "lucide-react";
 import { useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import ShowMoreToggle from "@/components/ui/ShowMoreToggle";
 
 export interface ShowMoreButtonProps {
   expanded: boolean;
@@ -12,8 +12,6 @@ export interface ShowMoreButtonProps {
   controls: string;
   /** Noun describing the collection, e.g. "technology categories". Used only for the accessible name. */
   label: string;
-  showMoreLabel?: string;
-  showLessLabel?: string;
   className?: string;
 }
 
@@ -22,8 +20,6 @@ export default function ShowMoreButton({
   onToggle,
   controls,
   label,
-  showMoreLabel = "Show More",
-  showLessLabel = "Show Less",
   className,
 }: ShowMoreButtonProps) {
   const reduceMotion = useReducedMotion();
@@ -49,29 +45,18 @@ export default function ShowMoreButton({
   };
 
   return (
-    <button
+    <ShowMoreToggle
       ref={buttonRef}
-      type="button"
-      onClick={handleClick}
-      aria-expanded={expanded}
-      aria-controls={controls}
-      aria-label={`${expanded ? showLessLabel : showMoreLabel} ${label}`}
+      expanded={expanded}
+      onToggle={handleClick}
+      controls={controls}
+      label={label}
       className={cn(
-        "group inline-flex items-center gap-2 rounded-full border border-line px-6 py-3 text-sm font-medium text-white",
-        "transition-all duration-200 hover:border-accent/60 hover:bg-white/[0.04]",
-        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-        "active:scale-[0.97]",
+        "rounded-full border border-line px-6 py-3 text-white",
+        "hover:border-accent/60 hover:bg-white/[0.04] hover:text-white",
+        "focus-visible:outline-offset-4",
         className
       )}
-    >
-      <span>{expanded ? showLessLabel : showMoreLabel}</span>
-      <ChevronDown
-        aria-hidden="true"
-        className={cn(
-          "h-4 w-4 text-muted transition-transform duration-300 ease-out group-hover:text-accent motion-reduce:transition-none",
-          expanded && "-rotate-180"
-        )}
-      />
-    </button>
+    />
   );
 }
