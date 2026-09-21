@@ -32,8 +32,11 @@ function initials(name: string): string {
   return (parts[0][0] + (parts[1]?.[0] ?? "")).toUpperCase();
 }
 
+type VerificationChannel = "email" | "sms";
+
 export default function CommentForm() {
   const [fullName, setFullName] = useState("");
+  const [channel, setChannel] = useState<VerificationChannel>("email");
   const [company, setCompany] = useState("");
   const [companyMeta, setCompanyMeta] = useState<CompanySearchResult | null>(
     null,
@@ -145,6 +148,7 @@ export default function CommentForm() {
       formData.set("body", body);
       formData.set("email", email);
       formData.set("mobile", mobile.e164 ?? mobile.raw);
+      formData.set("channel", channel);
       if (avatarFile) formData.set("avatar", avatarFile);
 
       let res: Response;
@@ -346,10 +350,13 @@ export default function CommentForm() {
             <AlertDescription>{errorMessage}</AlertDescription>
           </Alert>
         ) : null}
-        <h3 className="text-lg font-semibold text-white">Check your email</h3>
+        <h3 className="text-lg font-semibold text-white">
+          {channel === "sms" ? "Check your phone" : "Check your email"}
+        </h3>
         <p className="mx-auto mt-1 max-w-sm text-sm text-muted">
-          We sent a 6-digit code to {email}. Enter it below to confirm your
-          comment.
+          We sent a 6-digit code to{" "}
+          {channel === "sms" ? mobile.e164 ?? mobile.raw : email}. Enter it
+          below to confirm your comment.
         </p>
         <div className="mx-auto mt-6 max-w-[220px] space-y-2 text-left">
           <Label htmlFor="comment-pin">Verification code</Label>
@@ -412,7 +419,7 @@ export default function CommentForm() {
           }}
           className="mt-2 block w-full text-xs text-muted hover:text-white"
         >
-          Use a different email
+          {channel === "sms" ? "Use a different number" : "Use a different email"}
         </button>
       </form>
     );
@@ -521,6 +528,34 @@ export default function CommentForm() {
         </div>
 
         <div className="mt-4 space-y-2">
+          <span className="block text-sm font-medium">Send my verification code by</span>
+          <div role="radiogroup" aria-label="Verification code delivery method" className="flex gap-2">
+            {(
+              [
+                { value: "email", label: "Email" },
+                { value: "sms", label: "Text message" },
+              ] as const
+            ).map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                role="radio"
+                aria-checked={channel === option.value}
+                onClick={() => setChannel(option.value)}
+                className={cn(
+                  "rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors",
+                  channel === option.value
+                    ? "border-accent bg-accent/15 text-accent"
+                    : "border-line text-muted hover:border-accent/60 hover:text-white",
+                )}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-4 space-y-2">
           <div className="flex items-center justify-between">
             <Label htmlFor="comment-body">Comment</Label>
             <span
@@ -548,10 +583,12 @@ export default function CommentForm() {
         <p className="mt-4 text-xs text-muted">
           When you click &ldquo;Submit Comment&rdquo;, we will use your email
           address and mobile number to verify your details. A verification PIN
-          will be sent to your email address. Please enter the PIN to confirm
-          your submission. After verification, your comment will be sent to the
-          administrator for review. Your comment will only appear publicly on
-          the website after it has been approved.
+          will be sent to{" "}
+          {channel === "sms" ? "your mobile number by text message" : "your email address"}
+          . Please enter the PIN to confirm your submission. After
+          verification, your comment will be sent to the administrator for
+          review. Your comment will only appear publicly on the website after
+          it has been approved.
         </p>
 
         <Button

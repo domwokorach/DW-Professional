@@ -7,6 +7,7 @@ import { extractClientIp } from "@/lib/auth/device";
 import { generatePin, hashToken } from "@/lib/auth/tokens";
 import { COMMENT_PIN_TTL_MS } from "@/lib/auth/env";
 import { sendCommentPinEmail } from "@/services/email/email.service";
+import { sendCommentPinSms } from "@/services/sms/sms.service";
 import {
   sendCommentPinSchema,
   ALLOWED_AVATAR_TYPES,
@@ -52,18 +53,22 @@ export async function POST(request: NextRequest) {
     companyLogo: form.get("companyLogo"),
     companyIndustry: form.get("companyIndustry"),
     companyLocation: form.get("companyLocation"),
+    channel: form.get("channel"),
   });
   if (!parsed.success) return validationError(parsed.error);
 
-  let ipLimit, emailLimit;
+  let ipLimit, contactLimit;
   try {
     ipLimit = await checkRateLimit(`comment-pin-send:ip:${ip}`, 5, 60 * 60);
-    emailLimit = await checkRateLimit(`comment-pin-send:email:${parsed.data.email}`, 3, 60 * 60);
+    contactLimit =
+      parsed.data.channel === "sms"
+        ? await checkRateLimit(`comment-pin-send:mobile:${parsed.data.mobile}`, 3, 60 * 60)
+        : await checkRateLimit(`comment-pin-send:email:${parsed.data.email}`, 3, 60 * 60);
   } catch (error) {
     console.error("[api/comments/send-pin] rate limit check failed:", error);
     return apiError("internal_error", "Something went wrong. Please try again shortly.", 500);
   }
-  if (!ipLimit.allowed || !emailLimit.allowed) {
+  if (!ipLimit.allowed || !contactLimit.allowed) {
     return apiError("rate_limited", "Too many submissions. Please try again later.", 429);
   }
 
@@ -98,7 +103,8 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const pin = generatePin();
+  const isSms = parsed.data.channel === "sms";
+  const pin = isSms ? null : generatePin();
   let verification;
   try {
     verification = await db.commentVerification.create({
@@ -117,7 +123,8 @@ export async function POST(request: NextRequest) {
         companyLocation: parsed.data.companyLocation ?? null,
         body: parsed.data.body,
         avatarUrl,
-        pinHash: hashToken(pin),
+        channel: isSms ? "SMS" : "EMAIL",
+        pinHash: pin ? hashToken(pin) : null,
         expiresAt: new Date(Date.now() + COMMENT_PIN_TTL_MS),
       },
     });
@@ -127,17 +134,23 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    await sendCommentPinEmail({
-      to: parsed.data.email,
-      pin,
-      expiresInMinutes: Math.round(COMMENT_PIN_TTL_MS / 60000),
-      fullName: parsed.data.fullName,
-    });
+    if (isSms) {
+      await sendCommentPinSms(parsed.data.mobile);
+    } else {
+      await sendCommentPinEmail({
+        to: parsed.data.email,
+        pin: pin!,
+        expiresInMinutes: Math.round(COMMENT_PIN_TTL_MS / 60000),
+        fullName: parsed.data.fullName,
+      });
+    }
   } catch (error) {
-    console.error("[api/comments/send-pin] failed to send PIN email:", error);
+    console.error(`[api/comments/send-pin] failed to send PIN ${parsed.data.channel}:`, error);
     return apiError(
-      "email_send_failed",
-      "We couldn't send a verification email. Please check the address and try again.",
+      isSms ? "sms_send_failed" : "email_send_failed",
+      isSms
+        ? "We couldn't send a verification text. Please check the number and try again."
+        : "We couldn't send a verification email. Please check the address and try again.",
       502
     );
   }
@@ -146,7 +159,7 @@ export async function POST(request: NextRequest) {
     {
       ok: true,
       requestId: verification.id,
-      message: "We've emailed you a verification code.",
+      message: isSms ? "We've texted you a verification code." : "We've emailed you a verification code.",
     },
     { status: 201 }
   );
