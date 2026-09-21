@@ -30,9 +30,11 @@ export const contactFormSchema = z
     budgetAmount: z
       .string()
       .trim()
-      .regex(BUDGET_AMOUNT_PATTERN, "Enter a valid amount (numbers only, no negative values).")
       .nullish()
-      .transform((v) => (v ? v : undefined)),
+      .transform((v) => (v ? v : undefined))
+      .refine((v) => v === undefined || BUDGET_AMOUNT_PATTERN.test(v), {
+        message: "Enter a valid amount (numbers only, no negative values).",
+      }),
     budgetCurrency: z
       .enum(["GBP", "USD", "EUR", "OTHER", ""])
       .nullish()
