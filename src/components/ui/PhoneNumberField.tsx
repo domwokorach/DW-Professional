@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, type ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { getCountries, getCountryCallingCode, type CountryCode } from "libphonenumber-js";
 import { cn } from "@/lib/utils";
 import { DEFAULT_MOBILE_COUNTRY } from "@/lib/contact/phone";
@@ -28,9 +28,14 @@ interface CountryOption {
   callingCode: string;
 }
 
-function buildCountryOptions(): CountryOption[] {
+// Intl.DisplayNames resolves region names from the runtime's bundled CLDR
+// data, which can differ between Node (SSR) and the browser (client) — e.g.
+// "Falkland Islands (Islas Malvinas)" vs "Falkland Islands". Using it during
+// the initial render would make the SSR HTML disagree with the client's
+// first paint, so it's deferred to a client-only effect after mount.
+function buildCountryOptions(useDisplayNames: boolean): CountryOption[] {
   const displayNames =
-    typeof Intl !== "undefined" && "DisplayNames" in Intl
+    useDisplayNames && typeof Intl !== "undefined" && "DisplayNames" in Intl
       ? new Intl.DisplayNames(["en"], { type: "region" })
       : null;
 
@@ -51,7 +56,14 @@ export default function PhoneNumberField({
   error,
   helperId,
 }: PhoneNumberFieldProps) {
-  const countryOptions = useMemo(buildCountryOptions, []);
+  const [countryOptions, setCountryOptions] = useState<CountryOption[]>(() =>
+    buildCountryOptions(false)
+  );
+
+  useEffect(() => {
+    setCountryOptions(buildCountryOptions(true));
+  }, []);
+
   const errorId = "mobile-error";
   const describedBy = [helperId, error ? errorId : null].filter(Boolean).join(" ") || undefined;
 

@@ -10,6 +10,8 @@ export interface ContactEnquiryAttachment {
   filename: string;
   /** Human-readable file type, e.g. "PDF document" or "image/png". */
   type: string;
+  /** Pre-formatted file size, e.g. "1.2 MB" — formatting stays in the caller. */
+  size: string;
 }
 
 export interface ContactEnquiryEmailProps {
@@ -114,7 +116,7 @@ export default function ContactEnquiryEmail({
                 </Heading>
                 <Section style={styles.card}>
                   <Text style={styles.attachmentText}>
-                    {attachment.filename} &middot; {attachment.type}
+                    {attachment.filename} &middot; {attachment.type} &middot; {attachment.size}
                   </Text>
                 </Section>
               </>
@@ -154,7 +156,7 @@ ContactEnquiryEmail.PreviewProps = {
   message:
     "Hi Dominic,\n\nWe're building an internal analytics dashboard and need a frontend engineer for around six weeks, starting next month.\n\nWould love to find 20 minutes this week if you have availability — let me know what works.\n\nThanks,\nAmara",
   submittedAt: "22 Sep 2026, 11:32 BST",
-  attachment: { filename: "project-brief.pdf", type: "PDF document" },
+  attachment: { filename: "project-brief.pdf", type: "PDF document", size: "842 KB" },
 } satisfies ContactEnquiryEmailProps;
 
 const styles: Record<string, CSSProperties> = {

@@ -11,6 +11,22 @@ export const ATTACHMENT_ACCEPT = ".pdf,.docx,.png,.jpg,.jpeg";
 export const ATTACHMENT_TYPE_ERROR = "File must be PDF, DOCX, PNG, JPG, or JPEG.";
 export const ATTACHMENT_SIZE_ERROR = "Maximum file size is 5 MB.";
 
+/** Blob store path prefix for in-flight contact-form uploads, cleaned up by the cron in /api/contact/upload/cleanup once stale. */
+export const ATTACHMENT_BLOB_PREFIX = "contact-uploads/tmp/";
+
+export const ATTACHMENT_MIME_TYPES = [
+  "application/pdf",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "image/png",
+  "image/jpeg",
+];
+
+/** Builds a collision-resistant blob pathname for a client upload, stripping characters that don't survive a URL or a filesystem path. */
+export function buildAttachmentPathname(filename: string): string {
+  const safeName = filename.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-150) || "file";
+  return `${ATTACHMENT_BLOB_PREFIX}${crypto.randomUUID()}-${safeName}`;
+}
+
 interface AttachmentTypeRule {
   extension: string;
   mimeTypes: string[];
@@ -70,4 +86,17 @@ export async function verifyAttachmentSignature(file: File): Promise<boolean> {
 
   const head = new Uint8Array(await file.slice(0, rule.signature.length).arrayBuffer());
   return rule.signature.every((byte, i) => head[i] === byte);
+}
+
+/**
+ * Same check as {@link verifyAttachmentSignature}, for bytes already read
+ * into memory — used when the file arrives as a downloaded Blob-store
+ * buffer (the client-upload flow) rather than as a multipart `File`.
+ */
+export function verifyAttachmentSignatureFromBuffer(buffer: Buffer, filename: string): boolean {
+  const extension = getExtension(filename);
+  const rule = ALLOWED_ATTACHMENT_TYPES.find((candidate) => candidate.extension === extension);
+  if (!rule) return false;
+
+  return rule.signature.every((byte, i) => buffer[i] === byte);
 }
