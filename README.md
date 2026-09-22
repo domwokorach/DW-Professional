@@ -40,7 +40,7 @@ It is designed for recruiters, hiring managers, freelance clients, engineering t
 - Freelance project showcase with live-project links
 - Detailed case studies with dynamic routes
 - Categorised technical skills
-- Responsive career gallery with an accessible lightbox
+- React Bits accordion gallery with an accessible lightbox
 - Contact section (client-side, opens a pre-filled email via `mailto:`)
 - Dynamic London greeting and current UK timezone
 - Location-aware weather widget powered by OpenWeather
@@ -159,7 +159,7 @@ src/
 │   ├── layout/              # Header, Navigation, MobileNavigation, Footer
 │   ├── sections/             # Home page sections (Hero, About, Services, Projects, Experience, Gallery, Contact, …)
 │   ├── project/              # Project & case-study cards and detail-page visuals
-│   ├── gallery/               # Gallery grid and lightbox
+│   ├── gallery/               # Accordion gallery and lightbox
 │   ├── experience/            # Experience timeline item
 │   ├── weather/                # Weather widget
 │   └── ui/                     # Generic reusable UI (Button, Container, SectionHeading, modals, …)
