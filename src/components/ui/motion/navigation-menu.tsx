@@ -269,7 +269,10 @@ function NavigationMenuLink({ className, ...props }: NavigationMenuLinkProps) {
             )}
             {...props}
             render={(linkProps) => (
-                <motion.div {...linkProps} transition={{ duration: 0.15, ease: "easeOut" }} />
+                <motion.div
+                    {...(linkProps as unknown as React.ComponentProps<typeof motion.div>)}
+                    transition={{ duration: 0.15, ease: "easeOut" }}
+                />
             )}
         />
     );
@@ -287,7 +290,7 @@ function NavigationMenuIndicator({ className, ...props }: NavigationMenuIndicato
                 <AnimatePresence>
                     {state.open && (
                         <motion.div
-                            {...iconProps}
+                            {...(iconProps as unknown as React.ComponentProps<typeof motion.div>)}
                             initial={{ opacity: 0, y: -4 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -4 }}
