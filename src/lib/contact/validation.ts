@@ -27,6 +27,7 @@ export const contactFormSchema = z
     name: z.string().trim().min(1, "Enter your name.").max(120),
     email: z.string().trim().toLowerCase().email("Enter a valid email address.").max(254),
     company: optionalTrimmed(160),
+    companyNumber: optionalTrimmed(20),
     budgetAmount: z
       .string()
       .trim()

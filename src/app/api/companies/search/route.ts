@@ -26,11 +26,13 @@ function companyResponse(
 }
 
 /**
- * Proxies UK company name search to the Companies House REST API
- * (see src/lib/companies/search.ts) so the API key stays server-side. A
- * query failure (bad key, upstream outage, etc.) is always reported as a
- * soft error alongside an empty `companies` array — the field is optional,
- * so nothing here may block the surrounding form from submitting.
+ * Company suggestions for the "Company (optional)" fields, sourced from the
+ * imported CompanyRecord table (see src/lib/companies/search.ts and
+ * /api/admin/companies/import) rather than any live external API — the
+ * whole dataset lives in Postgres, never shipped to the browser. A query
+ * failure is always reported as a soft error alongside an empty `companies`
+ * array — the field is optional, so nothing here may block the surrounding
+ * form from submitting.
  */
 export async function GET(request: NextRequest) {
   const ip = extractClientIp(request.headers) ?? "unknown";

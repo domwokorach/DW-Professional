@@ -2,73 +2,36 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { Building2, CheckCircle2, Loader2, X } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { cn } from "@/lib/utils";
 import type { CompanySearchResult, CompanyStatus } from "@/types/company";
 
 const MIN_QUERY_LENGTH = 2;
-const DEBOUNCE_MS = 350;
+const DEBOUNCE_MS = 300;
 
-function isValidQuery(term: string): boolean {
-  return term.length >= MIN_QUERY_LENGTH;
-}
+const DEFAULT_INPUT_CLASSES =
+  "flex h-9 w-full rounded-md border border-line bg-ink px-3 py-1 text-base text-white shadow-sm transition-colors placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50 md:text-sm";
 
-interface CompanyAutocompleteProps {
+export interface CompanySearchFieldProps {
   id: string;
+  /** Sets the `name` attribute on the visible text input, so a plain `new FormData(form)` picks up the typed/selected company name. */
+  name?: string;
   value: string;
   onChange: (value: string) => void;
-  /** Fires with the selected company's metadata, or null once the value no longer represents a confirmed selection (manual edit or "use as entered"). */
+  /** Fires with the selected company's metadata, or null once the value no longer represents a confirmed selection (manual edit, cleared, or "use as entered"). */
   onSelect?: (company: CompanySearchResult | null) => void;
-  maxLength?: number;
+  inputClassName?: string;
+  helperId?: string;
   placeholder?: string;
-}
-
-function highlightMatch(name: string, term: string) {
-  if (!term.trim()) return name;
-  const index = name.toLowerCase().indexOf(term.trim().toLowerCase());
-  if (index === -1) return name;
-  return (
-    <>
-      {name.slice(0, index)}
-      <mark className="rounded-sm bg-accent/30 text-white">
-        {name.slice(index, index + term.length)}
-      </mark>
-      {name.slice(index + term.length)}
-    </>
-  );
+  maxLength?: number;
 }
 
 function formatStatus(status: CompanyStatus | undefined): string | null {
   if (!status) return null;
   return status
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
-
-const COMPANY_TYPE_LABELS: Record<string, string> = {
-  ltd: "Private limited company",
-  plc: "Public limited company",
-  "private-unlimited": "Private unlimited company",
-  "private-unlimited-nsc": "Private unlimited company",
-  "old-public-company": "Old public company",
-  llp: "Limited liability partnership",
-  "limited-partnership": "Limited partnership",
-  "industrial-and-provident-society": "Industrial and provident society",
-  "royal-charter": "Royal charter company",
-  "registered-society-non-jurisdictional": "Registered society",
-  "charitable-incorporated-organisation": "Charitable incorporated organisation",
-  "further-education-or-sixth-form-college-corporation":
-    "Further education / sixth form corporation",
-};
-
-function formatCompanyType(type: string | undefined): string | null {
-  if (!type) return null;
-  if (COMPANY_TYPE_LABELS[type]) return COMPANY_TYPE_LABELS[type];
-  return type
-    .split("-")
+    .split(/[-\s]+/)
+    .filter(Boolean)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
@@ -81,53 +44,57 @@ function statusBadgeClassName(status: CompanyStatus | undefined): string {
   return "";
 }
 
-// Module-level so results survive re-renders (and re-mounts within the same
-// page load) without a dedicated cache layer — this is a small, low-stakes
-// lookup, not data that needs invalidation. Only the first page is cached;
-// "load more" pages are always fetched fresh.
-const searchCache = new Map<string, { companies: CompanySearchResult[]; totalResults: number }>();
+function highlightMatch(name: string, term: string) {
+  if (!term.trim()) return name;
+  const index = name.toLowerCase().indexOf(term.trim().toLowerCase());
+  if (index === -1) return name;
+  return (
+    <>
+      {name.slice(0, index)}
+      <mark className="rounded-sm bg-accent/30 text-white">{name.slice(index, index + term.length)}</mark>
+      {name.slice(index + term.length)}
+    </>
+  );
+}
 
-export default function CompanyAutocomplete({
+/**
+ * "Company (optional)" autocomplete backed by the imported CSV company
+ * dataset (/api/companies/search, reading CompanyRecord — see
+ * src/lib/companies/search.ts). The input is always the source of truth
+ * for the field's value, so free typing (a company not in the dataset)
+ * stays valid — selecting a result is a shortcut, not a requirement.
+ */
+export default function CompanySearchField({
   id,
+  name,
   value,
   onChange,
   onSelect,
-  maxLength = 160,
+  inputClassName,
+  helperId,
   placeholder,
-}: CompanyAutocompleteProps) {
+  maxLength = 160,
+}: CompanySearchFieldProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [results, setResults] = useState<CompanySearchResult[]>([]);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [selected, setSelected] = useState<CompanySearchResult | null>(null);
-  const [totalResults, setTotalResults] = useState(0);
-  const [loadingMore, setLoadingMore] = useState(false);
   const debouncedValue = useDebouncedValue(value, DEBOUNCE_MS);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const listboxId = useId();
-  const helperId = `${id}-helper`;
+  const generatedHelperId = useId();
+  const resolvedHelperId = helperId ?? generatedHelperId;
 
-  const effectiveTerm = debouncedValue.trim();
+  const term = debouncedValue.trim();
 
   useEffect(() => {
-    const term = effectiveTerm;
-    if (!isValidQuery(term)) {
+    if (term.length < MIN_QUERY_LENGTH) {
       abortRef.current?.abort();
       setResults([]);
-      setTotalResults(0);
-      setStatus("idle");
-      setErrorMessage(null);
-      return;
-    }
-
-    const cacheKey = term.toLowerCase();
-    const cached = searchCache.get(cacheKey);
-    if (cached) {
-      setResults(cached.companies);
-      setTotalResults(cached.totalResults);
       setStatus("idle");
       setErrorMessage(null);
       return;
@@ -144,7 +111,7 @@ export default function CompanyAutocomplete({
         const res = await fetch(`/api/companies/search?q=${encodeURIComponent(term)}`, {
           signal: controller.signal,
         });
-        let data: { companies?: CompanySearchResult[]; totalResults?: number; error?: string } | null = null;
+        let data: { companies?: CompanySearchResult[]; error?: string } | null = null;
         try {
           data = await res.json();
         } catch {
@@ -154,30 +121,22 @@ export default function CompanyAutocomplete({
           setStatus("error");
           setErrorMessage(data?.error ?? "Unable to load companies. Please try again.");
           setResults([]);
-          setTotalResults(0);
           return;
         }
-        const found = data?.companies ?? [];
-        const total = data?.totalResults ?? found.length;
-        searchCache.set(cacheKey, { companies: found, totalResults: total });
-        setResults(found);
-        setTotalResults(total);
+        setResults(data?.companies ?? []);
         setStatus("idle");
       } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError") return;
         setStatus("error");
         setErrorMessage("Unable to load companies. Please try again.");
         setResults([]);
-        setTotalResults(0);
       }
     })();
 
     return () => controller.abort();
-  }, [effectiveTerm]);
+  }, [term]);
 
-  useEffect(() => {
-    setActiveIndex(-1);
-  }, [results]);
+  useEffect(() => setActiveIndex(-1), [results]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent | TouchEvent) {
@@ -198,8 +157,7 @@ export default function CompanyAutocomplete({
   const showManualOption = showDropdown && status !== "loading" && trimmedValue.length > 0;
   const manualOptionIndex = results.length;
 
-  const activeDescendant =
-    activeIndex >= 0 ? `${listboxId}-option-${activeIndex}` : undefined;
+  const activeDescendant = activeIndex >= 0 ? `${listboxId}-option-${activeIndex}` : undefined;
 
   function selectCompany(company: CompanySearchResult) {
     setSelected(company);
@@ -224,25 +182,6 @@ export default function CompanyAutocomplete({
     setStatus("idle");
     setErrorMessage(null);
     requestAnimationFrame(() => inputRef.current?.focus());
-  }
-
-  async function loadMore() {
-    const term = effectiveTerm;
-    if (!isValidQuery(term) || loadingMore) return;
-    setLoadingMore(true);
-    try {
-      const res = await fetch(
-        `/api/companies/search?q=${encodeURIComponent(term)}&start_index=${results.length}`
-      );
-      const data: { companies?: CompanySearchResult[]; totalResults?: number } | null = await res
-        .json()
-        .catch(() => null);
-      if (!res.ok || !data?.companies) return;
-      setResults((prev) => [...prev, ...data.companies!]);
-      if (typeof data.totalResults === "number") setTotalResults(data.totalResults);
-    } finally {
-      setLoadingMore(false);
-    }
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
@@ -283,17 +222,27 @@ export default function CompanyAutocomplete({
 
   if (selected) {
     const statusLabel = formatStatus(selected.status);
+    const locationParts = selected.address
+      ? [selected.address.locality, selected.address.postalCode].filter(Boolean)
+      : selected.location
+        ? [selected.location]
+        : [];
     return (
       <div className="flex items-start gap-2.5 rounded-2xl border border-line bg-ink px-3.5 py-2.5">
+        {/* Hidden so a plain `new FormData(form)` submission still carries the selected name under `name`, matching the plain-input case. */}
+        {name ? <input type="hidden" name={name} value={selected.name} /> : null}
         <Building2 className="mt-0.5 h-6 w-6 shrink-0 rounded-full border border-line p-1 text-muted" aria-hidden="true" />
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold text-white">{selected.name}</p>
           {selected.companyNumber ? (
             <p className="mt-0.5 truncate text-xs text-muted">Company no. {selected.companyNumber}</p>
           ) : null}
+          {locationParts.length > 0 ? (
+            <p className="mt-0.5 truncate text-xs text-muted">{locationParts.join(", ")}</p>
+          ) : null}
           <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-accent">
             <CheckCircle2 className="h-3 w-3" aria-hidden="true" />
-            Companies House
+            Company directory
             {statusLabel ? <span className="text-muted">· {statusLabel}</span> : null}
           </p>
         </div>
@@ -312,15 +261,17 @@ export default function CompanyAutocomplete({
   return (
     <div ref={containerRef} className="relative">
       <div className="relative">
-        <Input
+        <input
           ref={inputRef}
           id={id}
+          name={name}
+          type="text"
           role="combobox"
           aria-expanded={showDropdown}
           aria-controls={listboxId}
           aria-autocomplete="list"
           aria-activedescendant={activeDescendant}
-          aria-describedby={helperId}
+          aria-describedby={resolvedHelperId}
           autoComplete="off"
           maxLength={maxLength}
           value={value}
@@ -331,8 +282,9 @@ export default function CompanyAutocomplete({
           }}
           onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
-          placeholder={placeholder ?? "Search UK companies"}
-          className={status === "loading" ? "pr-9" : undefined}
+          placeholder={placeholder ?? "Search companies"}
+          className={cn(inputClassName ?? DEFAULT_INPUT_CLASSES, status === "loading" ? "pr-9" : undefined)}
+          style={{ fontSize: "16px" }}
         />
         {status === "loading" ? (
           <Loader2
@@ -341,9 +293,11 @@ export default function CompanyAutocomplete({
           />
         ) : null}
       </div>
-      <p id={helperId} className="mt-1.5 text-xs text-muted">
-        Start typing to search UK companies
-      </p>
+      {!helperId ? (
+        <p id={resolvedHelperId} className="mt-1.5 text-xs text-muted">
+          Start typing to search companies
+        </p>
+      ) : null}
 
       <div
         className={cn(
@@ -360,7 +314,7 @@ export default function CompanyAutocomplete({
           className="max-h-72 overflow-y-auto py-1"
         >
           {status === "loading" && results.length === 0 ? (
-            <li className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted">
+            <li className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted" role="status">
               <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
               Searching companies...
             </li>
@@ -373,7 +327,6 @@ export default function CompanyAutocomplete({
               ) : (
                 results.map((company, index) => {
                   const statusLabel = formatStatus(company.status);
-                  const typeLabel = formatCompanyType(company.type);
                   const locationParts = company.address
                     ? [company.address.locality, company.address.postalCode].filter(Boolean)
                     : company.location
@@ -396,7 +349,7 @@ export default function CompanyAutocomplete({
                       )}
                     >
                       <Building2
-                        className="mt-0.5 h-6 w-6 shrink-0 rounded-full border border-line p-1 text-muted"
+                        className="mt-0.5 h-5 w-5 shrink-0 rounded-full border border-line p-1 text-muted"
                         aria-hidden="true"
                       />
                       <div className="min-w-0 flex-1">
@@ -416,17 +369,9 @@ export default function CompanyAutocomplete({
                               </Badge>
                             </>
                           ) : null}
-                          {typeLabel ? (
-                            <>
-                              <span aria-hidden="true">·</span>
-                              <span className="truncate">{typeLabel}</span>
-                            </>
-                          ) : null}
                         </div>
                         {locationParts.length > 0 ? (
-                          <div className="mt-0.5 truncate text-xs text-muted/80">
-                            {locationParts.join(" · ")}
-                          </div>
+                          <div className="mt-0.5 truncate text-xs text-muted/80">{locationParts.join(", ")}</div>
                         ) : null}
                       </div>
                     </li>
@@ -460,23 +405,6 @@ export default function CompanyAutocomplete({
                       {trimmedValue}&rdquo; manually
                     </>
                   )}
-                </li>
-              ) : null}
-
-              {results.length > 0 && results.length < totalResults ? (
-                <li className="border-t border-line px-3 py-2">
-                  <button
-                    type="button"
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={loadMore}
-                    disabled={loadingMore}
-                    className="flex w-full items-center justify-center gap-1.5 rounded-md py-1 text-xs font-medium text-accent hover:bg-accent/10 disabled:opacity-60"
-                  >
-                    {loadingMore ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />
-                    ) : null}
-                    {loadingMore ? "Loading…" : "Load more companies"}
-                  </button>
                 </li>
               ) : null}
             </>
