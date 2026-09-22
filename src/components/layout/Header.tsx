@@ -128,11 +128,12 @@ export default function Header() {
                     <NavigationMenuLink
                       href={`#${item.id}`}
                       active={isActive}
+                      aria-current={isActive ? "page" : undefined}
                       onClick={(event) => {
                         event.preventDefault();
                         handleNavigate(item.id);
                       }}
-                      className="whitespace-nowrap px-2.5 py-2 font-mono 2xl:px-3.5"
+                      className={`whitespace-nowrap px-2.5 py-2 font-mono 2xl:px-3.5 ${isActive ? "!bg-accent/10 !text-accent" : ""}`}
                     >
                       {item.label}
                     </NavigationMenuLink>
