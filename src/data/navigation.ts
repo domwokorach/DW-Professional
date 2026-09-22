@@ -17,8 +17,21 @@ export const navigation: NavItem[] = [
   { id: "contact", label: "08 / Contact", href: "#contact" },
 ];
 
-/** Top-level items shown in the header and mobile navigation (every section except the logo's "home" link). */
-export const headerNavigation: NavItem[] = navigation.filter((item) => item.id !== "home");
+/** Ids (in display order) of the primary links shown in the header/mobile navigation menu. */
+const PRIMARY_NAV_IDS = ["about", "services", "projects", "gallery"] as const;
+
+/**
+ * The primary nav links shown in the header and mobile navigation menu, in
+ * display order, with the numbered prefix stripped from each label (e.g.
+ * "03 / Services" -> "Services"). Every other section (Home, Expertise,
+ * Experience, Testimonials, Contact) keeps its page section — it's just no
+ * longer linked from this menu.
+ */
+export const headerNavigation: NavItem[] = PRIMARY_NAV_IDS.map((id) => {
+  const item = navigation.find((entry) => entry.id === id);
+  if (!item) throw new Error(`navigation: missing expected section "${id}"`);
+  return { ...item, label: item.label.replace(/^\d+\s*\/\s*/, "") };
+});
 
 /** Full site navigation minus the logo's "home" link, for surfaces (e.g. the footer) that list every section. */
 export const footerNavigation: NavItem[] = navigation.filter((item) => item.id !== "home");

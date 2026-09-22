@@ -128,11 +128,12 @@ export default function Header() {
         {/* Compact desktop / tablet-landscape nav: links collapse into one dropdown before they crowd. */}
         <div className="hidden lg:flex 2xl:hidden">
           <NavigationMenu
+            value={compactMenuOpen ? "menu" : null}
             positionerProps={{ align: "start", sideOffset: 14, collisionPadding: 16 }}
             onValueChange={(value) => setCompactMenuOpen(Boolean(value))}
           >
             <NavigationMenuList>
-              <NavigationMenuItem>
+              <NavigationMenuItem value="menu">
                 <NavigationMenuTrigger
                   isActive={Boolean(activeGroup)}
                   className={navigationMenuTriggerStyle()}

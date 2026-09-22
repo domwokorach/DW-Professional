@@ -3,7 +3,7 @@ import * as React from "react";
 import { NavigationMenu as NavigationMenuPrimitive } from "@base-ui/react/navigation-menu";
 import { cva } from "class-variance-authority";
 import { ChevronDownIcon } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 import { cn } from "@/lib/utils";
 
@@ -140,6 +140,7 @@ function NavigationMenuTrigger({
 }: NavigationMenuTriggerProps) {
     const highlightContext = React.useContext(NavigationMenuHighlightContext);
     const triggerId = React.useId();
+    const reduceMotion = useReducedMotion();
 
     return (
         <NavigationMenuPrimitive.Trigger
@@ -171,7 +172,7 @@ function NavigationMenuTrigger({
                             <motion.div
                                 layoutId={highlightContext.highlightLayoutId}
                                 className="bg-accent/10 pointer-events-none absolute inset-0 z-0 rounded-full"
-                                transition={{ duration: 0.18, ease: "easeInOut" }}
+                                transition={reduceMotion ? { duration: 0.01 } : { duration: 0.18, ease: "easeInOut" }}
                             />
                         )}
                         <span className="relative z-10 flex items-center justify-center">
