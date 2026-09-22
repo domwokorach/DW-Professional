@@ -38,6 +38,7 @@ const companyMetaFieldsSchema = {
     .nullish()
     .transform((v) => (v ? v : undefined)),
   companyDomain: optionalTrimmed(253),
+  companyPostcode: optionalTrimmed(16),
   companyLogo: z
     .string()
     .trim()

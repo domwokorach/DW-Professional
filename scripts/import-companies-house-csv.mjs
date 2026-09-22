@@ -6,7 +6,24 @@
  * Postgres instead of calling the (rate-limited, key-gated) Companies House
  * REST API.
  *
- * Usage: node scripts/import-companies-house-csv.mjs <path-to-csv> [...more paths]
+ * Streams each file line by line (never holding the whole file in memory)
+ * and writes in batches of BATCH_SIZE via `INSERT ... ON CONFLICT
+ * (companyNumber) DO UPDATE`, which both dedupes by company number (a
+ * later row for the same number overwrites the earlier one, matching the
+ * order companies appear in the export) and updates existing companies
+ * in place rather than deleting + reinserting them.
+ *
+ * Pass --replace to additionally remove, after every input file has been
+ * imported, any company not touched by this run (i.e. dropped from the
+ * new export). This is the monthly full-dataset refresh path. Because
+ * every row is upserted (not deleted first) before the stale cleanup runs,
+ * search never sees the table empty or missing a company that's still
+ * current — only rows confirmed absent from the new file are ever removed,
+ * and only after the new data is fully committed.
+ *
+ * Usage:
+ *   node scripts/import-companies-house-csv.mjs <path-to-csv> [...more paths]
+ *   node scripts/import-companies-house-csv.mjs --replace <path-to-csv>
  */
 import { createReadStream } from "node:fs";
 import { createInterface } from "node:readline";
@@ -14,6 +31,7 @@ import { PrismaClient } from "@prisma/client";
 
 const BATCH_SIZE = 2000;
 const MAX_RETRIES = 5;
+const DELETE_BATCH_SIZE = 5000;
 let prisma = new PrismaClient();
 
 function sleep(ms) {
@@ -23,14 +41,13 @@ function sleep(ms) {
 // Long-running imports can outlive the DB's idle/connection limits (seen as
 // "Server has closed the connection" mid-run). Retrying with a fresh client
 // recovers instead of letting one dropped batch kill the whole import.
-async function insertBatchWithRetry(batch) {
+async function withRetry(fn) {
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
-      await prisma.companyRecord.createMany({ data: batch, skipDuplicates: true });
-      return;
+      return await fn();
     } catch (error) {
       if (attempt === MAX_RETRIES) throw error;
-      console.error(`\nBatch insert failed (attempt ${attempt}/${MAX_RETRIES}), retrying:`, error.message);
+      console.error(`\nBatch failed (attempt ${attempt}/${MAX_RETRIES}), retrying:`, error.message);
       await prisma.$disconnect().catch(() => {});
       prisma = new PrismaClient();
       await sleep(1000 * attempt);
@@ -105,7 +122,32 @@ function normalizeStatus(value) {
   return lower.replace(/\s+/g, "-");
 }
 
-async function importFile(filePath) {
+// Mirrors normalizeCompanyName in src/lib/companies/search.ts — kept as a
+// plain duplicate here rather than importing that TS module into this
+// standalone CLI script.
+function normalizeCompanyName(name) {
+  return name.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+function normalizePostcode(postcode) {
+  return postcode.trim().toLowerCase().replace(/\s+/g, "");
+}
+
+async function upsertBatchWithRetry(batch, generation) {
+  await withRetry(() =>
+    prisma.$transaction(
+      batch.map((row) =>
+        prisma.companyRecord.upsert({
+          where: { companyNumber: row.companyNumber },
+          create: { ...row, importGeneration: generation },
+          update: { ...row, importGeneration: generation },
+        })
+      )
+    )
+  );
+}
+
+async function importFile(filePath, generation) {
   const rl = createInterface({
     input: createReadStream(filePath, { encoding: "utf8" }),
     crlfDelay: Infinity,
@@ -146,9 +188,12 @@ async function importFile(filePath) {
       .map(toNullable)
       .filter((v) => Boolean(v));
 
+    const postalCode = toNullable(get("RegAddress.PostCode"));
+
     batch.push({
       companyNumber,
       name,
+      nameNormalized: normalizeCompanyName(name),
       status: normalizeStatus(get("CompanyStatus")),
       category: toNullable(get("CompanyCategory")),
       incorporationDate: parseDate(get("IncorporationDate")),
@@ -156,13 +201,15 @@ async function importFile(filePath) {
       addressLine2: toNullable(get("RegAddress.AddressLine2")),
       locality: toNullable(get("RegAddress.PostTown")),
       region: toNullable(get("RegAddress.County")),
-      postalCode: toNullable(get("RegAddress.PostCode")),
+      postalCode,
+      postcodeNormalized: postalCode ? normalizePostcode(postalCode) : undefined,
       country: toNullable(get("RegAddress.Country")),
+      uri: toNullable(get("URI")),
       sicCodes,
     });
 
     if (batch.length >= BATCH_SIZE) {
-      await insertBatchWithRetry(batch);
+      await upsertBatchWithRetry(batch, generation);
       total += batch.length;
       process.stdout.write(`\r${filePath}: imported ${total} rows (skipped ${skipped})`);
       batch = [];
@@ -170,22 +217,58 @@ async function importFile(filePath) {
   }
 
   if (batch.length > 0) {
-    await insertBatchWithRetry(batch);
+    await upsertBatchWithRetry(batch, generation);
     total += batch.length;
   }
 
   process.stdout.write(`\r${filePath}: imported ${total} rows (skipped ${skipped})\n`);
 }
 
+// Removes companies left over from a previous generation once the new
+// dataset has been fully imported — i.e. companies genuinely absent from
+// this run's files. Deletes in small batches (rather than one statement)
+// so a huge stale set doesn't hold a single long-running lock while
+// concurrent searches are running.
+async function deleteStaleGeneration(currentGeneration) {
+  let deleted = 0;
+  for (;;) {
+    const stale = await prisma.companyRecord.findMany({
+      where: { importGeneration: { not: currentGeneration } },
+      select: { id: true },
+      take: DELETE_BATCH_SIZE,
+    });
+    if (stale.length === 0) break;
+    await withRetry(() =>
+      prisma.companyRecord.deleteMany({ where: { id: { in: stale.map((r) => r.id) } } })
+    );
+    deleted += stale.length;
+    process.stdout.write(`\rRemoving stale companies: ${deleted} removed`);
+  }
+  if (deleted > 0) process.stdout.write("\n");
+  return deleted;
+}
+
 async function main() {
-  const paths = process.argv.slice(2);
+  const args = process.argv.slice(2);
+  const replace = args.includes("--replace");
+  const paths = args.filter((a) => a !== "--replace");
+
   if (paths.length === 0) {
-    console.error("Usage: node scripts/import-companies-house-csv.mjs <path-to-csv> [...more paths]");
+    console.error(
+      "Usage: node scripts/import-companies-house-csv.mjs [--replace] <path-to-csv> [...more paths]"
+    );
     process.exit(1);
   }
 
+  const generation = BigInt(Date.now());
+
   for (const filePath of paths) {
-    await importFile(filePath);
+    await importFile(filePath, generation);
+  }
+
+  if (replace) {
+    const deleted = await deleteStaleGeneration(generation);
+    console.log(`Replace complete: removed ${deleted} companies no longer in the import.`);
   }
 
   await prisma.$disconnect();

@@ -40,7 +40,11 @@ export async function POST(request: NextRequest) {
 
   const parsed = sendCommentPinSchema.safeParse({
     fullName: form.get("fullName"),
-    company: form.get("company"),
+    // CommentForm assembles its own FormData (see
+    // src/components/comments/CommentForm.tsx) and always sends the
+    // typed/selected company name under "companyName", matching the
+    // contact form's shared CompanySearchField contract.
+    company: form.get("companyName"),
     body: form.get("body"),
     email: form.get("email"),
     companyId: form.get("companyId"),
@@ -51,6 +55,7 @@ export async function POST(request: NextRequest) {
     companyLogo: form.get("companyLogo"),
     companyIndustry: form.get("companyIndustry"),
     companyLocation: form.get("companyLocation"),
+    companyPostcode: form.get("companyPostcode"),
   });
   if (!parsed.success) return validationError(parsed.error);
 
@@ -113,6 +118,7 @@ export async function POST(request: NextRequest) {
         companyLogo: parsed.data.companyLogo ?? null,
         companyIndustry: parsed.data.companyIndustry ?? null,
         companyLocation: parsed.data.companyLocation ?? null,
+        companyPostcode: parsed.data.companyPostcode ?? null,
         body: parsed.data.body,
         avatarUrl,
         pinHash: hashToken(pin),

@@ -165,6 +165,7 @@ model Comment {
   companyLogo     String?
   companyIndustry String?
   companyLocation String?
+  companyPostcode String?
   body            String
   avatarUrl       String?
   status          CommentStatus @default(PENDING)
@@ -190,6 +191,7 @@ model CommentVerification {
   companyLogo     String?
   companyIndustry String?
   companyLocation String?
+  companyPostcode String?
   body            String
   avatarUrl       String?
   pinHash         String?
@@ -236,6 +238,10 @@ model CompanyRecord {
   id                String    @id @default(cuid())
   companyNumber     String    @unique
   name              String
+  // Lowercased, whitespace-collapsed copy of `name`, used for indexed
+  // equality/prefix search so the original display casing in `name` is
+  // never altered.
+  nameNormalized    String
   status            String?
   category          String?
   incorporationDate DateTime?
@@ -244,13 +250,28 @@ model CompanyRecord {
   locality          String?
   region            String?
   postalCode        String?
+  // Lowercased, space-stripped copy of `postalCode` (e.g. "sw1a2aa"), so a
+  // search matches "SW1A 2AA" and "sw1a2aa" alike while `postalCode` keeps
+  // its original, displayable formatting.
+  postcodeNormalized String?
   country           String?
+  // Companies House's per-company profile URL from the bulk export's URI column.
+  uri               String?
   sicCodes          String[]  @default([])
+  // Tags which import run last wrote/touched this row. A monthly full-file
+  // reimport upserts every row with a new generation and then deletes only
+  // rows left on an older generation — see
+  // scripts/import-companies-house-csv.mjs — so search never sees the
+  // table empty or half-replaced mid-import.
+  importGeneration  BigInt    @default(0)
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
   @@index([name])
+  @@index([nameNormalized])
+  @@index([postcodeNormalized])
   @@index([status])
+  @@index([importGeneration])
 }
 
 model Message {

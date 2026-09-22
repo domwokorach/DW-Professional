@@ -7,7 +7,6 @@ import {
   COMPANY_SEARCH_MIN_QUERY_LENGTH,
   COMPANY_SEARCH_MAX_QUERY_LENGTH,
   COMPANY_SEARCH_LETTER_PATTERN,
-  COMPANY_SEARCH_RESULT_LIMIT,
 } from "@/lib/companies/search";
 import type { CompanySearchResult } from "@/types/company";
 
@@ -15,7 +14,6 @@ export const runtime = "nodejs";
 
 const UNAVAILABLE_MESSAGE = "Unable to load companies. Please try again.";
 const RATE_LIMITED_MESSAGE = "Too many company searches. Please try again shortly.";
-const MAX_START_INDEX = 500;
 
 function companyResponse(
   companies: CompanySearchResult[],
@@ -61,20 +59,12 @@ export async function GET(request: NextRequest) {
     return companyResponse([], { error: "Invalid company search." }, 400);
   }
 
-  const startIndex = Math.min(
-    Math.max(0, Number(params.get("start_index")) || 0),
-    MAX_START_INDEX
-  );
-
   try {
-    const { companies, totalResults } = await searchCompanies(query, startIndex);
-    // start_index is capped above, so nothing past that offset is ever
-    // reachable — report the total as capped too, or "Load more" (which
-    // compares results.length against totalResults) would never disable
-    // once the cap is hit, and would keep re-appending the same clamped
-    // page of results forever.
-    const reachableTotal = Math.min(totalResults, MAX_START_INDEX + COMPANY_SEARCH_RESULT_LIMIT);
-    return companyResponse(companies, { totalResults: reachableTotal });
+    // Never more than COMPANY_SEARCH_RESULT_LIMIT rows per request — see
+    // searchCompanies — so the endpoint can't be used to page through and
+    // reconstruct the full dataset.
+    const { companies, totalResults } = await searchCompanies(query);
+    return companyResponse(companies, { totalResults });
   } catch (error) {
     if (error instanceof CompanyProviderError) {
       if (error.status === 400) {

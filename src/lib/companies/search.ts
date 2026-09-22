@@ -5,7 +5,8 @@ import type { ParsedCompanyRow } from "@/lib/companies/csv-import";
 
 export const COMPANY_SEARCH_MIN_QUERY_LENGTH = 2;
 export const COMPANY_SEARCH_MAX_QUERY_LENGTH = 160;
-export const COMPANY_SEARCH_RESULT_LIMIT = 20;
+// "Return no more than 10 results per request."
+export const COMPANY_SEARCH_RESULT_LIMIT = 10;
 
 // A single A–Z browse letter is a valid query on its own even though it's
 // shorter than COMPANY_SEARCH_MIN_QUERY_LENGTH — see the A–Z filter in
@@ -40,6 +41,20 @@ function syntheticCompanyNumber(name: string): string {
   return `${SYNTHETIC_NUMBER_PREFIX}${slug}#${unique}`;
 }
 
+/** Lowercased, whitespace-collapsed — mirrors CompanyRecord.nameNormalized. */
+export function normalizeCompanyName(value: string): string {
+  return value.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+/** Lowercased, space-stripped — mirrors CompanyRecord.postcodeNormalized, so "SW1A 2AA" and "sw1a2aa" match the same row. */
+export function normalizePostcode(value: string): string {
+  return value.trim().toLowerCase().replace(/\s+/g, "");
+}
+
+// UK company numbers are up to 8 alphanumeric characters (Scottish/NI
+// prefixes use 2 letters + 6 digits); allow a little slack either side.
+const COMPANY_NUMBER_PATTERN = /^[A-Z0-9]{1,10}$/i;
+
 function normalizeAddress(record: CompanyRecord) {
   const { addressLine1, addressLine2, locality, region, postalCode, country } = record;
   if (!addressLine1 && !addressLine2 && !locality && !region && !postalCode && !country) {
@@ -71,6 +86,7 @@ function mapRecord(record: CompanyRecord): CompanySearchResult {
     type: record.category ?? undefined,
     dateOfCreation: record.incorporationDate ? record.incorporationDate.toISOString() : undefined,
     address: normalizeAddress(record),
+    postcode: record.postalCode ?? undefined,
     location: formatLocation(record),
     sicCodes: record.sicCodes,
     source: "companies-house",
@@ -79,62 +95,64 @@ function mapRecord(record: CompanyRecord): CompanySearchResult {
 
 /**
  * Searches the local CompanyRecord table (populated from an imported CSV —
- * see csv-import.ts and /api/admin/companies/import) instead of calling any
- * external provider. Case-insensitive; names starting with the query rank
- * above names that only contain it elsewhere.
+ * see csv-import.ts, scripts/import-companies-house-csv.mjs and
+ * /api/admin/companies/import) instead of calling any external provider —
+ * the whole dataset lives in Postgres and is never shipped to the browser.
+ *
+ * Case-insensitive; a postcode matches with or without spaces. Results are
+ * assembled tier by tier in priority order and capped at
+ * COMPANY_SEARCH_RESULT_LIMIT total:
+ *   1. exact company-number match
+ *   2. exact company-name match
+ *   3. company-name prefix match
+ *   4. exact postcode match
+ *   5. fuzzy (substring) company-name match
  */
-export async function searchCompanies(query: string, startIndex = 0): Promise<CompanySearchPage> {
+export async function searchCompanies(query: string): Promise<CompanySearchPage> {
   const term = query.trim();
   if (!term) return { companies: [], totalResults: 0 };
 
-  const containsWhere: Prisma.CompanyRecordWhereInput = {
-    name: { contains: term, mode: "insensitive" },
-  };
+  const nameTerm = normalizeCompanyName(term);
+  const postcodeTerm = normalizePostcode(term);
 
-  if (startIndex > 0) {
-    // Pagination past the first page doesn't need startsWith-priority
-    // ranking — a stable name-ordered scan is enough for "load more".
-    const [companies, totalResults] = await Promise.all([
-      db.companyRecord.findMany({
-        where: containsWhere,
-        orderBy: { name: "asc" },
-        skip: startIndex,
-        take: COMPANY_SEARCH_RESULT_LIMIT,
-      }),
-      db.companyRecord.count({ where: containsWhere }),
-    ]);
-    return { companies: companies.map(mapRecord), totalResults };
-  }
+  const seen = new Set<string>();
+  const companies: CompanyRecord[] = [];
 
-  const startsWithWhere: Prisma.CompanyRecordWhereInput = {
-    name: { startsWith: term, mode: "insensitive" },
-  };
-
-  const [startsWith, totalResults] = await Promise.all([
-    db.companyRecord.findMany({
-      where: startsWithWhere,
+  async function addTier(where: Prisma.CompanyRecordWhereInput) {
+    const remaining = COMPANY_SEARCH_RESULT_LIMIT - companies.length;
+    if (remaining <= 0) return;
+    const rows = await db.companyRecord.findMany({
+      where,
       orderBy: { name: "asc" },
-      take: COMPANY_SEARCH_RESULT_LIMIT,
-    }),
-    db.companyRecord.count({ where: containsWhere }),
-  ]);
-
-  let companies = startsWith;
-  if (companies.length < COMPANY_SEARCH_RESULT_LIMIT) {
-    const remainder = await db.companyRecord.findMany({
-      where: {
-        AND: [containsWhere, { NOT: startsWithWhere }],
-      },
-      orderBy: { name: "asc" },
-      take: COMPANY_SEARCH_RESULT_LIMIT - companies.length,
+      take: remaining + seen.size, // over-fetch a little to cover ids we've already placed
     });
-    companies = [...companies, ...remainder];
+    for (const row of rows) {
+      if (companies.length >= COMPANY_SEARCH_RESULT_LIMIT) break;
+      if (seen.has(row.id)) continue;
+      seen.add(row.id);
+      companies.push(row);
+    }
   }
 
-  return { companies: companies.map(mapRecord), totalResults };
-}
+  // 1. Exact company-number match.
+  if (COMPANY_NUMBER_PATTERN.test(term.replace(/\s+/g, ""))) {
+    await addTier({ companyNumber: { equals: term.replace(/\s+/g, ""), mode: "insensitive" } });
+  }
 
-const COMPANY_NUMBER_PATTERN = /^[A-Z0-9]{1,10}$/i;
+  // 2 & 3. Exact company-name match, then name-prefix match.
+  await addTier({ nameNormalized: nameTerm });
+  await addTier({ nameNormalized: { startsWith: nameTerm }, NOT: { nameNormalized: nameTerm } });
+
+  // 4. Exact postcode match.
+  if (postcodeTerm) {
+    await addTier({ postcodeNormalized: postcodeTerm });
+  }
+
+  // 5. Fuzzy (substring) company-name match.
+  await addTier({ nameNormalized: { contains: nameTerm } });
+
+  return { companies: companies.map(mapRecord), totalResults: companies.length };
+}
 
 /**
  * Looks up a single company's status + SIC codes by number, used to enrich
@@ -162,6 +180,10 @@ const REPLACE_BATCH_SIZE = 2000;
  * Replaces the entire CompanyRecord table with freshly-parsed CSV rows,
  * used by the admin CSV re-import/replacement action. Runs as a single
  * transaction so search never sees a half-imported dataset.
+ *
+ * (The much larger monthly Companies House bulk-file import goes through
+ * scripts/import-companies-house-csv.mjs instead, which streams and
+ * generation-swaps rather than holding everything in one transaction.)
  */
 export async function replaceCompanyRecords(rows: ParsedCompanyRow[]): Promise<{ inserted: number }> {
   await db.$transaction(async (tx) => {
@@ -171,8 +193,17 @@ export async function replaceCompanyRecords(rows: ParsedCompanyRow[]): Promise<{
       const batch = rows.slice(i, i + REPLACE_BATCH_SIZE).map((row) => ({
         companyNumber: row.companyNumber ?? syntheticCompanyNumber(row.name),
         name: row.name,
+        nameNormalized: normalizeCompanyName(row.name),
         status: row.status,
+        category: row.category,
         addressLine1: row.address,
+        addressLine2: row.addressLine2,
+        locality: row.locality,
+        region: row.region,
+        postalCode: row.postcode,
+        postcodeNormalized: row.postcode ? normalizePostcode(row.postcode) : undefined,
+        country: row.country,
+        uri: row.uri,
       }));
       await tx.companyRecord.createMany({ data: batch });
     }

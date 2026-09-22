@@ -14,7 +14,6 @@ import { social } from "@/data/navigation";
 import { MESSAGE_MAX_CHARS, clampToCharLimit, countCharacters } from "@/lib/contact/message";
 import { DEFAULT_MOBILE_COUNTRY, normalizeMobileNumber } from "@/lib/contact/phone";
 import { BUDGET_OPTIONS, PROJECT_TYPE_OPTIONS } from "@/lib/contact/validation";
-import type { CompanySearchResult } from "@/types/company";
 
 const inputClasses =
   "w-full rounded-lg border border-line bg-transparent px-4 py-3 text-paper placeholder:text-muted/60 outline-none transition-colors focus:border-accent";
@@ -37,7 +36,6 @@ export default function Contact() {
   const [mobile, setMobile] = useState("");
   const [mobileCountry, setMobileCountry] = useState<string>(DEFAULT_MOBILE_COUNTRY);
   const [company, setCompany] = useState("");
-  const [companyNumber, setCompanyNumber] = useState("");
   const [budget, setBudget] = useState("");
   const [projectType, setProjectType] = useState("");
   const [attachmentStatus, setAttachmentStatus] = useState<AttachmentUploadStatus>("idle");
@@ -90,10 +88,6 @@ export default function Contact() {
       delete rest.message;
       return rest;
     });
-  }
-
-  function handleCompanySelect(selected: CompanySearchResult | null) {
-    setCompanyNumber(selected?.companyNumber ?? "");
   }
 
   function handleAttachmentChange(next: UploadedAttachment | null) {
@@ -325,16 +319,14 @@ export default function Contact() {
                   </label>
                   <CompanySearchField
                     id="company"
-                    name="company"
+                    name="companyName"
                     value={company}
                     onChange={setCompany}
-                    onSelect={handleCompanySelect}
                     inputClassName={inputClasses}
                     helperId={companyHelpId}
                   />
-                  <input type="hidden" name="companyNumber" value={companyNumber} />
                   <p id={companyHelpId} className="mt-1.5 text-xs text-muted">
-                    Start typing to search companies
+                    Search by company name, postcode or registration number
                   </p>
                 </div>
                 <FormSelectField
