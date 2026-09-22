@@ -1,75 +1,67 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { Expand } from "lucide-react";
-import type { GalleryCollection, GalleryMedia } from "@/types/gallery";
+import { cloudinaryImageUrl } from "@/lib/cloudinaryImage";
+import type { GalleryItem } from "@/types/gallery";
 
-const Lightbox = dynamic(() => import("./Lightbox"), { ssr: false });
+const GalleryLightbox = dynamic(() => import("./GalleryLightbox"), { ssr: false });
+const IMAGE_SIZES = "(max-width: 639px) calc(100vw - 2rem), (max-width: 1023px) 45vw, 30vw";
 
-const GRID_SIZE = 9;
-const IMAGE_SIZES = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw";
-
-export default function GalleryGrid({ collections }: { collections: GalleryCollection[] }) {
+export default function GalleryGrid({ items }: { items: GalleryItem[] }) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [loaded, setLoaded] = useState<Record<string, boolean>>({});
+  const cardRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const items: GalleryMedia[] = collections
-    .flatMap((collection) => collection.media.filter((item) => item.type === "image"))
-    .slice(0, GRID_SIZE);
-
-  const flatCollection: GalleryCollection = {
-    id: "gallery-grid",
-    title: "Gallery",
-    year: collections[0]?.year ?? 0,
-    description: "",
-    media: items,
+  const closeLightbox = () => {
+    const selectedIndex = lightboxIndex;
+    setLightboxIndex(null);
+    if (selectedIndex !== null) requestAnimationFrame(() => cardRefs.current[selectedIndex]?.focus());
   };
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8">
-        {items.map((item, i) => (
-          <motion.button
-            key={item.src}
-            type="button"
-            onClick={() => setLightboxIndex(i)}
-            aria-label={`Open full-screen view: ${item.alt}`}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: (i % 3) * 0.06 }}
-            className="group relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-paper/10 bg-paper/[0.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-7">
+        {items.map((item, index) => (
+          <figure
+            key={item.id}
+            className="min-w-0 overflow-hidden rounded-2xl border border-line bg-surface shadow-sm"
           >
-            <Image
-              src={item.src}
-              alt={item.alt}
-              fill
-              loading={i < 3 ? "eager" : "lazy"}
-              sizes={IMAGE_SIZES}
-              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-            />
-            <div
-              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-              aria-hidden
-            />
-            <span
-              className="pointer-events-none absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-black/40 text-white opacity-0 backdrop-blur-md transition-opacity duration-200 group-hover:opacity-100"
-              aria-hidden
+            <button
+              ref={(element) => { cardRefs.current[index] = element; }}
+              type="button"
+              onClick={() => setLightboxIndex(index)}
+              aria-label={`Open larger image: ${item.title}${item.year ? `, ${item.year}` : ""}`}
+              className="group relative block aspect-[4/3] w-full overflow-hidden bg-paper/[0.04] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-accent"
             >
-              <Expand className="h-4 w-4" />
-            </span>
-          </motion.button>
+              {!loaded[item.id] && (
+                <span className="absolute inset-0 animate-pulse bg-paper/[0.07] motion-reduce:animate-none" aria-hidden="true" />
+              )}
+              <Image
+                loader={({ src, width }) => cloudinaryImageUrl(src, width)}
+                src={item.image}
+                alt={item.alt}
+                fill
+                sizes={IMAGE_SIZES}
+                loading="lazy"
+                onLoad={() => setLoaded((previous) => ({ ...previous, [item.id]: true }))}
+                className={`object-contain transition-[opacity,transform] duration-300 motion-reduce:transition-none ${loaded[item.id] ? "opacity-100" : "opacity-0"} group-hover:scale-[1.02] group-focus-visible:scale-[1.02]`}
+              />
+              <span className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-ink/80 text-paper opacity-80 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none" aria-hidden="true">
+                <Expand className="h-4 w-4" />
+              </span>
+            </button>
+            <figcaption className="flex min-h-20 flex-col justify-center px-4 py-3 sm:px-5">
+              {item.year && <span className="font-mono text-xs text-muted">{item.year}</span>}
+              <span className="text-sm font-medium leading-snug text-paper sm:text-base">{item.title}</span>
+            </figcaption>
+          </figure>
         ))}
       </div>
-
       {lightboxIndex !== null && (
-        <Lightbox
-          collection={flatCollection}
-          initialIndex={lightboxIndex}
-          onClose={() => setLightboxIndex(null)}
-        />
+        <GalleryLightbox items={items} initialIndex={lightboxIndex} onClose={closeLightbox} />
       )}
     </>
   );
