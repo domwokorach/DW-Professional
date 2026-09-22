@@ -83,10 +83,25 @@
   display: block;
   width: 100%;
   height: 100%;
+  /* Panels are a fixed aspect ratio (full container height, a variable
+     width) while every source image has its own natural ratio, so cover +
+     object-position is what keeps the frame filled without letterboxing —
+     see item.objectPosition for the per-image crop point. */
   object-fit: cover;
+  /* No scale/zoom transform is ever applied to the image itself — panels
+     resize via the ancestor button's flex-basis (see applyLayout in
+     AccordionGallery.tsx), not by stretching this element, so the source
+     pixels are never scaled beyond what object-fit already does. */
+  transform: none;
   opacity: 0;
-  transition: opacity 250ms ease, filter 300ms ease, transform 300ms ease;
+  /* Only opacity (fade-in on load) and the grayscale->colour filter
+     transition here — no blur is ever applied to this element. Isolating
+     the filter transition to its own compositing layer keeps it from
+     interacting with the ancestor's flex-basis resize animation, which is
+     what caused a soft/blurry look while a panel was expanding. */
+  transition: opacity 250ms ease, filter 300ms ease;
   filter: grayscale(0.5);
+  will-change: filter;
 }
 
 .ag-panel__image--loaded { opacity: 1; }
@@ -96,6 +111,10 @@
 
 .ag-panel__overlay {
   --ag-overlay-color: #4756ea;
+  /* A separate absolutely-positioned layer painted *over* the image (plain
+     alpha compositing, not backdrop-filter/mix-blend-mode/opacity on the
+     image itself), so the #4756ea tint never touches — or softens — the
+     image's own pixels. */
   pointer-events: none;
   background:
     linear-gradient(to top, rgb(0 0 0 / 0.84), rgb(0 0 0 / 0.18) 42%, transparent 72%),

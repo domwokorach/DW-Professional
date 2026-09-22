@@ -20,9 +20,9 @@
     "test": "tests"
   },
   "scripts": {
+    "build": "prisma generate --schema prisma/schema.prisma && prisma migrate deploy --schema prisma/schema.prisma; next build",
     "dev": "next dev",
     "postinstall": "prisma generate --schema prisma/schema.prisma",
-    "build": "prisma generate --schema prisma/schema.prisma && prisma migrate deploy --schema prisma/schema.prisma; next build",
     "start": "next start",
     "lint": "eslint src scripts --max-warnings=0",
     "test:accessibility": "playwright test",
@@ -36,14 +36,22 @@
     "test:coverage": "jest --coverage",
     "test:ci": "jest --ci --coverage --runInBand --reporters=default",
     "auth:create-admin": "node --env-file=.env.local scripts/create-admin.mjs",
-    "db:seed": "tsx --env-file=.env.local prisma/seed.ts"
+    "import:companies:s3": "node --env-file=.env.local scripts/import-companies-house-s3.mjs",
+    "db:seed": "tsx --env-file=.env.local prisma/seed.ts",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1137.0",
+    "@aws-sdk/lib-storage": "^3.1137.0",
     "@base-ui/react": "^1.8.0",
     "@floating-ui/react": "^0.27.20",
     "@hookform/resolvers": "^5.9.1",
     "@neon/config": "^1.4.2",
     "@neon/env": "^1.3.1",
+    "@opennextjs/cloudflare": "^1.20.6",
     "@prisma/client": "^6.19.3",
     "@radix-ui/react-alert-dialog": "^1.1.23",
     "@radix-ui/react-avatar": "^1.2.6",
@@ -132,7 +140,8 @@
     "supertest": "^7.2.2",
     "tailwindcss": "^3.4.17",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "wrangler": "^4.136.3"
   },
   "optionalDependencies": {
     "bufferutil": "^4.1.0",

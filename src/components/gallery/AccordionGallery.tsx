@@ -11,8 +11,18 @@ import type { GalleryItem } from "@/types/gallery";
 import "./AccordionGallery.css";
 
 const GalleryLightbox = dynamic(() => import("./GalleryLightbox"), { ssr: false });
-const ACTIVE_IMAGE_SIZES = "(max-width: 639px) calc(100vw - 3rem), (max-width: 1023px) 80vw, 52vw";
-const COLLAPSED_IMAGE_SIZES = "(max-width: 639px) 400px, (max-width: 1023px) 800px, 76px";
+// Every panel is interactive — any of them can become the active, expanded
+// one on hover/focus/click — so every panel's <Image> requests enough
+// resolution for the *expanded* size up front, not just its current
+// (possibly collapsed) footprint. A collapsed sliver briefly displaying a
+// larger-than-needed source is harmless (it's still downscaled by
+// object-fit: cover); requesting a low-res image while collapsed and
+// hoping the browser fetches a sharper one once it expands is not — Safari
+// in particular does not re-evaluate `sizes`/`srcset` for an already
+// in-DOM <img>, so a resolution swapped in only on expand can get stuck at
+// the small, blurry candidate. See applyLayout below for the matching
+// expanded-width math.
+const IMAGE_SIZES = "(max-width: 639px) calc(100vw - 3rem), (max-width: 1023px) 80vw, min(680px, 52vw)";
 const COLLAPSED_WIDTH = 76;
 
 type Props = {
@@ -166,7 +176,7 @@ export default function AccordionGallery({
                       alt={item.alt}
                       width={item.width}
                       height={item.height}
-                      sizes={selected ? ACTIVE_IMAGE_SIZES : COLLAPSED_IMAGE_SIZES}
+                      sizes={IMAGE_SIZES}
                       {...(index === defaultIndex ? { priority: true } : { loading: "lazy" as const })}
                       onLoad={() => setLoaded((previous) => ({ ...previous, [item.id]: true }))}
                       className={`ag-panel__image${loaded[item.id] ? " ag-panel__image--loaded" : ""}`}
