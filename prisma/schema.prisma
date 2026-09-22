@@ -274,6 +274,38 @@ model CompanyRecord {
   @@index([importGeneration])
 }
 
+// One row per attempt to import CompanyRecord from the configured R2/S3
+// object (see scripts/import-companies-house-s3.mjs and
+// src/app/api/admin/companies/import/s3/route.ts). "running" rows double as
+// resume checkpoints: byteOffset + headerFields let a restarted run seek
+// straight to where it left off with `Range: bytes=<byteOffset>-` instead of
+// re-streaming the whole file, and generation ties the run to the
+// CompanyRecord.importGeneration batch it wrote so stale-row cleanup only
+// happens after a run reaches "succeeded".
+model CompanyImportRun {
+  id            String    @id @default(cuid())
+  // "<bucket>/<key>", e.g. "dw-portfoilo/BasicCompanyDataAsOneFile-2026.csv".
+  sourceKey     String
+  generation    BigInt
+  status        String    @default("running") // "running" | "succeeded" | "failed"
+  // Column-name -> index map read from the CSV header, saved so a resumed
+  // run (which seeks past the header) doesn't need to re-read it.
+  headerFields  Json?
+  byteOffset    BigInt    @default(0)
+  totalBytes    BigInt?
+  rowCount      Int       @default(0)
+  rejectedRows  Int       @default(0)
+  // Capped sample of {row, reason} entries — not every rejection, just
+  // enough to diagnose a bad file without unbounded row storage.
+  errorDetails  Json?
+  startedAt     DateTime  @default(now())
+  completedAt   DateTime?
+  updatedAt     DateTime  @updatedAt
+
+  @@index([sourceKey, status])
+  @@index([sourceKey, startedAt])
+}
+
 model Message {
   id              String        @id @default(cuid())
   conversationId  String

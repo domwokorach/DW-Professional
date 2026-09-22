@@ -1,12 +1,17 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { AlertCircle, Building2, CheckCircle2, Loader2, UploadCloud } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { AlertCircle, Building2, CheckCircle2, Cloud, Loader2, UploadCloud } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 const MAX_FILE_MB = 15;
+
+// The one allow-listed import source — see src/lib/companies/s3-source.ts,
+// which validates this exact string against the server's COMPANIES_S3_URI.
+// There is deliberately no input for an operator to type a different one.
+const COMPANIES_SOURCE_URI = "s3://dw-portfoilo/BasicCompanyDataAsOneFile-2026.csv";
 
 interface ImportReport {
   imported: number;
@@ -15,6 +20,205 @@ interface ImportReport {
   duplicates: number;
   truncated: boolean;
   totalRecords: number;
+}
+
+interface SourceCheck {
+  ok: boolean;
+  category?: string;
+  message: string;
+}
+
+interface S3ImportRun {
+  id: string;
+  status: "running" | "succeeded" | "failed";
+  rowCount: number;
+  rejectedRows: number;
+  byteOffset: string;
+  totalBytes: string | null;
+  errorDetails: Array<{ reason: string; at?: string }>;
+  startedAt: string;
+  completedAt: string | null;
+}
+
+function formatBytes(value: string | null) {
+  if (!value) return null;
+  const bytes = Number(value);
+  if (!Number.isFinite(bytes)) return null;
+  const gb = bytes / 1024 ** 3;
+  return gb >= 1 ? `${gb.toFixed(2)} GB` : `${(bytes / 1024 ** 2).toFixed(1)} MB`;
+}
+
+function S3ImportPanel() {
+  const [sourceKey, setSourceKey] = useState<string | null>(null);
+  const [run, setRun] = useState<S3ImportRun | null>(null);
+  const [sourceCheck, setSourceCheck] = useState<SourceCheck | null>(null);
+  const [status, setStatus] = useState<"idle" | "loading" | "triggering" | "error">("loading");
+  const [message, setMessage] = useState<string | null>(null);
+
+  async function loadStatus() {
+    try {
+      const res = await fetch("/api/admin/companies/import/s3");
+      const data = (await res.json().catch(() => null)) as {
+        sourceKey?: string;
+        run?: S3ImportRun;
+        sourceCheck?: SourceCheck;
+        error?: { message?: string };
+      } | null;
+      if (!res.ok) {
+        setStatus("error");
+        setMessage(data?.error?.message ?? "Unable to load import status.");
+        return;
+      }
+      setSourceKey(data?.sourceKey ?? null);
+      setRun(data?.run ?? null);
+      setSourceCheck(data?.sourceCheck ?? null);
+      setStatus("idle");
+    } catch {
+      setStatus("error");
+      setMessage("Network error while loading import status.");
+    }
+  }
+
+  useEffect(() => {
+    loadStatus();
+  }, []);
+
+  async function triggerImport() {
+    setStatus("triggering");
+    setMessage(null);
+    try {
+      const formData = new FormData();
+      formData.append("sourceUri", COMPANIES_SOURCE_URI);
+
+      const res = await fetch("/api/admin/companies/import/s3", { method: "POST", body: formData });
+      const data = (await res.json().catch(() => null)) as {
+        message?: string;
+        run?: S3ImportRun;
+        error?: { message?: string };
+      } | null;
+
+      if (!res.ok) {
+        setStatus("error");
+        setMessage(data?.error?.message ?? "Unable to validate the import source.");
+        return;
+      }
+
+      setMessage(data?.message ?? null);
+      if (data?.run) setRun(data.run);
+      setStatus("idle");
+    } catch {
+      setStatus("error");
+      setMessage("Network error. Please try again.");
+    }
+  }
+
+  const totalBytesLabel = formatBytes(run?.totalBytes ?? null);
+  const byteOffsetLabel = formatBytes(run?.byteOffset ?? null);
+
+  return (
+    <Card className="mt-6">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Cloud className="h-5 w-5" aria-hidden="true" />
+          Import from configured source
+        </CardTitle>
+        <CardDescription>
+          Streams the full Companies House bulk dataset from the private AWS S3 bucket configured on the server —
+          never a URL an operator can edit.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="rounded-lg border border-line bg-ink/40 p-4 text-xs text-muted">
+          <p className="font-medium text-paper">Source</p>
+          <p className="mt-1 break-all font-mono text-[11px]">{sourceKey ?? COMPANIES_SOURCE_URI}</p>
+          <p className="mt-2">
+            The transfer runs out-of-band (<code className="text-accent">npm run import:companies:s3</code>),
+            never inside a page request or deploy — this panel only validates the source and reports progress.
+            It&rsquo;s resumable and idempotent, so re-running it after a failure continues from where it left off
+            without creating duplicates, and the previous dataset stays live until a run fully succeeds.
+          </p>
+        </div>
+
+        {sourceCheck ? (
+          <div
+            className={cn(
+              "flex items-start gap-2 rounded-lg px-3 py-2.5 text-sm",
+              sourceCheck.ok
+                ? "border border-status-active-bg/60 bg-status-active-bg/10 text-status-active-fg"
+                : "border border-status-negative-bg/60 bg-status-negative-bg/10 text-status-negative-fg"
+            )}
+            role="status"
+          >
+            {sourceCheck.ok ? (
+              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+            ) : (
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+            )}
+            <span>{sourceCheck.message}</span>
+          </div>
+        ) : null}
+
+        {message ? (
+          <div
+            className={cn(
+              "flex items-start gap-2 rounded-lg px-3 py-2.5 text-sm",
+              status === "error"
+                ? "border border-status-negative-bg/60 bg-status-negative-bg/10 text-status-negative-fg"
+                : "border border-line bg-ink/40 text-muted"
+            )}
+            role="status"
+          >
+            {status === "error" ? <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" /> : null}
+            <span>{message}</span>
+          </div>
+        ) : null}
+
+        {run ? (
+          <div className="space-y-1.5 rounded-lg border border-line bg-ink/40 px-3 py-2.5 text-sm">
+            <div className="flex items-center gap-2 font-medium text-paper">
+              {run.status === "succeeded" ? (
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-status-active-fg" aria-hidden="true" />
+              ) : run.status === "failed" ? (
+                <AlertCircle className="h-4 w-4 shrink-0 text-status-negative-fg" aria-hidden="true" />
+              ) : (
+                <Loader2 className="h-4 w-4 shrink-0 animate-spin" aria-hidden="true" />
+              )}
+              Last run: {run.status}
+            </div>
+            <p className="text-muted">
+              {run.rowCount.toLocaleString()} rows imported, {run.rejectedRows.toLocaleString()} rejected.
+              {totalBytesLabel ? ` ${byteOffsetLabel ?? "0"} of ${totalBytesLabel} transferred.` : ""}
+            </p>
+            <p className="text-muted">
+              Started {new Date(run.startedAt).toLocaleString()}
+              {run.completedAt ? `, completed ${new Date(run.completedAt).toLocaleString()}` : ""}.
+            </p>
+            {run.errorDetails?.length ? (
+              <p className="text-status-negative-fg">
+                Last error: {run.errorDetails[run.errorDetails.length - 1]?.reason}
+              </p>
+            ) : null}
+          </div>
+        ) : status === "idle" ? (
+          <p className="text-sm text-muted">No import has been run from this source yet.</p>
+        ) : null}
+
+        <Button type="button" onClick={triggerImport} disabled={status === "triggering" || status === "loading"}>
+          {status === "triggering" ? (
+            <span className="flex items-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+              Validating…
+            </span>
+          ) : (
+            <span className="flex items-center gap-2">
+              <Cloud className="h-4 w-4" aria-hidden="true" />
+              Validate and queue import
+            </span>
+          )}
+        </Button>
+      </CardContent>
+    </Card>
+  );
 }
 
 export default function CompaniesImportView({ initialTotalRecords }: { initialTotalRecords: number }) {
@@ -156,6 +360,8 @@ export default function CompaniesImportView({ initialTotalRecords }: { initialTo
           </Button>
         </CardContent>
       </Card>
+
+      <S3ImportPanel />
     </div>
   );
 }
