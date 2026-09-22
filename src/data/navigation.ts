@@ -8,120 +8,20 @@ export type NavItem = {
 export const navigation: NavItem[] = [
   { id: "home", label: "Home", href: "#home" },
   { id: "about", label: "01 / About", href: "#about" },
-  {
-    id: "expertise",
-    label: "02 / Expertise",
-    href: "#expertise",
-    items: [
-      { id: "frontend", label: "Frontend", href: "#frontend" },
-      { id: "backend-api", label: "Backend & APIs", href: "#backend-api" },
-      { id: "cloud-devops", label: "Cloud & DevOps", href: "#cloud-devops" },
-      { id: "testing-quality", label: "Testing & Quality", href: "#testing-quality" },
-      { id: "ui-ux-design", label: "UI/UX, Design & Accessibility", href: "#ui-ux-design" },
-    ],
-  },
-  {
-    id: "services",
-    label: "03 / Services",
-    href: "#services",
-    items: [
-      {
-        id: "specialist-accessibility",
-        label: "Specialist Accessibility",
-        href: "#specialist-accessibility",
-      },
-      {
-        id: "ai-developer-testing",
-        label: "AI Developer & Testing Tools",
-        href: "#ai-developer-testing",
-      },
-      {
-        id: "frontend-development",
-        label: "Frontend Development",
-        href: "#frontend-development",
-      },
-      { id: "ux-ui-development", label: "UX/UI Development", href: "#ux-ui-development" },
-      { id: "web-applications", label: "Web Applications", href: "#web-applications" },
-      {
-        id: "software-engineering",
-        label: "Software Engineering",
-        href: "#software-engineering",
-      },
-    ],
-  },
-  {
-    id: "ai-professional",
-    label: "AI Developer Professional",
-    href: "#ai-professional",
-    items: [
-      { id: "ai-products", label: "AI Products & Applications", href: "#ai-products" },
-      { id: "agentic-workflows", label: "LLMs & Agentic Workflows", href: "#agentic-workflows" },
-      { id: "rag-search", label: "RAG & Intelligent Search", href: "#rag-search" },
-      { id: "ai-integrations", label: "AI API & Model Integrations", href: "#ai-integrations" },
-      {
-        id: "ai-backend-python",
-        label: "AI Backend & Python Development",
-        href: "#ai-backend-python",
-      },
-      {
-        id: "production-readiness",
-        label: "Deployment & Production Readiness",
-        href: "#production-readiness",
-      },
-    ],
-  },
-  {
-    id: "projects",
-    label: "03 / Projects",
-    href: "#projects",
-    items: [
-      { id: "innovation-x", label: "Innovation X", href: "#innovation-x" },
-      {
-        id: "specialist-disability",
-        label: "Specialist Disability",
-        href: "#specialist-disability",
-      },
-      {
-        id: "halifax-piggy-banking",
-        label: "Halifax Piggy Banking",
-        href: "#halifax-piggy-banking",
-      },
-      { id: "innovation-community", label: "Innovation Community", href: "#innovation-community" },
-      {
-        id: "internal-ai-search",
-        label: "Internal AI Search Assistant",
-        href: "#internal-ai-search",
-      },
-      {
-        id: "ui-delivery-transformation",
-        label: "UI Delivery & Transformation",
-        href: "#ui-delivery-transformation",
-      },
-      {
-        id: "sky-cloud-native",
-        label: "Sky — Cloud-Native Engineering",
-        href: "#sky-cloud-native",
-      },
-    ],
-  },
-  {
-    id: "experience",
-    label: "04 / Experience",
-    href: "#experience",
-  },
-  { id: "contact", label: "05 / Contact", href: "#contact" },
+  { id: "expertise", label: "02 / Expertise", href: "#expertise" },
+  { id: "services", label: "03 / Services", href: "#services" },
+  { id: "projects", label: "04 / Projects", href: "#projects" },
+  { id: "experience", label: "05 / Experience", href: "#experience" },
+  { id: "gallery", label: "06 / Gallery", href: "#gallery" },
+  { id: "testimonials", label: "07 / Testimonials", href: "#testimonials" },
+  { id: "contact", label: "08 / Contact", href: "#contact" },
 ];
 
-/** Top-level ids to hide from the header/mobile navigation while keeping their sections and data intact. */
-const HEADER_HIDDEN_IDS = new Set(["home", "services", "ai-professional"]);
+/** Top-level items shown in the header and mobile navigation (every section except the logo's "home" link). */
+export const headerNavigation: NavItem[] = navigation.filter((item) => item.id !== "home");
 
-/** Top-level items shown in the header and mobile navigation. */
-export const headerNavigation: NavItem[] = navigation.filter(
-  (item) => !HEADER_HIDDEN_IDS.has(item.id)
-);
-
-/** Full site navigation minus Experience, for surfaces (e.g. the footer) that list every section. */
-export const footerNavigation: NavItem[] = navigation.filter((item) => item.id !== "experience");
+/** Full site navigation minus the logo's "home" link, for surfaces (e.g. the footer) that list every section. */
+export const footerNavigation: NavItem[] = navigation.filter((item) => item.id !== "home");
 
 /** Every id in the tree, top-level and nested, in document order. */
 export function flattenNavIds(items: NavItem[]): string[] {

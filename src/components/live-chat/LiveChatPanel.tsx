@@ -7,6 +7,8 @@ import type { ChatAction, ChatMessage, ConnectionState } from "@/types/chat";
 import type { AdminPresenceState } from "@/types/socket";
 import TypingIndicator from "@/components/chat/TypingIndicator";
 import PresenceBanner from "./PresenceBanner";
+import { useKeyboardInset } from "@/hooks/use-keyboard-inset";
+import { PANEL_BOTTOM_CSS, PANEL_RIGHT_CSS } from "./layout";
 
 const STATUS_LABEL: Record<ConnectionState, string> = {
   online: "Online",
@@ -77,6 +79,7 @@ export default function LiveChatPanel({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const wasNearBottomRef = useRef(true);
   const reduceMotion = useReducedMotion();
+  const keyboardInset = useKeyboardInset();
   const draftKey = conversationId ? `${DRAFT_STORAGE_PREFIX}${conversationId}` : null;
 
   // Restore an in-progress draft (e.g. after a disconnect/reload) once the
@@ -134,8 +137,8 @@ export default function LiveChatPanel({
       role="dialog"
       aria-modal="false"
       aria-label="Live chat with Dominic's assistant"
-      className="fixed right-4 top-1/2 z-[100] flex max-h-[70vh] w-[calc(100vw-32px)] -translate-y-1/2 flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-2xl md:right-[84px] md:w-[380px] md:max-w-[380px]"
-      style={{ right: "max(16px, env(safe-area-inset-right))" }}
+      className="fixed z-[100] flex max-h-[min(70dvh,calc(100dvh-32px))] w-[calc(100vw-32px)] flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-2xl md:w-[380px] md:max-w-[380px]"
+      style={{ bottom: `calc(${PANEL_BOTTOM_CSS} + ${keyboardInset}px)`, right: PANEL_RIGHT_CSS }}
     >
       <header className="flex items-start justify-between gap-3 border-b border-line px-4 py-3">
         <div>
