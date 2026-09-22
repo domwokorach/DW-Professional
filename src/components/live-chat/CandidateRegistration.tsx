@@ -3,6 +3,8 @@
 import { useRef, useState } from "react";
 import { Minus, X } from "lucide-react";
 import type { CandidateDetails } from "@/hooks/use-live-chat";
+import { useKeyboardInset } from "@/hooks/use-keyboard-inset";
+import { PANEL_BOTTOM_CSS, PANEL_RIGHT_CSS } from "./layout";
 
 const MOBILE_PATTERN = /^[+()\d\s-]{5,32}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -50,6 +52,7 @@ export default function CandidateRegistration({
   });
   const [errors, setErrors] = useState<FieldErrors>({});
   const submittingRef = useRef(false);
+  const keyboardInset = useKeyboardInset();
 
   const handleChange =
     (field: keyof CandidateDetails) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,8 +94,8 @@ export default function CandidateRegistration({
       role="dialog"
       aria-modal="false"
       aria-label="Start live chat"
-      className="fixed right-4 top-1/2 z-[100] flex max-h-[85vh] w-[calc(100vw-32px)] -translate-y-1/2 flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-2xl md:right-[84px] md:w-[380px] md:max-w-[380px]"
-      style={{ right: "max(16px, env(safe-area-inset-right))" }}
+      className="fixed z-[100] flex max-h-[min(85dvh,calc(100dvh-32px))] w-[calc(100vw-32px)] flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-2xl md:w-[380px] md:max-w-[380px]"
+      style={{ bottom: `calc(${PANEL_BOTTOM_CSS} + ${keyboardInset}px)`, right: PANEL_RIGHT_CSS }}
     >
       <header className="flex items-start justify-between gap-3 border-b border-line px-4 py-3">
         <div>

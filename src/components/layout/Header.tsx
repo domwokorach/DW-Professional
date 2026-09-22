@@ -75,8 +75,8 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
-        scrolled ? "border-b border-line bg-ink/70 backdrop-blur-lg" : "bg-transparent"
+      className={`fixed inset-x-0 top-0 z-[60] transition-colors duration-300 ${
+        scrolled ? "border-b border-line bg-ink/70 backdrop-blur-lg" : "bg-ink/30 backdrop-blur-sm"
       }`}
     >
       <nav className="mx-auto flex h-16 w-full max-w-content items-center justify-between px-6 sm:px-8 lg:px-10">

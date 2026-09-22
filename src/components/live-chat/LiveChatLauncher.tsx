@@ -3,6 +3,7 @@
 import { forwardRef } from "react";
 import { MessageCircle, X } from "lucide-react";
 import type { ConnectionState, PanelState } from "@/types/chat";
+import { LAUNCHER_BOTTOM_CSS, LAUNCHER_RIGHT_CSS } from "./layout";
 
 const STATUS_LABEL: Record<ConnectionState, string> = {
   online: "Online",
@@ -50,9 +51,8 @@ const LiveChatLauncher = forwardRef<
       aria-controls="live-chat-panel"
       className="fixed z-50 flex h-[52px] w-[52px] items-center justify-center rounded-full border border-line bg-accent text-ink shadow-xl transition-transform duration-150 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transition-none motion-reduce:hover:scale-100"
       style={{
-        top: "50%",
-        transform: "translateY(-50%)",
-        right: "max(16px, env(safe-area-inset-right))",
+        bottom: LAUNCHER_BOTTOM_CSS,
+        right: LAUNCHER_RIGHT_CSS,
       }}
     >
       {!isOpen && attention ? (
