@@ -4,6 +4,7 @@ import { apiError, validationError } from "@/lib/auth/apiError";
 import { checkRateLimit } from "@/lib/auth/rateLimit";
 import { extractClientIp } from "@/lib/auth/device";
 import { contactFormSchema, BUDGET_CURRENCIES } from "@/lib/contact/validation";
+import { getContactEmailConfig, logContactEmailConfigOnStartup } from "@/lib/contact/config";
 import {
   ATTACHMENT_SIZE_ERROR,
   ATTACHMENT_TYPE_ERROR,
@@ -13,14 +14,10 @@ import {
 
 export const runtime = "nodejs";
 
-function adminRecipients(): string[] {
-  if (process.env.ADMIN_NOTIFICATION_EMAIL) return [process.env.ADMIN_NOTIFICATION_EMAIL];
+const CONTACT_FORM_UNAVAILABLE_MESSAGE = "We couldn't send your message right now. Please try again later.";
 
-  return (process.env.ADMIN_EMAILS ?? "")
-    .split(",")
-    .map((email) => email.trim())
-    .filter(Boolean);
-}
+// Runs once per cold start so a missing var shows up in server logs before any visitor hits the route.
+logContactEmailConfigOnStartup();
 
 function budgetSymbol(currency: string | undefined): string {
   return BUDGET_CURRENCIES.find((c) => c.value === currency)?.symbol ?? "";
@@ -32,6 +29,13 @@ function budgetSymbol(currency: string | undefined): string {
  * or not a project brief was uploaded.
  */
 export async function POST(request: NextRequest) {
+  const emailConfig = getContactEmailConfig();
+  if (!emailConfig.ok) {
+    console.error(`[api/contact] Contact form is not configured: missing ${emailConfig.missing}`);
+    return apiError("not_configured", CONTACT_FORM_UNAVAILABLE_MESSAGE, 500);
+  }
+  const { resendApiKey, fromEmail, toEmails } = emailConfig.config;
+
   const ip = extractClientIp(request.headers) ?? "unknown";
 
   const contentType = request.headers.get("content-type") ?? "";
@@ -92,14 +96,6 @@ export async function POST(request: NextRequest) {
     };
   }
 
-  const resendApiKey = process.env.RESEND_API_KEY;
-  const fromEmail = process.env.RESEND_FROM_EMAIL;
-  const recipients = adminRecipients();
-
-  if (!resendApiKey || !fromEmail || recipients.length === 0) {
-    return apiError("not_configured", "Contact form is not configured.", 500);
-  }
-
   const resend = new Resend(resendApiKey);
 
   const budgetLine = data.budgetAmount
@@ -123,7 +119,7 @@ export async function POST(request: NextRequest) {
   try {
     const { error } = await resend.emails.send({
       from: fromEmail,
-      to: recipients,
+      to: toEmails,
       replyTo: data.email,
       subject: `New enquiry from ${data.name}`,
       text: detailLines.join("\n"),

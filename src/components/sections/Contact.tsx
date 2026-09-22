@@ -144,7 +144,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="relative border-t border-line py-28 sm:py-36">
+    <section id="contact" className="relative scroll-mt-24 border-t border-line py-28 sm:py-36">
       <Container>
         <div className="grid gap-16 lg:grid-cols-2 lg:gap-20">
           <div className="relative overflow-hidden">
