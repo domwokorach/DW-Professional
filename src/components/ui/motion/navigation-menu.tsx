@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 interface NavigationMenuHighlightContextType {
     highlightLayoutId: string;
     activeTriggerId: string | null;
-    openItemValue: any;
+    openItemValue: unknown;
     hasActiveTrigger: boolean;
     setActiveTrigger: (id: string) => void;
     clearActiveTriggerWithDelay: () => void;
@@ -22,14 +22,16 @@ export interface NavigationMenuProps extends NavigationMenuPrimitive.Root.Props 
     positionerProps?: NavigationMenuPositionerProps;
 }
 
+type NavigationMenuChangeHandler = NonNullable<NavigationMenuPrimitive.Root.Props["onValueChange"]>;
+
 function NavigationMenu({ className, children, positionerProps, onValueChange, ...props }: NavigationMenuProps) {
     const generatedLayoutId = React.useId();
-    const [openItemValue, setOpenItemValue] = React.useState<any>(null);
+    const [openItemValue, setOpenItemValue] = React.useState<unknown>(null);
     const [activeTriggerId, setActiveTriggerId] = React.useState<string | null>(null);
-    const timeoutRef = React.useRef<any>(null);
+    const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    const handleValueChange = React.useCallback(
-        (value: any, eventDetails: any) => {
+    const handleValueChange = React.useCallback<NavigationMenuChangeHandler>(
+        (value, eventDetails) => {
             setOpenItemValue(value);
             onValueChange?.(value, eventDetails);
             if (!value) {
@@ -95,7 +97,7 @@ function NavigationMenu({ className, children, positionerProps, onValueChange, .
     );
 }
 
-export interface NavigationMenuListProps extends NavigationMenuPrimitive.List.Props {}
+export type NavigationMenuListProps = NavigationMenuPrimitive.List.Props;
 
 function NavigationMenuList({ className, children, ...props }: NavigationMenuListProps) {
     return (
@@ -108,7 +110,7 @@ function NavigationMenuList({ className, children, ...props }: NavigationMenuLis
     );
 }
 
-export interface NavigationMenuItemProps extends NavigationMenuPrimitive.Item.Props {}
+export type NavigationMenuItemProps = NavigationMenuPrimitive.Item.Props;
 
 function NavigationMenuItem({ className, ...props }: NavigationMenuItemProps) {
     return (
@@ -152,13 +154,12 @@ function NavigationMenuTrigger({
 
                 return (
                     <div
-                        {...(triggerProps as any)}
-                        ref={(triggerProps as any).ref}
-                        onPointerEnter={(e: any) => {
+                        {...triggerProps}
+                        onPointerEnter={(e) => {
                             triggerProps.onPointerEnter?.(e);
                             highlightContext?.setActiveTrigger(triggerId);
                         }}
-                        onFocus={(e: any) => {
+                        onFocus={(e) => {
                             triggerProps.onFocus?.(e);
                             highlightContext?.setActiveTrigger(triggerId);
                         }}
@@ -192,7 +193,7 @@ function NavigationMenuTrigger({
     );
 }
 
-export interface NavigationMenuContentProps extends NavigationMenuPrimitive.Content.Props {}
+export type NavigationMenuContentProps = NavigationMenuPrimitive.Content.Props;
 
 function NavigationMenuContent({ className, ...props }: NavigationMenuContentProps) {
     return (
@@ -236,7 +237,7 @@ function NavigationMenuPositioner({
                 align={align}
                 alignOffset={alignOffset}
                 className={cn(
-                    "isolate z-50 h-[var(--positioner-height)] w-[var(--positioner-width)] max-w-[var(--available-width)] transition-[top,left,right,bottom] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] data-instant:transition-none data-[side=bottom]:before:-top-2.5 data-[side=bottom]:before:right-0 data-[side=bottom]:before:left-0",
+                    "isolate z-[100] h-[var(--positioner-height)] w-[var(--positioner-width)] max-w-[var(--available-width)] transition-[top,left,right,bottom] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] data-instant:transition-none data-[side=bottom]:before:-top-2.5 data-[side=bottom]:before:right-0 data-[side=bottom]:before:left-0",
                     className,
                 )}
                 {...props}>
@@ -256,7 +257,7 @@ function NavigationMenuPositioner({
     );
 }
 
-export interface NavigationMenuLinkProps extends NavigationMenuPrimitive.Link.Props {}
+export type NavigationMenuLinkProps = NavigationMenuPrimitive.Link.Props;
 
 function NavigationMenuLink({ className, ...props }: NavigationMenuLinkProps) {
     return (
@@ -268,13 +269,13 @@ function NavigationMenuLink({ className, ...props }: NavigationMenuLinkProps) {
             )}
             {...props}
             render={(linkProps) => (
-                <motion.div {...(linkProps as any)} transition={{ duration: 0.15, ease: "easeOut" }} />
+                <motion.div {...linkProps} transition={{ duration: 0.15, ease: "easeOut" }} />
             )}
         />
     );
 }
 
-export interface NavigationMenuIndicatorProps extends NavigationMenuPrimitive.Icon.Props {}
+export type NavigationMenuIndicatorProps = NavigationMenuPrimitive.Icon.Props;
 
 function NavigationMenuIndicator({ className, ...props }: NavigationMenuIndicatorProps) {
     return (
@@ -286,7 +287,7 @@ function NavigationMenuIndicator({ className, ...props }: NavigationMenuIndicato
                 <AnimatePresence>
                     {state.open && (
                         <motion.div
-                            {...(iconProps as any)}
+                            {...iconProps}
                             initial={{ opacity: 0, y: -4 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -4 }}
@@ -301,7 +302,7 @@ function NavigationMenuIndicator({ className, ...props }: NavigationMenuIndicato
     );
 }
 
-export interface NavigationMenuArrowProps extends NavigationMenuPrimitive.Arrow.Props {}
+export type NavigationMenuArrowProps = NavigationMenuPrimitive.Arrow.Props;
 
 function NavigationMenuArrow({ className, ...props }: NavigationMenuArrowProps) {
     return (

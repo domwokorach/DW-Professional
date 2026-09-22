@@ -53,7 +53,7 @@ export default function MobileNavigation({
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.25, ease: "easeInOut" }}
-          className="md:hidden overflow-hidden border-b border-line bg-ink/95 backdrop-blur-lg"
+          className="lg:hidden overflow-hidden border-b border-line bg-ink/95 backdrop-blur-lg"
         >
           <nav aria-label="Mobile navigation">
             <ul className="mx-auto flex max-h-[70vh] w-full max-w-content flex-col gap-1 overflow-y-auto px-6 py-4 sm:px-8">
@@ -79,12 +79,20 @@ export default function MobileNavigation({
             <div className="mb-3">
               <LanguageSelector mobile />
             </div>
-            <button
-              onClick={onOpenResume}
-              className="min-h-11 w-full rounded-full border border-line px-4 py-3 text-sm text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
-            >
-              View Resume
-            </button>
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={onOpenResume}
+                className="min-h-11 w-full rounded-full border border-line px-4 py-3 text-sm text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+              >
+                View Resume
+              </button>
+              <button
+                onClick={() => onNavigate("contact")}
+                className="min-h-11 w-full rounded-full border border-accent/40 px-4 py-3 text-sm text-accent transition-colors hover:bg-accent/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+              >
+                Get in Touch
+              </button>
+            </div>
 
             <div className="mt-5 flex items-center justify-center gap-2">
               <a
