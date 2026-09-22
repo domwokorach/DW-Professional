@@ -265,13 +265,13 @@ function NavigationMenuLink({ className, ...props }: NavigationMenuLinkProps) {
         <NavigationMenuPrimitive.Link
             data-slot="navigation-menu-link"
             className={cn(
-                "data-[active=true]:bg-accent/10 data-[active=true]:text-accent text-paper hover:bg-accent/10 focus:bg-accent/10 flex min-h-11 items-center gap-1.5 rounded-lg p-2.5 text-sm transition-colors outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent [&_svg:not([class*='size-'])]:size-4",
+                "aria-[current=page]:bg-accent/10 aria-[current=page]:text-accent text-paper hover:bg-accent/10 focus:bg-accent/10 flex min-h-11 items-center gap-1.5 rounded-lg p-2.5 text-sm transition-colors outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent [&_svg:not([class*='size-'])]:size-4",
                 className,
             )}
             {...props}
             render={(linkProps) => (
-                <motion.div
-                    {...(linkProps as unknown as React.ComponentProps<typeof motion.div>)}
+                <motion.a
+                    {...(linkProps as unknown as React.ComponentProps<typeof motion.a>)}
                     transition={{ duration: 0.15, ease: "easeOut" }}
                 />
             )}

@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import { navigation, headerNavigation, flattenNavIds, buildTopLevelMap } from "@/data/navigation";
+import { headerNavigation } from "@/data/navigation";
 import MobileNavigation from "./MobileNavigation";
 import ResumeDownloadModal from "@/components/resume/ResumeDownloadModal";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -31,7 +31,10 @@ export default function Header() {
 
     section.setAttribute("tabindex", "-1");
     section.focus({ preventScroll: true });
-    section.scrollIntoView({ behavior: "smooth" });
+    section.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+      block: "start",
+    });
     window.history.replaceState(null, "", `#${id}`);
   }, []);
 
@@ -49,21 +52,28 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    const sections = flattenNavIds(navigation)
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => Boolean(el));
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActive(entry.target.id);
-        });
-      },
-      { rootMargin: "-40% 0px -50% 0px", threshold: 0 }
-    );
-
-    sections.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+    let frame = 0;
+    const updateActive = () => {
+      frame = 0;
+      const marker = window.scrollY + 112;
+      let current = "home";
+      for (const item of headerNavigation) {
+        const section = document.getElementById(item.id);
+        if (section && section.offsetTop <= marker) current = item.id;
+      }
+      setActive(current);
+    };
+    const scheduleUpdate = () => {
+      if (!frame) frame = requestAnimationFrame(updateActive);
+    };
+    updateActive();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+    return () => {
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      if (frame) cancelAnimationFrame(frame);
+    };
   }, []);
 
   const handleNavigate = (id: string) => {
@@ -76,8 +86,7 @@ export default function Header() {
     scrollToSection(id);
   };
 
-  const topLevelMap = useMemo(() => buildTopLevelMap(navigation), []);
-  const activeGroup = topLevelMap.get(active) ?? active;
+  const activeGroup = active;
 
   // Below `lg`, the Hero section's portrait image sits full-bleed behind
   // this header with a fixed dark scrim (see Hero.tsx), so while unscrolled
@@ -104,10 +113,9 @@ export default function Header() {
           Dominic<span className="text-accent">.</span>
         </button>
 
-        {/* Desktop / tablet-landscape nav: About, Services, Projects, Gallery. */}
-        <div className="hidden min-w-0 lg:flex lg:flex-1 lg:justify-center">
+        <div className="hidden min-w-0 xl:flex xl:flex-1 xl:justify-center">
           <NavigationMenu className="max-w-full">
-            <NavigationMenuList className="flex-wrap">
+            <NavigationMenuList className="flex-nowrap">
               {headerNavigation.map((item) => {
                 const isActive = activeGroup === item.id;
                 return (
@@ -119,7 +127,7 @@ export default function Header() {
                         event.preventDefault();
                         handleNavigate(item.id);
                       }}
-                      className="whitespace-nowrap px-3.5 py-2 font-mono"
+                      className="whitespace-nowrap px-2.5 py-2 font-mono 2xl:px-3.5"
                     >
                       {item.label}
                     </NavigationMenuLink>
@@ -131,13 +139,13 @@ export default function Header() {
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
-          <div className="hidden lg:block">
+          <div className="hidden xl:block">
             <LanguageSelector />
           </div>
           <ThemeToggle />
           <button
             onClick={() => setResumeOpen(true)}
-            className="hidden lg:inline-flex items-center rounded-full border border-line px-4 py-2 text-sm text-paper transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            className="hidden xl:inline-flex items-center rounded-full border border-line px-4 py-2 text-sm text-paper transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           >
             Resume
           </button>
@@ -146,7 +154,7 @@ export default function Header() {
         <button
           type="button"
           onClick={() => setMenuOpen((o) => !o)}
-          className="lg:hidden flex h-11 w-11 items-center justify-center rounded text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+          className="xl:hidden flex h-11 w-11 items-center justify-center rounded text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
           aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
