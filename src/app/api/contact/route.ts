@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
+import { render } from "@react-email/components";
 import { apiError, validationError } from "@/lib/auth/apiError";
 import { checkRateLimit } from "@/lib/auth/rateLimit";
 import { extractClientIp } from "@/lib/auth/device";
 import { contactFormSchema, BUDGET_CURRENCIES } from "@/lib/contact/validation";
 import { getContactEmailConfig, logContactEmailConfigOnStartup } from "@/lib/contact/config";
+import ContactEnquiryEmail from "@/services/email/templates/contact-enquiry";
 import {
   ATTACHMENT_SIZE_ERROR,
   ATTACHMENT_TYPE_ERROR,
@@ -104,25 +106,42 @@ export async function POST(request: NextRequest) {
       : `${budgetSymbol(data.budgetCurrency)}${data.budgetAmount}`
     : null;
 
-  const detailLines = [
-    `Name: ${data.name}`,
-    `Email: ${data.email}`,
-    data.company && `Company: ${data.company}`,
-    data.company && data.companyNumber && `Company number: ${data.companyNumber}`,
-    budgetLine && `Budget: ${budgetLine}`,
-    data.projectType && `Project Type: ${data.projectType}`,
-    attachment && `Attachment: ${attachment.name} (${(attachment.size / 1024).toFixed(0)} KB)`,
-    "",
-    data.message,
-  ].filter((line): line is string => Boolean(line) || line === "");
+  const companyLine = data.company
+    ? data.companyNumber
+      ? `${data.company} (Company No. ${data.companyNumber})`
+      : data.company
+    : null;
+
+  const submittedAt = new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: "Europe/London",
+  }).format(new Date());
+
+  const emailProps = {
+    name: data.name,
+    email: data.email,
+    company: companyLine,
+    budgetLine,
+    projectType: data.projectType ?? null,
+    message: data.message,
+    submittedAt,
+    attachment: attachment ? { filename: attachment.name, type: attachment.type || "Unknown type" } : null,
+  };
+
+  const [html, text] = await Promise.all([
+    render(ContactEnquiryEmail(emailProps)),
+    render(ContactEnquiryEmail(emailProps), { plainText: true }),
+  ]);
 
   try {
     const { error } = await resend.emails.send({
       from: fromEmail,
       to: toEmails,
       replyTo: data.email,
-      subject: `New enquiry from ${data.name}`,
-      text: detailLines.join("\n"),
+      subject: `New portfolio enquiry from ${data.name}`,
+      html,
+      text,
       attachments: attachment
         ? [{ filename: attachment.name, content: attachment.buffer, contentType: attachment.type }]
         : undefined,
