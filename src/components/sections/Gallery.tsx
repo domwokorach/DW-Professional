@@ -1,8 +1,8 @@
 import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
-import AccordionGallery from "@/components/gallery/AccordionGallery";
-import { galleryAccordionItems, galleryCollections } from "@/data/gallery";
+import GalleryGrid from "@/components/gallery/GalleryGrid";
+import { galleryItems } from "@/data/gallery";
 
 export default function Gallery() {
   return (
@@ -24,14 +24,8 @@ export default function Gallery() {
           </p>
         </MotionReveal>
 
-        <MotionReveal delay={0.15} className="mt-6">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
-            {galleryCollections.map((c) => c.year).join(" → ")}
-          </p>
-        </MotionReveal>
-
         <div className="mt-12">
-          <AccordionGallery items={galleryAccordionItems} />
+          <GalleryGrid items={galleryItems} />
         </div>
       </Container>
     </section>

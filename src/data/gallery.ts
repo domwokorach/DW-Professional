@@ -1,96 +1,81 @@
-import type { GalleryCollection, GalleryItem } from "@/types/gallery";
+import type { GalleryItem } from "@/types/gallery";
 
-export const galleryCollections: GalleryCollection[] = [
+export const galleryItems: GalleryItem[] = [
   {
-    id: "leonard-cheshire",
-    title: "Leonard Cheshire",
+    id: "downing-street-2014",
+    title: "10 Downing Street",
     year: 2014,
-    description: "Selected moments from my experience with Leonard Cheshire in 2014.",
-    media: [
-      {
-        type: "image",
-        src: "https://res.cloudinary.com/dkkuwmr42/image/upload/v1783168925/IMG_2529_bthtow.jpg",
-        alt: "Leonard Cheshire gallery image 1",
-      },
-      {
-        type: "image",
-        src: "https://res.cloudinary.com/dkkuwmr42/image/upload/v1783168924/IMG_2533_ixz36y.jpg",
-        alt: "Leonard Cheshire gallery image 2",
-      },
-      {
-        type: "image",
-        src: "https://res.cloudinary.com/dkkuwmr42/image/upload/v1783168924/IMG_2528_oqrwfb.jpg",
-        alt: "Leonard Cheshire gallery image 3",
-      },
-    ],
+    image: "https://res.cloudinary.com/dkkuwmr42/image/upload/v1790087346/10_downing_street_2014_rp8eoo.jpg",
+    alt: "A man in a suit standing in front of the black door marked 10",
+    width: 1179,
+    height: 1158,
   },
   {
-    id: "former-banking",
-    title: "Former Banking",
-    year: 2016,
-    description: "Selected moments from my earlier career within banking and technology.",
-    media: [
-      {
-        type: "image",
-        src: "https://res.cloudinary.com/dkkuwmr42/image/upload/v1783168924/IMG_2532_btmgaz.jpg",
-        alt: "Former banking gallery image 1",
-      },
-      {
-        type: "image",
-        src: "https://res.cloudinary.com/dkkuwmr42/image/upload/v1783168924/IMG_2531_m1l87j.jpg",
-        alt: "Former banking gallery image 2",
-      },
-      {
-        type: "image",
-        src: "https://res.cloudinary.com/dkkuwmr42/image/upload/v1783168925/IMG_2530_hp9xn9.jpg",
-        alt: "Former banking gallery image 3",
-      },
-      {
-        type: "video",
-        src: "https://res.cloudinary.com/dkkuwmr42/video/upload/v1783171340/IMG_0340_ftara5.mp4",
-        alt: "Former banking gallery video",
-      },
-    ],
+    id: "ibm-conference-2015",
+    title: "IBM Conference Event",
+    year: 2015,
+    image: "https://res.cloudinary.com/dkkuwmr42/image/upload/v1790087346/IBM_2015_mwt0bp.jpg",
+    alt: "Black and white selfie of a man beside a large IBM sign",
+    width: 1179,
+    height: 1459,
   },
   {
-    id: "sky-day",
-    title: "Sky Day",
-    year: 2024,
-    description: "Selected moments from my time at Sky in 2024.",
-    media: [
-      {
-        type: "image",
-        src: "https://res.cloudinary.com/dkkuwmr42/image/upload/v1783168000/BSL_Dominic_Day_12_1_80_ly9jkk.jpg",
-        alt: "Sky Day gallery image 1",
-      },
-      {
-        type: "image",
-        src: "https://res.cloudinary.com/dkkuwmr42/image/upload/v1783168000/BSL_Dominic_Day_15_24_ceele4.jpg",
-        alt: "Sky Day gallery image 2",
-      },
-      {
-        type: "image",
-        src: "https://res.cloudinary.com/dkkuwmr42/image/upload/v1783168000/BSL_Dominic_Day_5_22_zcvdyy.jpg",
-        alt: "Sky Day gallery image 3",
-      },
-      {
-        type: "image",
-        src: "https://res.cloudinary.com/dkkuwmr42/image/upload/v1783168000/BSL_Dominic_Day_3_94_wt7pck.jpg",
-        alt: "Sky Day gallery image 4",
-      },
-    ],
+    id: "city-of-london-2017",
+    title: "City of London",
+    year: 2017,
+    image: "https://res.cloudinary.com/dkkuwmr42/image/upload/v1790087346/point_of_view_phu29f.jpg",
+    alt: "A person in a dark suit viewed from behind overlooking the London skyline at dusk",
+    width: 1179,
+    height: 648,
+  },
+  {
+    id: "innovation-community-2018",
+    title: "Innovation Community Event",
+    year: 2018,
+    image: "https://res.cloudinary.com/dkkuwmr42/image/upload/v1790087347/IC_2018_qfxdqi.jpg",
+    alt: "An event space with lighting equipment, display screens and Innovation Community signs",
+    width: 1600,
+    height: 1200,
+  },
+  {
+    id: "scottish-widows-2018",
+    title: "Scottish Widows Bank Event, Edinburgh",
+    year: 2018,
+    image: "https://res.cloudinary.com/dkkuwmr42/image/upload/v1790087626/IMG_4298_cfji6j.jpg",
+    alt: "Two men in suits standing together for a photograph",
+    width: 1179,
+    height: 1165,
+  },
+  {
+    id: "financial-innovation-awards",
+    title: "Financial Innovation Awards",
+    image: "https://res.cloudinary.com/dkkuwmr42/image/upload/v1790087626/IMG_4297_ickkd0.jpg",
+    alt: "A Financial Innovation Awards sign displayed at an event",
+    width: 1179,
+    height: 1452,
+  },
+  {
+    id: "red-lion-court-office",
+    title: "Red Lion Court Office",
+    image: "https://res.cloudinary.com/dkkuwmr42/image/upload/v1790087347/red_lion_court_p1rjfv.jpg",
+    alt: "A man seated at a desk in an open-plan office",
+    width: 1179,
+    height: 771,
+  },
+  {
+    id: "innovation-community-thanks",
+    title: "Innovation Community — Thanks to Dominic for Helping the Team",
+    image: "https://res.cloudinary.com/dkkuwmr42/image/upload/v1790087626/IMG_4296_wbjqer.jpg",
+    alt: "A handwritten thank-you note addressed to Dom and signed by the Innovation Community team",
+    width: 1179,
+    height: 1457,
+  },
+  {
+    id: "lbg-special-thanks",
+    title: "LBG — Special Thanks to Dom",
+    image: "https://res.cloudinary.com/dkkuwmr42/image/upload/v1790087626/IMG_4295_okyttr.jpg",
+    alt: "A thank-you card, a box marked Special Thanks and a green container on a desk",
+    width: 1179,
+    height: 1452,
   },
 ];
-
-export const galleryAccordionItems: GalleryItem[] = galleryCollections.flatMap((collection) =>
-  collection.media
-    .filter((item) => item.type === "image")
-    .map((item, i) => ({
-      id: `${collection.id}-${i}`,
-      image: item.src,
-      alt: item.alt,
-      title: collection.title,
-      description: collection.description,
-      category: String(collection.year),
-    }))
-);

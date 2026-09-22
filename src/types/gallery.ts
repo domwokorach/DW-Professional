@@ -16,7 +16,10 @@ export type GalleryItem = {
   id: string;
   image: string;
   alt: string;
-  title?: string;
+  title: string;
+  year?: number;
+  width: number;
+  height: number;
   description?: string;
   category?: string;
 };

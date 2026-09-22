@@ -40,7 +40,7 @@ It is designed for recruiters, hiring managers, freelance clients, engineering t
 - Freelance project showcase with live-project links
 - Detailed case studies with dynamic routes
 - Categorised technical skills
-- Career gallery slider with lightbox, thumbnail navigation and video support
+- Responsive career gallery with an accessible lightbox
 - Contact section (client-side, opens a pre-filled email via `mailto:`)
 - Dynamic London greeting and current UK timezone
 - Location-aware weather widget powered by OpenWeather
@@ -159,7 +159,7 @@ src/
 │   ├── layout/              # Header, Navigation, MobileNavigation, Footer
 │   ├── sections/             # Home page sections (Hero, About, Services, Projects, Experience, Gallery, Contact, …)
 │   ├── project/              # Project & case-study cards and detail-page visuals
-│   ├── gallery/               # Gallery slider and lightbox
+│   ├── gallery/               # Gallery grid and lightbox
 │   ├── experience/            # Experience timeline item
 │   ├── weather/                # Weather widget
 │   └── ui/                     # Generic reusable UI (Button, Container, SectionHeading, modals, …)
@@ -289,7 +289,7 @@ The portfolio is designed with accessibility in mind, including:
 ## Performance
 
 - `next/image` for local screenshots with responsive `sizes`
-- Lazy loading for gallery slides beyond the first, which loads eagerly with `priority`
+- Lazy loading and responsive Cloudinary transformations for gallery images
 - Cloudinary-hosted gallery media rather than bundling large files locally
 - Framer Motion animations limited to `transform`/`opacity`, with `prefers-reduced-motion` respected throughout
 - Static generation for the home page and every project/case-study detail route via `generateStaticParams`
