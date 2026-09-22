@@ -8,10 +8,11 @@ import Container from "@/components/ui/Container";
 import GlyphMatrixBackground from "@/components/magicui/glyph-matrix-background";
 import FileUploadField from "@/components/ui/FileUploadField";
 import BudgetInput from "@/components/ui/BudgetInput";
-import CompanyCsvAutocomplete from "@/components/contact/CompanyCsvAutocomplete";
+import CompanySearchField from "@/components/companies/CompanySearchField";
 import { social } from "@/data/navigation";
 import { MESSAGE_MAX_WORDS, clampToWordLimit, countWords } from "@/lib/contact/words";
 import type { BudgetCurrency } from "@/lib/contact/validation";
+import type { CompanySearchResult } from "@/types/company";
 
 const projectTypes = [
   "Frontend Development",
@@ -40,6 +41,7 @@ export default function Contact() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [message, setMessage] = useState("");
   const [company, setCompany] = useState("");
+  const [companyNumber, setCompanyNumber] = useState("");
   const [budgetAmount, setBudgetAmount] = useState("");
   const [budgetCurrency, setBudgetCurrency] = useState<BudgetCurrency | "">("");
   const [budgetCurrencyOther, setBudgetCurrencyOther] = useState("");
@@ -61,6 +63,10 @@ export default function Contact() {
 
   function handleMessageChange(next: string) {
     setMessage(clampToWordLimit(next, MESSAGE_MAX_WORDS));
+  }
+
+  function handleCompanySelect(selected: CompanySearchResult | null) {
+    setCompanyNumber(selected?.companyNumber ?? "");
   }
 
   function handleFileChange(next: File | null) {
@@ -273,16 +279,18 @@ export default function Contact() {
                     <GradientText>Company</GradientText>{" "}
                     <span className="text-xs">(optional)</span>
                   </label>
-                  <CompanyCsvAutocomplete
+                  <CompanySearchField
                     id="company"
                     name="company"
                     value={company}
                     onChange={setCompany}
+                    onSelect={handleCompanySelect}
                     inputClassName={inputClasses}
                     helperId={companyHelpId}
                   />
+                  <input type="hidden" name="companyNumber" value={companyNumber} />
                   <p id={companyHelpId} className="mt-1.5 text-xs text-muted">
-                    Start typing to search UK companies
+                    Start typing to search companies
                   </p>
                 </div>
                 <BudgetInput

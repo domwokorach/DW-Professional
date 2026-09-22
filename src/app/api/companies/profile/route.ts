@@ -8,9 +8,10 @@ import { mapSicCodesToIndustry } from "@/lib/companies/sic";
 export const runtime = "nodejs";
 
 /**
- * Looks up a single company via the Companies House REST API, used only
- * after the candidate has selected a company from search — it enriches the
- * selection with status + an industry derived from SIC codes.
+ * Looks up a single company in the imported CompanyRecord table (see
+ * src/lib/companies/search.ts), used only after the candidate has selected
+ * a company from search — it enriches the selection with status + an
+ * industry derived from SIC codes.
  */
 export async function GET(request: NextRequest) {
   const ip = extractClientIp(request.headers) ?? "unknown";

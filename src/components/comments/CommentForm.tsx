@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import Button from "@/components/ui/Button";
 import BorderGlow from "@/components/ui/BorderGlow";
-import CompanyAutocomplete from "@/components/comments/CompanyAutocomplete";
+import CompanySearchField from "@/components/companies/CompanySearchField";
 import {
   COMMENT_BODY_MAX_LENGTH,
   ALLOWED_AVATAR_TYPES,
@@ -483,13 +483,13 @@ export default function CommentForm() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="comment-company">Company (optional)</Label>
-            <CompanyAutocomplete
+            <CompanySearchField
               id="comment-company"
               maxLength={160}
               value={company}
               onChange={setCompany}
               onSelect={handleCompanySelect}
-              placeholder="Search UK companies"
+              placeholder="Search companies"
             />
           </div>
         </div>

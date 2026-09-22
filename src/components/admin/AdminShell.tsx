@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MessageSquare, MessageCircleHeart, User, Settings, Laptop2, LogOut } from "lucide-react";
+import { MessageSquare, MessageCircleHeart, Building2, User, Settings, Laptop2, LogOut } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -35,6 +35,7 @@ import type { AdminSession } from "@/lib/auth/guard";
 const NAV_ITEMS = [
   { id: "chat", label: "Chat", href: "/admin/chat", icon: MessageSquare },
   { id: "comments", label: "Comments", href: "/admin/comments", icon: MessageCircleHeart },
+  { id: "companies", label: "Companies", href: "/admin/companies", icon: Building2 },
   { id: "account", label: "Account", href: "/admin/account", icon: User },
   { id: "settings", label: "Settings", href: "/admin/settings", icon: Settings },
   { id: "devices", label: "Devices", href: "/admin/devices", icon: Laptop2 },
