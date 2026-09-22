@@ -11,7 +11,7 @@ const paragraphs = [
 
 export default function About() {
   return (
-    <section id="about" className="relative border-t border-line py-28 sm:py-36">
+    <section id="about" className="relative scroll-mt-24 border-t border-line py-28 sm:py-36">
       <Container>
         <div className="grid gap-12 lg:grid-cols-[minmax(0,340px)_1fr] lg:gap-16">
           <SectionHeading

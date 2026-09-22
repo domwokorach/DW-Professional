@@ -48,7 +48,7 @@ export default function Services() {
   const aiCapabilitiesList = useExpandable(aiCapabilities, { base: 4, sm: 6, md: 6 });
 
   return (
-    <section id="services" className="relative border-t border-line py-28 sm:py-36">
+    <section id="services" className="relative scroll-mt-24 border-t border-line py-28 sm:py-36">
       <Container>
         <SectionHeading
           index="03"

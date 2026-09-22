@@ -27,7 +27,7 @@ export default function Experience() {
   }, []);
 
   return (
-    <section id="experience" className="relative border-t border-line py-28 sm:py-36">
+    <section id="experience" className="relative scroll-mt-24 border-t border-line py-28 sm:py-36">
       <Container>
         <SectionHeading
           index="05"
