@@ -10,12 +10,22 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import LanguageSelector from "./LanguageSelector";
 import { localisedPathname, stripLocale } from "@/i18n/config";
 import { useLocale } from "@/i18n/LocaleProvider";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/motion/navigation-menu";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState<string>("home");
   const [menuOpen, setMenuOpen] = useState(false);
   const [resumeOpen, setResumeOpen] = useState(false);
+  const [compactMenuOpen, setCompactMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { locale } = useLocale();
@@ -62,6 +72,7 @@ export default function Header() {
 
   const handleNavigate = (id: string) => {
     setMenuOpen(false);
+    setCompactMenuOpen(false);
     setActive(id);
     if (stripLocale(pathname) !== "/") {
       router.push(`${localisedPathname("/", locale)}#${id}`);
@@ -79,47 +90,110 @@ export default function Header() {
         scrolled ? "border-b border-line bg-ink/70 backdrop-blur-lg" : "bg-ink/30 backdrop-blur-sm"
       }`}
     >
-      <nav className="mx-auto flex h-16 w-full max-w-content items-center justify-between px-6 sm:px-8 lg:px-10">
+      <nav className="mx-auto flex h-16 w-full max-w-content items-center justify-between gap-2 px-6 sm:px-8 lg:px-10">
         <button
           onClick={() => handleNavigate("home")}
-          className="font-mono text-lg font-semibold tracking-tight text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+          className="shrink-0 font-mono text-lg font-semibold tracking-tight text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
           aria-label="Go to home"
         >
           Dominic<span className="text-accent">.</span>
         </button>
 
-        <div className="hidden items-center gap-1 md:flex">
-          {headerNavigation.map((item) => {
-            const isActive = activeGroup === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => handleNavigate(item.id)}
-                aria-current={isActive ? "page" : undefined}
-                className={`min-h-11 rounded px-3 py-2 font-mono text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${
-                  isActive ? "text-white" : "text-muted hover:text-white"
-                }`}
-              >
-                {item.label}
-              </button>
-            );
-          })}
+        {/* Full desktop nav: every link inline, no crowding at this width. */}
+        <div className="hidden min-w-0 2xl:flex 2xl:flex-1 2xl:justify-center">
+          <NavigationMenu className="max-w-full">
+            <NavigationMenuList className="flex-wrap">
+              {headerNavigation.map((item) => {
+                const isActive = activeGroup === item.id;
+                return (
+                  <NavigationMenuItem key={item.id}>
+                    <NavigationMenuLink
+                      href={`#${item.id}`}
+                      active={isActive}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        handleNavigate(item.id);
+                      }}
+                      className="whitespace-nowrap px-3.5 py-2 font-mono"
+                    >
+                      {item.label}
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                );
+              })}
+            </NavigationMenuList>
+          </NavigationMenu>
         </div>
 
-        <div className="flex items-center gap-2 md:gap-3">
-          <div className="hidden md:block">
+        {/* Compact desktop / tablet-landscape nav: links collapse into one dropdown before they crowd. */}
+        <div className="hidden lg:flex 2xl:hidden">
+          <NavigationMenu
+            positionerProps={{ align: "start", sideOffset: 14, collisionPadding: 16 }}
+            onValueChange={(value) => setCompactMenuOpen(Boolean(value))}
+          >
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger
+                  isActive={Boolean(activeGroup)}
+                  className={navigationMenuTriggerStyle()}
+                  aria-label={compactMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+                >
+                  Menu
+                </NavigationMenuTrigger>
+                <NavigationMenuContent className="w-[19rem]">
+                  <ul className="flex flex-col gap-1 p-2">
+                    {headerNavigation.map((item) => {
+                      const isActive = activeGroup === item.id;
+                      return (
+                        <li key={item.id}>
+                          <NavigationMenuLink
+                            href={`#${item.id}`}
+                            active={isActive}
+                            onClick={(event) => {
+                              event.preventDefault();
+                              handleNavigate(item.id);
+                            }}
+                            className="font-mono text-sm"
+                          >
+                            {item.label}
+                          </NavigationMenuLink>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  <div className="flex flex-col gap-2 border-t border-line p-2">
+                    <LanguageSelector />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCompactMenuOpen(false);
+                        setResumeOpen(true);
+                      }}
+                      className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-line px-4 text-sm text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                    >
+                      Resume
+                    </button>
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
+
+        <div className="flex shrink-0 items-center gap-2">
+          <div className="hidden 2xl:block">
             <LanguageSelector />
           </div>
           <ThemeToggle />
           <button
             onClick={() => setResumeOpen(true)}
-            className="hidden md:inline-flex items-center rounded-full border border-line px-4 py-2 text-sm text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            className="hidden 2xl:inline-flex items-center rounded-full border border-line px-4 py-2 text-sm text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           >
             Resume
           </button>
           <button
             onClick={() => handleNavigate("contact")}
-            className="tablet-white hidden md:inline-flex items-center rounded-full border border-accent/40 px-4 py-2 text-sm text-accent transition-colors hover:bg-accent/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            className="tablet-white hidden lg:inline-flex items-center rounded-full border border-accent/40 px-4 py-2 text-sm text-accent transition-colors hover:bg-accent/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           >
             Get in Touch
           </button>
@@ -128,7 +202,7 @@ export default function Header() {
         <button
           type="button"
           onClick={() => setMenuOpen((o) => !o)}
-          className="md:hidden flex h-11 w-11 items-center justify-center rounded text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+          className="lg:hidden flex h-11 w-11 items-center justify-center rounded text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
           aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
