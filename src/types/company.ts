@@ -19,6 +19,8 @@ export type CompanySearchResult = {
   type?: string;
   dateOfCreation?: string;
   address?: CompanyAddress;
+  /** Convenience alias for `address.postalCode`, in the display formatting Companies House uses. */
+  postcode?: string;
   domain?: string;
   logo?: string;
   industry?: string;

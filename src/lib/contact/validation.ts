@@ -47,6 +47,7 @@ export const contactFormSchema = z
       .transform((v) => (v ? v.toUpperCase() : undefined)),
     company: optionalTrimmed(160),
     companyNumber: optionalTrimmed(20),
+    companyPostcode: optionalTrimmed(16),
     budget: z
       .union([z.enum(BUDGET_OPTIONS.map((o) => o.value) as [BudgetOption, ...BudgetOption[]]), z.literal("")])
       .nullish()

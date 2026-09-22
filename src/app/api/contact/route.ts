@@ -62,8 +62,13 @@ export async function POST(request: NextRequest) {
     email: form.get("email"),
     mobile: form.get("mobile"),
     mobileCountry: form.get("mobileCountry"),
-    company: form.get("company"),
+    // The shared CompanySearchField (see
+    // src/components/companies/CompanySearchField.tsx) always submits the
+    // company name under "companyName" plus separate companyNumber /
+    // companyPostcode fields, never one combined display string.
+    company: form.get("companyName"),
     companyNumber: form.get("companyNumber"),
+    companyPostcode: form.get("companyPostcode"),
     budget: form.get("budget"),
     projectType: form.get("projectType"),
     message: form.get("message"),
@@ -138,9 +143,13 @@ export async function POST(request: NextRequest) {
 
   const resend = new Resend(resendApiKey);
 
+  const companyDetails = [
+    data.companyNumber ? `Company No. ${data.companyNumber}` : null,
+    data.companyPostcode ? `Postcode: ${data.companyPostcode}` : null,
+  ].filter((part): part is string => Boolean(part));
   const companyLine = data.company
-    ? data.companyNumber
-      ? `${data.company} (Company No. ${data.companyNumber})`
+    ? companyDetails.length > 0
+      ? `${data.company} (${companyDetails.join(", ")})`
       : data.company
     : null;
 

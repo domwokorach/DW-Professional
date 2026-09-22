@@ -15,7 +15,15 @@ export interface ParsedCompanyRow {
   companyNumber?: string;
   name: string;
   status?: string;
+  /** Generic single-line address, from a plain "address" column or RegAddress.AddressLine1. */
   address?: string;
+  category?: string;
+  addressLine2?: string;
+  locality?: string;
+  region?: string;
+  postcode?: string;
+  country?: string;
+  uri?: string;
 }
 
 export interface CsvImportResult {
@@ -40,7 +48,18 @@ export class CsvValidationError extends Error {
 // than processed.
 const MAX_ROWS = 100_000;
 
-type CanonicalField = "companyNumber" | "name" | "status" | "address";
+type CanonicalField =
+  | "companyNumber"
+  | "name"
+  | "status"
+  | "address"
+  | "category"
+  | "addressLine2"
+  | "locality"
+  | "region"
+  | "postcode"
+  | "country"
+  | "uri";
 
 // Normalizing to bare lowercase alphanumerics means `company_name`,
 // `Company Name` and `CompanyName` (Companies House's own bulk-export
@@ -57,11 +76,28 @@ const ALIAS_MAP: Record<string, CanonicalField> = {
   name: "name",
   companystatus: "status",
   status: "status",
+  companycategory: "category",
+  category: "category",
   address: "address",
   companyaddress: "address",
   regaddress: "address",
   regaddressaddressline1: "address",
   location: "address",
+  regaddressaddressline2: "addressLine2",
+  addressline2: "addressLine2",
+  regaddressposttown: "locality",
+  posttown: "locality",
+  city: "locality",
+  regaddresscounty: "region",
+  county: "region",
+  regaddresspostcode: "postcode",
+  postcode: "postcode",
+  postalcode: "postcode",
+  zip: "postcode",
+  regaddresscountry: "country",
+  country: "country",
+  uri: "uri",
+  companieshouseuri: "uri",
 };
 
 function parseCsvLine(line: string): string[] {
@@ -176,6 +212,13 @@ export function parseCompanyCsv(raw: string): CsvImportResult {
       companyNumber,
       status: row.status,
       address: row.address,
+      category: row.category,
+      addressLine2: row.addressLine2,
+      locality: row.locality,
+      region: row.region,
+      postcode: row.postcode,
+      country: row.country,
+      uri: row.uri,
     });
   }
 

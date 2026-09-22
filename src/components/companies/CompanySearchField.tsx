@@ -10,12 +10,14 @@ import type { CompanySearchResult, CompanyStatus } from "@/types/company";
 const MIN_QUERY_LENGTH = 2;
 const DEBOUNCE_MS = 300;
 
+export const COMPANY_SEARCH_PLACEHOLDER = "Search by company name, postcode or registration number";
+
 const DEFAULT_INPUT_CLASSES =
   "flex h-9 w-full rounded-md border border-line bg-ink px-3 py-1 text-base text-paper shadow-sm transition-colors placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50 md:text-sm";
 
 export interface CompanySearchFieldProps {
   id: string;
-  /** Sets the `name` attribute on the visible text input, so a plain `new FormData(form)` picks up the typed/selected company name. */
+  /** Sets the `name` attribute on the visible text input (default "companyName"), so a plain `new FormData(form)` picks up the typed/selected company name. Hidden `companyNumber` and `companyPostcode` inputs are always rendered alongside it — empty unless a result has been selected. */
   name?: string;
   value: string;
   onChange: (value: string) => void;
@@ -44,29 +46,37 @@ function statusBadgeClassName(status: CompanyStatus | undefined): string {
   return "";
 }
 
-function highlightMatch(name: string, term: string) {
-  if (!term.trim()) return name;
-  const index = name.toLowerCase().indexOf(term.trim().toLowerCase());
-  if (index === -1) return name;
+/** Wraps the first case-insensitive occurrence of `term` inside `text` in a <mark>, or returns `text` unchanged if there's no match. */
+function highlightMatch(text: string, term: string) {
+  const trimmed = term.trim();
+  if (!trimmed) return text;
+  const index = text.toLowerCase().indexOf(trimmed.toLowerCase());
+  if (index === -1) return text;
   return (
     <>
-      {name.slice(0, index)}
-      <mark className="rounded-sm bg-accent/30 text-paper">{name.slice(index, index + term.length)}</mark>
-      {name.slice(index + term.length)}
+      {text.slice(0, index)}
+      <mark className="rounded-sm bg-accent/30 text-paper">{text.slice(index, index + trimmed.length)}</mark>
+      {text.slice(index + trimmed.length)}
     </>
   );
 }
 
 /**
- * "Company (optional)" autocomplete backed by the imported CSV company
- * dataset (/api/companies/search, reading CompanyRecord — see
+ * Shared "Company (optional)" autocomplete used by both the contact form
+ * and the public comment form, backed by the imported CSV company dataset
+ * (/api/companies/search, reading CompanyRecord — see
  * src/lib/companies/search.ts). The input is always the source of truth
  * for the field's value, so free typing (a company not in the dataset)
  * stays valid — selecting a result is a shortcut, not a requirement.
+ *
+ * On submit, a selected company's name/number/postcode are always carried
+ * as three separate form fields (`name` prop, `companyNumber`,
+ * `companyPostcode`) rather than one combined string — see the hidden
+ * inputs below, present (and empty) even when nothing is selected.
  */
 export default function CompanySearchField({
   id,
-  name,
+  name = "companyName",
   value,
   onChange,
   onSelect,
@@ -81,6 +91,7 @@ export default function CompanySearchField({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [selected, setSelected] = useState<CompanySearchResult | null>(null);
+  const [announcement, setAnnouncement] = useState("");
   const debouncedValue = useDebouncedValue(value, DEBOUNCE_MS);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -121,15 +132,23 @@ export default function CompanySearchField({
           setStatus("error");
           setErrorMessage(data?.error ?? "Unable to load companies. Please try again.");
           setResults([]);
+          setAnnouncement(data?.error ?? "Unable to load companies. Please try again.");
           return;
         }
-        setResults(data?.companies ?? []);
+        const companies = data?.companies ?? [];
+        setResults(companies);
         setStatus("idle");
+        setAnnouncement(
+          companies.length === 0
+            ? "No companies found."
+            : `${companies.length} ${companies.length === 1 ? "company" : "companies"} found.`
+        );
       } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError") return;
         setStatus("error");
         setErrorMessage("Unable to load companies. Please try again.");
         setResults([]);
+        setAnnouncement("Unable to load companies. Please try again.");
       }
     })();
 
@@ -165,6 +184,7 @@ export default function CompanySearchField({
     onSelect?.(company);
     setIsOpen(false);
     setActiveIndex(-1);
+    setAnnouncement(`Selected ${company.name}.`);
   }
 
   function applyManualEntry() {
@@ -181,6 +201,7 @@ export default function CompanySearchField({
     setResults([]);
     setStatus("idle");
     setErrorMessage(null);
+    setAnnouncement("Selection cleared.");
     requestAnimationFrame(() => inputRef.current?.focus());
   }
 
@@ -220,30 +241,41 @@ export default function CompanySearchField({
     return null;
   }, [status, errorMessage, results.length]);
 
+  // Always present (even with no selection) so a plain `new FormData(form)`
+  // submission carries the three fields separately rather than one
+  // combined display string — see the component doc comment above.
+  const hiddenCompanyFields = (
+    <>
+      <input type="hidden" name="companyNumber" value={selected?.companyNumber ?? ""} />
+      <input type="hidden" name="companyPostcode" value={selected?.postcode ?? selected?.address?.postalCode ?? ""} />
+    </>
+  );
+  const liveRegion = (
+    <div role="status" aria-live="polite" className="sr-only">
+      {announcement}
+    </div>
+  );
+
   if (selected) {
     const statusLabel = formatStatus(selected.status);
-    const locationParts = selected.address
-      ? [selected.address.locality, selected.address.postalCode].filter(Boolean)
-      : selected.location
-        ? [selected.location]
-        : [];
+    const postcode = selected.postcode ?? selected.address?.postalCode;
     return (
       <div className="flex items-start gap-2.5 rounded-2xl border border-line bg-ink px-3.5 py-2.5">
         {/* Hidden so a plain `new FormData(form)` submission still carries the selected name under `name`, matching the plain-input case. */}
-        {name ? <input type="hidden" name={name} value={selected.name} /> : null}
+        <input type="hidden" name={name} value={selected.name} />
+        {hiddenCompanyFields}
+        {liveRegion}
         <Building2 className="mt-0.5 h-6 w-6 shrink-0 rounded-full border border-line p-1 text-muted" aria-hidden="true" />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-paper">{selected.name}</p>
+          <p className="truncate text-sm font-semibold uppercase tracking-wide text-paper">{selected.name}</p>
           {selected.companyNumber ? (
-            <p className="mt-0.5 truncate text-xs text-muted">Company no. {selected.companyNumber}</p>
+            <p className="mt-0.5 truncate text-xs text-muted">Company number: {selected.companyNumber}</p>
           ) : null}
-          {locationParts.length > 0 ? (
-            <p className="mt-0.5 truncate text-xs text-muted">{locationParts.join(", ")}</p>
-          ) : null}
+          {postcode ? <p className="mt-0.5 truncate text-xs text-muted">Postcode: {postcode}</p> : null}
+          {statusLabel ? <p className="mt-0.5 truncate text-xs text-muted">Status: {statusLabel}</p> : null}
           <p className="mt-1 flex items-center gap-1 text-[11px] font-medium text-accent">
             <CheckCircle2 className="h-3 w-3" aria-hidden="true" />
             Company directory
-            {statusLabel ? <span className="text-muted">· {statusLabel}</span> : null}
           </p>
         </div>
         <button
@@ -259,7 +291,8 @@ export default function CompanySearchField({
   }
 
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className="relative overflow-visible">
+      {liveRegion}
       <div className="relative">
         <input
           ref={inputRef}
@@ -282,7 +315,7 @@ export default function CompanySearchField({
           }}
           onFocus={() => setIsOpen(true)}
           onKeyDown={handleKeyDown}
-          placeholder={placeholder ?? "Search companies"}
+          placeholder={placeholder ?? COMPANY_SEARCH_PLACEHOLDER}
           className={cn(inputClassName ?? DEFAULT_INPUT_CLASSES, status === "loading" ? "pr-9" : undefined)}
           style={{ fontSize: "16px" }}
         />
@@ -293,15 +326,16 @@ export default function CompanySearchField({
           />
         ) : null}
       </div>
+      {hiddenCompanyFields}
       {!helperId ? (
         <p id={resolvedHelperId} className="mt-1.5 text-xs text-muted">
-          Start typing to search companies
+          Search by company name, postcode or registration number
         </p>
       ) : null}
 
       <div
         className={cn(
-          "absolute left-0 right-0 z-20 mt-1.5 max-w-full origin-top overflow-hidden rounded-lg border border-line bg-ink shadow-lg transition-all duration-150",
+          "absolute left-0 right-0 z-20 mt-1.5 max-w-[calc(100vw-2rem)] origin-top overflow-hidden rounded-lg border border-line bg-ink shadow-lg transition-all duration-150",
           showDropdown
             ? "pointer-events-auto scale-y-100 opacity-100"
             : "pointer-events-none scale-y-95 opacity-0"
@@ -311,7 +345,7 @@ export default function CompanySearchField({
           id={listboxId}
           role="listbox"
           aria-label="Matching companies"
-          className="max-h-72 overflow-y-auto py-1"
+          className="max-h-72 overflow-y-auto overflow-x-hidden py-1"
         >
           {status === "loading" && results.length === 0 ? (
             <li className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted" role="status">
@@ -327,11 +361,7 @@ export default function CompanySearchField({
               ) : (
                 results.map((company, index) => {
                   const statusLabel = formatStatus(company.status);
-                  const locationParts = company.address
-                    ? [company.address.locality, company.address.postalCode].filter(Boolean)
-                    : company.location
-                      ? [company.location]
-                      : [];
+                  const postcode = company.postcode ?? company.address?.postalCode;
                   return (
                     <li
                       key={company.id}
@@ -353,26 +383,30 @@ export default function CompanySearchField({
                         aria-hidden="true"
                       />
                       <div className="min-w-0 flex-1">
-                        <div className="truncate text-sm font-semibold">
+                        <div className="truncate text-sm font-semibold uppercase tracking-wide">
                           {highlightMatch(company.name, value)}
                         </div>
-                        <div className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-muted">
-                          {company.companyNumber ? <span>{company.companyNumber}</span> : null}
+                        <div className="mt-0.5 space-y-0.5 text-xs text-muted">
+                          {company.companyNumber ? (
+                            <div className="truncate">
+                              Company number: {highlightMatch(company.companyNumber, value)}
+                            </div>
+                          ) : null}
+                          {postcode ? (
+                            <div className="truncate">Postcode: {highlightMatch(postcode, value)}</div>
+                          ) : null}
                           {statusLabel ? (
-                            <>
-                              {company.companyNumber ? <span aria-hidden="true">·</span> : null}
+                            <div className="flex items-center gap-1">
+                              Status:
                               <Badge
                                 variant="outline"
                                 className={cn("border-transparent px-1.5 py-0", statusBadgeClassName(company.status))}
                               >
                                 {statusLabel}
                               </Badge>
-                            </>
+                            </div>
                           ) : null}
                         </div>
-                        {locationParts.length > 0 ? (
-                          <div className="mt-0.5 truncate text-xs text-muted/80">{locationParts.join(", ")}</div>
-                        ) : null}
                       </div>
                     </li>
                   );

@@ -118,7 +118,7 @@ export default function CommentForm() {
     try {
       const formData = new FormData();
       formData.set("fullName", fullName);
-      if (company.trim()) formData.set("company", company.trim());
+      if (company.trim()) formData.set("companyName", company.trim());
       if (companyMeta?.id) formData.set("companyId", companyMeta.id);
       if (companyMeta?.companyNumber)
         formData.set("companyNumber", companyMeta.companyNumber);
@@ -130,6 +130,8 @@ export default function CommentForm() {
         formData.set("companyIndustry", companyMeta.industry);
       if (companyMeta?.location)
         formData.set("companyLocation", companyMeta.location);
+      const companyPostcode = companyMeta?.postcode ?? companyMeta?.address?.postalCode;
+      if (companyPostcode) formData.set("companyPostcode", companyPostcode);
       formData.set(
         "companySource",
         company.trim() ? (companyMeta ? companyMeta.source : "manual") : "",
@@ -489,7 +491,6 @@ export default function CommentForm() {
               value={company}
               onChange={setCompany}
               onSelect={handleCompanySelect}
-              placeholder="Search companies"
             />
           </div>
         </div>

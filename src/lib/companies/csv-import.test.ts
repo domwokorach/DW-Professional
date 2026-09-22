@@ -137,4 +137,29 @@ describe("parseCompanyCsv", () => {
     const result = parseCompanyCsv(csv);
     expect(result.records[0].companyNumber).toBe("01234567");
   });
+
+  it("recognizes the full set of Companies House bulk-export columns", () => {
+    const csv = [
+      "CompanyName,CompanyNumber,CompanyStatus,CompanyCategory,RegAddress.AddressLine1,RegAddress.AddressLine2,RegAddress.PostTown,RegAddress.County,RegAddress.PostCode,RegAddress.Country,URI",
+      "Gamma PLC,SC000111,Active,Private Limited Company,221B Baker Street,Marylebone,London,Greater London,NW1 6XE,United Kingdom,http://business.data.gov.uk/id/company/SC000111",
+    ].join("\n");
+
+    const result = parseCompanyCsv(csv);
+
+    expect(result.records).toEqual([
+      {
+        name: "Gamma PLC",
+        companyNumber: "SC000111",
+        status: "Active",
+        address: "221B Baker Street",
+        category: "Private Limited Company",
+        addressLine2: "Marylebone",
+        locality: "London",
+        region: "Greater London",
+        postcode: "NW1 6XE",
+        country: "United Kingdom",
+        uri: "http://business.data.gov.uk/id/company/SC000111",
+      },
+    ]);
+  });
 });

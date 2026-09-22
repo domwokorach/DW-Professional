@@ -71,6 +71,7 @@ export async function POST(request: NextRequest) {
           companyLogo: verification.companyLogo,
           companyIndustry: verification.companyIndustry,
           companyLocation: verification.companyLocation,
+          companyPostcode: verification.companyPostcode,
           body: verification.body,
           avatarUrl: verification.avatarUrl,
           status: "PENDING",
