@@ -86,18 +86,25 @@ export default function AccordionGallery({
 
   const revealPanel = (index: number) => {
     const panel = panelRefs.current[index];
-    if (!panel) return;
-    panel.scrollIntoView({
-      block: "nearest",
-      inline: "center",
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    const viewport = viewportRef.current;
+    if (!panel || !viewport) return;
+    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+    if (window.matchMedia("(max-width: 1023px)").matches) {
+      panel.scrollIntoView({ block: "nearest", behavior });
+      return;
+    }
+    const panelRect = panel.getBoundingClientRect();
+    const viewportRect = viewport.getBoundingClientRect();
+    viewport.scrollTo({
+      left: viewport.scrollLeft + panelRect.left - viewportRect.left - (viewportRect.width - panelRect.width) / 2,
+      behavior,
     });
   };
 
   const focusPanel = (index: number) => {
     const next = (index + items.length) % items.length;
     setActive(next);
-    panelRefs.current[next]?.focus();
+    panelRefs.current[next]?.focus({ preventScroll: true });
     requestAnimationFrame(() => revealPanel(next));
   };
 
