@@ -70,7 +70,7 @@ export default function CookieConsentManager() {
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             className="fixed inset-x-0 bottom-0 z-[100] border-t border-line bg-surface/95 p-5 shadow-2xl backdrop-blur-lg sm:inset-x-4 sm:bottom-4 sm:mx-auto sm:max-w-3xl sm:rounded-2xl sm:border sm:p-7"
           >
-            <h2 className="text-lg font-semibold text-white">Cookie Preferences</h2>
+            <h2 className="text-lg font-semibold text-paper">Cookie Preferences</h2>
             <p className="mt-2 max-w-2xl text-sm leading-[1.65] text-muted">
               We use essential cookies to make this website work. With your
               permission, we may also use optional cookies to understand how
@@ -84,12 +84,12 @@ export default function CookieConsentManager() {
                 href="https://www.dominicwokorach.me/en-gb/privacy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted underline transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                className="text-muted underline transition-colors hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
               >
                 Privacy Policy
               </a>
               <span className="mx-2 text-muted">·</span>
-              <Link href="/cookies" className="text-muted underline hover:text-white transition-colors">
+              <Link href="/cookies" className="text-muted underline hover:text-paper transition-colors">
                 Cookie Policy
               </Link>
             </p>
@@ -98,7 +98,7 @@ export default function CookieConsentManager() {
               <button
                 type="button"
                 onClick={handleDecline}
-                className="min-h-[48px] rounded-full border border-line px-6 py-3 text-sm font-medium text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent sm:order-1"
+                className="min-h-[48px] rounded-full border border-line px-6 py-3 text-sm font-medium text-paper transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent sm:order-1"
               >
                 Decline
               </button>
@@ -106,14 +106,14 @@ export default function CookieConsentManager() {
                 ref={customiseButtonRef}
                 type="button"
                 onClick={() => setModalOpen(true)}
-                className="min-h-[48px] rounded-full border border-line px-6 py-3 text-sm font-medium text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent sm:order-2"
+                className="min-h-[48px] rounded-full border border-line px-6 py-3 text-sm font-medium text-paper transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent sm:order-2"
               >
                 Customise
               </button>
               <button
                 type="button"
                 onClick={handleAccept}
-                className="min-h-[48px] rounded-full bg-white px-6 py-3 text-sm font-medium text-ink transition-colors hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-white sm:order-3"
+                className="min-h-[48px] rounded-full bg-cta px-6 py-3 text-sm font-medium text-cta-fg transition-colors hover:bg-accent hover:text-accent-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-cta sm:order-3"
               >
                 Accept
               </button>

@@ -86,8 +86,8 @@ export default function MessageBubble({
           isDeleted
             ? "border border-dashed border-line italic text-muted"
             : isAdmin
-              ? "bg-accent text-ink"
-              : "border border-line bg-ink text-white"
+              ? "bg-accent text-accent-fg"
+              : "border border-line bg-ink text-paper"
         )}
       >
         {isDeleted ? "Message deleted" : message.content}

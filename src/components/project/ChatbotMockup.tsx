@@ -106,7 +106,7 @@ export default function ChatbotMockup() {
       <div className="mt-4 rounded-xl border border-line bg-ink/60 p-5">
         <div className="flex items-center gap-2">
           <span className="h-2 w-2 rounded-full bg-accent" aria-hidden />
-          <p className="text-sm font-medium text-white">Internal Assistant</p>
+          <p className="text-sm font-medium text-paper">Internal Assistant</p>
         </div>
 
         <p className="mt-3 text-sm text-muted">How can I help you today?</p>
@@ -119,7 +119,7 @@ export default function ChatbotMockup() {
                 initial={reduceMotion ? false : { opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="ml-auto max-w-[80%] rounded-xl rounded-tr-sm bg-white/10 px-4 py-2.5 text-sm text-white"
+                className="ml-auto max-w-[80%] rounded-xl rounded-tr-sm bg-paper/10 px-4 py-2.5 text-sm text-paper"
               >
                 <span className="sr-only">You said: </span>
                 {message.content}
@@ -130,7 +130,7 @@ export default function ChatbotMockup() {
                 initial={reduceMotion ? false : { opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                className="max-w-[85%] rounded-xl rounded-tl-sm bg-white/[0.04] px-4 py-3 text-sm text-muted"
+                className="max-w-[85%] rounded-xl rounded-tl-sm bg-paper/[0.04] px-4 py-3 text-sm text-muted"
               >
                 <span className="sr-only">Assistant replied: </span>
                 {message.content || (
@@ -157,7 +157,7 @@ export default function ChatbotMockup() {
             e.preventDefault();
             sendMessage(input);
           }}
-          className="mt-5 flex items-center gap-2 rounded-full border border-line bg-white/[0.02] px-4 py-2.5"
+          className="mt-5 flex items-center gap-2 rounded-full border border-line bg-paper/[0.02] px-4 py-2.5"
         >
           <label htmlFor="chat-question" className="sr-only">
             Ask a question
@@ -170,14 +170,14 @@ export default function ChatbotMockup() {
             disabled={isStreaming}
             maxLength={2000}
             placeholder="Ask another question..."
-            className="w-full bg-transparent text-sm text-white placeholder:text-muted focus:outline-none disabled:opacity-60"
+            className="w-full bg-transparent text-sm text-paper placeholder:text-muted focus:outline-none disabled:opacity-60"
             style={{ fontSize: "16px" }}
           />
           <button
             type={isStreaming ? "button" : "submit"}
             onClick={isStreaming ? () => abortRef.current?.abort() : undefined}
             disabled={!isStreaming && !input.trim()}
-            className="shrink-0 rounded-full bg-accent px-3 py-1 text-xs font-medium text-ink disabled:opacity-40"
+            className="shrink-0 rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-fg disabled:opacity-40"
           >
             {isStreaming ? "Stop" : "Send"}
           </button>
@@ -195,7 +195,7 @@ export default function ChatbotMockup() {
                 type="button"
                 onClick={() => sendMessage(`Tell me about ${category}`)}
                 disabled={isStreaming}
-                className="rounded-full border border-line bg-white/[0.03] px-3 py-1.5 text-sm text-neutral-300 transition hover:border-accent hover:text-white disabled:opacity-50"
+                className="rounded-full border border-line bg-paper/[0.03] px-3 py-1.5 text-sm text-muted transition hover:border-accent hover:text-paper disabled:opacity-50"
               >
                 {category}
               </button>

@@ -67,7 +67,7 @@ export default function CompaniesImportView({ initialTotalRecords }: { initialTo
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:py-10">
-      <h1 className="text-2xl font-semibold text-white">Companies</h1>
+      <h1 className="text-2xl font-semibold text-paper">Companies</h1>
       <p className="mt-1 text-sm text-muted">
         Replace the company dataset used by the &ldquo;Company (optional)&rdquo; search field across the site.
       </p>
@@ -84,7 +84,7 @@ export default function CompaniesImportView({ initialTotalRecords }: { initialTo
         </CardHeader>
         <CardContent className="space-y-5">
           <div className="rounded-lg border border-line bg-ink/40 p-4 text-xs text-muted">
-            <p className="font-medium text-white">Expected CSV format</p>
+            <p className="font-medium text-paper">Expected CSV format</p>
             <p className="mt-1">
               A header row, then one company per row. Required column: <code className="text-accent">company_name</code>.
               Optional columns: <code className="text-accent">company_number</code>,{" "}
@@ -93,14 +93,14 @@ export default function CompaniesImportView({ initialTotalRecords }: { initialTo
               <code className="text-accent">CompanyName</code> both work).
             </p>
             <p className="mt-2">
-              Importing <strong className="text-white">replaces the entire dataset</strong> — rows with no
+              Importing <strong className="text-paper">replaces the entire dataset</strong> — rows with no
               company_name are skipped, and duplicates (matched by company number, or by name when no number is
               given) are dropped, keeping the first occurrence.
             </p>
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="company-csv-file" className="block text-sm font-medium text-white">
+            <label htmlFor="company-csv-file" className="block text-sm font-medium text-paper">
               CSV file
             </label>
             <input
@@ -110,7 +110,7 @@ export default function CompaniesImportView({ initialTotalRecords }: { initialTo
               accept=".csv,text/csv,application/vnd.ms-excel"
               onChange={(e) => handleFileChange(e.target.files?.[0] ?? null)}
               className={cn(
-                "block w-full text-sm text-muted file:mr-4 file:rounded-md file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-white/20",
+                "block w-full text-sm text-muted file:mr-4 file:rounded-md file:border-0 file:bg-paper/10 file:px-3 file:py-2 file:text-sm file:font-medium file:text-paper hover:file:bg-paper/20",
                 "cursor-pointer rounded-lg border border-line bg-transparent p-2"
               )}
             />
@@ -130,7 +130,7 @@ export default function CompaniesImportView({ initialTotalRecords }: { initialTo
                 <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
                 Import complete
               </div>
-              <p className="text-white">
+              <p className="text-paper">
                 Imported {report.imported.toLocaleString()} of {report.totalRows.toLocaleString()} rows.
               </p>
               <p className="text-muted">

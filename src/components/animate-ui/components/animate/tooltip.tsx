@@ -46,7 +46,7 @@ function TooltipContent({
   return (
     <TooltipContentPrimitive
       className={cn(
-        'z-50 w-fit bg-surface text-white rounded-md dark:bg-surface dark:text-white',
+        'z-50 w-fit bg-surface text-paper rounded-md dark:bg-surface dark:text-paper',
         className,
       )}
       {...props}

@@ -6,13 +6,29 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#090909",
-        surface: "#111111",
-        line: "rgba(255,255,255,0.10)",
-        accent: "#5b8def",
-        accent2: "#8b7bf0",
-        accent3: "#6ee7ff",
-        muted: "#a3a3a3",
+        ink: "rgb(var(--color-ink) / <alpha-value>)",
+        surface: "rgb(var(--color-surface) / <alpha-value>)",
+        line: "var(--color-line)",
+        accent: "rgb(var(--color-accent) / <alpha-value>)",
+        accent2: "rgb(var(--color-accent2) / <alpha-value>)",
+        accent3: "rgb(var(--color-accent3) / <alpha-value>)",
+        muted: "rgb(var(--color-muted) / <alpha-value>)",
+        // Adaptive "glass" white: literal white on the dark page, an
+        // inverted near-black tint on the light page. Use for any card,
+        // border, or text that was previously hard-coded to `white` but
+        // needs to sit on the page background (not on a fixed-dark image
+        // overlay — those should keep literal `white`/`black`).
+        paper: "rgb(var(--color-paper) / <alpha-value>)",
+        // Foreground for content sitting on an `accent`-coloured surface
+        // (badges, solid accent buttons, chat bubbles). Accent itself gets
+        // darker/more saturated in light mode, so its paired foreground
+        // must flip from dark ink to white to keep contrast.
+        "accent-fg": "rgb(var(--color-accent-fg) / <alpha-value>)",
+        // Solid "inverted" CTA surface + its foreground: bright on the
+        // dark page, dark on the light page, always contrasting with the
+        // page background.
+        cta: "rgb(var(--color-cta) / <alpha-value>)",
+        "cta-fg": "rgb(var(--color-cta-fg) / <alpha-value>)",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],

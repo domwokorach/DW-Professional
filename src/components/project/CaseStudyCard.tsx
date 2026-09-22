@@ -8,7 +8,7 @@ import OrgGraphPreview from "./OrgGraphPreview";
 
 export default function CaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
   return (
-    <article className="hover-lift group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white/[0.03] transition-colors duration-200 hover:border-accent/40">
+    <article className="hover-lift group relative flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-paper/[0.03] transition-colors duration-200 hover:border-accent/40">
       {caseStudy.mediaType && (
         <div
           className={`relative w-full overflow-hidden border-b border-line bg-surface ${
@@ -70,7 +70,7 @@ export default function CaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
           </div>
 
           <h3
-            className="mt-4 text-2xl font-medium text-white transition-colors duration-200 group-hover:text-accent sm:text-3xl"
+            className="mt-4 text-2xl font-medium text-paper transition-colors duration-200 group-hover:text-accent sm:text-3xl"
             data-i18n-ignore
           >
             {caseStudy.title}
@@ -102,7 +102,7 @@ export default function CaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
             <Link
               href={`/projects/${caseStudy.slug}`}
               aria-label={`View ${caseStudy.title} case study`}
-              className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-sm font-medium text-white transition-colors hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+              className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap text-sm font-medium text-paper transition-colors hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
             >
               <span aria-hidden>View Case Study</span>
               <span
@@ -118,7 +118,7 @@ export default function CaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
                 href={caseStudy.prototypeHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+                className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
               >
                 View Prototype
                 <ExternalLink aria-hidden className="h-3.5 w-3.5" />
@@ -130,7 +130,7 @@ export default function CaseStudyCard({ caseStudy }: { caseStudy: CaseStudy }) {
                 href={caseStudy.externalHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+                className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
               >
                 {caseStudy.externalLabel ?? "Visit Website"}
                 <ExternalLink aria-hidden className="h-3.5 w-3.5" />

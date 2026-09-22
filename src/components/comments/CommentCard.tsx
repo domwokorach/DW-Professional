@@ -16,10 +16,10 @@ export default function CommentCard({ comment }: { comment: PublicComment }) {
       <figcaption className="mt-5 flex items-center gap-3">
         <Avatar className="h-11 w-11 shrink-0 border border-line">
           <AvatarImage src={comment.avatarUrl ?? undefined} alt="" />
-          <AvatarFallback className="bg-ink text-sm text-white">{initials(comment.fullName)}</AvatarFallback>
+          <AvatarFallback className="bg-ink text-sm text-paper">{initials(comment.fullName)}</AvatarFallback>
         </Avatar>
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-white">{comment.fullName}</p>
+          <p className="truncate text-sm font-semibold text-paper">{comment.fullName}</p>
           {comment.company ? <p className="truncate text-xs text-muted">{comment.company}</p> : null}
         </div>
       </figcaption>

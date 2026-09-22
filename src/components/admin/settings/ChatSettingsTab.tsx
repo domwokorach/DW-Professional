@@ -15,7 +15,7 @@ const AVAILABILITY_OPTIONS: { value: Availability; label: string; dot: string }[
   { value: "ONLINE", label: "Online", dot: "bg-emerald-400" },
   { value: "AWAY", label: "Away", dot: "bg-yellow-400" },
   { value: "BUSY", label: "Busy", dot: "bg-red-400" },
-  { value: "OFFLINE", label: "Offline", dot: "bg-white/30" },
+  { value: "OFFLINE", label: "Offline", dot: "bg-paper/30" },
 ];
 
 export default function ChatSettingsTab({

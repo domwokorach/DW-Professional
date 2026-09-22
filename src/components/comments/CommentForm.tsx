@@ -314,7 +314,7 @@ export default function CommentForm() {
     return (
       <div className="flex flex-col items-center gap-3 rounded-2xl border border-line bg-surface p-8 text-center">
         <CheckCircle2 className="h-10 w-10 text-accent" aria-hidden="true" />
-        <h3 className="text-lg font-semibold text-white">
+        <h3 className="text-lg font-semibold text-paper">
           Thanks for your comment
         </h3>
         <p className="max-w-sm text-sm text-muted">
@@ -337,7 +337,7 @@ export default function CommentForm() {
             <AlertDescription>{errorMessage}</AlertDescription>
           </Alert>
         ) : null}
-        <h3 className="text-lg font-semibold text-white">
+        <h3 className="text-lg font-semibold text-paper">
           Check your email
         </h3>
         <p className="mx-auto mt-1 max-w-sm text-sm text-muted">
@@ -382,7 +382,7 @@ export default function CommentForm() {
           type="button"
           onClick={handleResendPin}
           disabled={resending || resendCooldown > 0}
-          className="mt-3 flex w-full items-center justify-center gap-1.5 text-xs text-muted hover:text-white disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:text-muted"
+          className="mt-3 flex w-full items-center justify-center gap-1.5 text-xs text-muted hover:text-paper disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:text-muted"
         >
           {resending ? (
             <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" />
@@ -403,7 +403,7 @@ export default function CommentForm() {
             setResendMessage(null);
             setResendCooldown(0);
           }}
-          className="mt-2 block w-full text-xs text-muted hover:text-white"
+          className="mt-2 block w-full text-xs text-muted hover:text-paper"
         >
           Use a different email
         </button>
@@ -427,7 +427,7 @@ export default function CommentForm() {
         <div className="flex items-center gap-4">
           <Avatar className="h-16 w-16 shrink-0 border border-line">
             <AvatarImage src={avatarPreview ?? undefined} alt="" />
-            <AvatarFallback className="bg-ink text-white">
+            <AvatarFallback className="bg-ink text-paper">
               {initials(fullName)}
             </AvatarFallback>
           </Avatar>
@@ -435,7 +435,7 @@ export default function CommentForm() {
             <div className="flex items-center gap-2">
               <label
                 htmlFor="comment-avatar"
-                className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-xs font-medium text-white transition-colors hover:border-accent/60 hover:text-accent"
+                className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-xs font-medium text-paper transition-colors hover:border-accent/60 hover:text-accent"
               >
                 <ImagePlus className="h-3.5 w-3.5" aria-hidden="true" />
                 {avatarPreview ? "Change photo" : "Upload photo"}
@@ -444,7 +444,7 @@ export default function CommentForm() {
                 <button
                   type="button"
                   onClick={clearAvatar}
-                  className="inline-flex items-center gap-1 text-xs text-muted hover:text-white"
+                  className="inline-flex items-center gap-1 text-xs text-muted hover:text-paper"
                 >
                   <X className="h-3.5 w-3.5" aria-hidden="true" /> Remove
                 </button>

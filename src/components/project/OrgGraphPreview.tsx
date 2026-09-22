@@ -25,7 +25,7 @@ const links: [number, number][] = [
 
 export default function OrgGraphPreview() {
   return (
-    <div className="relative flex h-full w-full flex-col justify-between overflow-hidden rounded-xl border border-line bg-gradient-to-br from-white/[0.04] to-transparent p-5">
+    <div className="relative flex h-full w-full flex-col justify-between overflow-hidden rounded-xl border border-line bg-gradient-to-br from-paper/[0.04] to-transparent p-5">
       <span className="absolute right-4 top-4 rounded-full border border-line bg-ink/60 px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest text-muted">
         Organisation Graph
       </span>
@@ -63,7 +63,7 @@ export default function OrgGraphPreview() {
 
       <div className="mt-4 flex items-center gap-1.5" aria-hidden>
         <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-        <span className="h-1.5 flex-1 rounded-full bg-white/10">
+        <span className="h-1.5 flex-1 rounded-full bg-paper/10">
           <span className="block h-full w-3/4 rounded-full bg-accent/60" />
         </span>
       </div>

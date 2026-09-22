@@ -1,7 +1,6 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import Grid from "@mui/material/Grid";
 import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
@@ -44,8 +43,6 @@ function splitItems<T>(items: readonly T[]) {
   };
 }
 
-const MotionGrid = motion.create(Grid);
-
 export default function Services() {
   const servicesList = useExpandable(services, { base: 4, sm: 6, md: 6 });
   const aiCapabilitiesList = useExpandable(aiCapabilities, { base: 4, sm: 6, md: 6 });
@@ -69,20 +66,16 @@ export default function Services() {
           </ProtectedParagraph>
         </MotionReveal>
 
-        <Grid
+        <div
           id={servicesList.listId}
-          container
-          className="mt-16"
-          rowSpacing={{ xs: 2, sm: 3, md: 4 }}
-          columnSpacing={{ xs: 2, sm: 3, md: 4 }}
+          className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 md:gap-8"
         >
           <AnimatePresence initial={false}>
             {servicesList.visibleItems.map((service, i) => {
               const { summary, rest } = splitItems(service.items);
               return (
-              <MotionGrid
+              <motion.div
                 key={service.title}
-                size={{ xs: 12, sm: 6, md: 4 }}
                 exit={{ opacity: 0, y: 8, transition: COLLAPSE_TRANSITION }}
               >
                 <MotionReveal
@@ -93,10 +86,10 @@ export default function Services() {
                 >
                   <motion.article
                     whileHover="hover"
-                    className="group flex h-full flex-col rounded-2xl border border-line bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.04]"
+                    className="group flex h-full flex-col rounded-2xl border border-line bg-paper/[0.02] p-6 transition-all duration-300 hover:border-paper/20 hover:bg-paper/[0.04]"
                   >
                     <div className="flex items-start justify-between gap-4">
-                      <h3 className="break-words text-xl font-medium text-white transition-colors duration-200 group-hover:text-accent">
+                      <h3 className="break-words text-xl font-medium text-paper transition-colors duration-200 group-hover:text-accent">
                         {service.title}
                       </h3>
                       <motion.span
@@ -140,11 +133,11 @@ export default function Services() {
                     )}
                   </motion.article>
                 </MotionReveal>
-              </MotionGrid>
+              </motion.div>
               );
             })}
           </AnimatePresence>
-        </Grid>
+        </div>
 
         {servicesList.hasMore && (
           <div className="mt-8 flex justify-center">
@@ -159,7 +152,7 @@ export default function Services() {
 
         <div id="ai-professional" className="mt-24 scroll-mt-24">
           <MotionReveal>
-            <h3 className="text-2xl font-medium text-white sm:text-3xl">
+            <h3 className="text-2xl font-medium text-paper sm:text-3xl">
               <TextType text="AI Developer Professional" />
             </h3>
           </MotionReveal>
@@ -193,14 +186,14 @@ export default function Services() {
                   ease: [0.22, 1, 0.36, 1],
                   delay: (i % 3) * 0.06,
                 }}
-                className="group relative scroll-mt-24 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.04]"
+                className="group relative scroll-mt-24 overflow-hidden rounded-2xl border border-paper/10 bg-paper/[0.02] p-6 transition-all duration-300 hover:border-paper/20 hover:bg-paper/[0.04]"
               >
                 <div
                   className="pointer-events-none absolute -top-16 right-0 h-40 w-40 rounded-full bg-accent/0 blur-3xl transition-colors duration-300 group-hover:bg-accent/10"
                   aria-hidden
                 />
 
-                <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] shadow-[0_0_30px_rgba(255,255,255,0.04)] transition-all duration-300 ease-out motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:rotate-3 group-hover:border-white/25 group-hover:bg-white/[0.08] sm:h-14 sm:w-14">
+                <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-paper/10 bg-paper/[0.04] shadow-[0_0_30px_rgba(255,255,255,0.04)] transition-all duration-300 ease-out motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:rotate-3 group-hover:border-paper/25 group-hover:bg-paper/[0.08] sm:h-14 sm:w-14">
                   <group.icon
                     size={22}
                     strokeWidth={1.7}
@@ -209,7 +202,7 @@ export default function Services() {
                   />
                 </div>
 
-                <h4 className="relative mt-5 text-lg font-medium text-white transition-colors duration-200 group-hover:text-white">
+                <h4 className="relative mt-5 text-lg font-medium text-paper transition-colors duration-200 group-hover:text-paper">
                   {group.title}
                 </h4>
 
@@ -221,7 +214,7 @@ export default function Services() {
                   {group.items.map((item) => (
                     <li
                       key={item}
-                      className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs font-mono text-muted"
+                      className="rounded-full border border-paper/10 bg-paper/[0.03] px-3 py-1 text-xs font-mono text-muted"
                     >
                       {item}
                     </li>

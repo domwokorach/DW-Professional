@@ -418,7 +418,7 @@ export default function OrgGraph() {
             list="org-graph-nodes"
             placeholder="Search department, team, role or person…"
             aria-label="Search the organisation graph"
-            className="w-64 max-w-full rounded-lg border border-line bg-ink/60 px-3 py-2 text-sm text-white placeholder:text-muted focus:border-accent focus:outline-none"
+            className="w-64 max-w-full rounded-lg border border-line bg-ink/60 px-3 py-2 text-sm text-paper placeholder:text-muted focus:border-accent focus:outline-none"
           />
           <datalist id="org-graph-nodes">
             {orgNodes.map((n) => (
@@ -427,7 +427,7 @@ export default function OrgGraph() {
           </datalist>
           <button
             type="submit"
-            className="rounded-lg border border-line px-3 py-2 text-xs font-mono uppercase tracking-widest text-muted transition-colors hover:border-accent/40 hover:text-white"
+            className="rounded-lg border border-line px-3 py-2 text-xs font-mono uppercase tracking-widest text-muted transition-colors hover:border-accent/40 hover:text-paper"
           >
             Focus
           </button>
@@ -444,7 +444,7 @@ export default function OrgGraph() {
                 aria-pressed={active}
                 className={`flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-mono transition-colors ${
                   active
-                    ? "border-accent/40 text-white"
+                    ? "border-accent/40 text-paper"
                     : "border-line text-muted opacity-50 hover:opacity-80"
                 }`}
               >
@@ -489,13 +489,13 @@ export default function OrgGraph() {
                   >
                     {TYPE_LABEL[selected.type]}
                   </p>
-                  <h3 className="mt-1 text-lg font-medium text-white">{selected.name}</h3>
+                  <h3 className="mt-1 text-lg font-medium text-paper">{selected.name}</h3>
                 </div>
                 <button
                   type="button"
                   onClick={() => setSelectedId(null)}
                   aria-label="Close details"
-                  className="text-muted transition-colors hover:text-white"
+                  className="text-muted transition-colors hover:text-paper"
                 >
                   ✕
                 </button>
@@ -589,7 +589,7 @@ export default function OrgGraph() {
                   <button
                     type="button"
                     onClick={() => toggleCollapse(selected.id)}
-                    className="mt-4 w-full rounded-lg border border-line px-3 py-2 text-xs font-mono uppercase tracking-widest text-muted transition-colors hover:border-accent/40 hover:text-white"
+                    className="mt-4 w-full rounded-lg border border-line px-3 py-2 text-xs font-mono uppercase tracking-widest text-muted transition-colors hover:border-accent/40 hover:text-paper"
                   >
                     {collapsed.has(selected.id) ? "Expand" : "Collapse"} children
                   </button>

@@ -189,7 +189,7 @@ function Sidebar({
         <div
           data-slot="sidebar"
           className={cn(
-            'bg-ink text-white flex h-full w-[var(--sidebar-width)] flex-col',
+            'bg-ink text-paper flex h-full w-[var(--sidebar-width)] flex-col',
             className,
           )}
           {...props}
@@ -207,7 +207,7 @@ function Sidebar({
           data-sidebar="sidebar"
           data-slot="sidebar"
           data-mobile="true"
-          className="bg-ink text-white w-[var(--sidebar-width)] p-0 [&>button]:hidden"
+          className="bg-ink text-paper w-[var(--sidebar-width)] p-0 [&>button]:hidden"
           style={
             {
               '--sidebar-width': SIDEBAR_WIDTH_MOBILE,
@@ -236,7 +236,7 @@ function Sidebar({
 
   return (
     <div
-      className="group peer text-white hidden md:block"
+      className="group peer text-paper hidden md:block"
       data-state={state}
       data-collapsible={state === 'collapsed' ? collapsible : ''}
       data-variant={variant}
@@ -303,7 +303,7 @@ function SidebarTrigger({ className, onClick, ...props }: SidebarTriggerProps) {
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
       className={cn(
-        'flex size-7 min-h-11 min-w-11 items-center justify-center rounded-md text-muted transition-colors hover:bg-surface hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent sm:min-h-7 sm:min-w-7',
+        'flex size-7 min-h-11 min-w-11 items-center justify-center rounded-md text-muted transition-colors hover:bg-surface hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent sm:min-h-7 sm:min-w-7',
         className,
       )}
       aria-label="Toggle sidebar"
@@ -483,7 +483,7 @@ function SidebarGroupAction({
       data-slot="sidebar-group-action"
       data-sidebar="group-action"
       className={cn(
-        'text-white ring-accent/50 hover:bg-surface hover:text-white absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-none transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 dark:hover:bg-surface dark:hover:text-white',
+        'text-paper ring-accent/50 hover:bg-surface hover:text-paper absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-none transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 dark:hover:bg-surface dark:hover:text-paper',
         // Increases the hit area of the button on mobile.
         'after:absolute after:-inset-2 md:after:hidden',
         'group-data-[collapsible=icon]:hidden',
@@ -537,13 +537,13 @@ function SidebarMenuItem({ className, ...props }: SidebarMenuItemProps) {
 }
 
 const sidebarMenuButtonActiveVariants = cva(
-  'bg-surface text-white rounded-md',
+  'bg-surface text-paper rounded-md',
   {
     variants: {
       variant: {
-        default: 'bg-surface text-white',
+        default: 'bg-surface text-paper',
         outline:
-          'bg-surface text-white shadow-[0_0_0_1px_theme(colors.accent)]',
+          'bg-surface text-paper shadow-[0_0_0_1px_theme(colors.accent)]',
       },
     },
     defaultVariants: {
@@ -553,14 +553,14 @@ const sidebarMenuButtonActiveVariants = cva(
 );
 
 const sidebarMenuButtonVariants = cva(
-  'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-accent/50 transition-[width,height,padding] [&:not([data-highlight])]:hover:bg-surface [&:not([data-highlight])]:hover:text-white focus-visible:ring-2 active:bg-surface active:text-white disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-surface data-[active=true]:font-medium data-[active=true]:text-white [&:not([data-highlight])]:data-[state=open]:hover:bg-surface [&:not([data-highlight])]:data-[state=open]:hover:text-white group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 dark:[&:not([data-highlight])]:hover:bg-surface dark:[&:not([data-highlight])]:hover:text-white dark:active:bg-surface dark:active:text-white dark:data-[active=true]:bg-surface dark:data-[active=true]:text-white dark:[&:not([data-highlight])]:data-[state=open]:hover:bg-surface dark:[&:not([data-highlight])]:data-[state=open]:hover:text-white',
+  'peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-accent/50 transition-[width,height,padding] [&:not([data-highlight])]:hover:bg-surface [&:not([data-highlight])]:hover:text-paper focus-visible:ring-2 active:bg-surface active:text-paper disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-surface data-[active=true]:font-medium data-[active=true]:text-paper [&:not([data-highlight])]:data-[state=open]:hover:bg-surface [&:not([data-highlight])]:data-[state=open]:hover:text-paper group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 dark:[&:not([data-highlight])]:hover:bg-surface dark:[&:not([data-highlight])]:hover:text-paper dark:active:bg-surface dark:active:text-paper dark:data-[active=true]:bg-surface dark:data-[active=true]:text-paper dark:[&:not([data-highlight])]:data-[state=open]:hover:bg-surface dark:[&:not([data-highlight])]:data-[state=open]:hover:text-paper',
   {
     variants: {
       variant: {
         default:
-          '[&:not([data-highlight])]:hover:bg-surface [&:not([data-highlight])]:hover:text-white dark:[&:not([data-highlight])]:hover:bg-surface dark:[&:not([data-highlight])]:hover:text-white',
+          '[&:not([data-highlight])]:hover:bg-surface [&:not([data-highlight])]:hover:text-paper dark:[&:not([data-highlight])]:hover:bg-surface dark:[&:not([data-highlight])]:hover:text-paper',
         outline:
-          'bg-ink shadow-[0_0_0_1px_theme(colors.line)] [&:not([data-highlight])]:hover:bg-surface [&:not([data-highlight])]:hover:text-white [&:not([data-highlight])]:hover:shadow-[0_0_0_1px_theme(colors.accent)] dark:[&:not([data-highlight])]:hover:bg-surface dark:[&:not([data-highlight])]:hover:text-white',
+          'bg-ink shadow-[0_0_0_1px_theme(colors.line)] [&:not([data-highlight])]:hover:bg-surface [&:not([data-highlight])]:hover:text-paper [&:not([data-highlight])]:hover:shadow-[0_0_0_1px_theme(colors.accent)] dark:[&:not([data-highlight])]:hover:bg-surface dark:[&:not([data-highlight])]:hover:text-paper',
       },
       size: {
         default: 'h-8 text-sm',
@@ -645,14 +645,14 @@ function SidebarMenuAction({
       data-sidebar="menu-action"
       className={cn(
         // Increases the hit area of the button on mobile.
-        'z-[1] text-white ring-accent/50 hover:bg-surface hover:text-white peer-hover/menu-button:text-white absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-none transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 dark:hover:bg-surface dark:hover:text-white dark:peer-hover/menu-button:text-white',
+        'z-[1] text-paper ring-accent/50 hover:bg-surface hover:text-paper peer-hover/menu-button:text-paper absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-none transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0 dark:hover:bg-surface dark:hover:text-paper dark:peer-hover/menu-button:text-paper',
         'after:absolute after:-inset-2 md:after:hidden',
         'peer-data-[size=sm]/menu-button:top-1',
         'peer-data-[size=default]/menu-button:top-1.5',
         'peer-data-[size=lg]/menu-button:top-2.5',
         'group-data-[collapsible=icon]:hidden',
         showOnHover &&
-          'peer-data-[active=true]/menu-button:text-white group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0 dark:peer-data-[active=true]/menu-button:text-white',
+          'peer-data-[active=true]/menu-button:text-paper group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0 dark:peer-data-[active=true]/menu-button:text-paper',
         className,
       )}
       {...props}
@@ -668,8 +668,8 @@ function SidebarMenuBadge({ className, ...props }: SidebarMenuBadgeProps) {
       data-slot="sidebar-menu-badge"
       data-sidebar="menu-badge"
       className={cn(
-        'text-white pointer-events-none absolute right-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium tabular-nums select-none',
-        'peer-hover/menu-button:text-white peer-data-[active=true]/menu-button:text-white dark:peer-hover/menu-button:text-white dark:peer-data-[active=true]/menu-button:text-white',
+        'text-paper pointer-events-none absolute right-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium tabular-nums select-none',
+        'peer-hover/menu-button:text-paper peer-data-[active=true]/menu-button:text-paper dark:peer-hover/menu-button:text-paper dark:peer-data-[active=true]/menu-button:text-paper',
         'peer-data-[size=sm]/menu-button:top-1',
         'peer-data-[size=default]/menu-button:top-1.5',
         'peer-data-[size=lg]/menu-button:top-2.5',
@@ -767,15 +767,15 @@ function SidebarMenuSubButton({
   const Comp = asChild ? Slot.Root : 'a';
 
   return (
-    <HighlightItem activeClassName="bg-surface text-white rounded-md">
+    <HighlightItem activeClassName="bg-surface text-paper rounded-md">
       <Comp
         data-slot="sidebar-menu-sub-button"
         data-sidebar="menu-sub-button"
         data-size={size}
         data-active={isActive}
         className={cn(
-          'text-white ring-accent/50 [&:not([data-highlight])]:hover:bg-surface [&:not([data-highlight])]:hover:text-white active:bg-surface active:text-white [&>svg]:text-white flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 dark:[&:not([data-highlight])]:hover:bg-surface dark:[&:not([data-highlight])]:hover:text-white dark:active:bg-surface dark:active:text-white dark:[&>svg]:text-white',
-          'data-[active=true]:bg-surface data-[active=true]:text-white dark:data-[active=true]:bg-surface dark:data-[active=true]:text-white',
+          'text-paper ring-accent/50 [&:not([data-highlight])]:hover:bg-surface [&:not([data-highlight])]:hover:text-paper active:bg-surface active:text-paper [&>svg]:text-paper flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 dark:[&:not([data-highlight])]:hover:bg-surface dark:[&:not([data-highlight])]:hover:text-paper dark:active:bg-surface dark:active:text-paper dark:[&>svg]:text-paper',
+          'data-[active=true]:bg-surface data-[active=true]:text-paper dark:data-[active=true]:bg-surface dark:data-[active=true]:text-paper',
           size === 'sm' && 'text-xs',
           size === 'md' && 'text-sm',
           'group-data-[collapsible=icon]:hidden',

@@ -216,7 +216,7 @@ export default function PortraitAnimator() {
         type="button"
         onClick={handleSubmit}
         disabled={isBusy || !file}
-        className="w-full rounded-lg bg-accent px-4 py-3 font-medium text-black transition-opacity disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-full rounded-lg bg-accent px-4 py-3 font-medium text-accent-fg transition-opacity disabled:cursor-not-allowed disabled:opacity-50"
       >
         {status === "uploading" && "Uploading…"}
         {status === "polling" && "Animating… this can take a minute or two"}

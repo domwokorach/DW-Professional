@@ -109,11 +109,11 @@ export default function UKGreeting({
           animate={{ opacity: 1, y: 0 }}
           exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="greeting-text text-sm font-medium tracking-wide sm:text-base"
+          className="text-paper text-sm font-medium tracking-wide sm:text-base"
         >
-          <span className="greeting-title">{GREETINGS[period]}</span>
+          <span className="text-greeting">{GREETINGS[period]}</span>
           {showLocation && (
-            <span className="location-text ml-2">
+            <span className="text-paper ml-2">
               Current location: London ·{" "}
               <time dateTime={iso} className="tabular-nums">
                 {zone} {time}

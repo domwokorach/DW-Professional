@@ -24,7 +24,7 @@ function useMounted() {
 }
 
 const iconButtonClassName =
-  "inline-flex h-11 w-11 items-center justify-center rounded-full border border-line bg-surface/90 text-white shadow-sm backdrop-blur-md transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent [&_svg]:h-[18px] [&_svg]:w-[18px]";
+  "inline-flex h-11 w-11 items-center justify-center rounded-full border border-line bg-surface/90 text-paper shadow-sm backdrop-blur-md transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent [&_svg]:h-[18px] [&_svg]:w-[18px]";
 
 /**
  * Icon-only animated theme toggle for desktop and tablet navigation. Wraps
@@ -86,19 +86,19 @@ export function ThemeToggleMobile({ className }: { className?: string }) {
           theme={isDark ? "dark" : "light"}
           onThemeChange={(next) => setTheme(next)}
           aria-label="Toggle theme"
-          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line text-white transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent [&_svg]:h-[18px] [&_svg]:w-[18px]"
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line text-paper transition-colors hover:border-accent/60 hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent [&_svg]:h-[18px] [&_svg]:w-[18px]"
         />
       ) : (
         <button
           type="button"
           aria-label="Toggle theme"
           disabled
-          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line text-white"
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line text-paper"
         >
           <span className="h-[18px] w-[18px]" />
         </button>
       )}
-      <span className="flex-1 text-sm text-white">
+      <span className="flex-1 text-sm text-paper">
         {mounted ? (isDark ? "Dark mode" : "Light mode") : "Toggle theme"}
       </span>
     </div>

@@ -7,7 +7,7 @@ export default function AccessibilityPage() {
   return (
     <LegalPage title="Accessibility">
       <section aria-labelledby="accessibility-commitment">
-        <h2 id="accessibility-commitment" className="text-base font-semibold text-white">
+        <h2 id="accessibility-commitment" className="text-base font-semibold text-paper">
           Our commitment
         </h2>
         <p className="mt-2">
@@ -19,7 +19,7 @@ export default function AccessibilityPage() {
       </section>
 
       <section aria-labelledby="accessibility-support">
-        <h2 id="accessibility-support" className="text-base font-semibold text-white">
+        <h2 id="accessibility-support" className="text-base font-semibold text-paper">
           How this site supports access
         </h2>
         <ul className="mt-2 list-disc space-y-2 pl-5">
@@ -47,7 +47,7 @@ export default function AccessibilityPage() {
       </section>
 
       <section aria-labelledby="accessibility-preferences">
-        <h2 id="accessibility-preferences" className="text-base font-semibold text-white">
+        <h2 id="accessibility-preferences" className="text-base font-semibold text-paper">
           Display preferences
         </h2>
         <p className="mt-2">
@@ -59,13 +59,13 @@ export default function AccessibilityPage() {
       </section>
 
       <section aria-labelledby="accessibility-feedback">
-        <h2 id="accessibility-feedback" className="text-base font-semibold text-white">
+        <h2 id="accessibility-feedback" className="text-base font-semibold text-paper">
           Accessibility feedback
         </h2>
         <p className="mt-2">
           If you encounter an accessibility barrier or need information in a
           different format, please{" "}
-          <Link href="/#contact" className="font-medium text-accent hover:text-white">
+          <Link href="/#contact" className="font-medium text-accent hover:text-paper">
             contact Dominic
           </Link>
           . Please include the page you were using and a brief description of

@@ -16,6 +16,8 @@ export interface ContactEnquiryEmailProps {
   name: string;
   /** Zod-validated visitor email — safe to use as the Reply-To / mailto target. */
   email: string;
+  /** E.164 formatted mobile number, or null when not supplied. */
+  mobile?: string | null;
   company?: string | null;
   /** Pre-formatted budget + currency, e.g. "£8,000" — formatting stays in the caller. */
   budgetLine?: string | null;
@@ -53,6 +55,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 export default function ContactEnquiryEmail({
   name,
   email,
+  mobile,
   company,
   budgetLine,
   projectType,
@@ -90,6 +93,7 @@ export default function ContactEnquiryEmail({
             <Section style={styles.card}>
               <InfoRow label="Name" value={name} />
               <InfoRow label="Email" value={email} />
+              <InfoRow label="Mobile" value={mobile || "Not provided"} />
               <InfoRow label="Company" value={company || "Not provided"} />
               <InfoRow label="Budget" value={budgetLine || "Not provided"} />
               <InfoRow label="Project type" value={projectType || "Not provided"} />
@@ -143,6 +147,7 @@ export default function ContactEnquiryEmail({
 ContactEnquiryEmail.PreviewProps = {
   name: "Amara Chen",
   email: "amara.chen@example.com",
+  mobile: "+442071234567",
   company: "Northwind Studio",
   budgetLine: "£8,000",
   projectType: "Web Application",

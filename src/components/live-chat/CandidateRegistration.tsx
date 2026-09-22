@@ -99,7 +99,7 @@ export default function CandidateRegistration({
     >
       <header className="flex items-start justify-between gap-3 border-b border-line px-4 py-3">
         <div>
-          <p className="font-mono text-sm font-semibold text-white">Start Live Chat</p>
+          <p className="font-mono text-sm font-semibold text-paper">Start Live Chat</p>
           <p className="mt-1 text-xs text-muted">Tell us a bit about you to get started.</p>
         </div>
         <div className="flex shrink-0 items-center gap-1">
@@ -107,7 +107,7 @@ export default function CandidateRegistration({
             type="button"
             onClick={onMinimise}
             aria-label="Minimise live chat"
-            className="flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            className="flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           >
             <Minus className="h-5 w-5" aria-hidden="true" />
           </button>
@@ -116,7 +116,7 @@ export default function CandidateRegistration({
             type="button"
             onClick={onClose}
             aria-label="Close live chat"
-            className="flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            className="flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           >
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
@@ -170,7 +170,7 @@ export default function CandidateRegistration({
           <button
             type="submit"
             disabled={submitting}
-            className="mt-1 flex h-11 items-center justify-center rounded-2xl bg-accent text-sm font-semibold text-ink transition-opacity duration-150 disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            className="mt-1 flex h-11 items-center justify-center rounded-2xl bg-accent text-sm font-semibold text-ink transition-opacity duration-150 disabled:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper"
           >
             {submitting ? "Starting chat…" : "Start Chat"}
           </button>
@@ -214,7 +214,7 @@ function Field({
         placeholder={placeholder}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
-        className="h-11 rounded-2xl border border-line bg-ink px-4 text-sm text-white placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+        className="h-11 rounded-2xl border border-line bg-ink px-4 text-sm text-paper placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
       />
       {error ? (
         <p id={errorId} className="text-xs text-red-400">

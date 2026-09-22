@@ -4,6 +4,41 @@
 
 :root {
   color-scheme: light dark;
+
+  /* Semantic theme tokens (RGB triplets so Tailwind's <alpha-value>
+     opacity modifiers, e.g. bg-ink/50, keep working). Dark values are the
+     default since the site was designed dark-first; html[data-theme="light"]
+     below overrides every one of them. */
+  --color-ink: 9 9 9;
+  --color-surface: 17 17 17;
+  --color-line: rgba(255, 255, 255, 0.1);
+  --color-accent: 91 141 239;
+  --color-accent2: 139 123 240;
+  --color-accent3: 110 231 255;
+  --color-muted: 163 163 163;
+  --color-paper: 255 255 255;
+  --color-accent-fg: 9 9 9;
+  --color-cta: 255 255 255;
+  --color-cta-fg: 9 9 9;
+  --color-body-fg: 242 242 244;
+  --color-greeting: 147 197 253;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+  --color-ink: 248 250 252;
+  --color-surface: 255 255 255;
+  --color-line: #cbd5e1;
+  --color-accent: 29 78 216;
+  --color-accent2: 109 40 217;
+  --color-accent3: 15 118 110;
+  --color-muted: 71 85 105;
+  --color-paper: 15 23 42;
+  --color-accent-fg: 255 255 255;
+  --color-cta: 15 23 42;
+  --color-cta-fg: 255 255 255;
+  --color-body-fg: 23 32 51;
+  --color-greeting: 11 31 58;
 }
 
 html {
@@ -38,159 +73,74 @@ textarea,
   }
 }
 
+html {
+  background: rgb(var(--color-ink));
+}
+
 body {
-  background: #090909;
-  color: #f2f2f4;
+  background: rgb(var(--color-ink));
+  color: rgb(var(--color-body-fg));
   font-size: 100%;
   line-height: 1.5;
 }
 
-.greeting-title {
-  color: #93c5fd;
-}
-
-.greeting-text {
-  color: #ffffff;
-}
-
-.location-text {
-  color: #ffffff;
-}
-
-.intro-paragraph {
-  color: #ffffff;
-}
-
-.hero-role {
-  color: #ffffff;
-}
-
-html[data-theme="dark"] .intro-paragraph {
-  color: #ffffff;
+/* Hero heading accent (UKGreeting's "Good morning" etc). Dedicated token
+   because it's a softer accent tint, not the plain heading colour. */
+.text-greeting {
+  color: rgb(var(--color-greeting));
 }
 
 :focus-visible {
-  outline: 2px solid #5b8def;
+  outline: 2px solid rgb(var(--color-accent));
   outline-offset: 3px;
 }
 
 ::selection {
-  background: rgba(91, 141, 239, 0.3);
-  color: #fff;
+  background: rgb(var(--color-accent) / 0.3);
+  color: rgb(var(--color-cta-fg));
 }
 
-html[data-theme="light"] {
-  color-scheme: light;
-  background: #f8fafc;
-}
-
-html[data-theme="dark"] {
-  color-scheme: dark;
-  background: #090909;
+/* The Hero portrait image carries its own fixed dark scrim (rgba(9,9,9,…))
+   below the `lg` breakpoint — see Hero.tsx — so text sitting on it must
+   stay light regardless of the active theme. Above `lg` the scrim is
+   hidden and the text sits on the plain page background, so it should
+   follow the normal theme tokens. Wrapping the Hero copy in
+   `.hero-scrim-text` pins the adaptive tokens it uses (`paper`, `muted`,
+   `greeting`) back to their dark-mode (light-on-dark) values only while
+   the scrim is present. */
+@media (max-width: 1023.98px) {
+  .hero-scrim-text {
+    --color-paper: 255 255 255;
+    --color-muted: 163 163 163;
+    --color-greeting: 147 197 253;
+  }
 }
 
 /* Companies House autocomplete status badges — accessible in both themes. */
 .bg-status-active-bg {
-  background-color: rgba(34, 197, 94, 0.16);
+  background-color: rgb(34 197 94 / 0.16);
 }
 .text-status-active-fg {
   color: #4ade80;
 }
 .bg-status-negative-bg {
-  background-color: rgba(248, 113, 113, 0.16);
+  background-color: rgb(248 113 113 / 0.16);
 }
 .text-status-negative-fg {
   color: #f87171;
 }
 
 html[data-theme="light"] .bg-status-active-bg {
-  background-color: #dcfce7 !important;
+  background-color: #dcfce7;
 }
 html[data-theme="light"] .text-status-active-fg {
-  color: #15803d !important;
+  color: #15803d;
 }
 html[data-theme="light"] .bg-status-negative-bg {
-  background-color: #fee2e2 !important;
+  background-color: #fee2e2;
 }
 html[data-theme="light"] .text-status-negative-fg {
-  color: #b91c1c !important;
-}
-
-html[data-theme="light"] body {
-  background-color: #f8fafc !important;
-  color: #172033 !important;
-}
-
-html[data-theme="light"] [class*="bg-ink"]:not(:hover):not(:focus):not(:focus-visible):not(:active),
-html[data-theme="light"] [class*="bg-black"]:not(:hover):not(:focus):not(:focus-visible):not(:active),
-html[data-theme="light"] [class*="bg-neutral"]:not(:hover):not(:focus):not(:focus-visible):not(:active) {
-  background-color: #f8fafc !important;
-  color: #172033 !important;
-}
-
-html[data-theme="light"] [class*="bg-surface"]:not(:hover):not(:focus):not(:focus-visible):not(:active),
-html[data-theme="light"] [class*="bg-white"]:not(:hover):not(:focus):not(:focus-visible):not(:active) {
-  background-color: #ffffff !important;
-}
-
-html[data-theme="light"] [class*="text-white"]:not(:hover):not(:focus):not(:focus-visible):not(:active) {
-  color: #172033 !important;
-}
-
-html[data-theme="light"] .text-muted,
-html[data-theme="light"] [class*="text-neutral"] {
-  color: #475569 !important;
-}
-
-html[data-theme="light"] .text-accent {
-  color: #1d4ed8 !important;
-}
-
-html[data-theme="light"] .text-accent2 {
-  color: #6d28d9 !important;
-}
-
-html[data-theme="light"] .text-accent3 {
-  color: #0f766e !important;
-}
-
-html[data-theme="light"] .greeting-title {
-  color: #0b1f3a;
-}
-
-html[data-theme="light"] .greeting-text {
-  color: #000000;
-}
-
-html[data-theme="light"] .location-text {
-  color: #ffffff;
-}
-
-@media (min-width: 1024px) {
-  html[data-theme="light"] .intro-paragraph,
-  html[data-theme="light"] .location-text {
-    color: #0b1f3a;
-  }
-}
-
-html[data-theme="light"] [class*="border-"] {
-  border-color: #cbd5e1 !important;
-}
-
-html[data-theme="light"] [class*="hover:text-white"]:hover {
-  color: #172033 !important;
-}
-
-html[data-theme="light"] :focus-visible {
-  outline-color: #1d4ed8;
-}
-
-@media (min-width: 768px) and (max-width: 1023px) {
-  html[data-theme="light"] .tablet-white,
-  html[data-theme="light"] .tablet-white:hover,
-  html[data-theme="dark"] .tablet-white {
-    color: #ffffff !important;
-  }
+  color: #b91c1c;
 }
 
 @property --border-glow-angle {
@@ -359,6 +309,15 @@ html[data-theme="light"] .gradient-text {
   --gradient-text-c: #6d28d9;
 }
 
+/* .gradient-text-button sits on the adaptive `bg-cta` surface (white on the
+   dark page, near-black on the light page), so its gradient needs light
+   tones in light mode instead of the dark tones tuned for a white button. */
+html[data-theme="light"] .gradient-text-button {
+  --gradient-text-a: #f8fafc;
+  --gradient-text-b: #bfdbfe;
+  --gradient-text-c: #dbeafe;
+}
+
 html[data-high-contrast="true"] .gradient-text,
 html[data-high-contrast="true"] .gradient-text-button {
   background-image: none !important;
@@ -450,7 +409,7 @@ html[data-high-contrast="true"] :focus-visible {
 }
 
 .skip-link {
-  @apply fixed left-4 top-4 z-[100] -translate-y-24 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-ink transition-transform focus:translate-y-0;
+  @apply fixed left-4 top-4 z-[100] -translate-y-24 rounded-full bg-cta px-5 py-2.5 text-sm font-medium text-cta-fg transition-transform focus:translate-y-0;
 }
 
 .grid-bg {

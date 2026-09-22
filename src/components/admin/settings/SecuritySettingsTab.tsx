@@ -73,7 +73,7 @@ function PasswordField({
         <button
           type="button"
           onClick={() => setShow((v) => !v)}
-          className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted hover:text-white"
+          className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted hover:text-paper"
           aria-label={show ? "Hide password" : "Show password"}
         >
           {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -182,7 +182,7 @@ function ChangeEmailCard({ email }: { email: string }) {
       <CardContent>
         {pending ? (
           <p className="text-sm text-muted">
-            A verification link was sent to <span className="text-white">{pending}</span>. Your email won&rsquo;t
+            A verification link was sent to <span className="text-paper">{pending}</span>. Your email won&rsquo;t
             change until you confirm it there.
           </p>
         ) : (
@@ -314,7 +314,7 @@ function RecentActivityCard() {
           <ul className="divide-y divide-line">
             {events.map((event) => (
               <li key={event.id} className="flex items-center justify-between gap-4 py-2.5 text-sm">
-                <span className="text-white">{EVENT_LABELS[event.type] ?? event.type}</span>
+                <span className="text-paper">{EVENT_LABELS[event.type] ?? event.type}</span>
                 <span className="shrink-0 text-xs text-muted">
                   {new Date(event.createdAt).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" })}
                   {event.ipAddress ? ` · ${event.ipAddress}` : ""}

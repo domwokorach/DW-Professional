@@ -35,7 +35,7 @@ export default function AdminUnauthorized({ variant }: { variant: Variant }) {
         </div>
 
         <div role="alert" className="mt-6">
-          <h1 id="unauthorized-title" className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+          <h1 id="unauthorized-title" className="text-3xl font-semibold tracking-tight text-paper sm:text-4xl">
             Access restricted
           </h1>
           <p className="mx-auto mt-4 max-w-md text-sm leading-7 text-muted sm:text-base">
@@ -47,7 +47,7 @@ export default function AdminUnauthorized({ variant }: { variant: Variant }) {
           {variant === "signed-out" ? (
             <Link
               href={signInHref}
-              className="inline-flex min-h-11 items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+              className="inline-flex min-h-11 items-center justify-center rounded-full bg-cta px-5 py-3 text-sm font-semibold text-cta-fg transition-colors hover:bg-accent hover:text-accent-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
             >
               Sign in to Admin
             </Link>
@@ -56,14 +56,14 @@ export default function AdminUnauthorized({ variant }: { variant: Variant }) {
               type="button"
               disabled={signingOut}
               onClick={() => void signOut()}
-              className="inline-flex min-h-11 items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent disabled:opacity-60"
+              className="inline-flex min-h-11 items-center justify-center rounded-full bg-cta px-5 py-3 text-sm font-semibold text-cta-fg transition-colors hover:bg-accent hover:text-accent-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent disabled:opacity-60"
             >
               {signingOut ? "Signing out…" : "Sign out and use another account"}
             </button>
           )}
           <Link
             href={localiseHref("/")}
-            className="inline-flex min-h-11 items-center justify-center rounded-full border border-line px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-accent hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            className="inline-flex min-h-11 items-center justify-center rounded-full border border-line px-5 py-3 text-sm font-semibold text-paper transition-colors hover:border-accent hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           >
             Return to Portfolio
           </Link>

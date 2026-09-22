@@ -110,7 +110,7 @@ export default function FileUploadField({
       >
         <UploadCloud className="h-5 w-5 text-muted" aria-hidden="true" />
         <span className="text-sm text-muted">
-          <span className="font-medium text-white">Click to upload</span> or drag and drop
+          <span className="font-medium text-paper">Click to upload</span> or drag and drop
         </span>
         <span className="text-xs text-muted/70">PDF, DOCX, PNG, JPG or JPEG — up to 5 MB</span>
         <input
@@ -127,17 +127,17 @@ export default function FileUploadField({
       </label>
 
       {file && (
-        <div className="mt-2.5 flex items-center gap-2.5 rounded-lg border border-line bg-white/[0.02] px-3.5 py-2.5">
+        <div className="mt-2.5 flex items-center gap-2.5 rounded-lg border border-line bg-paper/[0.02] px-3.5 py-2.5">
           <Paperclip className="h-4 w-4 shrink-0 text-muted" aria-hidden="true" />
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-white">{file.name}</p>
+            <p className="truncate text-sm font-medium text-paper">{file.name}</p>
             <p className="text-xs text-muted">{formatFileSize(file.size)}</p>
           </div>
           <button
             type="button"
             onClick={handleRemove}
             aria-label={`Remove ${file.name}`}
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-muted transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-muted transition-colors hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           >
             <X className="h-4 w-4" aria-hidden="true" />
           </button>

@@ -19,7 +19,7 @@ export default function ConversationFilters({
           <TabsTrigger key={filter} value={filter} className="gap-1.5 px-1.5 text-xs sm:text-sm">
             {FILTER_LABELS[filter]}
             {counts[filter] > 0 ? (
-              <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-line/60 px-1 text-[10px] font-medium text-muted">
+              <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-surface px-1 text-[10px] font-medium text-muted">
                 {counts[filter]}
               </span>
             ) : null}

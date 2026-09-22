@@ -1,12 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Expand, Play } from "lucide-react";
 import type { GalleryCollection } from "@/types/gallery";
-import Lightbox from "./Lightbox";
+
+const Lightbox = dynamic(() => import("./Lightbox"), { ssr: false });
 
 const IMAGE_SIZES = "(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px";
 
@@ -68,7 +70,7 @@ export default function GallerySlider({ collection }: { collection: GalleryColle
         aria-label={`${collection.title} gallery`}
         tabIndex={0}
         onKeyDown={handleKeyDown}
-        className="relative overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+        className="relative overflow-hidden rounded-[28px] border border-paper/10 bg-paper/[0.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
       >
         <div className="relative aspect-[16/10] md:aspect-[16/9]" ref={emblaRef}>
           <div className="flex h-full">
@@ -185,13 +187,13 @@ export default function GallerySlider({ collection }: { collection: GalleryColle
               aria-label={`Show slide ${i + 1}: ${item.alt}`}
               aria-current={i === selectedIndex ? "true" : undefined}
               className={`relative h-16 w-24 shrink-0 overflow-hidden rounded-lg border transition-colors duration-200 ${
-                i === selectedIndex ? "border-accent" : "border-white/10 hover:border-white/30"
+                i === selectedIndex ? "border-accent" : "border-paper/10 hover:border-accent/40"
               }`}
             >
               {item.type === "image" ? (
                 <Image src={item.src} alt="" fill sizes="96px" className="object-cover" />
               ) : (
-                <span className="flex h-full w-full items-center justify-center bg-surface text-white">
+                <span className="flex h-full w-full items-center justify-center bg-surface text-paper">
                   <Play className="h-4 w-4" aria-hidden />
                 </span>
               )}

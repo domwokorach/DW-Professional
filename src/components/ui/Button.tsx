@@ -26,10 +26,10 @@ type ButtonProps = ButtonAsLink | ButtonAsButton;
 
 const variantClasses = {
   primary:
-    "bg-white text-ink hover:bg-accent hover:text-ink focus-visible:outline-white",
+    "bg-cta text-cta-fg hover:bg-accent hover:text-accent-fg focus-visible:outline-cta",
   secondary:
-    "border border-line text-white hover:border-accent/60 focus-visible:outline-accent",
-  ghost: "text-muted hover:text-white focus-visible:outline-accent",
+    "border border-line text-paper hover:border-accent/60 focus-visible:outline-accent",
+  ghost: "text-muted hover:text-paper focus-visible:outline-accent",
 };
 
 export default function Button({

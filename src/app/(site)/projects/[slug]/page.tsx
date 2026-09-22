@@ -79,13 +79,13 @@ export default async function ProjectPage({
     return (
       <article className="py-32 sm:py-40">
         <Container>
-          <Link href="/#projects" className="text-sm text-muted hover:text-white transition-colors">
+          <Link href="/#projects" className="text-sm text-muted hover:text-paper transition-colors">
             ← Back to selected work
           </Link>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <h1
-              className="text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-tight text-white"
+              className="text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-tight text-paper"
               data-i18n-ignore
             >
               {caseStudy.title}
@@ -147,7 +147,7 @@ export default async function ProjectPage({
                   href={caseStudy.prototypeHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+                  className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
                 >
                   View Prototype
                   <ExternalLink aria-hidden className="h-3.5 w-3.5" />
@@ -158,7 +158,7 @@ export default async function ProjectPage({
                   href={caseStudy.externalHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+                  className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
                 >
                   {caseStudy.externalLabel ?? "Visit Website"}
                   <ExternalLink aria-hidden className="h-3.5 w-3.5" />
@@ -318,13 +318,13 @@ export default async function ProjectPage({
       <Container>
         <Link
           href="/#projects"
-          className="text-sm text-muted hover:text-white transition-colors"
+          className="text-sm text-muted hover:text-paper transition-colors"
         >
           ← Back to projects
         </Link>
 
         <h1
-          className="mt-8 text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-tight text-white"
+          className="mt-8 text-[clamp(2rem,5vw,3.5rem)] font-semibold leading-[1.05] tracking-tight text-paper"
           data-i18n-ignore
         >
           {proj.title}
@@ -356,7 +356,7 @@ export default async function ProjectPage({
             href={proj.liveUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-white transition-colors hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-paper transition-colors hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
           >
             View Live Project
             <ExternalLink aria-hidden className="h-3.5 w-3.5" />
@@ -366,7 +366,7 @@ export default async function ProjectPage({
               href={proj.repoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+              className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
             >
               <GithubIcon className="h-3.5 w-3.5" />
               GitHub

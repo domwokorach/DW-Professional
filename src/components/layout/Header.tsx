@@ -79,16 +79,26 @@ export default function Header() {
   const topLevelMap = useMemo(() => buildTopLevelMap(navigation), []);
   const activeGroup = topLevelMap.get(active) ?? active;
 
+  // Below `lg`, the Hero section's portrait image sits full-bleed behind
+  // this header with a fixed dark scrim (see Hero.tsx), so while unscrolled
+  // on the home page the nav text needs to stay light regardless of theme —
+  // same treatment as Hero's own copy. `.hero-scrim-text` is a no-op above
+  // `lg` and once `scrolled` swaps in the opaque, theme-adaptive bg-ink/70.
+  const isHome = stripLocale(pathname) === "/";
+  const overHeroScrim = isHome && !scrolled;
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-[60] transition-colors duration-300 ${
+        overHeroScrim ? "hero-scrim-text" : ""
+      } ${
         scrolled ? "border-b border-line bg-ink/70 backdrop-blur-lg" : "bg-ink/30 backdrop-blur-sm"
       }`}
     >
       <nav className="mx-auto flex h-16 w-full max-w-content items-center justify-between gap-2 px-6 sm:px-8 lg:px-10">
         <button
           onClick={() => handleNavigate("home")}
-          className="shrink-0 font-mono text-lg font-semibold tracking-tight text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+          className="shrink-0 font-mono text-lg font-semibold tracking-tight text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
           aria-label="Go to home"
         >
           Dominic<span className="text-accent">.</span>
@@ -127,7 +137,7 @@ export default function Header() {
           <ThemeToggle />
           <button
             onClick={() => setResumeOpen(true)}
-            className="hidden lg:inline-flex items-center rounded-full border border-line px-4 py-2 text-sm text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            className="hidden lg:inline-flex items-center rounded-full border border-line px-4 py-2 text-sm text-paper transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           >
             Resume
           </button>
@@ -136,7 +146,7 @@ export default function Header() {
         <button
           type="button"
           onClick={() => setMenuOpen((o) => !o)}
-          className="lg:hidden flex h-11 w-11 items-center justify-center rounded text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+          className="lg:hidden flex h-11 w-11 items-center justify-center rounded text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
           aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}

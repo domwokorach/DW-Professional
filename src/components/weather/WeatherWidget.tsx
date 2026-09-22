@@ -118,7 +118,7 @@ export default function WeatherWidget({ className }: { className?: string }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
-            className="text-xs font-medium text-muted underline decoration-line underline-offset-4 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+            className="text-xs font-medium text-muted underline decoration-line underline-offset-4 transition-colors hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
           >
             Show My Weather
           </motion.button>
@@ -151,7 +151,7 @@ export default function WeatherWidget({ className }: { className?: string }) {
             <button
               type="button"
               onClick={requestWeather}
-              className="underline decoration-line underline-offset-4 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+              className="underline decoration-line underline-offset-4 hover:text-paper transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
             >
               Try Again
             </button>
@@ -171,7 +171,7 @@ export default function WeatherWidget({ className }: { className?: string }) {
             <button
               type="button"
               onClick={requestWeather}
-              className="underline decoration-line underline-offset-4 hover:text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+              className="underline decoration-line underline-offset-4 hover:text-paper transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
             >
               Try Again
             </button>
@@ -195,7 +195,7 @@ export default function WeatherWidget({ className }: { className?: string }) {
 
               return (
                 <>
-                  <span className="text-white">
+                  <span className="text-paper">
                     {weather.name}
                     {weather.sys.country ? `, ${weather.sys.country}` : ""}
                   </span>

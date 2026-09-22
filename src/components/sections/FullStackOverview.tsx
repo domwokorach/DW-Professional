@@ -42,7 +42,7 @@ export default function FullStackOverview() {
           <p className="font-mono text-xs tracking-widest text-muted">
             FULL STACK OVERVIEW
           </p>
-          <h3 className="mt-3 text-2xl font-semibold leading-tight tracking-tight text-white sm:text-3xl">
+          <h3 className="mt-3 text-2xl font-semibold leading-tight tracking-tight text-paper sm:text-3xl">
             A broad, connected engineering toolkit.
           </h3>
           <ProtectedParagraph className="mx-auto mt-4 max-w-md text-base leading-[1.7] text-muted lg:mx-0">
@@ -55,7 +55,7 @@ export default function FullStackOverview() {
         </MotionReveal>
 
         <MotionReveal delay={0.1} className="flex justify-center">
-          <div className="w-full max-w-[420px] overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-4 sm:p-6">
+          <div className="w-full max-w-[420px] overflow-hidden rounded-2xl border border-paper/10 bg-paper/[0.02] p-4 sm:p-6">
             <IconCloud icons={icons} labels={labels} minSize={220} maxSize={400} />
           </div>
         </MotionReveal>

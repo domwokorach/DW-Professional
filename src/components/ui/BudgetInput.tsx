@@ -77,7 +77,7 @@ export default function BudgetInput({
           aria-label="Currency"
           value={currency}
           onChange={(e) => onCurrencyChange(e.target.value as BudgetCurrency | "")}
-          className="shrink-0 border-r border-line bg-transparent px-3 py-3 text-white outline-none"
+          className="shrink-0 border-r border-line bg-transparent px-3 py-3 text-paper outline-none"
           style={{ fontSize: "16px" }}
         >
           <option value="" className="bg-ink">
@@ -104,7 +104,7 @@ export default function BudgetInput({
           aria-label="Budget amount"
           aria-describedby={describedBy}
           aria-invalid={Boolean(error)}
-          className="w-full min-w-0 bg-transparent px-4 py-3 text-white placeholder:text-muted/60 outline-none"
+          className="w-full min-w-0 bg-transparent px-4 py-3 text-paper placeholder:text-muted/60 outline-none"
           style={{ fontSize: "16px" }}
         />
       </div>
@@ -118,7 +118,7 @@ export default function BudgetInput({
           placeholder="Enter currency (e.g. JPY, AUD)"
           maxLength={12}
           aria-label="Custom currency"
-          className="mt-2.5 w-full rounded-lg border border-line bg-transparent px-4 py-3 text-white placeholder:text-muted/60 outline-none transition-colors focus:border-accent"
+          className="mt-2.5 w-full rounded-lg border border-line bg-transparent px-4 py-3 text-paper placeholder:text-muted/60 outline-none transition-colors focus:border-accent"
           style={{ fontSize: "16px" }}
         />
       )}

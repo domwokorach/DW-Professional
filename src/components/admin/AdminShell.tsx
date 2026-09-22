@@ -84,10 +84,10 @@ export default function AdminShell({
       <Sidebar collapsible="icon">
         <SidebarHeader className="px-3 py-3">
           <Link href={localiseHref("/admin/chat")} className="flex items-center gap-2 px-1">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-sm font-bold text-ink">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-cta text-sm font-bold text-cta-fg">
               DW
             </span>
-            <span className="font-mono text-sm font-semibold text-white group-data-[collapsible=icon]:hidden">
+            <span className="font-mono text-sm font-semibold text-paper group-data-[collapsible=icon]:hidden">
               Admin Chat
             </span>
           </Link>
@@ -120,14 +120,14 @@ export default function AdminShell({
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
-                className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left transition-colors hover:bg-white/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left transition-colors hover:bg-paper/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
               >
                 <Avatar className="h-8 w-8 shrink-0">
                   <AvatarImage src={admin.avatarUrl ?? undefined} alt="" />
                   <AvatarFallback>{initials(admin.name)}</AvatarFallback>
                 </Avatar>
                 <span className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
-                  <span className="block truncate text-sm font-medium text-white">{admin.name}</span>
+                  <span className="block truncate text-sm font-medium text-paper">{admin.name}</span>
                   <span className="block truncate text-xs text-muted">{roleLabel(admin.role)}</span>
                 </span>
               </button>
@@ -172,7 +172,7 @@ export default function AdminShell({
       <SidebarInset className="min-h-dvh">
         <div className="flex items-center gap-2 border-b border-line px-3 py-2 md:hidden">
           <SidebarTrigger />
-          <span className="font-mono text-sm font-semibold text-white">Admin Chat</span>
+          <span className="font-mono text-sm font-semibold text-paper">Admin Chat</span>
         </div>
         {children}
       </SidebarInset>

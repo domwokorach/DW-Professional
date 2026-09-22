@@ -201,7 +201,7 @@ export default function ResumeDownloadModal({
             className="w-full max-w-sm rounded-2xl border border-line bg-surface p-6 shadow-2xl"
           >
             <div className="mb-5 flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-[13px] font-bold tracking-wide text-ink">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-cta text-[13px] font-bold tracking-wide text-cta-fg">
                 DW
               </span>
               <span className="text-sm font-medium text-muted">
@@ -211,19 +211,19 @@ export default function ResumeDownloadModal({
 
             <div className="flex items-center justify-between">
               <div>
-                <h2 id="resume-modal-title" className="text-lg font-medium text-white">
+                <h2 id="resume-modal-title" className="text-lg font-medium text-paper">
                   {step === "success" ? "Resume ready" : "Verify your email"}
                 </h2>
                 {step === "pin" && (
                   <p className="mt-0.5 text-xs text-muted">
-                    Code sent to <span className="text-white">{email}</span>
+                    Code sent to <span className="text-paper">{email}</span>
                   </p>
                 )}
               </div>
               <button
                 onClick={onClose}
                 aria-label="Close"
-                className="rounded p-1 text-muted hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                className="rounded p-1 text-muted hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
               >
                 ✕
               </button>
@@ -248,7 +248,7 @@ export default function ResumeDownloadModal({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="min-h-11 w-full rounded-lg border border-line bg-black/30 px-4 py-3 text-sm text-white placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                    className="min-h-11 w-full rounded-lg border border-line bg-ink px-4 py-3 text-sm text-paper placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
                     aria-invalid={Boolean(error)}
                     aria-describedby={error ? "resume-email-error" : undefined}
                   />
@@ -265,7 +265,7 @@ export default function ResumeDownloadModal({
                 <button
                   type="submit"
                   disabled={loading}
-                  className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-medium text-ink transition-colors hover:bg-accent disabled:opacity-60"
+                  className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-cta px-6 py-3 text-sm font-medium text-cta-fg transition-colors hover:bg-accent hover:text-accent-fg disabled:opacity-60"
                 >
                   {loading ? "Sending…" : "Send verification PIN"}
                 </button>
@@ -314,7 +314,7 @@ export default function ResumeDownloadModal({
                 <button
                   type="submit"
                   disabled={loading || pin.length !== PIN_LENGTH}
-                  className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-medium text-ink transition-colors hover:bg-accent disabled:opacity-60"
+                  className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-cta px-6 py-3 text-sm font-medium text-cta-fg transition-colors hover:bg-accent hover:text-accent-fg disabled:opacity-60"
                 >
                   {loading ? "Verifying…" : "Verify & continue"}
                 </button>
@@ -322,7 +322,7 @@ export default function ResumeDownloadModal({
                   <button
                     type="button"
                     onClick={() => setStep("email")}
-                    className="min-h-11 text-xs text-muted hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+                    className="min-h-11 text-xs text-muted hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
                   >
                     Use a different email
                   </button>
@@ -330,7 +330,7 @@ export default function ResumeDownloadModal({
                     type="button"
                     onClick={() => requestPin()}
                     disabled={cooldown > 0 || loading}
-                    className="min-h-11 text-xs text-muted hover:text-white disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+                    className="min-h-11 text-xs text-muted hover:text-paper disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
                   >
                     {cooldown > 0 ? `Resend code in ${cooldown}s` : "Resend code"}
                   </button>
@@ -364,7 +364,7 @@ export default function ResumeDownloadModal({
                   href={`/api/resume/download?token=${encodeURIComponent(downloadToken)}`}
                   download="Dominic-Wokorach-Resume.pdf"
                   onClick={() => setTimeout(onClose, 400)}
-                  className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-medium text-ink transition-colors hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                  className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-cta px-6 py-3 text-sm font-medium text-cta-fg transition-colors hover:bg-accent hover:text-accent-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
                 >
                   Download Resume
                 </a>

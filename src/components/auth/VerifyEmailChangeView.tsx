@@ -93,7 +93,7 @@ export default function VerifyEmailChangeView() {
     <Card className="w-full max-w-md">
       <CardContent className="flex flex-col items-center gap-3 pt-6 text-center">
         {current.icon}
-        <h1 className="text-xl font-semibold text-white">{current.title}</h1>
+        <h1 className="text-xl font-semibold text-paper">{current.title}</h1>
         <p className="text-sm text-muted">{current.body}</p>
         {status !== "pending" ? (
           <Button href={localiseHref("/auth/sign-in")} className="mt-2">

@@ -133,7 +133,7 @@ export default function SignInForm() {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted hover:text-white"
+                className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted hover:text-paper"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}

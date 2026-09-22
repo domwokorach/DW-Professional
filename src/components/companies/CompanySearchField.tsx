@@ -11,7 +11,7 @@ const MIN_QUERY_LENGTH = 2;
 const DEBOUNCE_MS = 300;
 
 const DEFAULT_INPUT_CLASSES =
-  "flex h-9 w-full rounded-md border border-line bg-ink px-3 py-1 text-base text-white shadow-sm transition-colors placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50 md:text-sm";
+  "flex h-9 w-full rounded-md border border-line bg-ink px-3 py-1 text-base text-paper shadow-sm transition-colors placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50 md:text-sm";
 
 export interface CompanySearchFieldProps {
   id: string;
@@ -51,7 +51,7 @@ function highlightMatch(name: string, term: string) {
   return (
     <>
       {name.slice(0, index)}
-      <mark className="rounded-sm bg-accent/30 text-white">{name.slice(index, index + term.length)}</mark>
+      <mark className="rounded-sm bg-accent/30 text-paper">{name.slice(index, index + term.length)}</mark>
       {name.slice(index + term.length)}
     </>
   );
@@ -233,7 +233,7 @@ export default function CompanySearchField({
         {name ? <input type="hidden" name={name} value={selected.name} /> : null}
         <Building2 className="mt-0.5 h-6 w-6 shrink-0 rounded-full border border-line p-1 text-muted" aria-hidden="true" />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-white">{selected.name}</p>
+          <p className="truncate text-sm font-semibold text-paper">{selected.name}</p>
           {selected.companyNumber ? (
             <p className="mt-0.5 truncate text-xs text-muted">Company no. {selected.companyNumber}</p>
           ) : null}
@@ -250,7 +250,7 @@ export default function CompanySearchField({
           type="button"
           onClick={clearSelection}
           aria-label="Clear selected company"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted transition-colors hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
         >
           <X className="h-4 w-4" aria-hidden="true" />
         </button>
@@ -345,7 +345,7 @@ export default function CompanySearchField({
                       onMouseEnter={() => setActiveIndex(index)}
                       className={cn(
                         "flex cursor-pointer items-start gap-2.5 px-3 py-2.5 text-sm transition-colors",
-                        index === activeIndex ? "bg-accent/20 text-white" : "text-white hover:bg-accent/10"
+                        index === activeIndex ? "bg-accent/20 text-paper" : "text-paper hover:bg-accent/10"
                       )}
                     >
                       <Building2
@@ -391,7 +391,7 @@ export default function CompanySearchField({
                   onMouseEnter={() => setActiveIndex(manualOptionIndex)}
                   className={cn(
                     "cursor-pointer border-t border-line px-3 py-2.5 text-sm transition-colors",
-                    activeIndex === manualOptionIndex ? "bg-accent/20 text-white" : "text-muted hover:bg-accent/10 hover:text-white"
+                    activeIndex === manualOptionIndex ? "bg-accent/20 text-paper" : "text-muted hover:bg-accent/10 hover:text-paper"
                   )}
                 >
                   {results.length === 0 ? (

@@ -52,8 +52,8 @@ export default function ShowMoreButton({
       controls={controls}
       label={label}
       className={cn(
-        "rounded-full border border-line px-6 py-3 text-white",
-        "hover:border-accent/60 hover:bg-white/[0.04] hover:text-white",
+        "rounded-full border border-line px-6 py-3 text-paper",
+        "hover:border-accent/60 hover:bg-paper/[0.04] hover:text-paper",
         "focus-visible:outline-offset-4",
         className
       )}

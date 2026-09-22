@@ -51,7 +51,7 @@ function Field({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div>
       <dt className="text-xs text-muted">{label}</dt>
-      <dd className="text-sm text-white">{value}</dd>
+      <dd className="text-sm text-paper">{value}</dd>
     </div>
   );
 }
@@ -75,7 +75,7 @@ export default function CustomerDetails({
       <div className="flex flex-col items-center gap-2 text-center">
         <CandidateAvatar label={displayName} className="h-16 w-16 text-base" />
         <div>
-          <p className="font-mono text-sm font-semibold text-white">{displayName}</p>
+          <p className="font-mono text-sm font-semibold text-paper">{displayName}</p>
           {conversation.email ? <p className="text-xs text-muted">{conversation.email}</p> : null}
           {conversation.companyName ? (
             <p className="text-xs text-muted">{conversation.companyName}</p>

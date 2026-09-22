@@ -135,7 +135,7 @@ export default function MessageList({
                   <button
                     type="button"
                     onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
-                    className="rounded-full border border-line px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-surface hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                    className="rounded-full border border-line px-3 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-surface hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
                   >
                     Load older messages
                   </button>

@@ -6,6 +6,7 @@ import { checkRateLimit } from "@/lib/auth/rateLimit";
 import { extractClientIp } from "@/lib/auth/device";
 import { contactFormSchema, BUDGET_CURRENCIES } from "@/lib/contact/validation";
 import { getContactEmailConfig, logContactEmailConfigOnStartup } from "@/lib/contact/config";
+import { normalizeMobileNumber } from "@/lib/contact/phone";
 import ContactEnquiryEmail from "@/services/email/templates/contact-enquiry";
 import {
   ATTACHMENT_SIZE_ERROR,
@@ -51,6 +52,8 @@ export async function POST(request: NextRequest) {
   const parsed = contactFormSchema.safeParse({
     name: form.get("name"),
     email: form.get("email"),
+    mobile: form.get("mobile"),
+    mobileCountry: form.get("mobileCountry"),
     company: form.get("company"),
     companyNumber: form.get("companyNumber"),
     budgetAmount: form.get("budgetAmount"),
@@ -61,6 +64,12 @@ export async function POST(request: NextRequest) {
   });
   if (!parsed.success) return validationError(parsed.error);
   const data = parsed.data;
+
+  const mobileResult = normalizeMobileNumber(data.mobile, data.mobileCountry);
+  if (mobileResult.error) {
+    return apiError("invalid_mobile", mobileResult.error, 400, { mobile: mobileResult.error });
+  }
+  const mobile = mobileResult.value;
 
   let ipLimit, emailLimit;
   try {
@@ -121,6 +130,7 @@ export async function POST(request: NextRequest) {
   const emailProps = {
     name: data.name,
     email: data.email,
+    mobile,
     company: companyLine,
     budgetLine,
     projectType: data.projectType ?? null,

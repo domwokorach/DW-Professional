@@ -123,7 +123,7 @@ function NavigationMenuItem({ className, ...props }: NavigationMenuItemProps) {
 }
 
 const navigationMenuTriggerStyle = cva(
-    "text-muted hover:text-white focus:text-white data-open:text-white data-popup-open:text-white rounded-full px-3.5 py-2 font-mono text-sm transition-colors disabled:opacity-50 group/navigation-menu-trigger inline-flex h-11 w-max items-center justify-center disabled:pointer-events-none outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent",
+    "text-muted hover:text-paper focus:text-paper data-open:text-paper data-popup-open:text-paper rounded-full px-3.5 py-2 font-mono text-sm transition-colors disabled:opacity-50 group/navigation-menu-trigger inline-flex h-11 w-max items-center justify-center disabled:pointer-events-none outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent",
 );
 
 export interface NavigationMenuTriggerProps extends NavigationMenuPrimitive.Trigger.Props {
@@ -208,7 +208,7 @@ function NavigationMenuContent({ className, ...props }: NavigationMenuContentPro
                 "data-ending-style:data-[activation-direction*=left]:[transform:translateX(40%)] data-ending-style:data-[activation-direction*=right]:[transform:translateX(-40%)]",
                 "group-data-[activation-direction*=left]:data-starting-style:[transform:translateX(-40%)] group-data-[activation-direction*=right]:data-starting-style:[transform:translateX(40%)]",
                 "group-data-[activation-direction*=left]:data-ending-style:[transform:translateX(40%)] group-data-[activation-direction*=right]:data-ending-style:[transform:translateX(-40%)]",
-                "group-data-[viewport=false]/navigation-menu:bg-ink/95 group-data-[viewport=false]/navigation-menu:text-white group-data-[viewport=false]/navigation-menu:border group-data-[viewport=false]/navigation-menu:border-line group-data-[viewport=false]/navigation-menu:rounded-xl group-data-[viewport=false]/navigation-menu:shadow-2xl group-data-[viewport=false]/navigation-menu:backdrop-blur-xl **:data-[slot=navigation-menu-link]:focus:outline-none",
+                "group-data-[viewport=false]/navigation-menu:bg-ink/95 group-data-[viewport=false]/navigation-menu:text-paper group-data-[viewport=false]/navigation-menu:border group-data-[viewport=false]/navigation-menu:border-line group-data-[viewport=false]/navigation-menu:rounded-xl group-data-[viewport=false]/navigation-menu:shadow-2xl group-data-[viewport=false]/navigation-menu:backdrop-blur-xl **:data-[slot=navigation-menu-link]:focus:outline-none",
                 className,
             )}
             {...props}
@@ -245,7 +245,7 @@ function NavigationMenuPositioner({
                 <NavigationMenuPrimitive.Popup
                     data-slot="navigation-menu-popup"
                     className={cn(
-                        "bg-ink/95 text-white border border-line relative h-[var(--popup-height)] w-[var(--popup-width)] origin-[var(--transform-origin)] rounded-xl shadow-2xl backdrop-blur-xl transition-[width,height,opacity,transform,translate,scale] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] outline-none data-ending-style:-translate-y-1.5 data-ending-style:scale-96 data-ending-style:opacity-0 data-ending-style:duration-150 data-starting-style:-translate-y-1.5 data-starting-style:scale-96 data-starting-style:opacity-0",
+                        "bg-ink/95 text-paper border border-line relative h-[var(--popup-height)] w-[var(--popup-width)] origin-[var(--transform-origin)] rounded-xl shadow-2xl backdrop-blur-xl transition-[width,height,opacity,transform,translate,scale] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] outline-none data-ending-style:-translate-y-1.5 data-ending-style:scale-96 data-ending-style:opacity-0 data-ending-style:duration-150 data-starting-style:-translate-y-1.5 data-starting-style:scale-96 data-starting-style:opacity-0",
                         popupClassName,
                     )}>
                     <NavigationMenuPrimitive.Viewport
@@ -265,7 +265,7 @@ function NavigationMenuLink({ className, ...props }: NavigationMenuLinkProps) {
         <NavigationMenuPrimitive.Link
             data-slot="navigation-menu-link"
             className={cn(
-                "data-[active=true]:bg-accent/10 data-[active=true]:text-accent text-white hover:bg-accent/10 focus:bg-accent/10 flex min-h-11 items-center gap-1.5 rounded-lg p-2.5 text-sm transition-colors outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent [&_svg:not([class*='size-'])]:size-4",
+                "data-[active=true]:bg-accent/10 data-[active=true]:text-accent text-paper hover:bg-accent/10 focus:bg-accent/10 flex min-h-11 items-center gap-1.5 rounded-lg p-2.5 text-sm transition-colors outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent [&_svg:not([class*='size-'])]:size-4",
                 className,
             )}
             {...props}

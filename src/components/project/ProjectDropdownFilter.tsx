@@ -64,7 +64,7 @@ export default function ProjectDropdownFilter({
         aria-controls={panelId}
         onClick={() => setIsOpen((open) => !open)}
         className={cn(
-          "flex min-h-11 w-full items-center justify-between gap-3 rounded-full border border-line bg-surface/60 px-5 py-2.5 text-sm font-medium text-white transition-colors sm:w-auto",
+          "flex min-h-11 w-full items-center justify-between gap-3 rounded-full border border-line bg-surface/60 px-5 py-2.5 text-sm font-medium text-paper transition-colors sm:w-auto",
           "hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent",
           isOpen && "border-accent/60"
         )}
@@ -113,7 +113,7 @@ export default function ProjectDropdownFilter({
                         block: "start",
                       });
                     }}
-                    className="block min-h-11 rounded-lg px-3 py-2.5 text-sm text-muted transition-colors hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-[-2px]"
+                    className="block min-h-11 rounded-lg px-3 py-2.5 text-sm text-muted transition-colors hover:bg-paper/5 hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-[-2px]"
                   >
                     {item.label}
                   </a>

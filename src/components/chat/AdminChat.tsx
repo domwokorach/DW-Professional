@@ -181,7 +181,7 @@ function ChatShell({
           instead of adding its own 100dvh on top and forcing the whole page
           to scroll. */}
       <header className="hidden shrink-0 items-center gap-3 border-b border-line px-4 py-3 sm:px-6 md:flex">
-        <h1 className="min-w-0 flex-1 truncate font-mono text-base font-semibold text-white sm:text-lg">
+        <h1 className="min-w-0 flex-1 truncate font-mono text-base font-semibold text-paper sm:text-lg">
           Admin Chat
         </h1>
         <ConnectionStatus state={connectionState} />
@@ -220,7 +220,7 @@ function ChatShell({
             {!conversation ? (
               <div className="flex flex-1 flex-col items-center justify-center gap-2 px-6 text-center">
                 <MessageSquare className="h-10 w-10 text-muted" aria-hidden="true" />
-                <p className="text-sm font-medium text-white">Select a conversation</p>
+                <p className="text-sm font-medium text-paper">Select a conversation</p>
                 <p className="max-w-xs text-sm text-muted">
                   Choose a candidate from the conversation list to view and reply to their messages.
                 </p>

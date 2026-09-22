@@ -25,7 +25,7 @@ export default function SettingsView({
 }) {
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:py-10">
-      <h1 className="text-2xl font-semibold text-white">Settings</h1>
+      <h1 className="text-2xl font-semibold text-paper">Settings</h1>
       <p className="mt-1 text-sm text-muted">Manage your workspace preferences and account security.</p>
 
       <Tabs defaultValue="general" className="mt-6">

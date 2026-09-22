@@ -72,7 +72,7 @@ export default function ChatHeader({
         <CandidateAvatar label={displayName} className="hidden h-9 w-9 sm:flex" />
 
         <div className="min-w-0 flex-1">
-          <p className="truncate font-mono text-sm font-semibold text-white">{displayName}</p>
+          <p className="truncate font-mono text-sm font-semibold text-paper">{displayName}</p>
           {conversation.email || conversation.mobile ? (
             <p className="hidden truncate text-xs text-muted sm:block">
               {[conversation.email, conversation.mobile].filter(Boolean).join(" · ")}

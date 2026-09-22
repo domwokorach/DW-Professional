@@ -71,7 +71,7 @@ export default function Expertise() {
               exit={{ opacity: 0, y: 8, transition: { duration: 0.28, ease: [0.4, 0, 0.2, 1] } }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: (i % 3) * 0.06 }}
-              className="group relative scroll-mt-24 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-6 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.04]"
+              className="group relative scroll-mt-24 overflow-hidden rounded-2xl border border-paper/10 bg-paper/[0.02] p-6 transition-all duration-300 hover:border-paper/20 hover:bg-paper/[0.04]"
             >
               <div
                 className="pointer-events-none absolute -top-16 right-0 h-40 w-40 rounded-full bg-accent/0 blur-3xl transition-colors duration-300 group-hover:bg-accent/10"
@@ -80,7 +80,7 @@ export default function Expertise() {
 
               <div className="relative flex items-center justify-between">
                 <div
-                  className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] shadow-[0_0_30px_rgba(255,255,255,0.04)] transition-all duration-300 ease-out motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:rotate-3 group-hover:border-white/25 group-hover:bg-white/[0.08] sm:h-14 sm:w-14`}
+                  className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-paper/10 bg-paper/[0.04] shadow-[0_0_30px_rgba(255,255,255,0.04)] transition-all duration-300 ease-out motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:rotate-3 group-hover:border-paper/25 group-hover:bg-paper/[0.08] sm:h-14 sm:w-14`}
                 >
                   <category.icon
                     size={22}
@@ -101,7 +101,7 @@ export default function Expertise() {
                 {category.index}
               </p>
 
-              <h3 className="relative mt-1 text-lg font-medium text-white transition-colors duration-200 group-hover:text-white">
+              <h3 className="relative mt-1 text-lg font-medium text-paper transition-colors duration-200 group-hover:text-paper">
                 {category.title}
               </h3>
 
@@ -115,8 +115,8 @@ export default function Expertise() {
                     key={item.name}
                     className={`rounded-full border px-3 py-1.5 text-sm ${
                       item.core
-                        ? "border-white/20 bg-white/[0.05] text-white/90"
-                        : "border-white/10 bg-white/[0.03] text-neutral-400"
+                        ? "border-paper/20 bg-paper/[0.05] text-paper/90"
+                        : "border-paper/10 bg-paper/[0.03] text-muted"
                     }`}
                   >
                     {item.name}
@@ -130,7 +130,7 @@ export default function Expertise() {
                     {rest.map((item) => (
                       <li
                         key={item.name}
-                        className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-sm text-neutral-400"
+                        className="rounded-full border border-paper/10 bg-paper/[0.03] px-3 py-1.5 text-sm text-muted"
                       >
                         {item.name}
                       </li>
@@ -156,12 +156,12 @@ export default function Expertise() {
         )}
 
         <MotionReveal delay={0.15} className="mt-10 flex items-center gap-2 text-xs text-muted">
-          <span className="h-2 w-2 rounded-full border border-white/20 bg-white/[0.05]" aria-hidden />
+          <span className="h-2 w-2 rounded-full border border-paper/20 bg-paper/[0.05]" aria-hidden />
           Core, day-to-day stack
           <span className="mx-2 text-line" aria-hidden>
             ·
           </span>
-          <span className="h-2 w-2 rounded-full border border-white/10 bg-white/[0.03]" aria-hidden />
+          <span className="h-2 w-2 rounded-full border border-paper/10 bg-paper/[0.03]" aria-hidden />
           Additional technologies
         </MotionReveal>
 

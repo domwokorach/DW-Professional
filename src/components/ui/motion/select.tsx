@@ -46,7 +46,7 @@ function SelectTrigger({ className, size = "default", children, ...props }: Sele
             data-slot="select-trigger"
             data-size={size}
             className={cn(
-                "flex w-fit min-h-11 items-center justify-between gap-2 rounded-lg border border-line bg-transparent px-3 text-sm text-white whitespace-nowrap transition-colors outline-none hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-11 data-[size=sm]:h-9 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+                "flex w-fit min-h-11 items-center justify-between gap-2 rounded-lg border border-line bg-transparent px-3 text-sm text-paper whitespace-nowrap transition-colors outline-none hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-11 data-[size=sm]:h-9 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
                 className,
             )}
             {...props}>
@@ -158,7 +158,7 @@ function SelectContent({
                                     }
                                     transition={reduceMotion ? { duration: 0.01 } : transition}
                                     className={cn(
-                                        "relative isolate z-[100] max-h-(--available-height) w-(--anchor-width) min-w-40 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-xl border border-line bg-ink/95 p-1.5 text-white shadow-2xl backdrop-blur-xl",
+                                        "relative isolate z-[100] max-h-(--available-height) w-(--anchor-width) min-w-40 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-xl border border-line bg-ink/95 p-1.5 text-paper shadow-2xl backdrop-blur-xl",
                                         className,
                                     )}>
                                     <SelectHighlightContext.Provider value={highlightValue}>
@@ -217,14 +217,14 @@ function SelectItem({ className, children, ...props }: SelectItemProps) {
                         whileTap={reduceMotion ? undefined : { scale: 0.98 }}
                         transition={{ type: "spring", stiffness: 400, damping: 25 }}
                         className={cn(
-                            "group/select-item relative flex min-h-11 w-full cursor-pointer items-center gap-2 rounded-lg py-2 pr-9 pl-3 text-sm text-white outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+                            "group/select-item relative flex min-h-11 w-full cursor-pointer items-center gap-2 rounded-lg py-2 pr-9 pl-3 text-sm text-paper outline-hidden select-none data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
                             (state.highlighted || isCurrentActive) && "text-accent",
                             className,
                         )}>
                         {isCurrentActive && highlightContext?.highlightLayoutId && (
                             <motion.div
                                 layoutId={highlightContext.highlightLayoutId}
-                                className="pointer-events-none absolute inset-0 z-0 rounded-lg bg-white/10"
+                                className="pointer-events-none absolute inset-0 z-0 rounded-lg bg-paper/10"
                                 transition={{ type: "spring", stiffness: 450, damping: 32 }}
                             />
                         )}

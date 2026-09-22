@@ -13,7 +13,7 @@ export default function ProjectCard({
   index: number;
 }) {
   return (
-    <article className="hover-lift group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-white/[0.03] transition-colors duration-200 hover:border-accent/40">
+    <article className="hover-lift group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-paper/[0.03] transition-colors duration-200 hover:border-accent/40">
       <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-line bg-surface">
         <Image
           src={project.image}
@@ -31,7 +31,7 @@ export default function ProjectCard({
           </span>
         </div>
 
-        <h3 className="mt-4 text-2xl font-medium text-white" data-i18n-ignore>
+        <h3 className="mt-4 text-2xl font-medium text-paper" data-i18n-ignore>
           {project.title}
         </h3>
         <ProtectedParagraph className="mt-3 text-sm leading-[1.7] text-muted">
@@ -54,7 +54,7 @@ export default function ProjectCard({
             href={project.liveUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-white transition-colors hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-paper transition-colors hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
           >
             View Live Project
             <ExternalLink
@@ -68,7 +68,7 @@ export default function ProjectCard({
               href={project.repoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+              className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
             >
               <GithubIcon className="h-3.5 w-3.5" />
               GitHub
@@ -77,7 +77,7 @@ export default function ProjectCard({
 
           <Link
             href={`/projects/${project.slug}`}
-            className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+            className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
           >
             Details <span aria-hidden>→</span>
           </Link>
