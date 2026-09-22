@@ -208,11 +208,21 @@ async function testLight() {
   await context.close();
 }
 
-await testDesktop();
-await testTablet();
-await testMobile();
-await testKeyboard();
-await testLight();
+for (const [name, fn] of [
+  ["desktop", testDesktop],
+  ["tablet", testTablet],
+  ["mobile", testMobile],
+  ["keyboard", testKeyboard],
+  ["light", testLight],
+]) {
+  try {
+    await fn();
+    console.log(`=== ${name} OK ===`);
+    console.log(JSON.stringify(report[name], null, 2));
+  } catch (err) {
+    console.log(`=== ${name} FAILED ===`);
+    console.log(String(err));
+  }
+}
 
 await browser.close();
-console.log(JSON.stringify(report, null, 2));
