@@ -18,19 +18,25 @@ export const navigation: NavItem[] = [
 ];
 
 /** Ids (in display order) of the primary links shown in the header/mobile navigation menu. */
-const PRIMARY_NAV_IDS = ["about", "services", "projects", "gallery"] as const;
+const PRIMARY_NAV_IDS = ["about", "services", "projects", "gallery", "contact"] as const;
+
+/** Label overrides for primary nav links whose menu label differs from the section's own label. */
+const PRIMARY_NAV_LABEL_OVERRIDES: Partial<Record<(typeof PRIMARY_NAV_IDS)[number], string>> = {
+  contact: "Contact Us",
+};
 
 /**
  * The primary nav links shown in the header and mobile navigation menu, in
  * display order, with the numbered prefix stripped from each label (e.g.
  * "03 / Services" -> "Services"). Every other section (Home, Expertise,
- * Experience, Testimonials, Contact) keeps its page section — it's just no
- * longer linked from this menu.
+ * Experience, Testimonials) keeps its page section — it's just no longer
+ * linked from this menu.
  */
 export const headerNavigation: NavItem[] = PRIMARY_NAV_IDS.map((id) => {
   const item = navigation.find((entry) => entry.id === id);
   if (!item) throw new Error(`navigation: missing expected section "${id}"`);
-  return { ...item, label: item.label.replace(/^\d+\s*\/\s*/, "") };
+  const label = PRIMARY_NAV_LABEL_OVERRIDES[id] ?? item.label.replace(/^\d+\s*\/\s*/, "");
+  return { ...item, label };
 });
 
 /** Full site navigation minus the logo's "home" link, for surfaces (e.g. the footer) that list every section. */

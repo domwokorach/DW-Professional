@@ -56,8 +56,8 @@ export default function MobileNavigation({
           transition={{ duration: reduceMotion ? 0.01 : 0.25, ease: "easeInOut" }}
           className="lg:hidden overflow-hidden border-b border-line bg-ink/95 backdrop-blur-lg"
         >
-          {/* The six primary nav items, in the same fixed order as desktop:
-              About, Services, Projects, Gallery, Language, Resume. */}
+          {/* The primary nav items, in the same fixed order as desktop:
+              About, Services, Projects, Gallery, Contact Us, Language, Resume. */}
           <nav aria-label="Mobile navigation">
             <ul className="mx-auto flex max-h-[70vh] w-full max-w-content flex-col gap-1 overflow-y-auto px-6 py-4 sm:px-8">
               {headerNavigation.map((item) => (
