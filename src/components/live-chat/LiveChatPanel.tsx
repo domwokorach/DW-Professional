@@ -142,7 +142,7 @@ export default function LiveChatPanel({
     >
       <header className="flex items-start justify-between gap-3 border-b border-line px-4 py-3">
         <div>
-          <p className="font-mono text-sm font-semibold text-white">Live Chat</p>
+          <p className="font-mono text-sm font-semibold text-paper">Live Chat</p>
           <p
             className="mt-1 flex items-center gap-1.5 text-xs text-muted"
             role="status"
@@ -160,7 +160,7 @@ export default function LiveChatPanel({
             type="button"
             onClick={onMinimise}
             aria-label="Minimise live chat"
-            className="flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            className="flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           >
             <Minus className="h-5 w-5" aria-hidden="true" />
           </button>
@@ -169,7 +169,7 @@ export default function LiveChatPanel({
             type="button"
             onClick={onClose}
             aria-label="Close live chat"
-            className="flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            className="flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           >
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
@@ -205,7 +205,7 @@ export default function LiveChatPanel({
                     ? "border border-dashed border-line text-muted italic"
                     : message.sender === "visitor"
                       ? "bg-accent text-ink"
-                      : "border border-line bg-ink text-white"
+                      : "border border-line bg-ink text-paper"
                 }`}
               >
                 {message.deleted ? "Message deleted" : message.content}
@@ -270,13 +270,13 @@ export default function LiveChatPanel({
             placeholder={isClosed ? "This conversation has ended." : "Type a message…"}
             rows={1}
             maxLength={2000}
-            className="min-h-11 max-h-24 flex-1 resize-none rounded-2xl border border-line bg-ink px-4 py-2.5 text-sm leading-normal text-white placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
+            className="min-h-11 max-h-24 flex-1 resize-none rounded-2xl border border-line bg-ink px-4 py-2.5 text-sm leading-normal text-paper placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
           />
           <button
             type="submit"
             disabled={!input.trim() || isClosed}
             aria-label="Send message"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-ink transition-opacity duration-150 disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-ink transition-opacity duration-150 disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper"
           >
             <Send className="h-4 w-4" aria-hidden="true" />
           </button>

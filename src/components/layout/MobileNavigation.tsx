@@ -23,7 +23,7 @@ function MobileNavItem({
         onClick={() => onNavigate(item.id)}
         aria-current={isActive ? "true" : undefined}
         className={`block min-h-11 w-full rounded py-3 text-left text-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${
-          isActive ? "text-white" : "text-muted"
+          isActive ? "text-paper" : "text-muted"
         }`}
       >
         {isActive ? <Highlighter action="highlight">{item.label}</Highlighter> : item.label}
@@ -74,7 +74,7 @@ export default function MobileNavigation({
               <li className="pt-2">
                 <button
                   onClick={onOpenResume}
-                  className="min-h-11 w-full rounded-full border border-line px-4 py-3 text-center text-sm text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                  className="min-h-11 w-full rounded-full border border-line px-4 py-3 text-center text-sm text-paper transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
                 >
                   Resume
                 </button>
@@ -90,7 +90,7 @@ export default function MobileNavigation({
                 rel="noopener noreferrer"
                 title="GitHub"
                 aria-label="Visit Dominic Wokorach on GitHub (opens in a new tab)"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-white focus-visible:text-white"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-paper focus-visible:text-paper"
               >
                 <GithubIcon aria-hidden="true" className="h-[22px] w-[22px]" />
               </a>
@@ -100,7 +100,7 @@ export default function MobileNavigation({
                 rel="noopener noreferrer"
                 title="LinkedIn"
                 aria-label="Visit Dominic Wokorach on LinkedIn (opens in a new tab)"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-white focus-visible:text-white"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-paper focus-visible:text-paper"
               >
                 <LinkedinIcon aria-hidden="true" className="h-[22px] w-[22px]" />
               </a>

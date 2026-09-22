@@ -67,7 +67,7 @@ export default function ResetPasswordForm() {
       <Card className="w-full max-w-md">
         <CardContent className="flex flex-col items-center gap-3 pt-6 text-center">
           <XCircle className="h-10 w-10 text-red-400" aria-hidden="true" />
-          <h1 className="text-xl font-semibold text-white">Invalid reset link</h1>
+          <h1 className="text-xl font-semibold text-paper">Invalid reset link</h1>
           <p className="text-sm text-muted">This link is missing its token. Request a new password reset.</p>
           <Link href={localiseHref("/auth/forgot-password")} className="mt-2 text-sm font-medium text-accent hover:underline">
             Request a new link
@@ -82,7 +82,7 @@ export default function ResetPasswordForm() {
       <Card className="w-full max-w-md">
         <CardContent className="flex flex-col items-center gap-3 pt-6 text-center">
           <CheckCircle2 className="h-10 w-10 text-accent" aria-hidden="true" />
-          <h1 className="text-xl font-semibold text-white">Password reset</h1>
+          <h1 className="text-xl font-semibold text-paper">Password reset</h1>
           <p className="text-sm text-muted">
             Your password has been changed and every other session has been signed out. Please sign in again.
           </p>
@@ -123,7 +123,7 @@ export default function ResetPasswordForm() {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted hover:text-white"
+                className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-muted hover:text-paper"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}

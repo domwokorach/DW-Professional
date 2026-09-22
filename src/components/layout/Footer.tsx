@@ -28,7 +28,7 @@ export default function Footer() {
             aria-labelledby="footer-explore-heading"
             className="w-full md:min-w-52 md:flex-1"
           >
-            <h2 id="footer-explore-heading" className="text-sm font-semibold text-white">
+            <h2 id="footer-explore-heading" className="text-sm font-semibold text-paper">
               Explore
             </h2>
             <ul className="mt-3 space-y-1">
@@ -36,7 +36,7 @@ export default function Footer() {
                 <li key={item.id}>
                   <Link
                     href={localiseHref(`/#${item.id}`)}
-                    className="inline-flex min-h-11 items-center rounded px-1 text-sm text-muted transition-colors hover:text-white"
+                    className="inline-flex min-h-11 items-center rounded px-1 text-sm text-muted transition-colors hover:text-paper"
                   >
                     {item.label}
                   </Link>
@@ -49,7 +49,7 @@ export default function Footer() {
             aria-labelledby="footer-social-heading"
             className="w-full md:min-w-52 md:flex-1"
           >
-            <h2 id="footer-social-heading" className="text-sm font-semibold text-white">
+            <h2 id="footer-social-heading" className="text-sm font-semibold text-paper">
               Connect
             </h2>
             <div className="mt-3 flex items-center justify-center gap-2 md:justify-start">
@@ -59,7 +59,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 title="GitHub"
                 aria-label="Visit Dominic Wokorach on GitHub (opens in a new tab)"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-white focus-visible:text-white"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-paper focus-visible:text-paper"
               >
                 <GithubIcon aria-hidden="true" className="h-[22px] w-[22px]" />
               </a>
@@ -69,7 +69,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 title="LinkedIn"
                 aria-label="Visit Dominic Wokorach on LinkedIn (opens in a new tab)"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-white focus-visible:text-white"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-paper focus-visible:text-paper"
               >
                 <LinkedinIcon aria-hidden="true" className="h-[22px] w-[22px]" />
               </a>
@@ -80,7 +80,7 @@ export default function Footer() {
             aria-labelledby="footer-legal-heading"
             className="w-full md:min-w-52 md:flex-1"
           >
-            <h2 id="footer-legal-heading" className="text-sm font-semibold text-white">
+            <h2 id="footer-legal-heading" className="text-sm font-semibold text-paper">
               Legal
             </h2>
             <ul className="mt-3 space-y-1">
@@ -89,7 +89,7 @@ export default function Footer() {
                   href="https://www.dominicwokorach.me/en-gb/privacy"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex min-h-11 items-center rounded px-1 text-sm text-muted transition-colors duration-150 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                  className="inline-flex min-h-11 items-center rounded px-1 text-sm text-muted transition-colors duration-150 hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
                 >
                   Privacy Policy
                 </a>
@@ -99,7 +99,7 @@ export default function Footer() {
                   href="https://www.dominicwokorach.me/en-gb"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex min-h-11 items-center rounded px-1 text-sm text-muted transition-colors duration-150 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                  className="inline-flex min-h-11 items-center rounded px-1 text-sm text-muted transition-colors duration-150 hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
                 >
                   Terms and Conditions
                 </a>
@@ -107,7 +107,7 @@ export default function Footer() {
               <li>
                 <Link
                   href={localiseHref("/accessibility")}
-                  className="inline-flex min-h-11 items-center rounded px-1 text-sm text-muted transition-colors hover:text-white"
+                  className="inline-flex min-h-11 items-center rounded px-1 text-sm text-muted transition-colors hover:text-paper"
                 >
                   Accessibility
                 </Link>
@@ -116,7 +116,7 @@ export default function Footer() {
                 <button
                   type="button"
                   onClick={openCookieSettings}
-                  className="inline-flex min-h-11 items-center rounded px-1 text-center text-sm text-muted transition-colors hover:text-white md:text-left"
+                  className="inline-flex min-h-11 items-center rounded px-1 text-center text-sm text-muted transition-colors hover:text-paper md:text-left"
                 >
                   Cookie settings
                 </button>
@@ -132,7 +132,7 @@ export default function Footer() {
           <button
             type="button"
             onClick={scrollToTop}
-            className="inline-flex min-h-11 w-fit items-center rounded px-1 text-sm font-medium text-muted transition-colors hover:text-white"
+            className="inline-flex min-h-11 w-fit items-center rounded px-1 text-sm font-medium text-muted transition-colors hover:text-paper"
           >
             Back to top
           </button>

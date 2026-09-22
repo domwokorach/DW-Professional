@@ -74,7 +74,10 @@ export default function Hero() {
       </div>
 
       <Container className="relative z-20">
-        <div className="max-w-2xl">
+        {/* The portrait image behind this column carries a fixed dark scrim
+            below `lg` (see the gradient divs above), so this copy must stay
+            light regardless of theme until that scrim is hidden at `lg`. */}
+        <div className="hero-scrim-text max-w-2xl">
           <UKGreeting className="mb-2" />
           <WeatherWidget className="mb-5" />
 
@@ -82,12 +85,12 @@ export default function Hero() {
             initial={reduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="hero-role font-mono text-sm tracking-[0.15em]"
+            className="text-paper font-mono text-sm tracking-[0.15em]"
           >
             Software Engineer · Frontend Developer · London
           </motion.p>
 
-          <h1 className="mt-6 text-[clamp(2.75rem,8vw,6rem)] font-semibold leading-[0.95] tracking-[-0.03em] text-white">
+          <h1 className="mt-6 text-[clamp(2.75rem,8vw,6rem)] font-semibold leading-[0.95] tracking-[-0.03em] text-paper">
             {headlineLines.map((line, i) => (
               <motion.span
                 key={line}
@@ -109,7 +112,7 @@ export default function Hero() {
             initial={reduceMotion ? false : { opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: EASE, delay: 0.7 }}
-            className="intro-paragraph mt-8 max-w-lg text-[clamp(1rem,1.2vw,1.125rem)] leading-[1.7]"
+            className="text-paper mt-8 max-w-lg text-[clamp(1rem,1.2vw,1.125rem)] leading-[1.7]"
           >
             I&rsquo;m Dominic, a Software Engineer and Frontend Developer
             specialising in React, TypeScript, JavaScript and modern web
@@ -127,10 +130,10 @@ export default function Hero() {
             className="mt-10 flex flex-wrap items-center gap-4"
           >
             <Button href="#projects">View Projects</Button>
-            <Button href="#about" variant="secondary" className="tablet-white">
+            <Button href="#about" variant="secondary">
               About Me
             </Button>
-            <Button href="#contact" variant="ghost" className="tablet-white">
+            <Button href="#contact" variant="ghost">
               Get in Touch →
             </Button>
           </motion.div>
@@ -139,7 +142,7 @@ export default function Hero() {
             initial={reduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, delay: 1 }}
-            className="tablet-white mt-10 flex items-center gap-2 text-xs text-muted"
+            className="mt-10 flex items-center gap-2 text-xs text-muted"
           >
             <PulseDot
               aria-label="Available"

@@ -51,7 +51,7 @@ function Toggle({
       aria-label={label}
       onClick={() => onChange(!checked)}
       className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-full border transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
-        checked ? "border-accent bg-accent/30" : "border-line bg-white/5"
+        checked ? "border-accent bg-accent/30" : "border-line bg-paper/5"
       }`}
     >
       <span
@@ -161,7 +161,7 @@ export default function CookiePreferencesModal({
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-t-2xl border border-line bg-surface p-6 shadow-2xl sm:rounded-2xl sm:p-8"
           >
-            <h2 id="cookie-modal-title" className="text-xl font-semibold text-white">
+            <h2 id="cookie-modal-title" className="text-xl font-semibold text-paper">
               Customise Cookie Preferences
             </h2>
             <p id="cookie-modal-description" className="mt-2 text-sm leading-[1.6] text-muted">
@@ -174,7 +174,7 @@ export default function CookiePreferencesModal({
               <div className="rounded-xl border border-line p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="font-medium text-white">Strictly Necessary</p>
+                    <p className="font-medium text-paper">Strictly Necessary</p>
                     <p className="mt-0.5 text-xs font-mono uppercase tracking-wide text-accent">
                       Always Active
                     </p>
@@ -204,7 +204,7 @@ export default function CookiePreferencesModal({
                   <div key={cat.key} className="rounded-xl border border-line p-4">
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <label htmlFor={`toggle-${cat.key}`} className="font-medium text-white">
+                        <label htmlFor={`toggle-${cat.key}`} className="font-medium text-paper">
                           {cat.title}
                         </label>
                         <p className="mt-0.5 text-xs font-mono uppercase tracking-wide text-muted">
@@ -230,21 +230,21 @@ export default function CookiePreferencesModal({
               <button
                 type="button"
                 onClick={() => onSave({ analytics, functional, marketing })}
-                className="min-h-[48px] flex-1 rounded-full bg-white px-5 py-3 text-sm font-medium text-ink transition-colors hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+                className="min-h-[48px] flex-1 rounded-full bg-cta px-5 py-3 text-sm font-medium text-cta-fg transition-colors hover:bg-accent hover:text-accent-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-cta"
               >
                 Save Preferences
               </button>
               <button
                 type="button"
                 onClick={onAcceptAll}
-                className="min-h-[48px] flex-1 rounded-full border border-line px-5 py-3 text-sm font-medium text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                className="min-h-[48px] flex-1 rounded-full border border-line px-5 py-3 text-sm font-medium text-paper transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
               >
                 Accept All
               </button>
               <button
                 type="button"
                 onClick={onRejectOptional}
-                className="min-h-[48px] flex-1 rounded-full border border-line px-5 py-3 text-sm font-medium text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                className="min-h-[48px] flex-1 rounded-full border border-line px-5 py-3 text-sm font-medium text-paper transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
               >
                 Reject Optional Cookies
               </button>

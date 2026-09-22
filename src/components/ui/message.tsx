@@ -39,7 +39,7 @@ const MessageContent = ({ children, className, ...props }: MessageContentProps) 
   return (
     <div
       className={cn(
-        "whitespace-pre-wrap break-words [overflow-wrap:anywhere] rounded-lg bg-surface p-2 text-white",
+        "whitespace-pre-wrap break-words [overflow-wrap:anywhere] rounded-lg bg-surface p-2 text-paper",
         className
       )}
       {...props}

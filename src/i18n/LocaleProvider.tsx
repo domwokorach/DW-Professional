@@ -15,6 +15,7 @@ import {
   type Locale,
   isRtlLocale,
   localeCookieName,
+  localeFromPathname,
   localisedPathname,
 } from "./config";
 
@@ -88,6 +89,19 @@ export function LocaleProvider({
     },
     [locale, pathname, router]
   );
+
+  // The root layout no longer resolves the locale on the server (that kept
+  // every page dynamic), so it always passes the default locale as
+  // `initialLocale`. Correct it here from the actual browser URL, which
+  // still carries the locale prefix (middleware only rewrites the internal
+  // route, not what's in the address bar). Runs once on mount, after the
+  // inline bootstrap script in the root layout has already fixed
+  // `lang`/`dir` synchronously to avoid a visible RTL flash.
+  useEffect(() => {
+    const actual = localeFromPathname(window.location.pathname);
+    if (actual && actual !== locale) setLocale(actual);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     document.documentElement.lang = locale;

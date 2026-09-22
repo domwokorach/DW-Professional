@@ -17,7 +17,7 @@ const chatButtonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-accent text-ink hover:opacity-90",
+        default: "bg-accent text-accent-fg hover:opacity-90",
         outline:
           "border border-line bg-ink text-white hover:bg-surface",
         ghost: "text-muted hover:bg-surface hover:text-white",

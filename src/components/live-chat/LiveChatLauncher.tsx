@@ -49,7 +49,7 @@ const LiveChatLauncher = forwardRef<
       }
       aria-expanded={isOpen}
       aria-controls="live-chat-panel"
-      className="fixed z-50 flex h-[52px] w-[52px] items-center justify-center rounded-full border border-line bg-accent text-ink shadow-xl transition-transform duration-150 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transition-none motion-reduce:hover:scale-100"
+      className="fixed z-50 flex h-[52px] w-[52px] items-center justify-center rounded-full border border-line bg-accent text-accent-fg shadow-xl transition-transform duration-150 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none motion-reduce:hover:scale-100"
       style={{
         bottom: LAUNCHER_BOTTOM_CSS,
         right: LAUNCHER_RIGHT_CSS,

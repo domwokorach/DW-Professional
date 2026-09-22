@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Expand } from "lucide-react";
 import type { GalleryCollection, GalleryMedia } from "@/types/gallery";
-import Lightbox from "./Lightbox";
+
+const Lightbox = dynamic(() => import("./Lightbox"), { ssr: false });
 
 const GRID_SIZE = 9;
 const IMAGE_SIZES = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw";
@@ -38,7 +40,7 @@ export default function GalleryGrid({ collections }: { collections: GalleryColle
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: (i % 3) * 0.06 }}
-            className="group relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            className="group relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-paper/10 bg-paper/[0.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           >
             <Image
               src={item.src}

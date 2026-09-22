@@ -111,7 +111,7 @@ export default function DevicesView() {
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:py-10">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-white">Devices</h1>
+          <h1 className="text-2xl font-semibold text-paper">Devices</h1>
           <p className="mt-1 text-sm text-muted">Manage every device currently signed in to your account.</p>
         </div>
 
@@ -155,12 +155,12 @@ export default function DevicesView() {
               <Card key={session.id}>
                 <CardContent className="flex items-start justify-between gap-4 py-4">
                   <div className="flex items-start gap-3">
-                    <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-ink text-white">
+                    <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-ink text-paper">
                       <Icon className="h-5 w-5" aria-hidden="true" />
                     </span>
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <p className="font-medium text-white">{session.deviceName}</p>
+                        <p className="font-medium text-paper">{session.deviceName}</p>
                         {session.isCurrent ? <Badge variant="secondary">This device</Badge> : null}
                       </div>
                       <p className="mt-0.5 text-sm text-muted">

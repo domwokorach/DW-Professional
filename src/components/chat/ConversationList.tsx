@@ -128,7 +128,7 @@ export default function ConversationList({
               <button
                 type="button"
                 onClick={onRetry}
-                className="rounded-md border border-line px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                className="rounded-md border border-line px-3 py-1.5 text-sm font-medium text-paper transition-colors hover:bg-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
               >
                 Retry
               </button>
@@ -178,13 +178,13 @@ export default function ConversationList({
       <SidebarFooter className="gap-2 border-t border-line p-3">
         <div className="flex min-w-0 items-center justify-between gap-2">
           <span className="min-w-0 truncate text-xs text-muted">
-            Signed in as <span className="text-white">{adminName}</span>
+            Signed in as <span className="text-paper">{adminName}</span>
           </span>
           <button
             type="button"
             onClick={onSignOut}
             aria-label="Sign out"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           >
             <LogOut className="h-4 w-4" aria-hidden="true" />
           </button>

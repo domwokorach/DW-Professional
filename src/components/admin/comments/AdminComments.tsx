@@ -99,7 +99,7 @@ export default function AdminComments() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:py-10">
-      <h1 className="text-2xl font-semibold text-white">Comments</h1>
+      <h1 className="text-2xl font-semibold text-paper">Comments</h1>
       <p className="mt-1 text-sm text-muted">Review, approve, reject, or delete submitted testimonials.</p>
 
       <Tabs value={filter} onValueChange={(v) => setFilter(v as CommentStatus | "ALL")} className="mt-6">
@@ -128,17 +128,17 @@ export default function AdminComments() {
                 <div className="flex items-start gap-3">
                   <Avatar className="h-11 w-11 shrink-0 border border-line">
                     <AvatarImage src={comment.avatarUrl ?? undefined} alt="" />
-                    <AvatarFallback className="bg-ink text-white">{initials(comment.fullName)}</AvatarFallback>
+                    <AvatarFallback className="bg-ink text-paper">{initials(comment.fullName)}</AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-medium text-white">{comment.fullName}</p>
+                      <p className="font-medium text-paper">{comment.fullName}</p>
                       <Badge variant={STATUS_BADGE[comment.status].variant}>
                         {STATUS_BADGE[comment.status].label}
                       </Badge>
                     </div>
                     {comment.company ? <p className="mt-0.5 text-sm text-muted">{comment.company}</p> : null}
-                    <p className="mt-2 text-sm leading-relaxed text-white">{comment.body}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-paper">{comment.body}</p>
                     <p className="mt-2 text-xs text-muted">Submitted {formatDate(comment.createdAt)}</p>
                   </div>
                 </div>

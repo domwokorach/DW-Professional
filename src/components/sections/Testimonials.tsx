@@ -41,7 +41,7 @@ export default async function Testimonials() {
       )}
 
       <Container className="mt-14 max-w-2xl">
-        <h3 className="text-lg font-semibold text-white">Leave a comment</h3>
+        <h3 className="text-lg font-semibold text-paper">Leave a comment</h3>
         <p className="mt-2 text-sm text-muted">
           Worked with me? Share a few words — it&rsquo;s reviewed before it appears here.
         </p>

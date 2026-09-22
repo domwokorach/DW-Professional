@@ -1,7 +1,6 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import Grid from "@mui/material/Grid";
 import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
@@ -17,8 +16,6 @@ import { projectReveal } from "@/lib/animations";
 import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
 
 const COLLAPSE_TRANSITION = { duration: 0.28, ease: [0.4, 0, 0.2, 1] } as const;
-
-const MotionGrid = motion.create(Grid);
 
 const CASE_STUDY_ANCHORS: Record<string, string> = {
   "innovation-x": "innovation-x-internal-search",
@@ -109,18 +106,14 @@ export default function Projects() {
             </ProtectedParagraph>
           </MotionReveal>
 
-          <Grid
+          <div
             id={projectsList.listId}
-            container
-            className="mt-8"
-            rowSpacing={{ xs: 2, sm: 3, md: 4 }}
-            columnSpacing={{ xs: 2, sm: 3, md: 4 }}
+            className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 md:gap-8"
           >
             <AnimatePresence initial={false}>
               {projectsList.visibleItems.map((project, i) => (
-                <MotionGrid
+                <motion.div
                   key={project.slug}
-                  size={{ xs: 12, sm: 6, md: 4 }}
                   exit={{ opacity: 0, y: 8, transition: COLLAPSE_TRANSITION }}
                 >
                   <MotionReveal
@@ -131,10 +124,10 @@ export default function Projects() {
                   >
                     <ProjectCard project={project} index={i} />
                   </MotionReveal>
-                </MotionGrid>
+                </motion.div>
               ))}
             </AnimatePresence>
-          </Grid>
+          </div>
 
           {projectsList.hasMore && (
             <div className="mt-8 flex justify-center">
@@ -177,18 +170,14 @@ export default function Projects() {
             </MotionReveal>
           )}
 
-          <Grid
+          <div
             id={caseStudiesList.listId}
-            container
-            className="mt-8"
-            rowSpacing={{ xs: 2, sm: 3, md: 4 }}
-            columnSpacing={{ xs: 2, sm: 3, md: 4 }}
+            className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 md:gap-8"
           >
             <AnimatePresence initial={false}>
             {caseStudiesList.visibleItems.map((caseStudy, i) => (
-              <MotionGrid
+              <motion.div
                 key={caseStudy.slug}
-                size={{ xs: 12, sm: 6, md: 4 }}
                 exit={{ opacity: 0, y: 8, transition: COLLAPSE_TRANSITION }}
               >
                 <MotionReveal
@@ -199,10 +188,10 @@ export default function Projects() {
                 >
                   <CaseStudyCard caseStudy={caseStudy} />
                 </MotionReveal>
-              </MotionGrid>
+              </motion.div>
             ))}
             </AnimatePresence>
-          </Grid>
+          </div>
 
           {caseStudiesList.hasMore && (
             <div className="mt-8 flex justify-center">

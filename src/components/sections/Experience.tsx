@@ -57,15 +57,15 @@ export default function Experience() {
             </h3>
             <div className="mt-4 space-y-4">
               <div>
-                <p className="text-sm font-medium text-white">Codecademy</p>
+                <p className="text-sm font-medium text-paper">Codecademy</p>
                 <p className="text-sm text-muted">{certifications.codecademy.join(", ")}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-white">HackerRank</p>
+                <p className="text-sm font-medium text-paper">HackerRank</p>
                 <p className="text-sm text-muted">{certifications.hackerrank.join(", ")}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-white">Additional</p>
+                <p className="text-sm font-medium text-paper">Additional</p>
                 <p className="text-sm text-muted">{certifications.additional.join(", ")}</p>
               </div>
             </div>
@@ -78,7 +78,7 @@ export default function Experience() {
             <ul className="mt-4 space-y-3">
               {education.map((ed) => (
                 <li key={ed.qualification}>
-                  <p className="text-sm font-medium text-white">{ed.qualification}</p>
+                  <p className="text-sm font-medium text-paper">{ed.qualification}</p>
                   {ed.institution && (
                     <p className="text-sm text-muted">{ed.institution}</p>
                   )}

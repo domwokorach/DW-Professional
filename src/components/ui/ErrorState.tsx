@@ -86,7 +86,7 @@ export default function ErrorState({ kind, onRetry }: ErrorStateProps) {
           </p>
         )}
         <div role="alert" className={content[kind].code ? "mt-3" : "mt-6"}>
-          <h1 id="error-title" className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+          <h1 id="error-title" className="text-3xl font-semibold tracking-tight text-paper sm:text-4xl">
             {content[kind].title}
           </h1>
           <p className="mx-auto mt-4 max-w-md text-sm leading-7 text-muted sm:text-base">
@@ -103,7 +103,7 @@ export default function ErrorState({ kind, onRetry }: ErrorStateProps) {
             <button
               type="button"
               onClick={tryAgain}
-              className="inline-flex min-h-11 items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+              className="inline-flex min-h-11 items-center justify-center rounded-full bg-cta px-5 py-3 text-sm font-semibold text-cta-fg transition-colors hover:bg-accent hover:text-accent-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
             >
               Try Again
             </button>
@@ -112,8 +112,8 @@ export default function ErrorState({ kind, onRetry }: ErrorStateProps) {
             href="/"
             className={`inline-flex min-h-11 items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${
               kind === "not-found"
-                ? "bg-white text-ink hover:bg-accent"
-                : "border border-line text-white hover:border-accent hover:text-accent"
+                ? "bg-cta text-cta-fg hover:bg-accent hover:text-accent-fg"
+                : "border border-line text-paper hover:border-accent hover:text-accent"
             }`}
           >
             Go Home
@@ -122,7 +122,7 @@ export default function ErrorState({ kind, onRetry }: ErrorStateProps) {
             <button
               type="button"
               onClick={goBack}
-              className="inline-flex min-h-11 items-center justify-center rounded-full border border-line px-5 py-3 text-sm font-semibold text-white transition-colors hover:border-accent hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+              className="inline-flex min-h-11 items-center justify-center rounded-full border border-line px-5 py-3 text-sm font-semibold text-paper transition-colors hover:border-accent hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
             >
               Go Back
             </button>

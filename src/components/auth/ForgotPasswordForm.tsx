@@ -48,9 +48,9 @@ export default function ForgotPasswordForm() {
       <Card className="w-full max-w-md">
         <CardContent className="flex flex-col items-center gap-3 pt-6 text-center">
           <CheckCircle2 className="h-10 w-10 text-accent" aria-hidden="true" />
-          <h1 className="text-xl font-semibold text-white">Check your email</h1>
+          <h1 className="text-xl font-semibold text-paper">Check your email</h1>
           <p className="text-sm text-muted">
-            If an account exists for <span className="text-white">{email}</span>, we&rsquo;ve sent a password
+            If an account exists for <span className="text-paper">{email}</span>, we&rsquo;ve sent a password
             reset link. It expires in 60 minutes.
           </p>
           <Link href={localiseHref("/auth/sign-in")} className="mt-2 text-sm font-medium text-accent hover:underline">

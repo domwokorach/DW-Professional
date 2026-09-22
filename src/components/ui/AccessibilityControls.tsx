@@ -128,7 +128,7 @@ export default function AccessibilityControls() {
         aria-expanded={isOpen}
         aria-controls="accessibility-controls"
         onClick={() => setIsOpen((open) => !open)}
-        className="inline-flex min-h-11 items-center rounded-full border border-line bg-ink/95 px-4 text-sm font-semibold text-white shadow-lg backdrop-blur-md transition-colors hover:border-accent hover:text-accent"
+        className="inline-flex min-h-11 items-center rounded-full border border-line bg-ink/95 px-4 text-sm font-semibold text-paper shadow-lg backdrop-blur-md transition-colors hover:border-accent hover:text-accent"
       >
         Accessibility options
       </button>
@@ -139,21 +139,21 @@ export default function AccessibilityControls() {
           aria-label="Accessibility display settings"
           className="absolute bottom-14 left-0 w-[min(22rem,calc(100vw-2rem))] rounded-2xl border border-line bg-surface p-5 shadow-2xl"
         >
-          <h2 className="text-base font-semibold text-white">Display preferences</h2>
+          <h2 className="text-base font-semibold text-paper">Display preferences</h2>
           <p className="mt-1 text-sm leading-5 text-muted">
             Settings apply throughout this website and are saved on this device.
           </p>
 
           <div className="mt-5 space-y-5">
             <section aria-labelledby="contrast-setting">
-              <h3 id="contrast-setting" className="text-sm font-medium text-white">
+              <h3 id="contrast-setting" className="text-sm font-medium text-paper">
                 Contrast
               </h3>
               <button
                 type="button"
                 aria-pressed={settings.highContrast}
                 onClick={toggleHighContrast}
-                className="mt-2 inline-flex min-h-11 w-full items-center justify-between rounded-lg border border-line px-3 text-left text-sm font-medium text-white transition-colors hover:border-accent"
+                className="mt-2 inline-flex min-h-11 w-full items-center justify-between rounded-lg border border-line px-3 text-left text-sm font-medium text-paper transition-colors hover:border-accent"
               >
                 <span>High contrast</span>
                 <span>{settings.highContrast ? "On" : "Off"}</span>
@@ -161,14 +161,14 @@ export default function AccessibilityControls() {
             </section>
 
             <fieldset>
-              <legend className="text-sm font-medium text-white">Text size</legend>
+              <legend className="text-sm font-medium text-paper">Text size</legend>
               <div className="mt-2 grid grid-cols-3 gap-2">
                 <button
                   type="button"
                   aria-pressed={settings.textSize === "small"}
                   aria-label="Decrease text size"
                   onClick={() => setTextSize("small")}
-                  className="min-h-11 rounded-lg border border-line px-2 text-sm font-medium text-white transition-colors hover:border-accent"
+                  className="min-h-11 rounded-lg border border-line px-2 text-sm font-medium text-paper transition-colors hover:border-accent"
                 >
                   A−
                 </button>
@@ -177,7 +177,7 @@ export default function AccessibilityControls() {
                   aria-pressed={settings.textSize === "default"}
                   aria-label="Restore default text size"
                   onClick={() => setTextSize("default")}
-                  className="min-h-11 rounded-lg border border-line px-2 text-base font-medium text-white transition-colors hover:border-accent"
+                  className="min-h-11 rounded-lg border border-line px-2 text-base font-medium text-paper transition-colors hover:border-accent"
                 >
                   A
                 </button>
@@ -186,7 +186,7 @@ export default function AccessibilityControls() {
                   aria-pressed={settings.textSize === "large"}
                   aria-label="Increase text size"
                   onClick={() => setTextSize("large")}
-                  className="min-h-11 rounded-lg border border-line px-2 text-lg font-medium text-white transition-colors hover:border-accent"
+                  className="min-h-11 rounded-lg border border-line px-2 text-lg font-medium text-paper transition-colors hover:border-accent"
                 >
                   A+
                 </button>
@@ -194,14 +194,14 @@ export default function AccessibilityControls() {
             </fieldset>
 
             <section aria-labelledby="weight-setting">
-              <h3 id="weight-setting" className="text-sm font-medium text-white">
+              <h3 id="weight-setting" className="text-sm font-medium text-paper">
                 Text weight
               </h3>
               <button
                 type="button"
                 aria-pressed={settings.boldText}
                 onClick={toggleBoldText}
-                className="mt-2 inline-flex min-h-11 w-full items-center justify-between rounded-lg border border-line px-3 text-left text-sm font-medium text-white transition-colors hover:border-accent"
+                className="mt-2 inline-flex min-h-11 w-full items-center justify-between rounded-lg border border-line px-3 text-left text-sm font-medium text-paper transition-colors hover:border-accent"
               >
                 <span>Bold text</span>
                 <span>{settings.boldText ? "On" : "Off"}</span>
@@ -212,7 +212,7 @@ export default function AccessibilityControls() {
               type="button"
               onClick={resetSettings}
               disabled={!hasCustomSettings}
-              className="inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-line px-3 text-sm font-medium text-white transition-colors hover:border-accent disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-line px-3 text-sm font-medium text-paper transition-colors hover:border-accent disabled:cursor-not-allowed disabled:opacity-50"
             >
               Reset accessibility settings
             </button>

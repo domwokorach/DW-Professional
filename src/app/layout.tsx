@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import LoadingScreen from "@/components/ui/loading-screen";
 import "./globals.css";
 import { LocaleProvider } from "@/i18n/LocaleProvider";
-import { defaultLocale, isRtlLocale, normaliseLocale } from "@/i18n/config";
+import { defaultLocale, locales, isRtlLocale } from "@/i18n/config";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -70,19 +68,27 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+// Runs synchronously before first paint to correct `lang`/`dir` for the
+// visitor's actual locale (read from the URL prefix the browser shows,
+// e.g. /es/..., which middleware keeps even though it rewrites the
+// internal route). This keeps the root layout static (no headers()/cookies()
+// dependency, so every marketing page can be prerendered) while still
+// avoiding an LTR->RTL flash for Arabic visitors on first paint.
+const localeBootstrapScript = `(function(){try{var seg=(location.pathname.split("/")[1]||"").toLowerCase();if(${JSON.stringify(locales.map((l) => l.toLowerCase()))}.indexOf(seg)!==-1){document.documentElement.lang=seg;document.documentElement.dir=seg==="ar"?"rtl":"ltr";}}catch(e){}})();`;
+
+export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const requestHeaders = await headers();
-  const locale = normaliseLocale(requestHeaders.get("x-portfolio-locale")) ?? defaultLocale;
-
   return (
     <html
-      lang={locale}
-      dir={isRtlLocale(locale) ? "rtl" : "ltr"}
+      lang={defaultLocale}
+      dir={isRtlLocale(defaultLocale) ? "rtl" : "ltr"}
       className={`${inter.variable} ${jetbrains.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: localeBootstrapScript }} />
+      </head>
       <body className="font-sans antialiased">
         <ThemeProvider
           attribute="data-theme"
@@ -91,9 +97,7 @@ export default async function RootLayout({
           storageKey="theme-preference-v1"
         >
           <TooltipProvider delayDuration={200}>
-            <LocaleProvider initialLocale={locale}>
-              <LoadingScreen>{children}</LoadingScreen>
-            </LocaleProvider>
+            <LocaleProvider initialLocale={defaultLocale}>{children}</LocaleProvider>
             <Toaster />
           </TooltipProvider>
         </ThemeProvider>

@@ -33,7 +33,7 @@ export default function AccordionGallery({ items }: { items: GalleryItem[] }) {
         {items.map((item) => (
           <div
             key={item.id}
-            className="relative h-[300px] w-[78vw] shrink-0 snap-center overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]"
+            className="relative h-[300px] w-[78vw] shrink-0 snap-center overflow-hidden rounded-2xl border border-paper/10 bg-paper/[0.02]"
           >
             <Image
               src={item.image}
@@ -70,7 +70,7 @@ export default function AccordionGallery({ items }: { items: GalleryItem[] }) {
               onClick={() => setActiveIndex(i)}
               onKeyDown={(e) => handleKeyDown(e, i)}
               className={cn(
-                "group relative h-full overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] transition-[flex-grow,flex-basis] duration-500 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none",
+                "group relative h-full overflow-hidden rounded-2xl border border-paper/10 bg-paper/[0.02] transition-[flex-grow,flex-basis] duration-500 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none",
                 isActive ? "flex-[1_1_auto]" : "flex-[0_0_72px] lg:flex-[0_0_88px]",
               )}
             >

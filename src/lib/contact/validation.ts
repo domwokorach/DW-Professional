@@ -26,6 +26,13 @@ export const contactFormSchema = z
   .object({
     name: z.string().trim().min(1, "Enter your name.").max(120),
     email: z.string().trim().toLowerCase().email("Enter a valid email address.").max(254),
+    mobile: optionalTrimmed(32),
+    mobileCountry: z
+      .string()
+      .trim()
+      .max(2)
+      .nullish()
+      .transform((v) => (v ? v.toUpperCase() : undefined)),
     company: optionalTrimmed(160),
     companyNumber: optionalTrimmed(20),
     budgetAmount: z

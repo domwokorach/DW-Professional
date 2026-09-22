@@ -22,7 +22,7 @@ export default function FeaturedProjectCard({
   browserLabel: string;
 }) {
   return (
-    <article className="hover-lift group overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] transition-colors duration-300 hover:border-white/20">
+    <article className="hover-lift group overflow-hidden rounded-[28px] border border-paper/10 bg-paper/[0.03] transition-colors duration-300 hover:border-accent/40">
       <div
         aria-hidden="true"
         className="flex items-center gap-2 border-b border-white/10 bg-black/40 px-4 py-3"
@@ -52,7 +52,7 @@ export default function FeaturedProjectCard({
           {eyebrow}
         </span>
 
-        <h3 className="mt-3 text-2xl font-medium text-white md:text-3xl">
+        <h3 className="mt-3 text-2xl font-medium text-paper md:text-3xl">
           {title}
         </h3>
         <p className="mt-1 text-sm text-muted">{subtitle}</p>
@@ -65,7 +65,7 @@ export default function FeaturedProjectCard({
           href={liveUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-6 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-white transition-colors hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
+          className="mt-6 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-paper transition-colors hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent rounded"
         >
           View Live Project
           <ExternalLink

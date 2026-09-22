@@ -84,7 +84,7 @@ export default function AccountView({ user: initialUser }: { user: AccountUser }
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 lg:py-10">
-      <h1 className="text-2xl font-semibold text-white">Account</h1>
+      <h1 className="text-2xl font-semibold text-paper">Account</h1>
       <p className="mt-1 text-sm text-muted">Manage your profile and view your account details.</p>
 
       <Card className="mt-6">
@@ -134,7 +134,7 @@ export default function AccountView({ user: initialUser }: { user: AccountUser }
             <AvatarFallback className="text-lg">{initials(user.name)}</AvatarFallback>
           </Avatar>
           <div className="min-w-0">
-            <p className="truncate text-lg font-medium text-white">{user.name}</p>
+            <p className="truncate text-lg font-medium text-paper">{user.name}</p>
             <p className="truncate text-sm text-muted">{user.email}</p>
             <div className="mt-2 flex flex-wrap gap-2">
               <Badge variant="secondary">{roleLabel(user.role)}</Badge>
@@ -152,11 +152,11 @@ export default function AccountView({ user: initialUser }: { user: AccountUser }
           <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <dt className="text-xs uppercase tracking-wide text-muted">Account created</dt>
-              <dd className="mt-1 text-sm text-white">{formatDate(user.createdAt)}</dd>
+              <dd className="mt-1 text-sm text-paper">{formatDate(user.createdAt)}</dd>
             </div>
             <div>
               <dt className="text-xs uppercase tracking-wide text-muted">Last sign-in</dt>
-              <dd className="mt-1 text-sm text-white">{formatDate(user.lastLoginAt)}</dd>
+              <dd className="mt-1 text-sm text-paper">{formatDate(user.lastLoginAt)}</dd>
             </div>
           </dl>
         </CardContent>

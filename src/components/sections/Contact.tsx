@@ -8,9 +8,11 @@ import Container from "@/components/ui/Container";
 import GlyphMatrixBackground from "@/components/magicui/glyph-matrix-background";
 import FileUploadField from "@/components/ui/FileUploadField";
 import BudgetInput from "@/components/ui/BudgetInput";
+import PhoneNumberField from "@/components/ui/PhoneNumberField";
 import CompanySearchField from "@/components/companies/CompanySearchField";
 import { social } from "@/data/navigation";
 import { MESSAGE_MAX_WORDS, clampToWordLimit, countWords } from "@/lib/contact/words";
+import { DEFAULT_MOBILE_COUNTRY, normalizeMobileNumber } from "@/lib/contact/phone";
 import type { BudgetCurrency } from "@/lib/contact/validation";
 import type { CompanySearchResult } from "@/types/company";
 
@@ -26,7 +28,7 @@ const projectTypes = [
 ];
 
 const inputClasses =
-  "w-full rounded-lg border border-line bg-transparent px-4 py-3 text-white placeholder:text-muted/60 outline-none transition-colors focus:border-accent";
+  "w-full rounded-lg border border-line bg-transparent px-4 py-3 text-paper placeholder:text-muted/60 outline-none transition-colors focus:border-accent";
 
 interface SubmittedAttachment {
   name: string;
@@ -40,6 +42,8 @@ export default function Contact() {
   const [errorMessage, setErrorMessage] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [message, setMessage] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [mobileCountry, setMobileCountry] = useState<string>(DEFAULT_MOBILE_COUNTRY);
   const [company, setCompany] = useState("");
   const [companyNumber, setCompanyNumber] = useState("");
   const [budgetAmount, setBudgetAmount] = useState("");
@@ -52,6 +56,7 @@ export default function Contact() {
   const successRef = useRef<HTMLHeadingElement>(null);
   const messageHelpId = useId();
   const companyHelpId = useId();
+  const mobileHelpId = useId();
 
   const wordCount = useMemo(() => countWords(message), [message]);
   const atWordLimit = wordCount >= MESSAGE_MAX_WORDS;
@@ -96,6 +101,10 @@ export default function Contact() {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) nextFieldErrors.email = "Enter your email address.";
     else if (!emailPattern.test(email)) nextFieldErrors.email = "Enter a valid email address.";
+    if (mobile.trim()) {
+      const mobileResult = normalizeMobileNumber(mobile, mobileCountry);
+      if (mobileResult.error) nextFieldErrors.mobile = mobileResult.error;
+    }
     if (!trimmedMessage) nextFieldErrors.message = "Enter a message.";
     else if (countWords(trimmedMessage) > MESSAGE_MAX_WORDS) {
       nextFieldErrors.message = `Keep your message under ${MESSAGE_MAX_WORDS.toLocaleString()} words.`;
@@ -169,7 +178,7 @@ export default function Contact() {
             </MotionReveal>
 
             <MotionReveal delay={0.15} className="mt-8">
-              <p className="text-lg font-medium text-white">
+              <p className="text-lg font-medium text-paper">
                 Let&rsquo;s work together.
               </p>
             </MotionReveal>
@@ -179,7 +188,7 @@ export default function Contact() {
                 href={social.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block text-muted hover:text-white transition-colors"
+                className="block text-muted hover:text-paper transition-colors"
               >
                 LinkedIn
               </a>
@@ -187,7 +196,7 @@ export default function Contact() {
                 href={social.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block text-muted hover:text-white transition-colors"
+                className="block text-muted hover:text-paper transition-colors"
               >
                 GitHub
               </a>
@@ -195,7 +204,7 @@ export default function Contact() {
                 href={social.portfolio}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block text-muted hover:text-white transition-colors"
+                className="block text-muted hover:text-paper transition-colors"
               >
                 Portfolio
               </a>
@@ -213,7 +222,7 @@ export default function Contact() {
                 <h3
                   ref={successRef}
                   tabIndex={-1}
-                  className="text-2xl font-medium text-white"
+                  className="text-2xl font-medium text-paper"
                 >
                   Thank you
                 </h3>
@@ -272,6 +281,15 @@ export default function Contact() {
                   )}
                 </div>
               </div>
+
+              <PhoneNumberField
+                value={mobile}
+                country={mobileCountry}
+                onValueChange={setMobile}
+                onCountryChange={setMobileCountry}
+                error={fieldErrors.mobile}
+                helperId={mobileHelpId}
+              />
 
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
@@ -374,7 +392,7 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={status === "submitting"}
-                className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:opacity-60"
+                className="group inline-flex items-center gap-2 rounded-full bg-cta px-6 py-3.5 text-sm font-medium text-cta-fg transition-colors hover:bg-accent hover:text-accent-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {status === "submitting" ? (
                   "Sending…"

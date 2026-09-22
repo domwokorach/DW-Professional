@@ -5,7 +5,7 @@ import HeadingHighlighter from "./HeadingHighlighter";
 import { titleReveal } from "@/lib/animations";
 
 const HEADING_CLASSNAME =
-  "mt-4 text-[clamp(1.9rem,4.5vw,3.25rem)] font-semibold leading-[1.05] tracking-tight text-white";
+  "mt-4 text-[clamp(1.9rem,4.5vw,3.25rem)] font-semibold leading-[1.05] tracking-tight text-paper";
 
 export default function SectionHeading({
   index,
