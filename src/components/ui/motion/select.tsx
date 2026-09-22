@@ -15,12 +15,14 @@ interface SelectHighlightContextType {
 
 const SelectHighlightContext = React.createContext<SelectHighlightContextType | null>(null);
 
-export type SelectProps<ItemValue = any, Multiple extends boolean = boolean> = SelectPrimitive.Root.Props<
+export type SelectProps<ItemValue = unknown, Multiple extends boolean = boolean> = SelectPrimitive.Root.Props<
     ItemValue,
     Multiple
 >;
 
-function Select<ItemValue = any, Multiple extends boolean = boolean>({ ...props }: SelectProps<ItemValue, Multiple>) {
+function Select<ItemValue = unknown, Multiple extends boolean = boolean>({
+    ...props
+}: SelectProps<ItemValue, Multiple>) {
     return <SelectPrimitive.Root data-slot="select" {...props} />;
 }
 
@@ -63,7 +65,7 @@ export interface SelectContentProps
         SelectPrimitive.Popup.Props,
         Pick<
             SelectPrimitive.Positioner.Props,
-            "align" | "alignOffset" | "side" | "sideOffset" | "alignItemWithTrigger"
+            "align" | "alignOffset" | "side" | "sideOffset" | "alignItemWithTrigger" | "collisionPadding"
         > {
     transition?: Transition;
 }
@@ -76,6 +78,7 @@ function SelectContent({
     align = "start",
     alignOffset = 0,
     alignItemWithTrigger = false,
+    collisionPadding = 12,
     transition = { type: "spring", stiffness: 380, damping: 26, mass: 0.8 },
     ...props
 }: SelectContentProps) {
@@ -86,23 +89,23 @@ function SelectContent({
     const highlightLayoutId = parentHighlightContext?.highlightLayoutId ?? generatedLayoutId;
 
     const [localActiveItemId, setLocalActiveItemId] = React.useState<string | null>(null);
-    const timeoutRef = React.useRef<any>(null);
+    const timeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
-    const setActiveItem =
-        parentHighlightContext?.setActiveItem ??
-        React.useCallback((id: string) => {
-            if (timeoutRef.current) clearTimeout(timeoutRef.current);
-            setLocalActiveItemId(id);
-        }, []);
+    const setLocalActiveItem = React.useCallback((id: string) => {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        setLocalActiveItemId(id);
+    }, []);
 
+    const clearLocalActiveItemWithDelay = React.useCallback(() => {
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+        timeoutRef.current = setTimeout(() => {
+            setLocalActiveItemId(null);
+        }, 180);
+    }, []);
+
+    const setActiveItem = parentHighlightContext?.setActiveItem ?? setLocalActiveItem;
     const clearActiveItemWithDelay =
-        parentHighlightContext?.clearActiveItemWithDelay ??
-        React.useCallback(() => {
-            if (timeoutRef.current) clearTimeout(timeoutRef.current);
-            timeoutRef.current = setTimeout(() => {
-                setLocalActiveItemId(null);
-            }, 180);
-        }, []);
+        parentHighlightContext?.clearActiveItemWithDelay ?? clearLocalActiveItemWithDelay;
 
     const activeItemId = parentHighlightContext ? parentHighlightContext.activeItemId : localActiveItemId;
 
@@ -121,6 +124,7 @@ function SelectContent({
                 align={align}
                 alignOffset={alignOffset}
                 alignItemWithTrigger={alignItemWithTrigger}
+                collisionPadding={collisionPadding}
                 className="isolate z-[100]">
                 <SelectPrimitive.Popup
                     data-slot="select-content"
@@ -129,7 +133,7 @@ function SelectContent({
                         <AnimatePresence initial={false}>
                             {state.open && (
                                 <motion.div
-                                    {...popupProps}
+                                    {...(popupProps as unknown as React.ComponentProps<typeof motion.div>)}
                                     key="select-popup"
                                     initial={
                                         reduceMotion
@@ -184,7 +188,7 @@ function SelectLabel({ className, ...props }: SelectPrimitive.GroupLabel.Props) 
     );
 }
 
-export interface SelectItemProps extends SelectPrimitive.Item.Props {}
+export type SelectItemProps = SelectPrimitive.Item.Props;
 
 function SelectItem({ className, children, ...props }: SelectItemProps) {
     const reduceMotion = useReducedMotion();
@@ -201,12 +205,12 @@ function SelectItem({ className, children, ...props }: SelectItemProps) {
 
                 return (
                     <motion.div
-                        {...itemProps}
-                        onPointerEnter={(e: any) => {
+                        {...(itemProps as unknown as React.ComponentProps<typeof motion.div>)}
+                        onPointerEnter={(e: React.PointerEvent<HTMLDivElement>) => {
                             itemProps.onPointerEnter?.(e);
                             highlightContext?.setActiveItem(itemId);
                         }}
-                        onFocus={(e: any) => {
+                        onFocus={(e: React.FocusEvent<HTMLDivElement>) => {
                             itemProps.onFocus?.(e);
                             highlightContext?.setActiveItem(itemId);
                         }}

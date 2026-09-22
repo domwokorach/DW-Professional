@@ -1,11 +1,10 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { headerNavigation, social, type NavItem } from "@/data/navigation";
 import { Highlighter } from "@/components/magicui/highlighter";
 import { GithubIcon, LinkedinIcon } from "@/components/icons/SocialIcons";
 import LanguageSelector from "./LanguageSelector";
-import { ThemeToggleMobile } from "@/components/theme-toggle";
 
 function MobileNavItem({
   item,
@@ -44,17 +43,21 @@ export default function MobileNavigation({
   onNavigate: (id: string) => void;
   onOpenResume: () => void;
 }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <AnimatePresence>
       {open && (
         <motion.div
           id="mobile-menu"
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-          transition={{ duration: 0.25, ease: "easeInOut" }}
+          initial={reduceMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
+          animate={reduceMotion ? { opacity: 1 } : { opacity: 1, height: "auto" }}
+          exit={reduceMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
+          transition={{ duration: reduceMotion ? 0.01 : 0.25, ease: "easeInOut" }}
           className="lg:hidden overflow-hidden border-b border-line bg-ink/95 backdrop-blur-lg"
         >
+          {/* The six primary nav items, in the same fixed order as desktop:
+              About, Services, Projects, Gallery, Language, Resume. */}
           <nav aria-label="Mobile navigation">
             <ul className="mx-auto flex max-h-[70vh] w-full max-w-content flex-col gap-1 overflow-y-auto px-6 py-4 sm:px-8">
               {headerNavigation.map((item) => (
@@ -65,36 +68,22 @@ export default function MobileNavigation({
                   onNavigate={onNavigate}
                 />
               ))}
+              <li className="pt-2">
+                <LanguageSelector mobile />
+              </li>
+              <li className="pt-2">
+                <button
+                  onClick={onOpenResume}
+                  className="min-h-11 w-full rounded-full border border-line px-4 py-3 text-center text-sm text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                >
+                  Resume
+                </button>
+              </li>
             </ul>
           </nav>
 
-          <div className="mx-auto w-full max-w-content px-6 pb-6 sm:px-8">
-            <div className="mb-3 border-t border-line pt-4">
-              <p className="mb-2 px-3 text-xs font-medium uppercase tracking-wide text-muted">
-                Theme
-              </p>
-              <ThemeToggleMobile />
-            </div>
-
-            <div className="mb-3">
-              <LanguageSelector mobile />
-            </div>
-            <div className="flex flex-col gap-2">
-              <button
-                onClick={onOpenResume}
-                className="min-h-11 w-full rounded-full border border-line px-4 py-3 text-sm text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
-              >
-                View Resume
-              </button>
-              <button
-                onClick={() => onNavigate("contact")}
-                className="min-h-11 w-full rounded-full border border-accent/40 px-4 py-3 text-sm text-accent transition-colors hover:bg-accent/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
-              >
-                Get in Touch
-              </button>
-            </div>
-
-            <div className="mt-5 flex items-center justify-center gap-2">
+          <div className="mx-auto w-full max-w-content border-t border-line px-6 pb-6 pt-4 sm:px-8">
+            <div className="flex items-center justify-center gap-2">
               <a
                 href={social.github}
                 target="_blank"
