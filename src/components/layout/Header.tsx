@@ -31,11 +31,12 @@ export default function Header() {
 
     section.setAttribute("tabindex", "-1");
     section.focus({ preventScroll: true });
-    section.scrollIntoView({
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
-      block: "start",
-    });
     window.history.replaceState(null, "", `#${id}`);
+    const headerHeight = document.querySelector("header")?.getBoundingClientRect().height ?? 64;
+    window.scrollTo({
+      top: Math.max(0, window.scrollY + section.getBoundingClientRect().top - headerHeight - 32),
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+    });
   }, []);
 
   useEffect(() => {
@@ -83,7 +84,11 @@ export default function Header() {
       router.push(`${localisedPathname("/", locale)}#${id}`);
       return;
     }
-    scrollToSection(id);
+    if (menuOpen) {
+      window.setTimeout(() => scrollToSection(id), 300);
+    } else {
+      scrollToSection(id);
+    }
   };
 
   const activeGroup = active;
