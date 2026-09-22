@@ -12,7 +12,7 @@ import "./AccordionGallery.css";
 
 const GalleryLightbox = dynamic(() => import("./GalleryLightbox"), { ssr: false });
 const ACTIVE_IMAGE_SIZES = "(max-width: 639px) calc(100vw - 3rem), (max-width: 1023px) 80vw, 52vw";
-const COLLAPSED_IMAGE_SIZES = "(max-width: 1023px) 100vw, 76px";
+const COLLAPSED_IMAGE_SIZES = "(max-width: 639px) 400px, (max-width: 1023px) 800px, 76px";
 const COLLAPSED_WIDTH = 76;
 
 type Props = {
@@ -52,17 +52,24 @@ export default function AccordionGallery({
 
     const availableWidth = viewportRef.current?.clientWidth ?? window.innerWidth;
     const expandedWidth = Math.min(680, Math.max(320, availableWidth * expandRatio));
+    if (firstRunRef.current || reduced) {
+      panelRefs.current.forEach((panel, index) => {
+        if (panel) gsap.set(panel, { flexBasis: `${index === active ? expandedWidth : COLLAPSED_WIDTH}px` });
+      });
+      firstRunRef.current = false;
+      return;
+    }
+
     const timeline = gsap.timeline();
     panelRefs.current.forEach((panel, index) => {
       if (!panel) return;
       timeline.to(panel, {
         flexBasis: index === active ? expandedWidth : COLLAPSED_WIDTH,
-        duration: firstRunRef.current || reduced ? 0 : 0.48,
+        duration: 0.48,
         ease: "power3.out",
       }, 0);
     });
     timelineRef.current = timeline;
-    firstRunRef.current = false;
   }, [active, expandRatio]);
 
   useEffect(() => {
@@ -116,8 +123,8 @@ export default function AccordionGallery({
                   style={{ flexBasis: index === defaultIndex ? `min(${expandRatio * 100}cqw, 680px)` : `${COLLAPSED_WIDTH}px` }}
                   aria-pressed={selected}
                   aria-label={`${item.label}. ${selected ? "Open larger image" : "Select image"}`}
-                  onMouseEnter={() => {
-                    if (trigger === "hover" && window.matchMedia("(hover: hover) and (pointer: fine)").matches) setActive(index);
+                  onPointerMove={(event) => {
+                    if (index !== active && trigger === "hover" && event.pointerType === "mouse" && window.matchMedia("(hover: hover) and (pointer: fine)").matches) setActive(index);
                   }}
                   onFocus={() => {
                     setActive(index);
