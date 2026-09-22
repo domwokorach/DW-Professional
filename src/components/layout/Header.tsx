@@ -12,12 +12,9 @@ import { localisedPathname, stripLocale } from "@/i18n/config";
 import { useLocale } from "@/i18n/LocaleProvider";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/motion/navigation-menu";
 
 export default function Header() {
@@ -25,7 +22,6 @@ export default function Header() {
   const [active, setActive] = useState<string>("home");
   const [menuOpen, setMenuOpen] = useState(false);
   const [resumeOpen, setResumeOpen] = useState(false);
-  const [compactMenuOpen, setCompactMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { locale } = useLocale();
@@ -72,7 +68,6 @@ export default function Header() {
 
   const handleNavigate = (id: string) => {
     setMenuOpen(false);
-    setCompactMenuOpen(false);
     setActive(id);
     if (stripLocale(pathname) !== "/") {
       router.push(`${localisedPathname("/", locale)}#${id}`);
@@ -99,8 +94,8 @@ export default function Header() {
           Dominic<span className="text-accent">.</span>
         </button>
 
-        {/* Full desktop nav: every link inline, no crowding at this width. */}
-        <div className="hidden min-w-0 2xl:flex 2xl:flex-1 2xl:justify-center">
+        {/* Desktop / tablet-landscape nav: About, Services, Projects, Gallery. */}
+        <div className="hidden min-w-0 lg:flex lg:flex-1 lg:justify-center">
           <NavigationMenu className="max-w-full">
             <NavigationMenuList className="flex-wrap">
               {headerNavigation.map((item) => {
@@ -125,78 +120,16 @@ export default function Header() {
           </NavigationMenu>
         </div>
 
-        {/* Compact desktop / tablet-landscape nav: links collapse into one dropdown before they crowd. */}
-        <div className="hidden lg:flex 2xl:hidden">
-          <NavigationMenu
-            value={compactMenuOpen ? "menu" : null}
-            positionerProps={{ align: "start", sideOffset: 14, collisionPadding: 16 }}
-            onValueChange={(value) => setCompactMenuOpen(Boolean(value))}
-          >
-            <NavigationMenuList>
-              <NavigationMenuItem value="menu">
-                <NavigationMenuTrigger
-                  isActive={Boolean(activeGroup)}
-                  className={navigationMenuTriggerStyle()}
-                  aria-label={compactMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-                >
-                  Menu
-                </NavigationMenuTrigger>
-                <NavigationMenuContent className="w-[19rem]">
-                  <ul className="flex flex-col gap-1 p-2">
-                    {headerNavigation.map((item) => {
-                      const isActive = activeGroup === item.id;
-                      return (
-                        <li key={item.id}>
-                          <NavigationMenuLink
-                            href={`#${item.id}`}
-                            active={isActive}
-                            onClick={(event) => {
-                              event.preventDefault();
-                              handleNavigate(item.id);
-                            }}
-                            className="font-mono text-sm"
-                          >
-                            {item.label}
-                          </NavigationMenuLink>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                  <div className="flex flex-col gap-2 border-t border-line p-2">
-                    <LanguageSelector />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setCompactMenuOpen(false);
-                        setResumeOpen(true);
-                      }}
-                      className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-line px-4 text-sm text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
-                    >
-                      Resume
-                    </button>
-                  </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
-        </div>
-
         <div className="flex shrink-0 items-center gap-2">
-          <div className="hidden 2xl:block">
+          <div className="hidden lg:block">
             <LanguageSelector />
           </div>
           <ThemeToggle />
           <button
             onClick={() => setResumeOpen(true)}
-            className="hidden 2xl:inline-flex items-center rounded-full border border-line px-4 py-2 text-sm text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            className="hidden lg:inline-flex items-center rounded-full border border-line px-4 py-2 text-sm text-white transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
           >
             Resume
-          </button>
-          <button
-            onClick={() => handleNavigate("contact")}
-            className="tablet-white hidden lg:inline-flex items-center rounded-full border border-accent/40 px-4 py-2 text-sm text-accent transition-colors hover:bg-accent/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
-          >
-            Get in Touch
           </button>
         </div>
 

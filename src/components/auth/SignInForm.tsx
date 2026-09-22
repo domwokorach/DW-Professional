@@ -15,16 +15,29 @@ import { useLocale } from "@/i18n/LocaleProvider";
 export default function SignInForm() {
   const router = useRouter();
   const { localiseHref } = useLocale();
-  const [email, setEmail] = useState("dominic.wokorach-o@outlook.com");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [capsLockOn, setCapsLockOn] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
+  function clearErrors() {
+    if (errorMessage) setErrorMessage(null);
+    if (Object.keys(fieldErrors).length > 0) setFieldErrors({});
+  }
+
+  function handlePasswordKeyEvent(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (typeof event.getModifierState === "function") {
+      setCapsLockOn(event.getModifierState("CapsLock"));
+    }
+  }
+
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    if (submitting) return;
     setSubmitting(true);
     setErrorMessage(null);
     setFieldErrors({});
@@ -63,7 +76,7 @@ export default function SignInForm() {
       <CardContent>
         <form className="space-y-4" onSubmit={handleSubmit} noValidate>
           {errorMessage ? (
-            <Alert variant="destructive" role="alert">
+            <Alert variant="destructive" role="alert" aria-live="assertive">
               <AlertDescription>{errorMessage}</AlertDescription>
             </Alert>
           ) : null}
@@ -76,12 +89,15 @@ export default function SignInForm() {
               autoComplete="email"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              aria-invalid={Boolean(fieldErrors.email)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                clearErrors();
+              }}
+              aria-invalid={Boolean(fieldErrors.email || errorMessage)}
               aria-describedby={fieldErrors.email ? "email-error" : undefined}
             />
             {fieldErrors.email ? (
-              <p id="email-error" className="text-xs text-red-400">
+              <p id="email-error" className="text-xs text-red-400" role="alert">
                 {fieldErrors.email}
               </p>
             ) : null}
@@ -104,9 +120,15 @@ export default function SignInForm() {
                 autoComplete="current-password"
                 required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  clearErrors();
+                }}
+                onKeyDown={handlePasswordKeyEvent}
+                onKeyUp={handlePasswordKeyEvent}
                 className="pr-10"
-                aria-invalid={Boolean(fieldErrors.currentPassword ?? fieldErrors.password)}
+                aria-invalid={Boolean(fieldErrors.currentPassword ?? fieldErrors.password ?? errorMessage)}
+                aria-describedby={capsLockOn ? "caps-lock-warning" : undefined}
               />
               <button
                 type="button"
@@ -117,6 +139,16 @@ export default function SignInForm() {
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
+            {capsLockOn ? (
+              <p id="caps-lock-warning" className="text-xs text-amber-400" role="status">
+                Caps Lock is on
+              </p>
+            ) : null}
+            {fieldErrors.currentPassword || fieldErrors.password ? (
+              <p className="text-xs text-red-400" role="alert">
+                {fieldErrors.currentPassword ?? fieldErrors.password}
+              </p>
+            ) : null}
           </div>
 
           <div className="flex items-center gap-2">
@@ -126,8 +158,8 @@ export default function SignInForm() {
             </Label>
           </div>
 
-          <Button type="submit" className="w-full" disabled={submitting}>
-            {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+          <Button type="submit" className="w-full" disabled={submitting} aria-busy={submitting}>
+            {submitting ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : null}
             {submitting ? "Signing in…" : "Sign In"}
           </Button>
         </form>
