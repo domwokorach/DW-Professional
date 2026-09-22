@@ -1,18 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { render } from "@react-email/components";
+import { del } from "@vercel/blob";
 import { apiError, validationError } from "@/lib/auth/apiError";
 import { checkRateLimit } from "@/lib/auth/rateLimit";
 import { extractClientIp } from "@/lib/auth/device";
-import { contactFormSchema, BUDGET_CURRENCIES } from "@/lib/contact/validation";
+import { contactFormSchema, BUDGET_OPTIONS, PROJECT_TYPE_OPTIONS } from "@/lib/contact/validation";
 import { getContactEmailConfig, logContactEmailConfigOnStartup } from "@/lib/contact/config";
 import { normalizeMobileNumber } from "@/lib/contact/phone";
 import ContactEnquiryEmail from "@/services/email/templates/contact-enquiry";
 import {
-  ATTACHMENT_SIZE_ERROR,
+  ATTACHMENT_BLOB_PREFIX,
+  ATTACHMENT_MAX_BYTES,
   ATTACHMENT_TYPE_ERROR,
-  validateAttachmentMeta,
-  verifyAttachmentSignature,
+  formatFileSize,
+  verifyAttachmentSignatureFromBuffer,
 } from "@/lib/contact/attachments";
 
 export const runtime = "nodejs";
@@ -22,14 +24,20 @@ const CONTACT_FORM_UNAVAILABLE_MESSAGE = "We couldn't send your message right no
 // Runs once per cold start so a missing var shows up in server logs before any visitor hits the route.
 logContactEmailConfigOnStartup();
 
-function budgetSymbol(currency: string | undefined): string {
-  return BUDGET_CURRENCIES.find((c) => c.value === currency)?.symbol ?? "";
+function budgetLabel(value: string | undefined): string | null {
+  return BUDGET_OPTIONS.find((o) => o.value === value)?.label ?? null;
+}
+
+function projectTypeLabel(value: string | undefined): string | null {
+  return PROJECT_TYPE_OPTIONS.find((o) => o.value === value)?.label ?? null;
 }
 
 /**
- * Handles the "Have a project in mind?" enquiry form. Always multipart —
- * even when no file is attached — so the same parsing path is used whether
- * or not a project brief was uploaded.
+ * Handles the "Have a project in mind?" enquiry form. The attachment (if
+ * any) has already been uploaded straight to Blob storage from the browser
+ * (see /api/contact/upload) before this route ever runs — the form only
+ * sends a reference to it, which this route re-downloads and re-verifies
+ * server-side before trusting it enough to email.
  */
 export async function POST(request: NextRequest) {
   const emailConfig = getContactEmailConfig();
@@ -42,8 +50,8 @@ export async function POST(request: NextRequest) {
   const ip = extractClientIp(request.headers) ?? "unknown";
 
   const contentType = request.headers.get("content-type") ?? "";
-  if (!contentType.includes("multipart/form-data")) {
-    return apiError("invalid_request", "Expected a multipart form submission.", 400);
+  if (!contentType.includes("multipart/form-data") && !contentType.includes("application/x-www-form-urlencoded")) {
+    return apiError("invalid_request", "Expected a form submission.", 400);
   }
 
   const form = await request.formData().catch(() => null);
@@ -56,11 +64,13 @@ export async function POST(request: NextRequest) {
     mobileCountry: form.get("mobileCountry"),
     company: form.get("company"),
     companyNumber: form.get("companyNumber"),
-    budgetAmount: form.get("budgetAmount"),
-    budgetCurrency: form.get("budgetCurrency"),
-    budgetCurrencyOther: form.get("budgetCurrencyOther"),
+    budget: form.get("budget"),
     projectType: form.get("projectType"),
     message: form.get("message"),
+    attachmentUrl: form.get("attachmentUrl"),
+    attachmentName: form.get("attachmentName"),
+    attachmentType: form.get("attachmentType"),
+    attachmentSize: form.get("attachmentSize"),
   });
   if (!parsed.success) return validationError(parsed.error);
   const data = parsed.data;
@@ -84,36 +94,49 @@ export async function POST(request: NextRequest) {
   }
 
   let attachment: { name: string; size: number; type: string; buffer: Buffer } | null = null;
-  const rawFile = form.get("attachment");
-  if (rawFile instanceof File && rawFile.size > 0) {
-    const metaError = validateAttachmentMeta(rawFile);
-    if (metaError) {
-      const code = metaError === ATTACHMENT_SIZE_ERROR ? "attachment_too_large" : "invalid_attachment";
-      return apiError(code, metaError, 400, { attachment: metaError });
-    }
-
-    const signatureOk = await verifyAttachmentSignature(rawFile).catch(() => false);
-    if (!signatureOk) {
-      return apiError("invalid_attachment", ATTACHMENT_TYPE_ERROR, 400, {
-        attachment: ATTACHMENT_TYPE_ERROR,
+  if (data.attachmentUrl) {
+    if (!data.attachmentUrl.includes(ATTACHMENT_BLOB_PREFIX)) {
+      return apiError("invalid_attachment", "Invalid attachment reference.", 400, {
+        attachment: "Invalid attachment reference.",
       });
     }
 
+    let fetchRes: Response;
+    try {
+      fetchRes = await fetch(data.attachmentUrl);
+    } catch (error) {
+      console.error("[api/contact] attachment fetch failed:", error);
+      return apiError("attachment_unavailable", "Your attachment could not be found. Please re-upload it.", 400, {
+        attachment: "Your attachment could not be found. Please re-upload it.",
+      });
+    }
+    if (!fetchRes.ok) {
+      return apiError("attachment_unavailable", "Your attachment could not be found. Please re-upload it.", 400, {
+        attachment: "Your attachment could not be found. Please re-upload it.",
+      });
+    }
+
+    const buffer = Buffer.from(await fetchRes.arrayBuffer());
+    if (buffer.byteLength > ATTACHMENT_MAX_BYTES) {
+      return apiError("attachment_too_large", "Maximum file size is 5 MB.", 400, {
+        attachment: "Maximum file size is 5 MB.",
+      });
+    }
+
+    const signatureOk = verifyAttachmentSignatureFromBuffer(buffer, data.attachmentName ?? "");
+    if (!signatureOk) {
+      return apiError("invalid_attachment", ATTACHMENT_TYPE_ERROR, 400, { attachment: ATTACHMENT_TYPE_ERROR });
+    }
+
     attachment = {
-      name: rawFile.name,
-      size: rawFile.size,
-      type: rawFile.type,
-      buffer: Buffer.from(await rawFile.arrayBuffer()),
+      name: data.attachmentName ?? "attachment",
+      size: buffer.byteLength,
+      type: data.attachmentType ?? "",
+      buffer,
     };
   }
 
   const resend = new Resend(resendApiKey);
-
-  const budgetLine = data.budgetAmount
-    ? data.budgetCurrency === "OTHER"
-      ? `${data.budgetAmount} ${data.budgetCurrencyOther ?? ""}`.trim()
-      : `${budgetSymbol(data.budgetCurrency)}${data.budgetAmount}`
-    : null;
 
   const companyLine = data.company
     ? data.companyNumber
@@ -132,11 +155,13 @@ export async function POST(request: NextRequest) {
     email: data.email,
     mobile,
     company: companyLine,
-    budgetLine,
-    projectType: data.projectType ?? null,
+    budgetLine: budgetLabel(data.budget),
+    projectType: projectTypeLabel(data.projectType),
     message: data.message,
     submittedAt,
-    attachment: attachment ? { filename: attachment.name, type: attachment.type || "Unknown type" } : null,
+    attachment: attachment
+      ? { filename: attachment.name, type: attachment.type || "Unknown type", size: formatFileSize(attachment.size) }
+      : null,
   };
 
   const [html, text] = await Promise.all([
@@ -164,6 +189,14 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error("[api/contact] Resend email error:", err);
     return apiError("email_send_failed", "Failed to send your message.", 500);
+  }
+
+  // The attachment now lives in the sent email — the temp blob copy has
+  // served its purpose regardless of outcome, so it's cleaned up either way.
+  if (data.attachmentUrl) {
+    del(data.attachmentUrl).catch((error) => {
+      console.error("[api/contact] temp attachment cleanup failed:", error);
+    });
   }
 
   return NextResponse.json({

@@ -6,26 +6,15 @@ import GradientText from "@/components/ui/GradientText";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
 import GlyphMatrixBackground from "@/components/magicui/glyph-matrix-background";
-import FileUploadField from "@/components/ui/FileUploadField";
-import BudgetInput from "@/components/ui/BudgetInput";
+import FileUploadField, { type AttachmentUploadStatus, type UploadedAttachment } from "@/components/ui/FileUploadField";
+import FormSelectField from "@/components/ui/FormSelectField";
 import PhoneNumberField from "@/components/ui/PhoneNumberField";
 import CompanySearchField from "@/components/companies/CompanySearchField";
 import { social } from "@/data/navigation";
-import { MESSAGE_MAX_WORDS, clampToWordLimit, countWords } from "@/lib/contact/words";
+import { MESSAGE_MAX_CHARS, clampToCharLimit, countCharacters } from "@/lib/contact/message";
 import { DEFAULT_MOBILE_COUNTRY, normalizeMobileNumber } from "@/lib/contact/phone";
-import type { BudgetCurrency } from "@/lib/contact/validation";
+import { BUDGET_OPTIONS, PROJECT_TYPE_OPTIONS } from "@/lib/contact/validation";
 import type { CompanySearchResult } from "@/types/company";
-
-const projectTypes = [
-  "Frontend Development",
-  "Web Application",
-  "UX/UI Development",
-  "Software Engineering",
-  "Accessibility",
-  "Recruitment",
-  "Hiring Manager",
-  "Other",
-];
 
 const inputClasses =
   "w-full rounded-lg border border-line bg-transparent px-4 py-3 text-paper placeholder:text-muted/60 outline-none transition-colors focus:border-accent";
@@ -42,15 +31,17 @@ export default function Contact() {
   const [errorMessage, setErrorMessage] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [message, setMessage] = useState("");
+  const [messageTouched, setMessageTouched] = useState(false);
+  const [limitAnnouncement, setLimitAnnouncement] = useState("");
+  const lastAnnouncedRef = useRef<"none" | "warning" | "limit">("none");
   const [mobile, setMobile] = useState("");
   const [mobileCountry, setMobileCountry] = useState<string>(DEFAULT_MOBILE_COUNTRY);
   const [company, setCompany] = useState("");
   const [companyNumber, setCompanyNumber] = useState("");
-  const [budgetAmount, setBudgetAmount] = useState("");
-  const [budgetCurrency, setBudgetCurrency] = useState<BudgetCurrency | "">("");
-  const [budgetCurrencyOther, setBudgetCurrencyOther] = useState("");
-  const [file, setFile] = useState<File | null>(null);
-  const [fileError, setFileError] = useState<string | null>(null);
+  const [budget, setBudget] = useState("");
+  const [projectType, setProjectType] = useState("");
+  const [attachmentStatus, setAttachmentStatus] = useState<AttachmentUploadStatus>("idle");
+  const [attachment, setAttachment] = useState<UploadedAttachment | null>(null);
   const [submittedAttachment, setSubmittedAttachment] = useState<SubmittedAttachment | null>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
   const successRef = useRef<HTMLHeadingElement>(null);
@@ -58,24 +49,55 @@ export default function Contact() {
   const companyHelpId = useId();
   const mobileHelpId = useId();
 
-  const wordCount = useMemo(() => countWords(message), [message]);
-  const atWordLimit = wordCount >= MESSAGE_MAX_WORDS;
+  const trimmedMessage = message.trim();
+  const messageCharCount = useMemo(() => countCharacters(message), [message]);
+  const messageCharsRemaining = MESSAGE_MAX_CHARS - messageCharCount;
+  const MESSAGE_WARNING_THRESHOLD = 200;
+  const isMessageWarning = messageCharsRemaining <= MESSAGE_WARNING_THRESHOLD && messageCharsRemaining > 0;
+  const isMessageAtLimit = messageCharsRemaining <= 0;
+  const messageRequiredError =
+    (messageTouched || status === "error") && !trimmedMessage ? "Message is required" : "";
+  const messageError = fieldErrors.message || messageRequiredError;
 
   useEffect(() => {
     if (status === "error") errorRef.current?.focus();
     if (status === "sent") successRef.current?.focus();
   }, [status]);
 
+  // Announce only when crossing into the warning / limit-reached thresholds,
+  // never on every keystroke, so screen reader users aren't spammed.
+  useEffect(() => {
+    if (isMessageAtLimit) {
+      if (lastAnnouncedRef.current !== "limit") {
+        lastAnnouncedRef.current = "limit";
+        setLimitAnnouncement("Character limit reached.");
+      }
+    } else if (isMessageWarning) {
+      if (lastAnnouncedRef.current === "none") {
+        lastAnnouncedRef.current = "warning";
+        setLimitAnnouncement(`${messageCharsRemaining.toLocaleString()} characters left.`);
+      }
+    } else {
+      lastAnnouncedRef.current = "none";
+    }
+  }, [isMessageAtLimit, isMessageWarning, messageCharsRemaining]);
+
   function handleMessageChange(next: string) {
-    setMessage(clampToWordLimit(next, MESSAGE_MAX_WORDS));
+    setMessage(clampToCharLimit(next, MESSAGE_MAX_CHARS));
+    setFieldErrors((prev) => {
+      if (!prev.message) return prev;
+      const rest = { ...prev };
+      delete rest.message;
+      return rest;
+    });
   }
 
   function handleCompanySelect(selected: CompanySearchResult | null) {
     setCompanyNumber(selected?.companyNumber ?? "");
   }
 
-  function handleFileChange(next: File | null) {
-    setFile(next);
+  function handleAttachmentChange(next: UploadedAttachment | null) {
+    setAttachment(next);
     setFieldErrors((prev) => {
       if (!prev.attachment) return prev;
       const rest = { ...prev };
@@ -89,12 +111,20 @@ export default function Contact() {
 
     if (status === "submitting" || status === "sent") return;
 
+    if (attachmentStatus === "uploading") {
+      setFieldErrors({ attachment: "Please wait for the attachment to finish uploading." });
+      setStatus("error");
+      setErrorMessage("Please correct the highlighted fields below.");
+      return;
+    }
+
     const form = e.currentTarget;
     const data = new FormData(form);
 
     const name = String(data.get("name") || "").trim();
     const email = String(data.get("email") || "").trim();
-    const trimmedMessage = message.trim();
+
+    setMessageTouched(true);
 
     const nextFieldErrors: Record<string, string> = {};
     if (!name) nextFieldErrors.name = "Enter your name.";
@@ -105,16 +135,12 @@ export default function Contact() {
       const mobileResult = normalizeMobileNumber(mobile, mobileCountry);
       if (mobileResult.error) nextFieldErrors.mobile = mobileResult.error;
     }
-    if (!trimmedMessage) nextFieldErrors.message = "Enter a message.";
-    else if (countWords(trimmedMessage) > MESSAGE_MAX_WORDS) {
-      nextFieldErrors.message = `Keep your message under ${MESSAGE_MAX_WORDS.toLocaleString()} words.`;
+    if (!trimmedMessage) nextFieldErrors.message = "Message is required";
+    else if (countCharacters(trimmedMessage) > MESSAGE_MAX_CHARS) {
+      nextFieldErrors.message = `Keep your message to ${MESSAGE_MAX_CHARS.toLocaleString()} characters or fewer.`;
     }
-    if (fileError) nextFieldErrors.attachment = fileError;
-    if (budgetAmount && !budgetCurrency) {
-      nextFieldErrors.budgetCurrency = "Choose a currency for your budget.";
-    }
-    if (budgetCurrency === "OTHER" && !budgetCurrencyOther.trim()) {
-      nextFieldErrors.budgetCurrencyOther = "Enter your currency (e.g. JPY, AUD).";
+    if (attachmentStatus === "error") {
+      nextFieldErrors.attachment = "Upload failed. Please try again.";
     }
 
     if (Object.keys(nextFieldErrors).length > 0) {
@@ -311,45 +337,37 @@ export default function Contact() {
                     Start typing to search companies
                   </p>
                 </div>
-                <BudgetInput
-                  amount={budgetAmount}
-                  currency={budgetCurrency}
-                  otherCurrency={budgetCurrencyOther}
-                  onAmountChange={setBudgetAmount}
-                  onCurrencyChange={setBudgetCurrency}
-                  onOtherCurrencyChange={setBudgetCurrencyOther}
-                  error={fieldErrors.budgetCurrency || fieldErrors.budgetCurrencyOther || fieldErrors.budgetAmount}
+                <FormSelectField
+                  id="budget"
+                  name="budget"
+                  label={<GradientText>Budget</GradientText>}
+                  placeholder="Select your budget"
+                  value={budget}
+                  options={BUDGET_OPTIONS}
+                  onValueChange={setBudget}
+                  error={fieldErrors.budget}
                 />
               </div>
 
-              <div>
-                <label htmlFor="projectType" className="mb-2 block text-sm text-muted">
-                  <GradientText>Project Type</GradientText>{" "}
-                  <span className="text-xs">(optional)</span>
-                </label>
-                <select
-                  id="projectType"
-                  name="projectType"
-                  className={inputClasses}
-                  style={{ fontSize: "16px" }}
-                  defaultValue={projectTypes[0]}
-                >
-                  {projectTypes.map((type) => (
-                    <option key={type} value={type} className="bg-ink">
-                      {type}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <FormSelectField
+                id="projectType"
+                name="projectType"
+                label={<GradientText>Project Type</GradientText>}
+                placeholder="Select a project type"
+                value={projectType}
+                options={PROJECT_TYPE_OPTIONS}
+                onValueChange={setProjectType}
+                error={fieldErrors.projectType}
+              />
 
               <FileUploadField
                 id="attachment"
-                name="attachment"
                 label="Project brief, screenshots or specs"
-                file={file}
-                onFileChange={handleFileChange}
-                error={fileError || fieldErrors.attachment || undefined}
-                onError={setFileError}
+                status={attachmentStatus}
+                onStatusChange={setAttachmentStatus}
+                attachment={attachment}
+                onAttachmentChange={handleAttachmentChange}
+                serverError={fieldErrors.attachment}
               />
 
               <div>
@@ -362,36 +380,55 @@ export default function Contact() {
                   name="message"
                   rows={5}
                   required
+                  maxLength={MESSAGE_MAX_CHARS}
                   value={message}
                   onChange={(e) => handleMessageChange(e.target.value)}
+                  onBlur={() => setMessageTouched(true)}
                   className={inputClasses}
-                  aria-invalid={Boolean(fieldErrors.message)}
-                  aria-describedby={[messageHelpId, fieldErrors.message ? "message-error" : null]
+                  aria-invalid={Boolean(messageError)}
+                  aria-describedby={[messageHelpId, messageError ? "message-error" : null]
                     .filter(Boolean)
                     .join(" ")}
                   style={{ fontSize: "16px" }}
                 />
                 <div className="mt-1.5 flex items-center justify-between gap-3">
-                  {fieldErrors.message ? (
+                  {messageError ? (
                     <p id="message-error" role="alert" className="text-sm text-red-300">
-                      {fieldErrors.message}
+                      {messageError}
                     </p>
                   ) : (
                     <span />
                   )}
                   <p
                     id={messageHelpId}
-                    aria-live="polite"
-                    className={`shrink-0 text-xs ${atWordLimit ? "text-red-300" : "text-muted"}`}
+                    className={`shrink-0 text-right text-xs ${
+                      isMessageAtLimit
+                        ? "font-semibold text-red-300"
+                        : isMessageWarning
+                          ? "font-medium text-amber-400"
+                          : "text-muted"
+                    }`}
                   >
-                    {wordCount.toLocaleString()} / {MESSAGE_MAX_WORDS.toLocaleString()} words
+                    {isMessageAtLimit ? (
+                      <span aria-hidden="true">⚠ Limit reached — </span>
+                    ) : isMessageWarning ? (
+                      <span aria-hidden="true">⚠ </span>
+                    ) : null}
+                    {messageCharCount.toLocaleString()} / {MESSAGE_MAX_CHARS.toLocaleString()} characters
+                    <br className="sm:hidden" />
+                    <span className="sm:before:content-['_·_']">
+                      {messageCharsRemaining.toLocaleString()} characters left
+                    </span>
                   </p>
                 </div>
+                <span className="sr-only" role="status" aria-live="polite">
+                  {limitAnnouncement}
+                </span>
               </div>
 
               <button
                 type="submit"
-                disabled={status === "submitting"}
+                disabled={status === "submitting" || attachmentStatus === "uploading"}
                 className="group inline-flex items-center gap-2 rounded-full bg-cta px-6 py-3.5 text-sm font-medium text-cta-fg transition-colors hover:bg-accent hover:text-accent-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {status === "submitting" ? (
