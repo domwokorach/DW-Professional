@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { del } from "@vercel/blob";
 import { db } from "@/lib/database/db";
 import { requireAdminApi } from "@/lib/auth/guard";
@@ -24,6 +25,15 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     data: { status: parsed.data.status, reviewedAt: new Date(), reviewedBy: result.admin.userId },
   });
 
+  // The homepage testimonials section is statically rendered from
+  // APPROVED comments (see src/components/sections/Testimonials.tsx), so a
+  // moderation decision here would otherwise never reach visitors until the
+  // next deploy — revalidate it on every status change (approve, reject,
+  // or moving a comment back to pending).
+  if (existing.status === "APPROVED" || comment.status === "APPROVED") {
+    revalidatePath("/");
+  }
+
   return NextResponse.json({ ok: true, status: comment.status });
 }
 
@@ -42,6 +52,10 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       // The DB row is already gone; a stray blob left behind isn't worth
       // failing the request over.
     });
+  }
+
+  if (existing.status === "APPROVED") {
+    revalidatePath("/");
   }
 
   return NextResponse.json({ ok: true });
