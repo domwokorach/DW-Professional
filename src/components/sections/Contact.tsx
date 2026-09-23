@@ -206,17 +206,18 @@ export default function Contact() {
               />
 
             <MotionReveal delay={0.1} className="mt-8">
-              <p className="text-lg font-medium text-paper">
-                Let&rsquo;s work together.
-              </p>
-            </MotionReveal>
-
-            <MotionReveal delay={0.15} className="mt-8">
               <ProjectProfileCard
                 avatarUrl={PROFILE_AVATAR_URL}
-                avatarAlt="Dominic Wokorach"
-                ctaLabel="Start a Project"
-                onCtaClick={focusNameField}
+                miniAvatarUrl={PROFILE_AVATAR_URL}
+                name="Dominic Wokorach"
+                title="Full Stack Developer"
+                handle="domwokorach"
+                status="Available"
+                contactText="Start a Project"
+                showUserInfo
+                enableTilt
+                enableMobileTilt={false}
+                onContactClick={focusNameField}
               />
             </MotionReveal>
             </div>
