@@ -60,7 +60,10 @@ export default function MessageBubble({
                 variant="ghost"
                 size="icon"
                 aria-label="Message actions"
-                className="h-6 w-6 opacity-0 transition-opacity focus-visible:opacity-100 group-hover/message:opacity-100"
+                // group-hover never fires on a touchscreen, so below md (where
+                // there's no reliable hover) the trigger stays visible and at
+                // a larger tap target instead of only appearing on hover/focus.
+                className="h-8 w-8 opacity-100 transition-opacity md:h-6 md:w-6 md:opacity-0 md:focus-visible:opacity-100 md:group-hover/message:opacity-100"
               >
                 <EllipsisVertical className="h-3.5 w-3.5" aria-hidden="true" />
               </ChatButton>
