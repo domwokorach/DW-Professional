@@ -27,9 +27,12 @@
  */
 import { createReadStream } from "node:fs";
 import { createInterface } from "node:readline";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
+import { createId } from "@paralleldrive/cuid2";
 
-const BATCH_SIZE = 2000;
+// 17 bind params per row; Postgres caps a prepared statement at 32767 total,
+// so this must stay under 32767/17 (~1927).
+const BATCH_SIZE = 1000;
 const MAX_RETRIES = 5;
 const DELETE_BATCH_SIZE = 5000;
 let prisma = new PrismaClient();
@@ -133,17 +136,49 @@ function normalizePostcode(postcode) {
   return postcode.trim().toLowerCase().replace(/\s+/g, "");
 }
 
+// One multi-row `INSERT ... ON CONFLICT (companyNumber) DO UPDATE` per batch,
+// instead of one round trip per row — 2000 sequential upserts over a remote
+// connection was slow enough to stall out on a full ~850k-row file.
 async function upsertBatchWithRetry(batch, generation) {
-  await withRetry(() =>
-    prisma.$transaction(
-      batch.map((row) =>
-        prisma.companyRecord.upsert({
-          where: { companyNumber: row.companyNumber },
-          create: { ...row, importGeneration: generation },
-          update: { ...row, importGeneration: generation },
-        })
-      )
-    )
+  const values = batch.map(
+    (row) => Prisma.sql`(
+      ${createId()}, ${row.companyNumber}, ${row.name}, ${row.nameNormalized},
+      ${row.status ?? null}, ${row.category ?? null}, ${row.incorporationDate ?? null},
+      ${row.addressLine1 ?? null}, ${row.addressLine2 ?? null}, ${row.locality ?? null},
+      ${row.region ?? null}, ${row.postalCode ?? null}, ${row.postcodeNormalized ?? null},
+      ${row.country ?? null}, ${row.uri ?? null}, ${row.sicCodes},
+      ${generation}, now(), now()
+    )`
+  );
+
+  await withRetry(
+    () => prisma.$executeRaw`
+      INSERT INTO "CompanyRecord" (
+        "id", "companyNumber", "name", "nameNormalized",
+        "status", "category", "incorporationDate",
+        "addressLine1", "addressLine2", "locality",
+        "region", "postalCode", "postcodeNormalized",
+        "country", "uri", "sicCodes",
+        "importGeneration", "createdAt", "updatedAt"
+      ) VALUES ${Prisma.join(values)}
+      ON CONFLICT ("companyNumber") DO UPDATE SET
+        "name" = EXCLUDED."name",
+        "nameNormalized" = EXCLUDED."nameNormalized",
+        "status" = EXCLUDED."status",
+        "category" = EXCLUDED."category",
+        "incorporationDate" = EXCLUDED."incorporationDate",
+        "addressLine1" = EXCLUDED."addressLine1",
+        "addressLine2" = EXCLUDED."addressLine2",
+        "locality" = EXCLUDED."locality",
+        "region" = EXCLUDED."region",
+        "postalCode" = EXCLUDED."postalCode",
+        "postcodeNormalized" = EXCLUDED."postcodeNormalized",
+        "country" = EXCLUDED."country",
+        "uri" = EXCLUDED."uri",
+        "sicCodes" = EXCLUDED."sicCodes",
+        "importGeneration" = EXCLUDED."importGeneration",
+        "updatedAt" = now()
+    `
   );
 }
 

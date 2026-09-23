@@ -47,6 +47,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1137.0",
     "@aws-sdk/lib-storage": "^3.1137.0",
+    "@paralleldrive/cuid2": "^2.2.2",
     "@base-ui/react": "^1.8.0",
     "@floating-ui/react": "^0.27.20",
     "@hookform/resolvers": "^5.9.1",
