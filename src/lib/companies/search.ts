@@ -16,6 +16,13 @@ export const COMPANY_SEARCH_LETTER_PATTERN = /^[A-Z]$/i;
 export interface CompanySearchPage {
   companies: CompanySearchResult[];
   totalResults: number;
+  /**
+   * Only set (and only ever `true`) when a search comes back with no
+   * matches — distinguishes "the whole CompanyRecord table is empty" (an
+   * import never ran / needs re-running) from an ordinary no-match search,
+   * so the UI can tell candidates apart from an operator-facing outage.
+   */
+  datasetEmpty?: boolean;
 }
 
 export class CompanyProviderError extends Error {
@@ -150,6 +157,10 @@ export async function searchCompanies(query: string): Promise<CompanySearchPage>
 
   // 5. Fuzzy (substring) company-name match.
   await addTier({ nameNormalized: { contains: nameTerm } });
+
+  if (companies.length === 0 && (await countCompanyRecords()) === 0) {
+    return { companies: [], totalResults: 0, datasetEmpty: true };
+  }
 
   return { companies: companies.map(mapRecord), totalResults: companies.length };
 }

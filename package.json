@@ -36,6 +36,7 @@
     "test:coverage": "jest --coverage",
     "test:ci": "jest --ci --coverage --runInBand --reporters=default",
     "auth:create-admin": "node --env-file=.env.local scripts/create-admin.mjs",
+    "import:companies": "node --env-file=.env.local scripts/import-companies-house-csv.mjs",
     "import:companies:s3": "node --env-file=.env.local scripts/import-companies-house-s3.mjs",
     "db:seed": "tsx --env-file=.env.local prisma/seed.ts",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",

@@ -17,7 +17,7 @@ const RATE_LIMITED_MESSAGE = "Too many company searches. Please try again shortl
 
 function companyResponse(
   companies: CompanySearchResult[],
-  extra?: { error?: string; totalResults?: number },
+  extra?: { error?: string; totalResults?: number; datasetEmpty?: boolean },
   status = 200
 ) {
   return NextResponse.json({ companies, ...extra }, { status });
@@ -63,8 +63,8 @@ export async function GET(request: NextRequest) {
     // Never more than COMPANY_SEARCH_RESULT_LIMIT rows per request — see
     // searchCompanies — so the endpoint can't be used to page through and
     // reconstruct the full dataset.
-    const { companies, totalResults } = await searchCompanies(query);
-    return companyResponse(companies, { totalResults });
+    const { companies, totalResults, datasetEmpty } = await searchCompanies(query);
+    return companyResponse(companies, { totalResults, datasetEmpty });
   } catch (error) {
     if (error instanceof CompanyProviderError) {
       if (error.status === 400) {
