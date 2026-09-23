@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState, type FormEvent } from "react";
+import { useReducedMotion } from "framer-motion";
 import SectionHeading from "@/components/ui/SectionHeading";
 import GradientText from "@/components/ui/GradientText";
 import MotionReveal from "@/components/ui/MotionReveal";
@@ -10,10 +11,13 @@ import FileUploadField, { type AttachmentUploadStatus, type UploadedAttachment }
 import FormSelectField from "@/components/ui/FormSelectField";
 import PhoneNumberField from "@/components/ui/PhoneNumberField";
 import CompanySearchField from "@/components/companies/CompanySearchField";
-import { social } from "@/data/navigation";
+import ProjectProfileCard from "@/components/contact/ProjectProfileCard";
 import { MESSAGE_MAX_CHARS, clampToCharLimit, countCharacters } from "@/lib/contact/message";
 import { DEFAULT_MOBILE_COUNTRY, normalizeMobileNumber } from "@/lib/contact/phone";
 import { BUDGET_OPTIONS, PROJECT_TYPE_OPTIONS } from "@/lib/contact/validation";
+
+const PROFILE_AVATAR_URL =
+  "https://res.cloudinary.com/dkkuwmr42/image/upload/v1790089893/dominic_zw1v8s.png";
 
 const inputClasses =
   "w-full rounded-lg border border-line bg-transparent px-4 py-3 text-paper placeholder:text-muted/60 outline-none transition-colors focus:border-accent";
@@ -43,9 +47,16 @@ export default function Contact() {
   const [submittedAttachment, setSubmittedAttachment] = useState<SubmittedAttachment | null>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
   const successRef = useRef<HTMLHeadingElement>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const messageHelpId = useId();
   const companyHelpId = useId();
   const mobileHelpId = useId();
+  const reduceMotion = useReducedMotion();
+
+  const focusNameField = () => {
+    nameInputRef.current?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "center" });
+    nameInputRef.current?.focus({ preventScroll: true });
+  };
 
   const trimmedMessage = message.trim();
   const messageCharCount = useMemo(() => countCharacters(message), [message]);
@@ -194,46 +205,19 @@ export default function Contact() {
                 headingEffect="typing"
               />
 
-            <MotionReveal delay={0.1} className="mt-8 max-w-md">
-              <p className="text-base leading-[1.7] text-muted">
-                Whether you need a modern frontend application, a responsive
-                website, an API-driven product or support improving an
-                existing digital experience, I&rsquo;d be happy to discuss
-                your project.
-              </p>
-            </MotionReveal>
-
-            <MotionReveal delay={0.15} className="mt-8">
+            <MotionReveal delay={0.1} className="mt-8">
               <p className="text-lg font-medium text-paper">
                 Let&rsquo;s work together.
               </p>
             </MotionReveal>
 
-            <MotionReveal delay={0.2} className="mt-10 space-y-3 text-sm">
-              <a
-                href={social.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-muted hover:text-paper transition-colors"
-              >
-                LinkedIn
-              </a>
-              <a
-                href={social.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-muted hover:text-paper transition-colors"
-              >
-                GitHub
-              </a>
-              <a
-                href={social.portfolio}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-muted hover:text-paper transition-colors"
-              >
-                Portfolio
-              </a>
+            <MotionReveal delay={0.15} className="mt-8">
+              <ProjectProfileCard
+                avatarUrl={PROFILE_AVATAR_URL}
+                avatarAlt="Dominic Wokorach"
+                ctaLabel="Start a Project"
+                onCtaClick={focusNameField}
+              />
             </MotionReveal>
             </div>
           </div>
@@ -268,6 +252,7 @@ export default function Contact() {
                     <span aria-hidden="true">(required)</span>
                   </label>
                   <input
+                    ref={nameInputRef}
                     id="name"
                     name="name"
                     type="text"
