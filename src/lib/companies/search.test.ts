@@ -92,6 +92,24 @@ describe("searchCompanies", () => {
     expect(postcodeCall[0].where).toEqual({ postcodeNormalized: "sw1a2aa" });
   });
 
+  it("flags datasetEmpty when a search finds nothing because the table is empty", async () => {
+    mockTiers([], [], [], [], []); // every tier empty
+    (db.companyRecord.count as jest.Mock).mockResolvedValue(0);
+
+    const result = await searchCompanies("acme");
+
+    expect(result).toEqual({ companies: [], totalResults: 0, datasetEmpty: true });
+  });
+
+  it("does not flag datasetEmpty for an ordinary no-match search", async () => {
+    mockTiers([], [], [], [], []); // every tier empty
+    (db.companyRecord.count as jest.Mock).mockResolvedValue(5000);
+
+    const result = await searchCompanies("zzzznomatch");
+
+    expect(result).toEqual({ companies: [], totalResults: 0 });
+  });
+
   it("falls back to a fuzzy (substring) name match", async () => {
     const fuzzy = record({ id: "1", name: "Big Acme Group", nameNormalized: "big acme group" });
     // number, exact-name, prefix, postcode, fuzzy

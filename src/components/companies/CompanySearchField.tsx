@@ -10,7 +10,7 @@ import type { CompanySearchResult, CompanyStatus } from "@/types/company";
 const MIN_QUERY_LENGTH = 2;
 const DEBOUNCE_MS = 300;
 
-export const COMPANY_SEARCH_PLACEHOLDER = "Search by company name, postcode or registration number";
+export const COMPANY_SEARCH_PLACEHOLDER = "Search or enter your company";
 
 const DEFAULT_INPUT_CLASSES =
   "flex h-9 w-full rounded-md border border-line bg-ink px-3 py-1 text-base text-paper shadow-sm transition-colors placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50 md:text-sm";
@@ -89,6 +89,7 @@ export default function CompanySearchField({
   const [results, setResults] = useState<CompanySearchResult[]>([]);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [datasetEmpty, setDatasetEmpty] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [selected, setSelected] = useState<CompanySearchResult | null>(null);
   const [announcement, setAnnouncement] = useState("");
@@ -108,6 +109,7 @@ export default function CompanySearchField({
       setResults([]);
       setStatus("idle");
       setErrorMessage(null);
+      setDatasetEmpty(false);
       return;
     }
 
@@ -122,7 +124,7 @@ export default function CompanySearchField({
         const res = await fetch(`/api/companies/search?q=${encodeURIComponent(term)}`, {
           signal: controller.signal,
         });
-        let data: { companies?: CompanySearchResult[]; error?: string } | null = null;
+        let data: { companies?: CompanySearchResult[]; error?: string; datasetEmpty?: boolean } | null = null;
         try {
           data = await res.json();
         } catch {
@@ -132,22 +134,27 @@ export default function CompanySearchField({
           setStatus("error");
           setErrorMessage(data?.error ?? "Unable to load companies. Please try again.");
           setResults([]);
+          setDatasetEmpty(false);
           setAnnouncement(data?.error ?? "Unable to load companies. Please try again.");
           return;
         }
         const companies = data?.companies ?? [];
         setResults(companies);
         setStatus("idle");
+        setDatasetEmpty(Boolean(data?.datasetEmpty));
         setAnnouncement(
-          companies.length === 0
-            ? "No companies found."
-            : `${companies.length} ${companies.length === 1 ? "company" : "companies"} found.`
+          data?.datasetEmpty
+            ? "Company search is temporarily unavailable."
+            : companies.length === 0
+              ? "No companies found."
+              : `${companies.length} ${companies.length === 1 ? "company" : "companies"} found.`
         );
       } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError") return;
         setStatus("error");
         setErrorMessage("Unable to load companies. Please try again.");
         setResults([]);
+        setDatasetEmpty(false);
         setAnnouncement("Unable to load companies. Please try again.");
       }
     })();
@@ -201,6 +208,7 @@ export default function CompanySearchField({
     setResults([]);
     setStatus("idle");
     setErrorMessage(null);
+    setDatasetEmpty(false);
     setAnnouncement("Selection cleared.");
     requestAnimationFrame(() => inputRef.current?.focus());
   }
@@ -237,9 +245,13 @@ export default function CompanySearchField({
   const statusMessage = useMemo(() => {
     if (status === "loading") return "Searching companies...";
     if (status === "error") return errorMessage ?? "Unable to load companies. Please try again.";
-    if (status === "idle" && results.length === 0) return "No companies found.";
+    if (status === "idle" && results.length === 0) {
+      return datasetEmpty
+        ? "Company search is temporarily unavailable. You can still enter the company manually."
+        : "No companies found.";
+    }
     return null;
-  }, [status, errorMessage, results.length]);
+  }, [status, errorMessage, results.length, datasetEmpty]);
 
   // Always present (even with no selection) so a plain `new FormData(form)`
   // submission carries the three fields separately rather than one
