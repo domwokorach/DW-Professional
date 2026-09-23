@@ -1,13 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { MessageSquare } from "lucide-react";
 import ConnectionStatus, { ConnectionBanner } from "./ConnectionStatus";
 import { SidebarProvider } from "@/components/animate-ui/components/radix/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { useAdminSocket } from "@/hooks/use-admin-socket";
-import { useConversations } from "@/hooks/use-conversations";
+import { useAdminChatContext } from "@/hooks/use-admin-chat-context";
 import { useAdminThread } from "@/hooks/use-admin-thread";
 import { useAdminPresence } from "@/hooks/use-admin-presence";
 import { useAdminActivity } from "@/hooks/use-admin-activity";
@@ -19,7 +19,7 @@ import ChatHeader from "./ChatHeader";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import CustomerDetails from "./CustomerDetails";
-import type { ConnectionState } from "@/types/chat";
+import type { ConnectionState, Conversation } from "@/types/chat";
 
 export default function AdminChat({
   adminId,
@@ -30,16 +30,20 @@ export default function AdminChat({
   adminName: string;
   adminEmail: string;
 }) {
-  const { socketRef, connectionState } = useAdminSocket();
-  const {
-    conversations,
-    loading: listLoading,
-    error: listError,
-    refresh,
-  } = useConversations(socketRef, connectionState);
+  const { socketRef, connectionState, conversations, listLoading, listError, refresh } = useAdminChatContext();
   const onlineVisitorIds = useAdminPresence(socketRef);
   useAdminActivity(socketRef);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const [selectedId, setSelectedId] = useState<string | null>(() => searchParams.get("conversation"));
+
+  // A popup/browser notification or email link opens
+  // /admin/chat?conversation=<id> — this also has to work when the chat
+  // page is already mounted (SPA navigation doesn't remount), not just on
+  // first load.
+  useEffect(() => {
+    const fromUrl = searchParams.get("conversation");
+    if (fromUrl) setSelectedId(fromUrl);
+  }, [searchParams]);
 
   const {
     conversation,
@@ -140,7 +144,7 @@ function ChatShell({
   adminName: string;
   adminEmail: string;
   connectionState: ConnectionState;
-  conversations: ReturnType<typeof useConversations>["conversations"];
+  conversations: Conversation[];
   listLoading: boolean;
   listError: boolean;
   refresh: () => void;
@@ -242,6 +246,7 @@ function ChatShell({
                   onDeleteMessage={deleteMessage}
                 />
                 <MessageInput
+                  conversationId={conversation.id}
                   onSend={sendReply}
                   onTyping={notifyTyping}
                   placeholder={isClosed ? "This conversation has ended." : "Reply to candidate…"}

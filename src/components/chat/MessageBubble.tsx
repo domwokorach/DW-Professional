@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import type { ChatMessage } from "@/types/chat";
 import { formatChatDate } from "@/lib/chat/helpers";
 import ConfirmDialog from "./ConfirmDialog";
+import MessageAttachment from "./MessageAttachment";
 
 const SENDER_LABEL: Record<ChatMessage["sender"], string> = {
   admin: "Dominic",
@@ -80,18 +81,24 @@ export default function MessageBubble({
           </DropdownMenu>
         ) : null}
       </div>
-      <MessageContent
-        className={cn(
-          "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm md:max-w-[75%] lg:max-w-[65%]",
-          isDeleted
-            ? "border border-dashed border-line italic text-muted"
-            : isAdmin
-              ? "bg-accent text-accent-fg"
-              : "border border-line bg-ink text-paper"
-        )}
-      >
-        {isDeleted ? "Message deleted" : message.content}
-      </MessageContent>
+      {!isDeleted && (message.content || !message.attachments?.length) ? (
+        <MessageContent
+          className={cn(
+            "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm md:max-w-[75%] lg:max-w-[65%]",
+            isAdmin ? "bg-accent text-accent-fg" : "border border-line bg-ink text-paper"
+          )}
+        >
+          {message.content}
+        </MessageContent>
+      ) : null}
+      {isDeleted ? (
+        <MessageContent className="max-w-[85%] rounded-2xl border border-dashed border-line px-4 py-2.5 text-sm italic text-muted md:max-w-[75%] lg:max-w-[65%]">
+          Message deleted
+        </MessageContent>
+      ) : null}
+      {!isDeleted && message.attachments?.length
+        ? message.attachments.map((attachment) => <MessageAttachment key={attachment.id} attachment={attachment} />)
+        : null}
       <span className="flex items-center gap-1 px-1 text-[11px] text-muted">
         {formatChatDate(message.createdAt)}
         {isAdmin && !isDeleted ? (

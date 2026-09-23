@@ -46,6 +46,8 @@ export default function LiveChat() {
     messages,
     typing,
     sendMessage,
+    notifyTyping,
+    endChat,
     conversationId,
     hasIdentity,
     registering,
@@ -161,9 +163,11 @@ export default function LiveChat() {
                 pendingMessageIds={pendingMessageIds}
                 conversationId={conversationId}
                 onSend={sendMessage}
+                onTyping={notifyTyping}
                 onAction={handleAction}
                 onMinimise={handleMinimise}
                 onClose={handleClose}
+                onEndChat={endChat}
                 closeButtonRef={closeButtonRef}
               />
             ) : (

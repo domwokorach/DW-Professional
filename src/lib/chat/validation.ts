@@ -26,6 +26,12 @@ export const messageContentSchema = z
 
 export const conversationIdSchema = z.string().trim().min(1, "Conversation id is required");
 
+export const ratingSchema = z.object({
+  visitorId: visitorIdSchema,
+  rating: z.number().int().min(1).max(5),
+  feedback: z.string().trim().max(2000).optional(),
+});
+
 export const candidateMessageSchema = z.object({
   conversationId: conversationIdSchema,
   content: messageContentSchema,

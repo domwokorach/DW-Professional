@@ -4,12 +4,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useSocket } from "./use-socket";
 import { ChatUnavailableError } from "@/lib/socket/errors";
 import { SOCKET_EVENTS } from "@/lib/socket/events";
-import {
-  CONVERSATION_ID_STORAGE_KEY,
-  REGISTERED_STORAGE_KEY,
-  VISITOR_ID_STORAGE_KEY,
-} from "@/lib/chat/constants";
+import { CONVERSATION_ID_STORAGE_KEY, REGISTERED_STORAGE_KEY, TYPING_DEBOUNCE_MS } from "@/lib/chat/constants";
 import { generateId } from "@/lib/utils/generate-id";
+import { getVisitorId } from "@/lib/chat/visitor-id";
 import type { ChatMessage } from "@/types/message";
 import type {
   AdminJoinedPayload,
@@ -39,16 +36,6 @@ function mergeById(prev: ChatMessage[], incoming: ChatMessage[]): ChatMessage[] 
   return Array.from(byId.values()).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
 }
 
-function getVisitorId(): string {
-  if (typeof window === "undefined") return "visitor";
-  let id = window.sessionStorage.getItem(VISITOR_ID_STORAGE_KEY);
-  if (!id) {
-    id = generateId();
-    window.sessionStorage.setItem(VISITOR_ID_STORAGE_KEY, id);
-  }
-  return id;
-}
-
 /** Candidate-facing chat state: gates on registration, then creates/loads the visitor's conversation and owns realtime messages, typing, and sending. */
 export function useLiveChat() {
   // Lazy-initialised from sessionStorage so a same-tab refresh mid-conversation
@@ -68,6 +55,7 @@ export function useLiveChat() {
   const [pendingMessageIds, setPendingMessageIds] = useState<Set<string>>(new Set());
   const pendingDetailsRef = useRef<CandidateDetails | null>(null);
   const outboxRef = useRef<Map<string, { conversationId: string; content: string }>>(new Map());
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const fetchToken = useCallback(async () => {
     const res = await fetch("/api/chat/token", {
@@ -168,8 +156,8 @@ export function useLiveChat() {
 
     if (wasOnline.current) {
       fetch(`/api/chat/messages?conversationId=${conversationId}&visitorId=${getVisitorId()}`)
-        .then((res) => (res.ok ? res.json() : Promise.reject(res)))
-        .then(({ messages: history }: { messages: ChatMessage[] }) => {
+        .then((res) => (res.ok ? (res.json() as Promise<{ messages: ChatMessage[] }>) : Promise.reject(res)))
+        .then(({ messages: history }) => {
           setMessages((prev) => mergeById(prev, history));
         })
         .catch(() => {});
@@ -280,6 +268,14 @@ export function useLiveChat() {
       outboxRef.current.set(optimistic.id, { conversationId, content: trimmed });
       setPendingMessageIds((prev) => new Set(prev).add(optimistic.id));
 
+      // Sending clears any pending "stop typing" debounce and tells the
+      // admin immediately, rather than waiting out the timeout — matches
+      // "disappear when the message is sent" in the brief.
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = null;
+      }
+
       const socket = socketRef.current;
       if (!socket?.connected) return;
       socket.emit(SOCKET_EVENTS.MESSAGE, {
@@ -287,9 +283,40 @@ export function useLiveChat() {
         content: trimmed,
         clientMessageId: optimistic.id,
       });
+      socket.emit(SOCKET_EVENTS.STOP_TYPING, { conversationId });
     },
     [socketRef, conversationId, conversationStatus]
   );
+
+  // Debounced chat:typing/chat:stop-typing for the candidate's own typing —
+  // mirrors hooks/use-typing.ts's admin-side behaviour (used here directly,
+  // rather than sharing that hook, since this side's incoming "admin is
+  // typing" state is already handled above by the MESSAGE-adjacent
+  // useEffect's own `typing` state).
+  const notifyTyping = useCallback(() => {
+    const socket = socketRef.current;
+    if (!socket || !conversationId) return;
+
+    socket.emit(SOCKET_EVENTS.TYPING, { conversationId });
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
+      socket.emit(SOCKET_EVENTS.STOP_TYPING, { conversationId });
+    }, TYPING_DEBOUNCE_MS);
+  }, [socketRef, conversationId]);
+
+  useEffect(
+    () => () => {
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    },
+    []
+  );
+
+  const endChat = useCallback(() => {
+    if (!conversationId) return;
+    const socket = socketRef.current;
+    if (!socket?.connected) return;
+    socket.emit(SOCKET_EVENTS.SET_STATUS, { conversationId, status: "closed" });
+  }, [socketRef, conversationId]);
 
   return {
     connectionState,
@@ -300,6 +327,8 @@ export function useLiveChat() {
     messages,
     typing,
     sendMessage,
+    notifyTyping,
+    endChat,
     ready,
     conversationId,
     hasIdentity,

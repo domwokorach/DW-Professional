@@ -2,12 +2,20 @@ import { db } from "@/lib/database/db";
 import { toMessage } from "@/lib/database/queries";
 import type { ChatMessage, MessageSender } from "@/types/message";
 
+export interface SendMessageAttachmentInput {
+  originalName: string;
+  storageKey: string;
+  mimeType: string;
+  size: number;
+}
+
 export interface SendMessageInput {
   conversationId: string;
   sender: MessageSender;
   senderId?: string;
   content: string;
   clientMessageId?: string;
+  attachments?: SendMessageAttachmentInput[];
 }
 
 const UNIQUE_CONSTRAINT_ERROR_CODE = "P2002";
@@ -24,9 +32,10 @@ export async function sendMessage({
   senderId,
   content,
   clientMessageId,
+  attachments,
 }: SendMessageInput): Promise<ChatMessage> {
   if (clientMessageId) {
-    const existing = await db.message.findUnique({ where: { clientMessageId } });
+    const existing = await db.message.findUnique({ where: { clientMessageId }, include: { attachments: true } });
     if (existing) return toMessage(existing);
   }
 
@@ -39,7 +48,9 @@ export async function sendMessage({
           senderId,
           content,
           clientMessageId,
+          attachments: attachments?.length ? { create: attachments } : undefined,
         },
+        include: { attachments: true },
       }),
       db.conversation.update({
         where: { id: conversationId },
@@ -82,7 +93,7 @@ export async function sendMessage({
       "code" in error &&
       (error as { code?: string }).code === UNIQUE_CONSTRAINT_ERROR_CODE
     ) {
-      const existing = await db.message.findUnique({ where: { clientMessageId } });
+      const existing = await db.message.findUnique({ where: { clientMessageId }, include: { attachments: true } });
       if (existing) return toMessage(existing);
     }
     throw error;

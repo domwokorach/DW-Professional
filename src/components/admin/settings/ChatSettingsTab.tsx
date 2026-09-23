@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { requestNotificationPermission } from "@/lib/notifications/browser";
 import type { Preferences } from "./SettingsView";
 
 type Availability = "ONLINE" | "AWAY" | "BUSY" | "OFFLINE";
@@ -49,6 +50,17 @@ export default function ChatSettingsTab({
     const next = { ...notifications, [key]: value };
     setNotifications(next);
     void persist({ notifications: next });
+
+    // Only ever requested from this explicit, user-initiated click — never
+    // on page load — per the brief's requirement not to surprise anyone
+    // with a permission prompt they didn't ask for.
+    if (key === "browserPush" && value) {
+      void requestNotificationPermission().then(() => {
+        if (typeof Notification !== "undefined" && Notification.permission === "denied") {
+          toast.error("Browser notifications are blocked. Enable them in your browser's site settings.");
+        }
+      });
+    }
   }
 
   function changeAvailability(value: Availability) {

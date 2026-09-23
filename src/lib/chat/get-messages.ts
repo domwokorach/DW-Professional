@@ -7,7 +7,13 @@ export async function getMessages(conversationId: string, limit = 200): Promise<
     where: { conversationId },
     orderBy: { createdAt: "asc" },
     take: limit,
+    include: { attachments: true },
   });
 
   return rows.map(toMessage);
+}
+
+export async function getMessageById(id: string): Promise<ChatMessage | null> {
+  const row = await db.message.findUnique({ where: { id }, include: { attachments: true } });
+  return row ? toMessage(row) : null;
 }

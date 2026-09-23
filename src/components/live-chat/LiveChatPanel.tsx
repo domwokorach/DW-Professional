@@ -2,12 +2,19 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { Check, CheckCheck, Clock, Minus, Send, X } from "lucide-react";
+import { Check, CheckCheck, Clock, Minus, Paperclip, Send, X } from "lucide-react";
 import type { ChatAction, ChatMessage, ConnectionState } from "@/types/chat";
 import type { AdminPresenceState } from "@/types/socket";
 import TypingIndicator from "@/components/chat/TypingIndicator";
+import MessageAttachment from "@/components/chat/MessageAttachment";
+import PendingAttachment from "@/components/chat/PendingAttachment";
+import ConfirmDialog from "@/components/chat/ConfirmDialog";
 import PresenceBanner from "./PresenceBanner";
+import PostChatPanel from "./PostChatPanel";
 import { useKeyboardInset } from "@/hooks/use-keyboard-inset";
+import { useChatAttachmentUpload } from "@/hooks/use-chat-attachment-upload";
+import { getVisitorId } from "@/lib/chat/visitor-id";
+import { CHAT_ATTACHMENT_ACCEPT, validateChatAttachmentMeta } from "@/lib/chat/attachments";
 import { PANEL_BOTTOM_CSS, PANEL_RIGHT_CSS } from "./layout";
 
 const STATUS_LABEL: Record<ConnectionState, string> = {
@@ -54,9 +61,11 @@ export default function LiveChatPanel({
   pendingMessageIds,
   conversationId,
   onSend,
+  onTyping,
   onAction,
   onMinimise,
   onClose,
+  onEndChat,
   closeButtonRef,
 }: {
   messages: ChatMessage[];
@@ -67,9 +76,11 @@ export default function LiveChatPanel({
   pendingMessageIds: Set<string>;
   conversationId: string | null;
   onSend: (text: string) => void;
+  onTyping: () => void;
   onAction: (action: ChatAction) => void;
   onMinimise: () => void;
   onClose: () => void;
+  onEndChat: () => void;
   closeButtonRef: React.RefObject<HTMLButtonElement | null>;
 }) {
   const [input, setInput] = useState("");
@@ -108,9 +119,45 @@ export default function LiveChatPanel({
   }, [messages, typing]);
 
   const isClosed = conversationStatus === "closed";
+  const [endChatConfirmOpen, setEndChatConfirmOpen] = useState(false);
 
-  const handleSend = () => {
-    if (!input.trim() || isClosed) return;
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [attachmentError, setAttachmentError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const upload = useChatAttachmentUpload({
+    conversationId: conversationId ?? "",
+    visitorId: getVisitorId(),
+  });
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    const validationError = validateChatAttachmentMeta(file);
+    if (validationError) {
+      setAttachmentError(validationError);
+      return;
+    }
+    setAttachmentError(null);
+    setPendingFile(file);
+  };
+
+  const handleSend = async () => {
+    if (isClosed || !conversationId) return;
+    const trimmed = input.trim();
+
+    if (pendingFile) {
+      const file = pendingFile;
+      setInput("");
+      if (draftKey) window.sessionStorage.removeItem(draftKey);
+      if (textareaRef.current) textareaRef.current.style.height = "auto";
+      const result = await upload.send(file, trimmed);
+      if (result) setPendingFile(null);
+      else setAttachmentError(upload.error);
+      return;
+    }
+
+    if (!trimmed) return;
     onSend(input);
     setInput("");
     if (draftKey) window.sessionStorage.removeItem(draftKey);
@@ -119,13 +166,13 @@ export default function LiveChatPanel({
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    handleSend();
+    void handleSend();
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
-      handleSend();
+      void handleSend();
     }
   };
 
@@ -154,6 +201,15 @@ export default function LiveChatPanel({
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-1">
+          {!isClosed && conversationId ? (
+            <button
+              type="button"
+              onClick={() => setEndChatConfirmOpen(true)}
+              className="mr-1 rounded-full px-2 py-1 text-xs font-medium text-muted transition-colors duration-150 hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+            >
+              End chat
+            </button>
+          ) : null}
           <button
             type="button"
             onClick={onMinimise}
@@ -197,17 +253,24 @@ export default function LiveChatPanel({
                 message.sender === "visitor" ? "items-end" : "items-start"
               }`}
             >
-              <div
-                className={`max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-4 py-2.5 text-sm ${
-                  message.deleted
-                    ? "border border-dashed border-line text-muted italic"
-                    : message.sender === "visitor"
-                      ? "bg-accent text-ink"
-                      : "border border-line bg-ink text-paper"
-                }`}
-              >
-                {message.deleted ? "Message deleted" : message.content}
-              </div>
+              {message.content || message.deleted ? (
+                <div
+                  className={`max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-4 py-2.5 text-sm ${
+                    message.deleted
+                      ? "border border-dashed border-line text-muted italic"
+                      : message.sender === "visitor"
+                        ? "bg-accent text-ink"
+                        : "border border-line bg-ink text-paper"
+                  }`}
+                >
+                  {message.deleted ? "Message deleted" : message.content}
+                </div>
+              ) : null}
+              {!message.deleted && message.attachments?.length
+                ? message.attachments.map((attachment) => (
+                    <MessageAttachment key={attachment.id} attachment={attachment} />
+                  ))
+                : null}
               <span className="flex items-center gap-1 px-1 text-[11px] text-muted">
                 {formatTimestamp(message.createdAt)}
                 {StatusIcon ? (
@@ -238,6 +301,9 @@ export default function LiveChatPanel({
         {typing ? <TypingIndicator label="Admin is typing" /> : null}
       </div>
 
+      {isClosed && conversationId ? (
+        <PostChatPanel conversationId={conversationId} visitorId={getVisitorId()} />
+      ) : (
       <form onSubmit={handleSubmit} className="flex flex-col gap-1.5 border-t border-line px-3 py-3">
         {isClosed ? (
           <p className="px-1 text-xs text-muted" role="status" aria-live="polite">
@@ -248,10 +314,40 @@ export default function LiveChatPanel({
             Reconnecting… your messages will send once you&rsquo;re back online.
           </p>
         ) : null}
+        {pendingFile ? (
+          <PendingAttachment
+            file={pendingFile}
+            uploading={upload.uploading}
+            progress={upload.progress}
+            onRemove={() => setPendingFile(null)}
+          />
+        ) : null}
+        {attachmentError ? (
+          <p className="px-1 text-xs text-red-400" role="alert">
+            {attachmentError}
+          </p>
+        ) : null}
         <div className="flex items-end gap-2">
           <label htmlFor="live-chat-input" className="sr-only">
             Type a message
           </label>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept={CHAT_ATTACHMENT_ACCEPT}
+            onChange={handleFileSelect}
+            className="sr-only"
+            aria-label="Attach a file"
+          />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isClosed || Boolean(pendingFile)}
+            aria-label="Attach a file"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:text-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <Paperclip className="h-4 w-4" aria-hidden="true" />
+          </button>
           <textarea
             ref={textareaRef}
             id="live-chat-input"
@@ -259,6 +355,7 @@ export default function LiveChatPanel({
             disabled={isClosed}
             onChange={(event) => {
               setInput(event.target.value);
+              onTyping();
               if (draftKey) window.sessionStorage.setItem(draftKey, event.target.value);
               const el = event.target;
               el.style.height = "auto";
@@ -272,7 +369,7 @@ export default function LiveChatPanel({
           />
           <button
             type="submit"
-            disabled={!input.trim() || isClosed}
+            disabled={(!input.trim() && !pendingFile) || isClosed || upload.uploading}
             aria-label="Send message"
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-ink transition-opacity duration-150 disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper"
           >
@@ -280,6 +377,19 @@ export default function LiveChatPanel({
           </button>
         </div>
       </form>
+      )}
+
+      <ConfirmDialog
+        open={endChatConfirmOpen}
+        onOpenChange={setEndChatConfirmOpen}
+        title="End this conversation?"
+        description="Your conversation will be saved. You can still download a transcript afterwards."
+        confirmLabel="End chat"
+        onConfirm={() => {
+          setEndChatConfirmOpen(false);
+          onEndChat();
+        }}
+      />
     </div>
   );
 }

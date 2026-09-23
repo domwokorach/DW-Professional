@@ -482,12 +482,42 @@ describe('chat socket server', () => {
     );
   });
 
-  it('a visitor cannot close a conversation via chat:set-status', async () => {
+  it('a visitor can end their own conversation via chat:set-status', async () => {
     const conversationId = 'conv-close-2';
+    (db.conversation.update as jest.Mock).mockResolvedValue(
+      buildConversation({ id: conversationId, status: 'CLOSED' as never })
+    );
     const visitor = connectClient(visitorToken(conversationId));
     await once(visitor, 'connect');
 
+    const statusPromise = once<{ conversationId: string; status: string }>(visitor, 'chat:conversation-status');
     visitor.emit('chat:set-status', { conversationId, status: 'closed' });
+
+    const status = await statusPromise;
+    expect(status).toEqual({ conversationId, status: 'closed' });
+    expect(db.conversation.update).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { id: conversationId }, data: expect.objectContaining({ status: 'CLOSED' }) })
+    );
+  });
+
+  it('a visitor cannot reopen a conversation via chat:set-status', async () => {
+    const conversationId = 'conv-close-3';
+    const visitor = connectClient(visitorToken(conversationId));
+    await once(visitor, 'connect');
+
+    visitor.emit('chat:set-status', { conversationId, status: 'open' });
+    await new Promise((resolve) => setTimeout(resolve, 150));
+
+    expect(db.conversation.update).not.toHaveBeenCalled();
+  });
+
+  it("a visitor cannot close another visitor's conversation via chat:set-status", async () => {
+    const ownConversationId = 'conv-close-own';
+    const otherConversationId = 'conv-close-other';
+    const visitor = connectClient(visitorToken(ownConversationId));
+    await once(visitor, 'connect');
+
+    visitor.emit('chat:set-status', { conversationId: otherConversationId, status: 'closed' });
     await new Promise((resolve) => setTimeout(resolve, 150));
 
     expect(db.conversation.update).not.toHaveBeenCalled();

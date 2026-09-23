@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ token });
   }
 
-  const body = await request.json().catch(() => ({}));
+  const body = (await request.json().catch(() => ({}))) as { role?: string; visitorId?: string };
 
   // The admin socket explicitly requests an admin token so a lost session
   // or a disabled/suspended account surfaces as an unambiguous 401
