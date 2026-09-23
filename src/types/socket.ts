@@ -47,7 +47,7 @@ export interface TypingEventPayload {
   isTyping: boolean;
 }
 
-export type AdminPresenceState = "online" | "away" | "offline";
+export type AdminPresenceState = "online" | "away" | "busy" | "offline";
 
 export interface AdminStatusPayload {
   status: AdminPresenceState;

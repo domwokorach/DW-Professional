@@ -91,6 +91,15 @@ describe('chat socket server', () => {
     (db.message.findUnique as jest.Mock).mockResolvedValue(null);
     (db.message.update as jest.Mock).mockResolvedValue({});
     (db.conversation.updateMany as jest.Mock).mockResolvedValue({ count: 0 });
+    // Aggregate presence now combines connectivity (real in-memory presence
+    // map) with each admin's manually-selected availability (User.availability,
+    // Postgres). Default every connected admin id to "ONLINE" so existing
+    // tests — which are about connectivity, not the availability feature —
+    // keep seeing the same online/offline behaviour as before.
+    (db.user.findMany as jest.Mock).mockImplementation(
+      async (args: { where: { id: { in: string[] } } }) =>
+        args.where.id.in.map((id) => ({ id, availability: 'ONLINE' }))
+    );
     // Keep a control admin "online" (via the real in-memory presence map) by
     // default so tests that aren't specifically about the no-admin-online
     // bot fallback don't accidentally trigger it — that path has its own

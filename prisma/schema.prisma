@@ -218,6 +218,27 @@ model Conversation {
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
 
+  // Waiting/lifecycle tracking (see src/lib/chat/send-message.ts): flipped by
+  // every visitor/admin message so Admin Chat can prioritise conversations
+  // that need a reply and show how long they've been waiting.
+  awaitingAdminReply       Boolean   @default(false)
+  waitingSince             DateTime?
+  lastCandidateMessageAt   DateTime?
+  lastAdminMessageAt       DateTime?
+  closedAt                 DateTime?
+
+  // Email notification dedup (src/lib/notifications/email.ts) — an initial
+  // alert fires once per waiting window, a single reminder ~5 minutes later
+  // if still unanswered; both reset to null once an admin replies.
+  initialNotificationSentAt  DateTime?
+  reminderNotificationSentAt DateTime?
+
+  // Post-chat feedback (§21) — set at most once; ratedAt guards against a
+  // repeat submission.
+  rating   Int?
+  feedback String?
+  ratedAt  DateTime?
+
   messages        Message[]
 
   // A partial unique index on (visitorId) WHERE status IN (OPEN, PENDING)
@@ -227,6 +248,7 @@ model Conversation {
   // findOrCreateConversation relies on it to resolve concurrent create races.
   @@index([visitorId])
   @@index([status, lastMessageAt])
+  @@index([awaitingAdminReply, waitingSince])
 }
 
 // Local mirror of Companies House's free "Basic Company Data" bulk CSV

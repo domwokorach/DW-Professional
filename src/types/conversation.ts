@@ -17,6 +17,14 @@ export interface Conversation {
   lastMessagePreview?: string | null;
   createdAt: string;
   updatedAt: string;
+  awaitingAdminReply: boolean;
+  waitingSince?: string | null;
+  lastCandidateMessageAt?: string | null;
+  lastAdminMessageAt?: string | null;
+  closedAt?: string | null;
+  rating?: number | null;
+  feedback?: string | null;
+  ratedAt?: string | null;
 }
 
 export interface ConversationWithMessages extends Conversation {

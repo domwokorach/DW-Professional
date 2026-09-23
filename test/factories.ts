@@ -153,6 +153,16 @@ export function buildConversation(overrides: Partial<Conversation> = {}): Conver
     lastMessageAt: new Date('2026-01-01T00:00:00.000Z'),
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
     updatedAt: new Date('2026-01-01T00:00:00.000Z'),
+    awaitingAdminReply: false,
+    waitingSince: null,
+    lastCandidateMessageAt: null,
+    lastAdminMessageAt: null,
+    closedAt: null,
+    initialNotificationSentAt: null,
+    reminderNotificationSentAt: null,
+    rating: null,
+    feedback: null,
+    ratedAt: null,
     ...overrides,
   };
 }

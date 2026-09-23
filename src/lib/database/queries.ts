@@ -24,6 +24,14 @@ export function toConversation(
       : null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
+    awaitingAdminReply: row.awaitingAdminReply,
+    waitingSince: row.waitingSince?.toISOString() ?? null,
+    lastCandidateMessageAt: row.lastCandidateMessageAt?.toISOString() ?? null,
+    lastAdminMessageAt: row.lastAdminMessageAt?.toISOString() ?? null,
+    closedAt: row.closedAt?.toISOString() ?? null,
+    rating: row.rating,
+    feedback: row.feedback,
+    ratedAt: row.ratedAt?.toISOString() ?? null,
   };
 }
 

@@ -24,7 +24,15 @@ export async function getConversations({
           ]
         : undefined,
     },
-    orderBy: { lastMessageAt: "desc" },
+    // Conversations needing attention float to the top: unread first, then
+    // anything awaiting an admin reply, longest-waiting first within that,
+    // then most recently active — matches the priority order in the brief.
+    orderBy: [
+      { unreadByAdmin: "desc" },
+      { awaitingAdminReply: "desc" },
+      { waitingSince: { sort: "asc", nulls: "last" } },
+      { lastMessageAt: "desc" },
+    ],
     take: limit,
     include: {
       messages: { take: 1, orderBy: { createdAt: "desc" } },

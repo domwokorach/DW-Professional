@@ -41,7 +41,6 @@ export default function LiveChat() {
   const {
     connectionState,
     adminStatus,
-    adminJoined,
     conversationStatus,
     pendingMessageIds,
     messages,
@@ -158,7 +157,6 @@ export default function LiveChat() {
                 typing={typing}
                 connectionState={connectionState}
                 adminStatus={adminStatus}
-                adminJoined={adminJoined}
                 conversationStatus={conversationStatus}
                 pendingMessageIds={pendingMessageIds}
                 conversationId={conversationId}

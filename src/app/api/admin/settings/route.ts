@@ -3,6 +3,8 @@ import { db } from "@/lib/database/db";
 import { requireAdminApi } from "@/lib/auth/guard";
 import { updateSettingsSchema } from "@/lib/auth/validation";
 import { validationError } from "@/lib/auth/apiError";
+import { publish } from "@/lib/redis/pubsub";
+import { ADMIN_AVAILABILITY_CHANGED_CHANNEL } from "@/lib/chat/availability-channel";
 import type { Prisma } from "@prisma/client";
 
 export const runtime = "nodejs";
@@ -56,6 +58,15 @@ export async function PATCH(request: NextRequest) {
       ...(availability ? { availability } : {}),
     },
   });
+
+  if (availability) {
+    // The socket server (a separate process) owns the live broadcast to
+    // Live Chat/Admin Chat; this is how the change reaches it without a
+    // page refresh. Best-effort — the new status still takes effect the
+    // next time the aggregate is recomputed (connect/disconnect/sweep) even
+    // if this publish is lost.
+    await publish(ADMIN_AVAILABILITY_CHANGED_CHANNEL, { adminId: user.id, availability });
+  }
 
   return NextResponse.json({ preferences: updated.preferences, availability: updated.availability });
 }

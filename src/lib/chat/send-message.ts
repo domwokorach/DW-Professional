@@ -47,12 +47,28 @@ export async function sendMessage({
           lastMessageAt: new Date(),
           status: "OPEN",
           ...(sender === "visitor"
-            ? { unreadByAdmin: { increment: 1 } }
+            ? { unreadByAdmin: { increment: 1 }, lastCandidateMessageAt: new Date(), awaitingAdminReply: true }
             : sender === "admin"
-              ? { unreadByVisitor: { increment: 1 } }
+              ? {
+                  unreadByVisitor: { increment: 1 },
+                  lastAdminMessageAt: new Date(),
+                  awaitingAdminReply: false,
+                  waitingSince: null,
+                  initialNotificationSentAt: null,
+                  reminderNotificationSentAt: null,
+                }
               : {}),
         },
       }),
+      // A visitor message starts the "waiting" clock the first time only —
+      // COALESCE keeps waitingSince pinned to when the admin first fell
+      // behind, not reset by every subsequent nudge from the candidate. Raw
+      // SQL because Prisma has no "set only if currently null" write.
+      ...(sender === "visitor"
+        ? [
+            db.$executeRaw`UPDATE "Conversation" SET "waitingSince" = COALESCE("waitingSince", NOW()) WHERE "id" = ${conversationId}`,
+          ]
+        : []),
     ]);
 
     return toMessage(message);

@@ -204,7 +204,6 @@ function ChatShell({
             onlineVisitorIds={onlineVisitorIds}
             adminName={adminName}
             adminEmail={adminEmail}
-            currentAdminId={adminId}
             onSelect={handleSelect}
             onSignOut={onSignOut}
           />

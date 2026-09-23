@@ -41,6 +41,14 @@ export function formatDateSeparator(value: string | Date): string {
   }).format(date);
 }
 
+/** "Waiting 30 sec" / "Waiting 2 min" / "Waiting 8 min" — matches the brief's exact wording. */
+export function formatWaitingDuration(waitingSince: string | Date, now: Date = new Date()): string {
+  const since = typeof waitingSince === "string" ? new Date(waitingSince) : waitingSince;
+  const seconds = Math.max(0, Math.floor((now.getTime() - since.getTime()) / 1000));
+  if (seconds < 60) return `Waiting ${seconds} sec`;
+  return `Waiting ${Math.floor(seconds / 60)} min`;
+}
+
 export function getMessagePreview(content: string, maxLength = PREVIEW_LENGTH): string {
   const trimmed = content.trim();
   return trimmed.length > maxLength ? `${trimmed.slice(0, maxLength - 1)}…` : trimmed;

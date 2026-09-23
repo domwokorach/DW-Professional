@@ -7,6 +7,8 @@ import { markAsRead } from "@/lib/chat/mark-as-read";
 import { getConversationById } from "@/lib/chat/get-conversations";
 import { assignConversationAdminIfUnset, updateConversation } from "@/lib/chat/update-conversation";
 import { updatePresence } from "@/lib/chat/update-presence";
+import { subscribe } from "@/lib/redis/pubsub";
+import { ADMIN_AVAILABILITY_CHANGED_CHANNEL } from "@/lib/chat/availability-channel";
 import { sendNewConversationEmail } from "@/lib/notifications/email";
 import { matchIntent } from "@/lib/portfolioAssistant/match";
 import { getResponseForIntent } from "@/lib/portfolioAssistant/responses";
@@ -77,6 +79,19 @@ export function attachChatHandlers(io: ChatServer): void {
     void sweepInactiveAdmins(io);
   }, INACTIVITY_SWEEP_INTERVAL_MS);
   sweep.unref();
+
+  // A manual availability change made from Admin Settings is written by the
+  // Next.js app, a separate process from this socket server. It publishes
+  // here instead of calling us directly; re-broadcast the recomputed
+  // aggregate status the same way any connect/disconnect/activity change
+  // would. No-ops in single-instance dev (REDIS_URL unset) — the settings
+  // change still takes effect on next reconnect/poll via getAggregateStatus.
+  subscribe(ADMIN_AVAILABILITY_CHANGED_CHANNEL, () => {
+    void (async () => {
+      const status = await updatePresence.getAggregateStatus();
+      await broadcastAdminStatus(io, status);
+    })().catch((error) => console.error("[socket] availability broadcast failed", error));
+  });
 }
 
 async function broadcastAdminStatus(io: ChatServer, status: AdminPresenceState) {
