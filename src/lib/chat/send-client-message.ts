@@ -7,8 +7,16 @@ export async function sendClientMessage(socket: ChatSocket | null, payload: Send
   if (socket?.connected) {
     for (let attempt = 0; attempt < 2; attempt++) {
       const result = await new Promise<MessageAcknowledgement | null>((resolve) => {
-        socket.timeout(8000).emit(visitorId ? "chat:message" : "chat:reply", payload,
-          (error: Error | null, response: MessageAcknowledgement) => resolve(error ? null : response));
+        const timer = setTimeout(() => resolve(null), 8000);
+        const ack = (response: MessageAcknowledgement) => {
+          clearTimeout(timer);
+          resolve(response);
+        };
+        if (visitorId) {
+          socket.emit("chat:message", payload, ack);
+        } else {
+          socket.emit("chat:reply", payload, ack);
+        }
       });
       if (result?.error) throw new Error(result.error);
       if (result?.message) return result.message;

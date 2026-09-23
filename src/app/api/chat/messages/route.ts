@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 
 /** Durable fallback when the standalone realtime host is unavailable. */
 export async function POST(request: NextRequest) {
-  const body = await request.json().catch(() => null);
+  const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;
   const input = safeParse(candidateMessageSchema, body);
   if (!input?.clientMessageId) return NextResponse.json({ error: "Invalid message." }, { status: 400 });
   const admin = await isAdmin();
