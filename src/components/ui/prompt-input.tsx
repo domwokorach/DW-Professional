@@ -150,7 +150,7 @@ function PromptInputTextarea({ className, onKeyDown, disableAutosize = false, ..
       onChange={handleChange}
       onKeyDown={handleKeyDown}
       className={cn(
-        "min-h-[44px] w-full resize-none border-none bg-transparent text-paper shadow-none outline-none focus-visible:outline-none",
+        "min-h-[48px] w-full resize-none border-none bg-transparent text-paper shadow-none outline-none focus-visible:outline-none",
         className
       )}
       rows={1}
