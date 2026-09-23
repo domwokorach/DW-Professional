@@ -91,6 +91,10 @@ export const caseStudies: CaseStudy[] = [
       heading: "What I Learned",
       text: "Delivering as part of a team under conference deadlines reinforced the value of reusable components and close collaboration across design, product and engineering.",
     },
+    mediaType: "image",
+    mediaSrc:
+      "https://res.cloudinary.com/dkkuwmr42/image/upload/v1790171813/Innovation_Community_2018_amid0c.png",
+    mediaAlt: "Innovation Communities Conference 2018",
   },
   {
     slug: "innovation-x",

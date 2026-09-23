@@ -25,6 +25,21 @@ if (typeof window !== 'undefined') {
     window.ResizeObserver = ResizeObserverStub;
   }
 
+  if (!('IntersectionObserver' in window)) {
+    class IntersectionObserverStub {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+      takeRecords() {
+        return [];
+      }
+    }
+    // @ts-expect-error - jsdom has no IntersectionObserver implementation; framer-motion's useInView needs it
+    window.IntersectionObserver = IntersectionObserverStub;
+    // @ts-expect-error - some libraries check the global directly rather than window
+    global.IntersectionObserver = IntersectionObserverStub;
+  }
+
   if (!Element.prototype.scrollIntoView) {
     Element.prototype.scrollIntoView = () => {};
   }

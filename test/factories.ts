@@ -6,6 +6,7 @@ import type {
   Conversation,
   Message,
   SecurityEvent,
+  Comment,
 } from '@prisma/client';
 import { hashToken } from '@/lib/auth/tokens';
 import { hashPassword } from '@/lib/auth/passwords';
@@ -108,6 +109,31 @@ export function buildSecurityEvent(overrides: Partial<SecurityEvent> = {}): Secu
     userAgent: 'test-agent',
     metadata: null,
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
+    ...overrides,
+  };
+}
+
+export function buildComment(overrides: Partial<Comment> = {}): Comment {
+  return {
+    id: overrides.id ?? nextId('comment'),
+    fullName: 'Jane Colleague',
+    company: 'Acme Corp',
+    companyId: null,
+    companyNumber: null,
+    companyStatus: null,
+    companySource: null,
+    companyDomain: null,
+    companyLogo: null,
+    companyIndustry: null,
+    companyLocation: null,
+    companyPostcode: null,
+    body: 'Great to work with — highly recommended.',
+    avatarUrl: null,
+    status: 'APPROVED',
+    createdAt: new Date('2026-01-01T00:00:00.000Z'),
+    updatedAt: new Date('2026-01-01T00:00:00.000Z'),
+    reviewedAt: new Date('2026-01-01T00:00:00.000Z'),
+    reviewedBy: nextId('admin'),
     ...overrides,
   };
 }
