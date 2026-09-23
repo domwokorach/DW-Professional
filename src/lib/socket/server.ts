@@ -272,10 +272,19 @@ async function handleConnection(
     await handleSetStatus(io, parsed.conversationId, parsed.status);
   });
 
-  socket.on(SOCKET_EVENTS.DELETE_MESSAGE, async (payload) => {
+  socket.on(SOCKET_EVENTS.DELETE_MESSAGE, async (payload, acknowledge) => {
     const parsed = safeParse(deleteMessagePayloadSchema, payload);
-    if (!parsed || socket.data.role !== "admin" || !socket.data.adminId) return;
-    await handleDeleteMessage(io, parsed.conversationId, parsed.messageId);
+    if (!parsed || socket.data.role !== "admin" || !socket.data.adminId) {
+      acknowledge?.({ ok: false, error: "Not authorized to delete this message." });
+      return;
+    }
+    try {
+      const result = await handleDeleteMessage(io, parsed.conversationId, parsed.messageId);
+      acknowledge?.(result === "not-found" ? { ok: false, error: "Message not found." } : { ok: true });
+    } catch (error) {
+      console.error("[socket] delete message failed", error);
+      acknowledge?.({ ok: false, error: "Message could not be deleted. Please retry." });
+    }
   });
 
   socket.on("chat:delivered", async (payload) => {
@@ -354,18 +363,23 @@ async function handleSetStatus(io: ChatServer, conversationId: string, status: "
 }
 
 async function handleDeleteMessage(io: ChatServer, conversationId: string, messageId: string) {
-  const deleted = await deleteMessage(messageId, conversationId);
-  if (!deleted) return;
+  const result = await deleteMessage(messageId, conversationId);
+  if (result === "not-found") return result;
 
+  // Broadcast even for "already-deleted" so a concurrent admin tab or the
+  // candidate that hasn't seen the first deletion yet still reconciles.
   io.to(getConversationRoom(conversationId)).emit(SOCKET_EVENTS.MESSAGE_DELETED, {
     conversationId,
     messageId,
   });
 
-  const conversation = await getConversationById(conversationId);
-  if (conversation) {
-    io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.CONVERSATION_UPDATED, { conversation });
+  if (result === "deleted") {
+    const conversation = await getConversationById(conversationId);
+    if (conversation) {
+      io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.CONVERSATION_UPDATED, { conversation });
+    }
   }
+  return result;
 }
 
 async function handleIncomingMessage(

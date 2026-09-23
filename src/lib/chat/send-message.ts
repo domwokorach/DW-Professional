@@ -108,20 +108,28 @@ export async function sendMessage({
   }
 }
 
+export type DeleteMessageResult = "deleted" | "already-deleted" | "not-found";
+
 /**
  * Soft-deletes a message: blanks its content and stamps `deletedAt` rather
  * than removing the row, so ordering/context in the thread is preserved and
- * the deletion itself can be broadcast and replayed safely. Returns false
- * (no-op) if the message doesn't exist or doesn't belong to the given
- * conversation — callers must not trust a client-supplied conversationId
- * without this check.
+ * the deletion itself can be broadcast and replayed safely. Callers must not
+ * trust a client-supplied conversationId without this check — the update is
+ * scoped to `id + conversationId` so a message from another conversation can
+ * never be reached this way.
  */
-export async function deleteMessage(messageId: string, conversationId: string): Promise<boolean> {
+export async function deleteMessage(messageId: string, conversationId: string): Promise<DeleteMessageResult> {
   const { count } = await db.message.updateMany({
     where: { id: messageId, conversationId, deletedAt: null },
     data: { content: "", deletedAt: new Date() },
   });
-  return count > 0;
+  if (count > 0) return "deleted";
+
+  // Nothing updated: either this message was already deleted (a concurrent
+  // delete from another admin tab, or a duplicate click) — harmless — or it
+  // never existed in this conversation at all.
+  const existing = await db.message.findFirst({ where: { id: messageId, conversationId }, select: { id: true } });
+  return existing ? "already-deleted" : "not-found";
 }
 
 /**
