@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useStickToBottomContext } from "use-stick-to-bottom";
+import { MessageCircle } from "lucide-react";
 import { ChatContainerRoot, ChatContainerContent, ChatContainerScrollAnchor } from "@/components/ui/chat-container";
 import { ScrollButton } from "@/components/ui/scroll-button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -102,10 +103,10 @@ export default function MessageList({
   if (loading) {
     return (
       <div className="flex-1 space-y-3 px-4 py-4">
-        <Skeleton className="h-12 w-2/3" />
-        <Skeleton className="ml-auto h-12 w-1/2" />
-        <Skeleton className="h-12 w-3/5" />
-        <Skeleton className="ml-auto h-12 w-2/5" />
+        <Skeleton className="h-12 w-2/3 border border-line" />
+        <Skeleton className="ml-auto h-12 w-1/2 border border-line" />
+        <Skeleton className="h-12 w-3/5 border border-line" />
+        <Skeleton className="ml-auto h-12 w-2/5 border border-line" />
       </div>
     );
   }
@@ -127,7 +128,13 @@ export default function MessageList({
           aria-label="Conversation messages"
         >
           {messages.length === 0 ? (
-            <p className="text-sm text-muted">No messages yet.</p>
+            <div className="flex flex-1 flex-col items-center justify-center gap-2 py-16 text-center">
+              <MessageCircle className="h-8 w-8 text-muted" aria-hidden="true" />
+              <p className="text-sm font-medium text-paper">No messages yet</p>
+              <p className="max-w-xs text-sm text-muted">
+                Send a reply below to start the conversation.
+              </p>
+            </div>
           ) : (
             <>
               {hasOlder ? (
