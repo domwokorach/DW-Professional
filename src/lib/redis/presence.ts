@@ -1,4 +1,6 @@
 import { getRedisClient } from "./client";
+import { db } from "@/lib/database/db";
+import type { AdminPresenceState } from "@/types/socket";
 
 const PRESENCE_KEY_PREFIX = "presence:admin:";
 const VISITOR_PRESENCE_KEY_PREFIX = "presence:visitor:";
@@ -94,16 +96,50 @@ export async function getStaleOnlineAdminIds(maxAgeMs: number): Promise<string[]
   return stale;
 }
 
-export async function getAdminAggregateStatus(): Promise<"online" | "away" | "offline"> {
+const STATUS_PRIORITY: Record<AdminPresenceState, number> = {
+  online: 3,
+  busy: 2,
+  away: 1,
+  offline: 0,
+};
+
+/**
+ * The status shown to candidates is a combination of two independent
+ * layers: the admin's manually-selected `User.availability`
+ * (ONLINE/AWAY/BUSY/OFFLINE, edited in Settings — never mutated by this
+ * function) and whether that admin currently has a live, heartbeating
+ * socket connection at all (tracked here in Redis, connectivity only).
+ *
+ * A manually-OFFLINE admin never counts, even while connected. A manually
+ * ONLINE/AWAY/BUSY admin only counts while actually connected — a stale or
+ * closed browser tab does not keep them looking available forever, but
+ * their manual setting in the database is left untouched so it resumes
+ * automatically on reconnect. The automatic inactivity sweep (see
+ * `getStaleOnlineAdminIds`/`setAdminAway`) can additionally downgrade a
+ * manually-ONLINE admin to "away" for being idle, without touching BUSY.
+ */
+export async function getAdminAggregateStatus(): Promise<AdminPresenceState> {
   const ids = await getOnlineAdminIds();
   if (ids.length === 0) return "offline";
-  const records = await Promise.all(ids.map(readAdminRecord));
-  let sawAway = false;
-  for (const record of records) {
-    if (record?.status === "online") return "online";
-    if (record?.status === "away") sawAway = true;
-  }
-  return sawAway ? "away" : "online";
+
+  const [records, admins] = await Promise.all([
+    Promise.all(ids.map(readAdminRecord)),
+    db.user.findMany({ where: { id: { in: ids } }, select: { id: true, availability: true } }),
+  ]);
+  const manualById = new Map(admins.map((admin) => [admin.id, admin.availability]));
+
+  let best: AdminPresenceState = "offline";
+  ids.forEach((id, index) => {
+    const manual = manualById.get(id) ?? "OFFLINE";
+    if (manual === "OFFLINE") return;
+
+    const record = records[index];
+    const effective: AdminPresenceState =
+      manual === "BUSY" ? "busy" : record?.status === "away" ? "away" : manual === "AWAY" ? "away" : "online";
+
+    if (STATUS_PRIORITY[effective] > STATUS_PRIORITY[best]) best = effective;
+  });
+  return best;
 }
 
 export async function setVisitorOnline(visitorId: string): Promise<void> {

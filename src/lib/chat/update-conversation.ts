@@ -18,6 +18,9 @@ export async function updateConversation(
       status: input.status ? (input.status.toUpperCase() as never) : undefined,
       assignedAdminId: input.assignedAdminId,
       unreadByAdmin: input.unreadByAdmin,
+      ...(input.status === "closed"
+        ? { closedAt: new Date(), awaitingAdminReply: false, waitingSince: null }
+        : {}),
     },
   });
 

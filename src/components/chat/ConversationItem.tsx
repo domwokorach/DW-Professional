@@ -7,6 +7,7 @@ import { formatChatDate, getMessagePreview, getPresenceStatus } from "@/lib/chat
 import { PresenceDot, presenceLabel } from "./OnlineStatus";
 import CandidateAvatar from "./CandidateAvatar";
 import UnreadBadge from "./UnreadBadge";
+import WaitingBadge from "./WaitingBadge";
 
 export default function ConversationItem({
   conversation,
@@ -54,7 +55,12 @@ export default function ConversationItem({
           ) : null}
           <span className="flex items-center justify-between gap-2">
             <span className="truncate text-xs font-normal text-muted">{preview}</span>
-            <UnreadBadge count={conversation.unreadByAdmin} />
+            <span className="flex shrink-0 items-center gap-1.5">
+              {conversation.awaitingAdminReply && conversation.waitingSince ? (
+                <WaitingBadge waitingSince={conversation.waitingSince} />
+              ) : null}
+              <UnreadBadge count={conversation.unreadByAdmin} />
+            </span>
           </span>
         </span>
       </SidebarMenuButton>

@@ -34,6 +34,11 @@ describe('sendMessage', () => {
         lastMessageAt: expect.any(Date),
         status: 'OPEN',
         unreadByVisitor: { increment: 1 },
+        lastAdminMessageAt: expect.any(Date),
+        awaitingAdminReply: false,
+        waitingSince: null,
+        initialNotificationSentAt: null,
+        reminderNotificationSentAt: null,
       },
     });
   });
@@ -45,8 +50,27 @@ describe('sendMessage', () => {
     await sendMessage({ conversationId: 'conv-1', sender: 'visitor', content: 'Question' });
 
     expect(db.conversation.update).toHaveBeenCalledWith(
-      expect.objectContaining({ data: expect.objectContaining({ unreadByAdmin: { increment: 1 } }) })
+      expect.objectContaining({
+        data: expect.objectContaining({
+          unreadByAdmin: { increment: 1 },
+          awaitingAdminReply: true,
+          lastCandidateMessageAt: expect.any(Date),
+        }),
+      })
     );
+  });
+
+  it('pins waitingSince to first-message time via a COALESCE update on visitor messages only', async () => {
+    (db.message.create as jest.Mock).mockResolvedValue(buildMessage({ sender: 'VISITOR' }));
+    (db.conversation.update as jest.Mock).mockResolvedValue({});
+    (db.$executeRaw as unknown as jest.Mock).mockResolvedValue(1);
+
+    await sendMessage({ conversationId: 'conv-1', sender: 'visitor', content: 'Question' });
+    expect(db.$executeRaw).toHaveBeenCalledTimes(1);
+
+    (db.$executeRaw as unknown as jest.Mock).mockClear();
+    await sendMessage({ conversationId: 'conv-1', sender: 'admin', senderId: 'admin-1', content: 'Answer' });
+    expect(db.$executeRaw).not.toHaveBeenCalled();
   });
 
   it('increments unreadByVisitor when sender is admin', async () => {

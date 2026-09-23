@@ -50,7 +50,6 @@ export default function LiveChatPanel({
   typing,
   connectionState,
   adminStatus,
-  adminJoined,
   conversationStatus,
   pendingMessageIds,
   conversationId,
@@ -64,7 +63,6 @@ export default function LiveChatPanel({
   typing: boolean;
   connectionState: ConnectionState;
   adminStatus: AdminPresenceState;
-  adminJoined: boolean;
   conversationStatus: "open" | "closed";
   pendingMessageIds: Set<string>;
   conversationId: string | null;
@@ -176,7 +174,7 @@ export default function LiveChatPanel({
         </div>
       </header>
 
-      <PresenceBanner adminJoined={adminJoined} adminStatus={adminStatus} />
+      <PresenceBanner adminStatus={adminStatus} />
 
       <div
         ref={scrollRef}
@@ -270,7 +268,7 @@ export default function LiveChatPanel({
             placeholder={isClosed ? "This conversation has ended." : "Type a message…"}
             rows={1}
             maxLength={2000}
-            className="min-h-11 max-h-24 flex-1 resize-none rounded-2xl border border-line bg-ink px-4 py-2.5 text-sm leading-normal text-paper placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
+            className="min-h-11 max-h-24 w-full min-w-0 flex-1 resize-none rounded-2xl border border-line bg-ink px-4 py-2.5 text-sm leading-normal text-paper placeholder:text-muted focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50"
           />
           <button
             type="submit"

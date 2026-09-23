@@ -11,16 +11,12 @@ export const FILTER_LABELS: Record<ConversationFilter, string> = {
   closed: "Closed",
 };
 
-export function matchesFilter(
-  conversation: Conversation,
-  filter: ConversationFilter,
-  ctx: { onlineVisitorIds: Set<string>; currentAdminId: string }
-): boolean {
+export function matchesFilter(conversation: Conversation, filter: ConversationFilter): boolean {
   switch (filter) {
     case "all":
       return true;
     case "waiting":
-      return ctx.onlineVisitorIds.has(conversation.visitorId) && conversation.unreadByAdmin > 0;
+      return conversation.awaitingAdminReply;
     case "active":
       return conversation.status !== "closed";
     case "closed":

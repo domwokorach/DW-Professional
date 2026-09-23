@@ -12,7 +12,14 @@ describe('updateConversation', () => {
 
     expect(db.conversation.update).toHaveBeenCalledWith({
       where: { id: 'conv-1' },
-      data: { status: 'CLOSED', assignedAdminId: undefined, unreadByAdmin: undefined },
+      data: {
+        status: 'CLOSED',
+        assignedAdminId: undefined,
+        unreadByAdmin: undefined,
+        closedAt: expect.any(Date),
+        awaitingAdminReply: false,
+        waitingSince: null,
+      },
     });
   });
 

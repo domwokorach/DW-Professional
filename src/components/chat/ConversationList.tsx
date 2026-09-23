@@ -36,7 +36,6 @@ export default function ConversationList({
   onlineVisitorIds,
   adminName,
   adminEmail,
-  currentAdminId,
   onSelect,
   onSignOut,
 }: {
@@ -48,7 +47,6 @@ export default function ConversationList({
   onlineVisitorIds: Set<string>;
   adminName: string;
   adminEmail: string;
-  currentAdminId: string;
   onSelect: (id: string) => void;
   onSignOut: () => void;
 }) {
@@ -67,14 +65,14 @@ export default function ConversationList({
     let closed = 0;
     for (const conversation of searched) {
       if (conversation.status === "closed") closed++;
-      if (onlineVisitorIds.has(conversation.visitorId) && conversation.unreadByAdmin > 0) waiting++;
+      if (conversation.awaitingAdminReply) waiting++;
     }
     return { all: searched.length, waiting, active: searched.length - closed, closed };
-  }, [searched, onlineVisitorIds]);
+  }, [searched]);
 
   const filtered = useMemo(() => {
-    return searched.filter((conversation) => matchesFilter(conversation, filter, { onlineVisitorIds, currentAdminId }));
-  }, [searched, filter, onlineVisitorIds, currentAdminId]);
+    return searched.filter((conversation) => matchesFilter(conversation, filter));
+  }, [searched, filter]);
 
   const { waiting, active, offline } = useMemo(() => {
     const waiting: Conversation[] = [];

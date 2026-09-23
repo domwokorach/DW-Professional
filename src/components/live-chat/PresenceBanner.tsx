@@ -1,40 +1,45 @@
-import TypingIndicator from "@/components/chat/TypingIndicator";
 import type { AdminPresenceState } from "@/types/socket";
 
-const STATUS_CONFIG: Record<AdminPresenceState, { label: string; dot: string; pulse: boolean }> = {
-  online: { label: "Admin is online", dot: "bg-emerald-400", pulse: true },
-  away: { label: "Admin is away — you can still leave a message", dot: "bg-amber-400", pulse: false },
+// Copy and colour match the brief exactly: a status word plus a short
+// second line, never colour alone (the word itself is always present too).
+const STATUS_CONFIG: Record<AdminPresenceState, { label: string; detail: string; dot: string; pulse: boolean }> = {
+  online: { label: "Online", detail: "Usually replies shortly", dot: "bg-emerald-400", pulse: true },
+  away: {
+    label: "Away",
+    detail: "I may take a little longer to reply.",
+    dot: "bg-amber-400",
+    pulse: false,
+  },
+  busy: {
+    label: "Busy",
+    detail: "I'm currently busy but you can still leave a message.",
+    dot: "bg-red-400",
+    pulse: false,
+  },
   offline: {
-    label: "Admin is offline — leave a message and they can reply when available",
+    label: "Offline",
+    detail: "Leave a message and I'll get back to you.",
     dot: "bg-muted",
     pulse: false,
   },
 };
 
-export default function PresenceBanner({
-  adminJoined,
-  adminStatus,
-}: {
-  adminJoined: boolean;
-  adminStatus: AdminPresenceState;
-}) {
-  if (!adminJoined) {
-    return (
-      <div className="border-b border-line px-4 py-2">
-        <TypingIndicator label="Waiting for an admin to join…" />
-      </div>
-    );
-  }
-
-  const { label, dot, pulse } = STATUS_CONFIG[adminStatus];
+/**
+ * Shows Dominic's current availability at all times, independent of
+ * whether an admin has opened this specific conversation yet — the brief
+ * requires this to be visible from the moment Live Chat opens, not just
+ * once someone has replied.
+ */
+export default function PresenceBanner({ adminStatus }: { adminStatus: AdminPresenceState }) {
+  const { label, detail, dot, pulse } = STATUS_CONFIG[adminStatus];
 
   return (
-    <p
-      className="flex items-center gap-1.5 border-b border-line px-4 py-2 text-xs text-muted"
+    <div
+      className="flex items-start gap-1.5 border-b border-line px-4 py-2 text-xs text-muted"
       role="status"
       aria-live="polite"
     >
-      <span className="relative flex h-2 w-2 shrink-0">
+      <span className="relative mt-1 flex h-2 w-2 shrink-0">
         {pulse ? (
           <span
             className={`absolute inline-flex h-full w-full animate-ping rounded-full ${dot} opacity-60 motion-reduce:hidden`}
@@ -42,7 +47,11 @@ export default function PresenceBanner({
         ) : null}
         <span className={`relative inline-flex h-2 w-2 rounded-full ${dot}`} />
       </span>
-      {label}
-    </p>
+      <span>
+        <span className="font-medium text-paper">{label}</span>
+        <br />
+        {detail}
+      </span>
+    </div>
   );
 }
