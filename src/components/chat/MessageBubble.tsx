@@ -33,6 +33,10 @@ export default function MessageBubble({
   onDelete?: (messageId: string) => void;
 }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
+  // group-hover never fires on a touchscreen, so the actions trigger needs a
+  // tap-driven way to appear too — but showing it permanently on every bubble
+  // (rather than only this message, on tap) would clutter the whole thread.
+  const [tapRevealed, setTapRevealed] = useState(false);
   const isAdmin = message.sender === "admin";
   const isDeleted = Boolean(message.deleted);
 
@@ -60,10 +64,10 @@ export default function MessageBubble({
                 variant="ghost"
                 size="icon"
                 aria-label="Message actions"
-                // group-hover never fires on a touchscreen, so below md (where
-                // there's no reliable hover) the trigger stays visible and at
-                // a larger tap target instead of only appearing on hover/focus.
-                className="h-8 w-8 opacity-100 transition-opacity md:h-6 md:w-6 md:opacity-0 md:focus-visible:opacity-100 md:group-hover/message:opacity-100"
+                className={cn(
+                  "h-6 w-6 opacity-0 transition-opacity focus-visible:opacity-100 group-hover/message:opacity-100",
+                  tapRevealed && "opacity-100"
+                )}
               >
                 <EllipsisVertical className="h-3.5 w-3.5" aria-hidden="true" />
               </ChatButton>
@@ -84,24 +88,26 @@ export default function MessageBubble({
           </DropdownMenu>
         ) : null}
       </div>
-      {!isDeleted && (message.content || !message.attachments?.length) ? (
-        <MessageContent
-          className={cn(
-            "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm md:max-w-[75%] lg:max-w-[65%]",
-            isAdmin ? "bg-accent text-accent-fg" : "border border-line bg-ink text-paper"
-          )}
-        >
-          {message.content}
-        </MessageContent>
-      ) : null}
-      {isDeleted ? (
-        <MessageContent className="max-w-[85%] rounded-2xl border border-dashed border-line px-4 py-2.5 text-sm italic text-muted md:max-w-[75%] lg:max-w-[65%]">
-          Message deleted
-        </MessageContent>
-      ) : null}
-      {!isDeleted && message.attachments?.length
-        ? message.attachments.map((attachment) => <MessageAttachment key={attachment.id} attachment={attachment} />)
-        : null}
+      <div className="contents" onClick={onDelete ? () => setTapRevealed((r) => !r) : undefined}>
+        {!isDeleted && (message.content || !message.attachments?.length) ? (
+          <MessageContent
+            className={cn(
+              "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm md:max-w-[75%] lg:max-w-[65%]",
+              isAdmin ? "bg-accent text-accent-fg" : "border border-line bg-ink text-paper"
+            )}
+          >
+            {message.content}
+          </MessageContent>
+        ) : null}
+        {isDeleted ? (
+          <MessageContent className="max-w-[85%] rounded-2xl border border-dashed border-line px-4 py-2.5 text-sm italic text-muted md:max-w-[75%] lg:max-w-[65%]">
+            Message deleted
+          </MessageContent>
+        ) : null}
+        {!isDeleted && message.attachments?.length
+          ? message.attachments.map((attachment) => <MessageAttachment key={attachment.id} attachment={attachment} />)
+          : null}
+      </div>
       <span className="flex items-center gap-1 px-1 text-[11px] text-muted">
         {formatChatDate(message.createdAt)}
         {isAdmin && !isDeleted ? (
