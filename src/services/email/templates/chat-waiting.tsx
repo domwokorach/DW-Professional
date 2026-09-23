@@ -1,3 +1,12 @@
+// Explicit React import (unlike the other templates): this is the only
+// template ever rendered from the standalone socket server process
+// (src/lib/socket/server.ts's waiting-conversation sweep, run via `tsx`),
+// not through Next.js's own build — esbuild's JSX transform there needs
+// `React` in scope for the classic React.createElement() output, whereas
+// Next's bundler injects the automatic jsx-runtime import itself. Without
+// this, every waiting-candidate notification email throws
+// "ReferenceError: React is not defined" before it ever reaches Resend.
+import React from "react";
 import type { CSSProperties } from "react";
 import { Body, Button, Column, Container, Head, Heading, Hr, Html, Preview, Row, Section, Text } from "@react-email/components";
 
