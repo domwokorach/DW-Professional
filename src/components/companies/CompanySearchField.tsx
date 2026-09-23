@@ -254,10 +254,11 @@ export default function CompanySearchField({
   }, [status, errorMessage, results.length, datasetEmpty]);
 
   // Always present (even with no selection) so a plain `new FormData(form)`
-  // submission carries the three fields separately rather than one
-  // combined display string — see the component doc comment above.
+  // submission carries these fields separately rather than one combined
+  // display string — see the component doc comment above.
   const hiddenCompanyFields = (
     <>
+      <input type="hidden" name="companyId" value={selected?.id ?? ""} />
       <input type="hidden" name="companyNumber" value={selected?.companyNumber ?? ""} />
       <input type="hidden" name="companyPostcode" value={selected?.postcode ?? selected?.address?.postalCode ?? ""} />
     </>
@@ -347,7 +348,7 @@ export default function CompanySearchField({
 
       <div
         className={cn(
-          "absolute left-0 right-0 z-20 mt-1.5 max-w-[calc(100vw-2rem)] origin-top overflow-hidden rounded-lg border border-line bg-ink shadow-lg transition-all duration-150",
+          "absolute left-0 right-0 z-50 mt-1.5 max-w-[calc(100vw-2rem)] origin-top overflow-hidden rounded-lg border border-line bg-ink shadow-lg transition-all duration-150",
           showDropdown
             ? "pointer-events-auto scale-y-100 opacity-100"
             : "pointer-events-none scale-y-95 opacity-0"
