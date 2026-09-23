@@ -338,7 +338,13 @@ export function useLiveChat(isOpen = false) {
 
   const endChat = useCallback(() => {
     if (!conversationId) return;
-    if (pendingMessageIds.size || messages.some((message) => message.localStatus)) { toast.error("Please wait for your messages to finish sending."); return; }
+    // Only a still-in-flight send should block ending the chat — a
+    // permanently failed one (localStatus "failed") already has its own
+    // Retry action and must never wedge "End chat" indefinitely.
+    if (pendingMessageIds.size || messages.some((message) => message.localStatus === "sending")) {
+      toast.error("Please wait for your messages to finish sending.");
+      return;
+    }
     const socket = socketRef.current;
     if (!socket?.connected) { toast.error("Reconnect before ending your chat. Your conversation is saved."); return; }
     socket.emit(SOCKET_EVENTS.SET_STATUS, { conversationId, status: "closed" });

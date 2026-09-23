@@ -47,3 +47,19 @@ it('renders typing immediately and clears it after inactivity', async () => {
   expect(result.current.typing).toBe(false);
   jest.useRealTimers();
 });
+
+it('does not permanently block End chat after an earlier message failed to send', async () => {
+  const { result } = renderHook(() => useLiveChat());
+  await waitFor(() => expect(result.current.ready).toBe(true));
+
+  // The socket ack comes back as an error, so the optimistic message is
+  // left with localStatus "failed" — this must not wedge endChat() forever
+  // afterwards.
+  socket.emit.mockImplementation((_event, _payload, ack) => ack?.({ error: 'Message rejected.' }));
+
+  act(() => result.current.sendMessage('hello'));
+  await waitFor(() => expect(result.current.messages.some((m) => m.localStatus === 'failed')).toBe(true));
+
+  act(() => result.current.endChat());
+  expect(socket.emit).toHaveBeenCalledWith('chat:set-status', { conversationId: 'conv-1', status: 'closed' });
+});
