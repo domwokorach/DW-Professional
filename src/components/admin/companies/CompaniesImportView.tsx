@@ -250,7 +250,7 @@ export default function CompaniesImportView({ initialTotalRecords }: { initialTo
         method: "POST",
         body: formData,
       });
-      const data = await res.json().catch(() => null);
+      const data = (await res.json().catch(() => null)) as (ImportReport & { error?: { message?: string } }) | null;
 
       if (!res.ok) {
         setStatus("error");
@@ -259,7 +259,7 @@ export default function CompaniesImportView({ initialTotalRecords }: { initialTo
       }
 
       setReport(data);
-      setTotalRecords(data.totalRecords ?? totalRecords);
+      setTotalRecords(data?.totalRecords ?? totalRecords);
       setStatus("success");
       setFile(null);
       if (inputRef.current) inputRef.current.value = "";

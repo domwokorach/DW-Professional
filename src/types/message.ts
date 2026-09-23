@@ -8,6 +8,15 @@ export type ChatAction = {
   external?: boolean;
 };
 
+export interface MessageAttachment {
+  id: string;
+  originalName: string;
+  /** Downloadable URL — the blob store's own URL, never a raw filesystem path. */
+  url: string;
+  mimeType: string;
+  size: number;
+}
+
 export interface ChatMessage {
   id: string;
   conversationId: string;
@@ -18,4 +27,5 @@ export interface ChatMessage {
   createdAt: string;
   actions?: ChatAction[];
   deleted?: boolean;
+  attachments?: MessageAttachment[];
 }

@@ -80,27 +80,36 @@ export default function PortraitAnimator() {
   async function pollStatus(taskId: string) {
     try {
       const response = await fetch(`/api/animate/status/${taskId}`);
-      const body = await response.json();
+      // `error` is shaped inconsistently by the underlying API depending on
+      // which branch below reads it (an object with .message on an HTTP
+      // failure, a bare string on a FAILED generation) — kept as a union to
+      // match that rather than papering over it with an incorrect shape.
+      const body = (await response.json()) as {
+        error?: { message?: string } | string;
+        status?: string;
+        videoUrl?: string;
+      };
+      const errorMessage = typeof body?.error === "string" ? body.error : body?.error?.message;
 
       if (!response.ok) {
         setStatus("error");
-        setErrorMessage(body?.error?.message ?? "Couldn't check the animation status.");
+        setErrorMessage(errorMessage ?? "Couldn't check the animation status.");
         return;
       }
 
       if (body.status === "SUCCEEDED") {
-        setVideoUrl(body.videoUrl);
+        setVideoUrl(body.videoUrl ?? null);
         setStatus("done");
         return;
       }
 
       if (body.status === "FAILED") {
         setStatus("error");
-        setErrorMessage(body.error ?? "The animation failed to generate.");
+        setErrorMessage(errorMessage ?? "The animation failed to generate.");
         return;
       }
 
-      if (!TERMINAL_STATUSES.has(body.status)) {
+      if (!TERMINAL_STATUSES.has(body.status ?? "")) {
         pollTimeoutRef.current = setTimeout(() => pollStatus(taskId), POLL_INTERVAL_MS);
       }
     } catch {
@@ -124,7 +133,7 @@ export default function PortraitAnimator() {
       formData.append("photo", file);
 
       const response = await fetch("/api/animate", { method: "POST", body: formData });
-      const body = await response.json();
+      const body = (await response.json()) as { error?: { message?: string }; taskId?: string };
 
       if (!response.ok) {
         setStatus("error");
@@ -133,7 +142,7 @@ export default function PortraitAnimator() {
       }
 
       setStatus("polling");
-      pollTimeoutRef.current = setTimeout(() => pollStatus(body.taskId), POLL_INTERVAL_MS);
+      pollTimeoutRef.current = setTimeout(() => pollStatus(body.taskId!), POLL_INTERVAL_MS);
     } catch {
       setStatus("error");
       setErrorMessage("Something went wrong while uploading your photo.");

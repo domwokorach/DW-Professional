@@ -4,12 +4,14 @@ import { sanitizeMessage } from "@/lib/utils/sanitize-message";
 import { isRateLimited } from "@/lib/utils/rate-limit";
 import { sendMessage, markMessageDelivered, deleteMessage } from "@/lib/chat/send-message";
 import { markAsRead } from "@/lib/chat/mark-as-read";
+import { getMessageById } from "@/lib/chat/get-messages";
 import { getConversationById } from "@/lib/chat/get-conversations";
+import { CHAT_MESSAGE_CREATED_CHANNEL, type ChatMessageCreatedEvent } from "@/lib/chat/message-created-channel";
 import { assignConversationAdminIfUnset, updateConversation } from "@/lib/chat/update-conversation";
 import { updatePresence } from "@/lib/chat/update-presence";
 import { subscribe } from "@/lib/redis/pubsub";
 import { ADMIN_AVAILABILITY_CHANGED_CHANNEL } from "@/lib/chat/availability-channel";
-import { sendNewConversationEmail } from "@/lib/notifications/email";
+import { sendWaitingConversationNotifications } from "@/lib/chat/waiting-notifications";
 import { matchIntent } from "@/lib/portfolioAssistant/match";
 import { getResponseForIntent } from "@/lib/portfolioAssistant/responses";
 import {
@@ -35,6 +37,11 @@ type ChatSocket = Socket<ClientToServerEvents, ServerToClientEvents, Record<stri
 // replying), an online admin is flipped to "away". Overridable for tests.
 const ADMIN_AWAY_AFTER_MS = Number(process.env.ADMIN_AWAY_AFTER_MS) || 5 * 60 * 1000;
 const INACTIVITY_SWEEP_INTERVAL_MS = 30_000;
+
+// Fine-grained enough that the initial alert goes out within roughly a
+// minute of a conversation starting to wait, without hammering the database
+// or Resend every few seconds.
+const WAITING_NOTIFICATION_SWEEP_INTERVAL_MS = 60_000;
 
 // Safety net: if a "stop typing" is ever lost (client crash, dropped
 // packet), the indicator on the other end must not get stuck forever.
@@ -80,6 +87,13 @@ export function attachChatHandlers(io: ChatServer): void {
   }, INACTIVITY_SWEEP_INTERVAL_MS);
   sweep.unref();
 
+  const notificationSweep = setInterval(() => {
+    void sendWaitingConversationNotifications().catch((error) =>
+      console.error("[socket] waiting-conversation notification sweep failed", error)
+    );
+  }, WAITING_NOTIFICATION_SWEEP_INTERVAL_MS);
+  notificationSweep.unref();
+
   // A manual availability change made from Admin Settings is written by the
   // Next.js app, a separate process from this socket server. It publishes
   // here instead of calling us directly; re-broadcast the recomputed
@@ -92,6 +106,30 @@ export function attachChatHandlers(io: ChatServer): void {
       await broadcastAdminStatus(io, status);
     })().catch((error) => console.error("[socket] availability broadcast failed", error));
   });
+
+  // A message created by the attachment-completion REST route (Next.js
+  // process — see src/app/api/chat/attachments/complete/route.ts) reaches
+  // connected clients the same cross-process way as an availability change.
+  subscribe(CHAT_MESSAGE_CREATED_CHANNEL, (payload) => {
+    void handleExternallyCreatedMessage(io, payload as ChatMessageCreatedEvent).catch((error) =>
+      console.error("[socket] externally-created message broadcast failed", error)
+    );
+  });
+}
+
+async function handleExternallyCreatedMessage(io: ChatServer, payload: ChatMessageCreatedEvent) {
+  const message = await getMessageById(payload.messageId);
+  if (!message) return;
+
+  const room = getConversationRoom(payload.conversationId);
+  io.to(room).emit(SOCKET_EVENTS.MESSAGE, { message });
+
+  const conversation = await getConversationById(payload.conversationId);
+  if (!conversation) return;
+  io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.CONVERSATION_UPDATED, { conversation });
+  if (message.sender === "visitor") {
+    io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.NEW_CONVERSATION, { conversation });
+  }
 }
 
 async function broadcastAdminStatus(io: ChatServer, status: AdminPresenceState) {
@@ -204,7 +242,17 @@ async function handleConnection(
 
   socket.on(SOCKET_EVENTS.SET_STATUS, async (payload) => {
     const parsed = safeParse(setStatusPayloadSchema, payload);
-    if (!parsed || socket.data.role !== "admin" || !socket.data.adminId) return;
+    if (!parsed) return;
+
+    const isAdmin = socket.data.role === "admin" && Boolean(socket.data.adminId);
+    // A visitor may end their own conversation ("End chat") but never
+    // reopen one or touch anyone else's — everything else stays admin-only.
+    const isOwnVisitorClosing =
+      socket.data.role === "visitor" &&
+      parsed.conversationId === socket.data.conversationId &&
+      parsed.status === "closed";
+    if (!isAdmin && !isOwnVisitorClosing) return;
+
     await handleSetStatus(io, parsed.conversationId, parsed.status);
   });
 
@@ -313,8 +361,12 @@ async function handleIncomingMessage(
     if (!updatedConversation) return;
     io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.NEW_CONVERSATION, { conversation: updatedConversation });
 
+    // Email alerting is decoupled from live presence and handled by the
+    // waiting-conversation sweep below — a manually Away/Busy/Offline admin
+    // still needs the alert even though they're "aggregate offline" here.
+    // The canned bot reply, in contrast, is specifically an offline-only
+    // stand-in for a human response.
     if (aggregateStatus === "offline") {
-      await sendNewConversationEmail(updatedConversation);
       await sendBotReply(io, conversationId, content);
     }
   })().catch((error) => console.error("[socket] post-broadcast follow-up failed", error));

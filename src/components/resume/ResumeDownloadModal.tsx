@@ -124,7 +124,7 @@ export default function ResumeDownloadModal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: trimmed }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as { error?: string; challenge?: string };
 
       if (!res.ok) {
         setError(data.error || "Couldn't send the code. Try again.");
@@ -132,7 +132,7 @@ export default function ResumeDownloadModal({
       }
 
       setEmail(trimmed);
-      setChallenge(data.challenge);
+      setChallenge(data.challenge ?? "");
       setPin("");
       setStep("pin");
       setCooldown(RESEND_COOLDOWN_SECONDS);
@@ -159,14 +159,14 @@ export default function ResumeDownloadModal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, pin, challenge }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as { error?: string; downloadToken?: string };
 
       if (!res.ok) {
         setError(data.error || "Incorrect code.");
         return;
       }
 
-      setDownloadToken(data.downloadToken);
+      setDownloadToken(data.downloadToken ?? "");
       setStep("success");
     } catch {
       setError("Couldn't verify the code. Try again.");

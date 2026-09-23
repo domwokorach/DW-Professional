@@ -154,10 +154,16 @@ export default function Contact() {
         body: data,
       });
 
-      const result = await response.json().catch(() => null);
+      const result = (await response.json().catch(() => null)) as {
+        success?: boolean;
+        error?: { message?: string; fields?: Record<string, string> } | string;
+        attachment?: SubmittedAttachment | null;
+      } | null;
       if (!response.ok || !result?.success) {
-        const message: string = result?.error?.message ?? result?.error ?? "Failed to send your message";
-        const fields: Record<string, string> = result?.error?.fields ?? {};
+        const errorField = result?.error;
+        const message: string =
+          (typeof errorField === "object" ? errorField?.message : errorField) ?? "Failed to send your message";
+        const fields: Record<string, string> = (typeof errorField === "object" ? errorField?.fields : undefined) ?? {};
         setFieldErrors(fields);
         throw new Error(message);
       }

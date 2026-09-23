@@ -28,7 +28,7 @@ export default function ForgotPasswordForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as { error?: { message?: string } };
       if (!res.ok) {
         setErrorMessage(data?.error?.message ?? "Something went wrong. Please try again.");
         return;

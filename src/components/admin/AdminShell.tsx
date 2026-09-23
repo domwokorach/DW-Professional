@@ -30,6 +30,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useLocale } from "@/i18n/LocaleProvider";
 import { useSignOut } from "@/hooks/use-sign-out";
+import { AdminChatProvider, useAdminChatContext } from "@/hooks/use-admin-chat-context";
+import AdminChatNotifications from "./AdminChatNotifications";
 import type { AdminSession } from "@/lib/auth/guard";
 
 const NAV_ITEMS = [
@@ -75,6 +77,27 @@ export default function AdminShell({
   sidebarDefaultOpen?: boolean;
   children: React.ReactNode;
 }) {
+  return (
+    <AdminChatProvider>
+      <AdminChatNotifications />
+      <AdminShellInner admin={admin} sidebarDefaultOpen={sidebarDefaultOpen}>
+        {children}
+      </AdminShellInner>
+    </AdminChatProvider>
+  );
+}
+
+function AdminShellInner({
+  admin,
+  sidebarDefaultOpen = true,
+  children,
+}: {
+  admin: AdminSession;
+  sidebarDefaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  const { conversations } = useAdminChatContext();
+  const chatUnreadCount = conversations.reduce((sum, c) => sum + c.unreadByAdmin, 0);
   const pathname = usePathname();
   const { localiseHref } = useLocale();
   const { signOut, signingOut } = useSignOut();
@@ -101,11 +124,26 @@ export default function AdminShell({
                   const href = localiseHref(item.href);
                   const active = pathname === href || pathname?.startsWith(`${href}/`);
                   const Icon = item.icon;
+                  const badgeCount = item.id === "chat" ? chatUnreadCount : 0;
                   return (
                     <SidebarMenuItem key={item.id}>
-                      <NavLink href={href} active={active} tooltip={item.label}>
+                      <NavLink
+                        href={href}
+                        active={active}
+                        tooltip={badgeCount > 0 ? `${item.label} (${badgeCount} unread)` : item.label}
+                      >
                         <Icon />
-                        <span>{item.label}</span>
+                        <span className="flex flex-1 items-center justify-between gap-2">
+                          {item.label}
+                          {badgeCount > 0 ? (
+                            <Badge
+                              variant="secondary"
+                              className="h-5 min-w-5 justify-center rounded-full px-1 text-[10px] group-data-[collapsible=icon]:hidden"
+                            >
+                              {badgeCount > 99 ? "99+" : badgeCount}
+                            </Badge>
+                          ) : null}
+                        </span>
                       </NavLink>
                     </SidebarMenuItem>
                   );

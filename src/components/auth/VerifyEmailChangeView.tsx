@@ -31,7 +31,7 @@ export default function VerifyEmailChangeView() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ token }),
         });
-        const data = await res.json();
+        const data = (await res.json()) as { error?: { message?: string; code?: string } };
         if (cancelled) return;
 
         if (res.ok) {

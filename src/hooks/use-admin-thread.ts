@@ -34,8 +34,8 @@ export function useAdminThread(
 
   const fetchConversation = useCallback((id: string) => {
     return fetch(`/api/chat/conversations/${id}`)
-      .then((res) => (res.ok ? res.json() : Promise.reject(res)))
-      .then(({ conversation: loaded }: { conversation: ConversationWithMessages }) => loaded)
+      .then((res) => (res.ok ? (res.json() as Promise<{ conversation: ConversationWithMessages }>) : Promise.reject(res)))
+      .then(({ conversation: loaded }) => loaded)
       .catch(() => null);
   }, []);
 

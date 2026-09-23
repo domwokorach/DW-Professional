@@ -97,7 +97,7 @@ function ChangePasswordCard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ currentPassword, newPassword }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as { error?: { message?: string } };
       if (!res.ok) {
         toast.error(data?.error?.message ?? "Couldn't change your password.");
         return;
@@ -158,7 +158,7 @@ function ChangeEmailCard({ email }: { email: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ currentPassword, newEmail }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as { error?: { message?: string }; message?: string };
       if (!res.ok) {
         toast.error(data?.error?.message ?? "Couldn't request an email change.");
         return;
@@ -287,7 +287,7 @@ function RecentActivityCard() {
   useEffect(() => {
     let cancelled = false;
     fetch("/api/admin/security-events")
-      .then((res) => (res.ok ? res.json() : { events: [] }))
+      .then((res) => (res.ok ? (res.json() as Promise<{ events: SecurityEvent[] }>) : { events: [] }))
       .then((data) => {
         if (!cancelled) setEvents(data.events ?? []);
       })

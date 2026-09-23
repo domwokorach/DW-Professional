@@ -48,7 +48,7 @@ export default function AdminComments() {
     try {
       const query = status === "ALL" ? "" : `?status=${status}`;
       const res = await fetch(`/api/admin/comments${query}`);
-      const data = await res.json();
+      const data = (await res.json()) as { comments: AdminComment[] };
       setComments(res.ok ? data.comments : []);
     } catch {
       setComments([]);

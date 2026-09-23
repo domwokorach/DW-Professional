@@ -18,7 +18,10 @@ describe('sendMessage', () => {
         sender: 'VISITOR',
         senderId: undefined,
         content: 'Hi there',
+        clientMessageId: undefined,
+        attachments: undefined,
       },
+      include: { attachments: true },
     });
   });
 

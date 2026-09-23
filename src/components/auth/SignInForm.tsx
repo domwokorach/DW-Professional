@@ -48,7 +48,9 @@ export default function SignInForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, rememberMe }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as {
+        error?: { message?: string; fields?: Record<string, string> };
+      };
 
       if (!res.ok) {
         if (data?.error?.fields) setFieldErrors(data.error.fields);

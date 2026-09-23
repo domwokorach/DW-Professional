@@ -15,6 +15,7 @@ describe('getMessages', () => {
       where: { conversationId: 'conv-1' },
       orderBy: { createdAt: 'asc' },
       take: 200,
+      include: { attachments: true },
     });
     expect(result).toHaveLength(2);
     expect(result[0].sender).toBe('visitor');

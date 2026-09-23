@@ -58,7 +58,7 @@ export default function DevicesView() {
   const load = useCallback(async () => {
     try {
       const res = await fetch("/api/auth/sessions");
-      const data = await res.json();
+      const data = (await res.json()) as { sessions: DeviceSession[] };
       setSessions(res.ok ? data.sessions : []);
     } catch {
       setSessions([]);

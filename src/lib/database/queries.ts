@@ -1,4 +1,4 @@
-import type { Conversation as PrismaConversation, Message as PrismaMessage } from "@prisma/client";
+import type { Conversation as PrismaConversation, Message as PrismaMessage, Attachment as PrismaAttachment } from "@prisma/client";
 import type { ChatMessage } from "@/types/message";
 import type { Conversation } from "@/types/conversation";
 
@@ -35,7 +35,7 @@ export function toConversation(
   };
 }
 
-export function toMessage(row: PrismaMessage): ChatMessage {
+export function toMessage(row: PrismaMessage & { attachments?: PrismaAttachment[] }): ChatMessage {
   const deleted = Boolean(row.deletedAt);
   return {
     id: row.id,
@@ -46,5 +46,15 @@ export function toMessage(row: PrismaMessage): ChatMessage {
     status: row.status.toLowerCase() as ChatMessage["status"],
     createdAt: row.createdAt.toISOString(),
     deleted,
+    attachments:
+      !deleted && row.attachments?.length
+        ? row.attachments.map((a) => ({
+            id: a.id,
+            originalName: a.originalName,
+            url: a.storageKey,
+            mimeType: a.mimeType,
+            size: a.size,
+          }))
+        : undefined,
   };
 }

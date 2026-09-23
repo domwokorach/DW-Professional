@@ -67,12 +67,12 @@ export default function AccountView({ user: initialUser }: { user: AccountUser }
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, avatarUrl: avatarUrl.trim() || null }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as { error?: { message?: string }; user?: { name: string; avatarUrl: string | null } };
       if (!res.ok) {
         toast.error(data?.error?.message ?? "Couldn't update your profile.");
         return;
       }
-      setUser((prev) => ({ ...prev, name: data.user.name, avatarUrl: data.user.avatarUrl }));
+      setUser((prev) => ({ ...prev, name: data.user!.name, avatarUrl: data.user!.avatarUrl }));
       toast.success("Profile updated.");
       setOpen(false);
     } catch {
