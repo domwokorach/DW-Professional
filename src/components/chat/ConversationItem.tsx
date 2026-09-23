@@ -25,7 +25,7 @@ export default function ConversationItem({
     ? getMessagePreview(conversation.lastMessagePreview, 48)
     : "No messages yet";
   const status = getPresenceStatus(conversation, online);
-  const contact = [conversation.email, conversation.mobile].filter(Boolean).join(" · ");
+  const contact = [conversation.companyName, conversation.email, conversation.mobile].filter(Boolean).join(" · ");
 
   return (
     <SidebarMenuItem>

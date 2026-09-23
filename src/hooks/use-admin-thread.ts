@@ -207,8 +207,15 @@ export function useAdminThread(
     (messageId: string) => {
       if (!conversationId) return;
       const socket = socketRef.current;
-      if (!socket?.connected) return;
-      socket.emit(SOCKET_EVENTS.DELETE_MESSAGE, { conversationId, messageId });
+      if (!socket?.connected) {
+        toast.error("Couldn't delete this message. Please try again.");
+        return;
+      }
+      // No optimistic removal: the message stays visible until the server
+      // confirms, so a failure needs no rollback — it just shows an error.
+      socket.emit(SOCKET_EVENTS.DELETE_MESSAGE, { conversationId, messageId }, (result) => {
+        if (!result.ok) toast.error(result.error || "Couldn't delete this message. Please try again.");
+      });
     },
     [socketRef, conversationId]
   );

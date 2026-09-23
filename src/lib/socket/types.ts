@@ -1,5 +1,6 @@
 import type { ChatMessage } from "@/types/message";
 export type MessageAcknowledgement = { message: ChatMessage; error?: never } | { error: string; message?: never };
+export type DeleteMessageAcknowledgement = { ok: true; error?: never } | { ok: false; error: string };
 import type {
   AdminJoinedPayload,
   AdminOpenPayload,
@@ -29,7 +30,10 @@ export interface ClientToServerEvents {
   "chat:read": (payload: ReadPayload) => void;
   "chat:admin-open": (payload: AdminOpenPayload) => void;
   "chat:set-status": (payload: SetStatusPayload) => void;
-  "chat:delete-message": (payload: DeleteMessagePayload) => void;
+  "chat:delete-message": (
+    payload: DeleteMessagePayload,
+    acknowledge?: (result: DeleteMessageAcknowledgement) => void
+  ) => void;
   "admin:activity": () => void;
 }
 
