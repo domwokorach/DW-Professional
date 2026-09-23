@@ -326,6 +326,141 @@ html[data-high-contrast="true"] .gradient-text-button {
   animation: none !important;
 }
 
+/* Profile Card (contact section) — a pointer-tilt "trading card" ported
+   from a design reference. All motion is set imperatively via inline CSS
+   custom properties by src/components/contact/ProjectProfileCard.tsx's
+   pointer handlers; this file only owns the static look and how those
+   properties are consumed. The global prefers-reduced-motion block above
+   already collapses every transition/animation duration to ~0, and the
+   component itself skips attaching pointer listeners entirely in that case
+   (and on coarse/touch pointers) — the two-tier gate is intentional pairing. */
+.profile-card-wrap {
+  --pointer-x: 50%;
+  --pointer-y: 50%;
+  --pointer-from-center: 0;
+  --pointer-from-top: 0.5;
+  --pointer-from-left: 0.5;
+  --rotate-x: 0deg;
+  --rotate-y: 0deg;
+  --background-x: 50%;
+  --background-y: 50%;
+  position: relative;
+  perspective: 900px;
+}
+
+.profile-card-glow {
+  position: absolute;
+  inset: -10%;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 1.75rem;
+  background: radial-gradient(
+    circle at var(--pointer-x) var(--pointer-y),
+    rgba(var(--color-accent), 0.55) 0%,
+    rgba(var(--color-accent2), 0.25) 35%,
+    transparent 65%
+  );
+  filter: blur(36px);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.profile-card-wrap:hover .profile-card-glow,
+.profile-card-wrap.active .profile-card-glow {
+  opacity: 0.8;
+}
+
+.profile-card-shell {
+  position: relative;
+  z-index: 1;
+}
+
+.profile-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  background: rgb(var(--color-surface));
+  border: 1px solid var(--color-line);
+  box-shadow: 0 20px 45px -20px rgba(0, 0, 0, 0.55);
+  transform: rotateX(0deg) rotateY(0deg);
+  transition: transform 1s ease;
+  will-change: transform;
+}
+
+.profile-card-wrap:hover .profile-card,
+.profile-card-wrap.active .profile-card {
+  transition: none;
+  transform: rotateX(var(--rotate-y)) rotateY(var(--rotate-x));
+}
+
+.profile-card-shell.entering .profile-card {
+  transition: transform 180ms ease-out;
+}
+
+.profile-card-glare {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    circle at var(--pointer-x) var(--pointer-y),
+    rgba(var(--color-accent3), 0.35) 0%,
+    transparent 55%
+  );
+  mix-blend-mode: overlay;
+  transition: opacity 300ms ease;
+}
+
+.profile-card-wrap:hover .profile-card-glare,
+.profile-card-wrap.active .profile-card-glare {
+  opacity: 1;
+}
+
+.profile-card-avatar {
+  transition: transform 300ms ease-out;
+  transform: translate3d(calc((var(--pointer-from-left) - 0.5) * 8px), calc((var(--pointer-from-top) - 0.5) * 8px), 0)
+    scale(1.02);
+}
+
+.profile-card-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent 55%, rgb(var(--color-surface)) 100%);
+}
+
+html[data-theme="light"] .profile-card-glow {
+  background: radial-gradient(
+    circle at var(--pointer-x) var(--pointer-y),
+    rgba(var(--color-accent), 0.3) 0%,
+    rgba(var(--color-accent2), 0.15) 35%,
+    transparent 65%
+  );
+}
+
+html[data-theme="light"] .profile-card {
+  box-shadow: 0 20px 45px -25px rgba(15, 23, 42, 0.35);
+}
+
+html[data-theme="light"] .profile-card-glare {
+  background: radial-gradient(
+    circle at var(--pointer-x) var(--pointer-y),
+    rgba(var(--color-accent3), 0.18) 0%,
+    transparent 55%
+  );
+}
+
+html[data-high-contrast="true"] .profile-card-glow,
+html[data-high-contrast="true"] .profile-card-glare {
+  display: none;
+}
+
+html[data-high-contrast="true"] .profile-card {
+  transform: none !important;
+}
+
 html[data-theme="light"] .grid-bg {
   background-image: linear-gradient(
       to right,
