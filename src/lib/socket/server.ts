@@ -193,7 +193,6 @@ async function handleConnection(
   presenceHeartbeat.unref();
   socket.once("disconnect", () => clearInterval(presenceHeartbeat));
 
-
   socket.on(SOCKET_EVENTS.JOIN, (payload) => {
     const parsed = safeParse(joinPayloadSchema, payload);
     if (!parsed) return;
@@ -312,26 +311,24 @@ async function handleConnection(
   });
   // Register handlers before any database/Redis await: clients may send immediately.
   void (async () => {
-  if (socket.data.role === "admin" && socket.data.adminId) {
-    socket.join(ADMIN_ROOM);
-    for (const peer of io.sockets.sockets.values()) {
-      if (peer.data.role === "visitor" && peer.data.visitorId) socket.emit(SOCKET_EVENTS.PRESENCE, { userId: peer.data.visitorId, online: true });
+    if (socket.data.role === "admin" && socket.data.adminId) {
+      socket.join(ADMIN_ROOM);
+      for (const peer of io.sockets.sockets.values()) {
+        if (peer.data.role === "visitor" && peer.data.visitorId) socket.emit(SOCKET_EVENTS.PRESENCE, { userId: peer.data.visitorId, online: true });
+      }
+      await updatePresence.markOnline(socket.data.adminId);
+      await broadcastAdminStatus(io, await updatePresence.getAggregateStatus());
+    } else if (socket.data.role === "visitor" && socket.data.conversationId && socket.data.visitorId) {
+      socket.join(getConversationRoom(socket.data.conversationId));
+      socket.join(PRESENCE_ROOM);
+
+      const status = await updatePresence.getAggregateStatus();
+      socket.emit(SOCKET_EVENTS.ADMIN_STATUS, { status, updatedAt: new Date().toISOString() });
+
+      await updatePresence.markVisitorOnline(socket.data.visitorId);
+      io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.PRESENCE, { userId: socket.data.visitorId, online: true });
     }
-    await updatePresence.markOnline(socket.data.adminId);
-    await broadcastAdminStatus(io, await updatePresence.getAggregateStatus());
-  } else if (socket.data.role === "visitor" && socket.data.conversationId && socket.data.visitorId) {
-    socket.join(getConversationRoom(socket.data.conversationId));
-    socket.join(PRESENCE_ROOM);
-
-    const status = await updatePresence.getAggregateStatus();
-    socket.emit(SOCKET_EVENTS.ADMIN_STATUS, { status, updatedAt: new Date().toISOString() });
-
-    await updatePresence.markVisitorOnline(socket.data.visitorId);
-    io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.PRESENCE, { userId: socket.data.visitorId, online: true });
-  }
-
   })().catch((error) => console.error("[socket] presence initialization failed", error));
-
 }
 
 async function handleAdminOpen(io: ChatServer, conversationId: string, adminId: string) {
@@ -408,10 +405,7 @@ async function handleIncomingMessage(
     if (!updatedConversation) return;
     io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.NEW_CONVERSATION, { conversation: updatedConversation });
 
-
     const aggregateStatus = await updatePresence.getAggregateStatus();
-
-
 
     // Email alerting is decoupled from live presence and handled by the
     // waiting-conversation sweep below — a manually Away/Busy/Offline admin
