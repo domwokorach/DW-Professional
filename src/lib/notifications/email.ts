@@ -3,8 +3,20 @@ import { resendProvider } from "@/services/email/resend.provider";
 import ChatWaitingEmail from "@/services/email/templates/chat-waiting";
 import { formatWaitingDuration } from "@/lib/chat/helpers";
 
-const ADMIN_NOTIFICATION_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL;
-const APP_URL = process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || "https://www.dominicwokorach.me";
+// Mirrors src/lib/contact/config.ts's fallback chain so either env-var
+// naming works in Vercel — this project already has CONTACT_TO_EMAIL set,
+// not ADMIN_NOTIFICATION_EMAIL, and chat notifications previously read only
+// the latter (as a module-load-time constant, so it could never see a
+// value set after import either), so they silently never sent. Resolved
+// per-call, not at module scope, so it's testable and always current.
+function resolveAdminNotificationEmail(): string | undefined {
+  const raw = process.env.CONTACT_TO_EMAIL ?? process.env.ADMIN_NOTIFICATION_EMAIL ?? process.env.ADMIN_EMAILS ?? "";
+  return raw.split(",")[0]?.trim() || undefined;
+}
+
+function resolveAppUrl(): string {
+  return process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || "https://www.dominicwokorach.me";
+}
 
 export interface ChatWaitingConversation {
   id: string;
@@ -28,12 +40,18 @@ function formatReceivedAt(waitingSince?: Date | string | null): string {
 }
 
 async function sendChatWaitingEmail(conversation: ChatWaitingConversation, isReminder: boolean): Promise<void> {
-  if (!ADMIN_NOTIFICATION_EMAIL) return;
+  const adminNotificationEmail = resolveAdminNotificationEmail();
+  if (!adminNotificationEmail) {
+    console.error(
+      "[email] Missing required environment variable: set CONTACT_TO_EMAIL, ADMIN_NOTIFICATION_EMAIL, or ADMIN_EMAILS — chat waiting notification not sent",
+    );
+    return;
+  }
 
   const candidateName = conversation.name || "A visitor";
   const waitingSince = conversation.waitingSince ? new Date(conversation.waitingSince) : new Date();
   const waitingFor = formatWaitingDuration(waitingSince).replace(/^Waiting /, "");
-  const adminChatUrl = `${APP_URL}/admin/chat?conversation=${conversation.id}`;
+  const adminChatUrl = `${resolveAppUrl()}/admin/chat?conversation=${conversation.id}`;
 
   const props = {
     candidateName,
@@ -54,7 +72,7 @@ async function sendChatWaitingEmail(conversation: ChatWaitingConversation, isRem
     render(ChatWaitingEmail(props), { plainText: true }),
   ]);
 
-  const result = await resendProvider.send({ to: ADMIN_NOTIFICATION_EMAIL, subject, html, text });
+  const result = await resendProvider.send({ to: adminNotificationEmail, subject, html, text });
 
   if (!result.ok) {
     console.error("[email] provider request failed", {
