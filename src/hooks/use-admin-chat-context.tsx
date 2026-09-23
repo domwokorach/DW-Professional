@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext, useMemo, useEffect } from "react";
 import { useAdminSocket } from "./use-admin-socket";
 import { useConversations } from "./use-conversations";
 import type { ChatSocket } from "@/lib/socket/client";
@@ -34,6 +34,16 @@ export function AdminChatProvider({ children }: { children: React.ReactNode }) {
     error: listError,
     refresh,
   } = useConversations(socketRef, connectionState);
+
+  useEffect(() => {
+    const socket = socketRef.current;
+    if (!socket) return;
+    const delivered = ({ message }: import("@/types/socket").MessageEventPayload) => {
+      if (message.sender === "visitor" && message.status === "sent") socket.emit("chat:delivered", { conversationId: message.conversationId, messageId: message.id });
+    };
+    socket.on("chat:message", delivered);
+    return () => { socket.off("chat:message", delivered); };
+  }, [socketRef, connectionState]);
 
   const value = useMemo(
     () => ({ socketRef, connectionState, conversations, listLoading, listError, refresh }),

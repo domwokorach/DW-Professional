@@ -47,6 +47,7 @@ const NEAR_BOTTOM_THRESHOLD_PX = 80;
 
 const MESSAGE_STATUS_ICON = {
   sending: Clock,
+  failed: Clock,
   sent: Check,
   delivered: CheckCheck,
   read: CheckCheck,
@@ -153,7 +154,7 @@ export default function LiveChatPanel({
       if (textareaRef.current) textareaRef.current.style.height = "auto";
       const result = await upload.send(file, trimmed);
       if (result) setPendingFile(null);
-      else setAttachmentError(upload.error);
+      else { setInput(trimmed); }
       return;
     }
 
@@ -170,7 +171,7 @@ export default function LiveChatPanel({
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === "Enter" && !event.shiftKey) {
+    if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing && !window.matchMedia("(pointer: coarse)").matches) {
       event.preventDefault();
       void handleSend();
     }
@@ -240,7 +241,7 @@ export default function LiveChatPanel({
       >
         {messages.map((message) => {
           const isPending = pendingMessageIds.has(message.id);
-          const statusKey = isPending ? "sending" : message.status;
+          const statusKey = message.localStatus ?? (isPending ? "sending" : message.status);
           const StatusIcon = message.sender === "visitor" ? MESSAGE_STATUS_ICON[statusKey] : null;
 
           return (
@@ -273,6 +274,7 @@ export default function LiveChatPanel({
                 : null}
               <span className="flex items-center gap-1 px-1 text-[11px] text-muted">
                 {formatTimestamp(message.createdAt)}
+                {message.localStatus === "failed" ? <span role="alert">Message failed to send. Use Retry in the notification.</span> : null}
                 {StatusIcon ? (
                   <StatusIcon
                     className={`h-3 w-3 ${statusKey === "read" ? "text-accent" : ""}`}
@@ -298,7 +300,7 @@ export default function LiveChatPanel({
           );
         })}
 
-        {typing ? <TypingIndicator label="Admin is typing" /> : null}
+        {typing ? <TypingIndicator label="Dominic is typing…" /> : null}
       </div>
 
       {isClosed && conversationId ? (
@@ -322,9 +324,9 @@ export default function LiveChatPanel({
             onRemove={() => setPendingFile(null)}
           />
         ) : null}
-        {attachmentError ? (
+        {(attachmentError || upload.error) ? (
           <p className="px-1 text-xs text-red-400" role="alert">
-            {attachmentError}
+            {attachmentError || upload.error}
           </p>
         ) : null}
         <div className="flex items-end gap-2">

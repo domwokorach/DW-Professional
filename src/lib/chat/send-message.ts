@@ -36,7 +36,11 @@ export async function sendMessage({
 }: SendMessageInput): Promise<ChatMessage> {
   if (clientMessageId) {
     const existing = await db.message.findUnique({ where: { clientMessageId }, include: { attachments: true } });
-    if (existing) return toMessage(existing);
+    if (existing) {
+      if (existing.conversationId !== conversationId || existing.sender.toLowerCase() !== sender ||
+          (existing.senderId ?? undefined) !== senderId) throw new Error("Message id already used");
+      return toMessage(existing);
+    }
   }
 
   try {
@@ -94,7 +98,11 @@ export async function sendMessage({
       (error as { code?: string }).code === UNIQUE_CONSTRAINT_ERROR_CODE
     ) {
       const existing = await db.message.findUnique({ where: { clientMessageId }, include: { attachments: true } });
-      if (existing) return toMessage(existing);
+      if (existing) {
+      if (existing.conversationId !== conversationId || existing.sender.toLowerCase() !== sender ||
+          (existing.senderId ?? undefined) !== senderId) throw new Error("Message id already used");
+      return toMessage(existing);
+    }
     }
     throw error;
   }
@@ -123,8 +131,8 @@ export async function deleteMessage(messageId: string, conversationId: string): 
  */
 export async function markMessageDelivered(messageId: string): Promise<void> {
   await db.message
-    .update({
-      where: { id: messageId },
+    .updateMany({
+      where: { id: messageId, status: "SENT" },
       data: { status: "DELIVERED" },
     })
     .catch((error) => console.error("[chat] failed to mark message delivered", error));

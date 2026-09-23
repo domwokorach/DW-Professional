@@ -79,6 +79,7 @@ export default function ConversationList({
     const active: Conversation[] = [];
     const offline: Conversation[] = [];
     for (const conversation of filtered) {
+      if (conversation.status !== "closed" && (conversation.awaitingAdminReply || conversation.unreadByAdmin > 0)) { waiting.push(conversation); continue; }
       const online = onlineVisitorIds.has(conversation.visitorId);
       switch (getPresenceStatus(conversation, online)) {
         case "offline":

@@ -3,6 +3,7 @@ export interface SendEmailOptions {
   subject: string;
   html: string;
   text: string;
+  idempotencyKey?: string;
 }
 
 export interface SendEmailResult {

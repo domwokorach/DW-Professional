@@ -57,3 +57,10 @@ export function getMessagePreview(content: string, maxLength = PREVIEW_LENGTH): 
 export function normalizeEmail(email: string): string {
   return email.trim().toLowerCase();
 }
+
+export function compareConversations(a: Conversation, b: Conversation): number {
+  return Number(b.unreadByAdmin > 0) - Number(a.unreadByAdmin > 0)
+    || Number(b.awaitingAdminReply) - Number(a.awaitingAdminReply)
+    || (a.awaitingAdminReply && b.awaitingAdminReply ? (a.waitingSince ?? a.createdAt).localeCompare(b.waitingSince ?? b.createdAt) : 0)
+    || (b.lastMessageAt ?? b.createdAt).localeCompare(a.lastMessageAt ?? a.createdAt);
+}

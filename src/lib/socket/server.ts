@@ -117,12 +117,27 @@ export function attachChatHandlers(io: ChatServer): void {
   });
 }
 
+/** Used by the signed web-app relay when Redis is not available. */
+export async function relayChatEvent(io: ChatServer, channel: string, payload: unknown): Promise<boolean> {
+  if (channel === ADMIN_AVAILABILITY_CHANGED_CHANNEL) {
+    await broadcastAdminStatus(io, await updatePresence.getAggregateStatus());
+    return true;
+  }
+  if (channel === CHAT_MESSAGE_CREATED_CHANNEL) {
+    const parsed = safeParse(deleteMessagePayloadSchema, payload);
+    if (!parsed) return false;
+    await handleExternallyCreatedMessage(io, parsed);
+    return true;
+  }
+  return false;
+}
+
 async function handleExternallyCreatedMessage(io: ChatServer, payload: ChatMessageCreatedEvent) {
   const message = await getMessageById(payload.messageId);
-  if (!message) return;
+  if (!message || message.conversationId !== payload.conversationId) return;
 
   const room = getConversationRoom(payload.conversationId);
-  io.to(room).emit(SOCKET_EVENTS.MESSAGE, { message });
+  io.to(room).to(ADMIN_ROOM).emit(SOCKET_EVENTS.MESSAGE, { message, clientMessageId: message.clientMessageId });
 
   const conversation = await getConversationById(payload.conversationId);
   if (!conversation) return;
@@ -178,20 +193,6 @@ async function handleConnection(
   presenceHeartbeat.unref();
   socket.once("disconnect", () => clearInterval(presenceHeartbeat));
 
-  if (socket.data.role === "admin" && socket.data.adminId) {
-    socket.join(ADMIN_ROOM);
-    await updatePresence.markOnline(socket.data.adminId);
-    await broadcastAdminStatus(io, await updatePresence.getAggregateStatus());
-  } else if (socket.data.role === "visitor" && socket.data.conversationId && socket.data.visitorId) {
-    socket.join(getConversationRoom(socket.data.conversationId));
-    socket.join(PRESENCE_ROOM);
-
-    const status = await updatePresence.getAggregateStatus();
-    socket.emit(SOCKET_EVENTS.ADMIN_STATUS, { status, updatedAt: new Date().toISOString() });
-
-    await updatePresence.markVisitorOnline(socket.data.visitorId);
-    io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.PRESENCE, { userId: socket.data.visitorId, online: true });
-  }
 
   socket.on(SOCKET_EVENTS.JOIN, (payload) => {
     const parsed = safeParse(joinPayloadSchema, payload);
@@ -213,29 +214,45 @@ async function handleConnection(
     void noteAdminActivity(io, socket.data.adminId);
   });
 
-  socket.on(SOCKET_EVENTS.MESSAGE, async (payload) => {
+  socket.on(SOCKET_EVENTS.MESSAGE, async (payload, acknowledge) => {
     const parsed = safeParse(candidateMessageSchema, payload);
-    if (!parsed) return;
-    if (socket.data.role !== "visitor" || parsed.conversationId !== socket.data.conversationId) return;
-    await handleIncomingMessage(io, socket, parsed.conversationId, parsed.content, parsed.clientMessageId);
+    if (!parsed || socket.data.role !== "visitor" || parsed.conversationId !== socket.data.conversationId) {
+      acknowledge?.({ error: "Message not authorized or invalid." });
+      return;
+    }
+    try {
+      const message = await handleIncomingMessage(io, socket, parsed.conversationId, parsed.content, parsed.clientMessageId);
+      acknowledge?.(message ? { message } : { error: "Message rejected. Check the conversation or try again shortly." });
+    } catch (error) {
+      console.error("[socket] message failed", error);
+      acknowledge?.({ error: "Message could not be saved. Please retry." });
+    }
   });
 
-  socket.on(SOCKET_EVENTS.REPLY, async (payload) => {
+  socket.on(SOCKET_EVENTS.REPLY, async (payload, acknowledge) => {
     const parsed = safeParse(adminMessageSchema, payload);
-    if (!parsed) return;
-    if (socket.data.role !== "admin" || !socket.data.adminId) return;
-    await handleAdminReply(io, parsed.conversationId, parsed.content, socket.data.adminId, parsed.clientMessageId);
+    if (!parsed || socket.data.role !== "admin" || !socket.data.adminId) {
+      acknowledge?.({ error: "Message not authorized or invalid." });
+      return;
+    }
+    try {
+      const message = await handleAdminReply(io, parsed.conversationId, parsed.content, socket.data.adminId, parsed.clientMessageId);
+      acknowledge?.(message ? { message } : { error: "Message rejected. The conversation may be closed." });
+    } catch (error) {
+      console.error("[socket] reply failed", error);
+      acknowledge?.({ error: "Message could not be saved. Please retry." });
+    }
   });
 
   socket.on(SOCKET_EVENTS.TYPING, (payload) => {
     const parsed = safeParse(typingPayloadSchema, payload);
-    if (!parsed) return;
+    if (!parsed || (socket.data.role === "visitor" && parsed.conversationId !== socket.data.conversationId)) return;
     broadcastTyping(io, socket, parsed.conversationId, true, typingTimers);
   });
 
   socket.on(SOCKET_EVENTS.STOP_TYPING, (payload) => {
     const parsed = safeParse(typingPayloadSchema, payload);
-    if (!parsed) return;
+    if (!parsed || (socket.data.role === "visitor" && parsed.conversationId !== socket.data.conversationId)) return;
     clearTypingTimer(typingTimers, parsed.conversationId, socket.data.role);
     broadcastTyping(io, socket, parsed.conversationId, false, typingTimers, true);
   });
@@ -262,10 +279,27 @@ async function handleConnection(
     await handleDeleteMessage(io, parsed.conversationId, parsed.messageId);
   });
 
+  socket.on("chat:delivered", async (payload) => {
+    const parsed = safeParse(deleteMessagePayloadSchema, payload);
+    if (!parsed || (socket.data.role === "visitor" && parsed.conversationId !== socket.data.conversationId)) return;
+    try {
+      const message = await getMessageById(parsed.messageId);
+      if (!message || message.conversationId !== parsed.conversationId || message.sender === socket.data.role || message.sender === "bot" || message.status !== "sent") return;
+      await markMessageDelivered(message.id);
+      const updated = await getMessageById(message.id);
+      if (updated) io.to(getConversationRoom(parsed.conversationId)).to(ADMIN_ROOM).emit(SOCKET_EVENTS.MESSAGE, { message: updated });
+    } catch (error) { console.error("[socket] delivery receipt failed", error); }
+  });
+
   socket.on(SOCKET_EVENTS.READ, async (payload) => {
     const parsed = safeParse(readPayloadSchema, payload);
-    if (!parsed) return;
+    if (!parsed || parsed.reader !== socket.data.role ||
+        (socket.data.role === "visitor" && parsed.conversationId !== socket.data.conversationId)) return;
+    const readAt = new Date().toISOString();
     await markAsRead(parsed.conversationId, parsed.reader);
+    io.to(getConversationRoom(parsed.conversationId)).emit("chat:receipt", {
+      conversationId: parsed.conversationId, reader: parsed.reader, readAt,
+    });
     const conversation = await getConversationById(parsed.conversationId);
     if (conversation) {
       io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.CONVERSATION_UPDATED, { conversation });
@@ -276,6 +310,28 @@ async function handleConnection(
     console.log("[socket] disconnected", { id: socket.id, reason });
     void handleDisconnect(io, socket);
   });
+  // Register handlers before any database/Redis await: clients may send immediately.
+  void (async () => {
+  if (socket.data.role === "admin" && socket.data.adminId) {
+    socket.join(ADMIN_ROOM);
+    for (const peer of io.sockets.sockets.values()) {
+      if (peer.data.role === "visitor" && peer.data.visitorId) socket.emit(SOCKET_EVENTS.PRESENCE, { userId: peer.data.visitorId, online: true });
+    }
+    await updatePresence.markOnline(socket.data.adminId);
+    await broadcastAdminStatus(io, await updatePresence.getAggregateStatus());
+  } else if (socket.data.role === "visitor" && socket.data.conversationId && socket.data.visitorId) {
+    socket.join(getConversationRoom(socket.data.conversationId));
+    socket.join(PRESENCE_ROOM);
+
+    const status = await updatePresence.getAggregateStatus();
+    socket.emit(SOCKET_EVENTS.ADMIN_STATUS, { status, updatedAt: new Date().toISOString() });
+
+    await updatePresence.markVisitorOnline(socket.data.visitorId);
+    io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.PRESENCE, { userId: socket.data.visitorId, online: true });
+  }
+
+  })().catch((error) => console.error("[socket] presence initialization failed", error));
+
 }
 
 async function handleAdminOpen(io: ChatServer, conversationId: string, adminId: string) {
@@ -329,7 +385,7 @@ async function handleIncomingMessage(
   if (isRateLimited(rateLimitKey)) return;
 
   const conversation = await getConversationById(conversationId);
-  if (conversation?.status === "closed") return;
+  if (!conversation || conversation.status === "closed") return;
 
   const message = await sendMessage({
     conversationId,
@@ -345,21 +401,17 @@ async function handleIncomingMessage(
   // message. Presence lookups in particular are N+1 Redis round-trips and
   // used to block this emit.
   const room = getConversationRoom(conversationId);
-  io.to(room).emit(SOCKET_EVENTS.MESSAGE, { message, clientMessageId });
+  io.to(room).to(ADMIN_ROOM).emit(SOCKET_EVENTS.MESSAGE, { message, clientMessageId });
 
   void (async () => {
-    const aggregateStatus = await updatePresence.getAggregateStatus();
-    if (aggregateStatus !== "offline" && message.status === "sent") {
-      await markMessageDelivered(message.id);
-      io.to(room).emit(SOCKET_EVENTS.MESSAGE, {
-        message: { ...message, status: "delivered" },
-        clientMessageId,
-      });
-    }
-
     const updatedConversation = await getConversationById(conversationId);
     if (!updatedConversation) return;
     io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.NEW_CONVERSATION, { conversation: updatedConversation });
+
+
+    const aggregateStatus = await updatePresence.getAggregateStatus();
+
+
 
     // Email alerting is decoupled from live presence and handled by the
     // waiting-conversation sweep below — a manually Away/Busy/Offline admin
@@ -370,6 +422,7 @@ async function handleIncomingMessage(
       await sendBotReply(io, conversationId, content);
     }
   })().catch((error) => console.error("[socket] post-broadcast follow-up failed", error));
+  return message;
 }
 
 async function handleAdminReply(
@@ -382,10 +435,10 @@ async function handleAdminReply(
   const content = sanitizeMessage(rawContent);
   if (!content) return;
 
-  await noteAdminActivity(io, adminId);
+  void noteAdminActivity(io, adminId).catch((error) => console.error("[socket] activity update failed", error));
 
   const existingConversation = await getConversationById(conversationId);
-  if (existingConversation?.status === "closed") return;
+  if (!existingConversation || existingConversation.status === "closed") return;
 
   const message = await sendMessage({
     conversationId,
@@ -395,7 +448,7 @@ async function handleAdminReply(
     clientMessageId,
   });
 
-  io.to(getConversationRoom(conversationId)).emit(SOCKET_EVENTS.MESSAGE, { message, clientMessageId });
+  io.to(getConversationRoom(conversationId)).to(ADMIN_ROOM).emit(SOCKET_EVENTS.MESSAGE, { message, clientMessageId });
 
   // Replying without ever having explicitly "opened" the conversation
   // (older client, or a reply sent straight from a notification) still
@@ -409,6 +462,7 @@ async function handleAdminReply(
   if (conversation) {
     io.to(ADMIN_ROOM).emit(SOCKET_EVENTS.CONVERSATION_UPDATED, { conversation });
   }
+  return message;
 }
 
 /** Falls back to the portfolio's canned-response assistant so a visitor never talks to silence while no admin is online. */
@@ -428,7 +482,7 @@ async function sendBotReply(io: ChatServer, conversationId: string, visitorMessa
   });
 
   io.to(room).emit(SOCKET_EVENTS.TYPING, { conversationId, sender: "admin", isTyping: false });
-  io.to(room).emit(SOCKET_EVENTS.MESSAGE, { message });
+  io.to(room).to(ADMIN_ROOM).emit(SOCKET_EVENTS.MESSAGE, { message, clientMessageId: message.clientMessageId });
 }
 
 function typingTimerKey(conversationId: string, sender: "visitor" | "admin"): string {
@@ -487,6 +541,11 @@ function broadcastTyping(
 }
 
 async function handleDisconnect(io: ChatServer, socket: ChatSocket) {
+  const stillConnected = [...io.sockets.sockets.values()].some((other) =>
+    other.id !== socket.id && other.data.role === socket.data.role &&
+    (socket.data.role === "admin" ? other.data.adminId === socket.data.adminId : other.data.visitorId === socket.data.visitorId)
+  );
+  if (stillConnected) return;
   if (socket.data.role === "admin" && socket.data.adminId) {
     await updatePresence.markOffline(socket.data.adminId);
     const status = await updatePresence.getAggregateStatus();

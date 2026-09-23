@@ -40,6 +40,7 @@ export function toMessage(row: PrismaMessage & { attachments?: PrismaAttachment[
   return {
     id: row.id,
     conversationId: row.conversationId,
+    clientMessageId: row.clientMessageId ?? undefined,
     sender: row.sender.toLowerCase() as ChatMessage["sender"],
     senderId: row.senderId ?? undefined,
     content: deleted ? "" : row.content,

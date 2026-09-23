@@ -53,7 +53,7 @@ export default function LiveChat() {
     registering,
     registrationError,
     registerCandidate,
-  } = useLiveChat();
+  } = useLiveChat(panelState === "open");
 
   // The socket only connects once the candidate has registered, so the
   // launcher's status dot would otherwise sit on "connecting" indefinitely

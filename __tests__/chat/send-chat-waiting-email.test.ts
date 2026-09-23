@@ -32,15 +32,11 @@ describe('sendNewConversationEmail / sendChatWaitingReminderEmail', () => {
   // and only checked ADMIN_NOTIFICATION_EMAIL, which this project's env
   // never sets (it sets CONTACT_TO_EMAIL instead) — so chat waiting emails
   // silently never sent, in production or in a fresh module import here.
-  it('does nothing and logs when no admin recipient env var is configured', async () => {
+  it('uses the requested Outlook recipient by default', async () => {
     delete process.env.CONTACT_TO_EMAIL;
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-
-    await sendNewConversationEmail({ id: 'conv-1', name: 'Visitor', email: 'visitor@example.com' });
-
-    expect(mockSend).not.toHaveBeenCalled();
-    expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('Missing required environment variable'));
-    errorSpy.mockRestore();
+    mockSend.mockResolvedValue({ ok: true, id: 'email-default' });
+    await sendNewConversationEmail({ id: 'conv-1', name: 'Visitor' });
+    expect(mockSend).toHaveBeenCalledWith(expect.objectContaining({ to: 'dominic.wokorach-o@outlook.com' }));
   });
 
   it('falls back to ADMIN_NOTIFICATION_EMAIL when CONTACT_TO_EMAIL is unset', async () => {
@@ -60,7 +56,7 @@ describe('sendNewConversationEmail / sendChatWaitingReminderEmail', () => {
     await sendNewConversationEmail({ id: 'conv-1', name: 'Visitor', email: 'visitor@example.com' });
 
     expect(mockSend).toHaveBeenCalledWith(
-      expect.objectContaining({ to: 'admin@dominicwokorach.me', subject: 'New candidate waiting in Live Chat' })
+      expect.objectContaining({ to: 'dominic.wokorach-o@outlook.com', subject: 'New candidate waiting in Live Chat' })
     );
     expect(logSpy).toHaveBeenCalledWith(
       '[email] sent',
@@ -75,7 +71,7 @@ describe('sendNewConversationEmail / sendChatWaitingReminderEmail', () => {
     await sendChatWaitingReminderEmail({ id: 'conv-1', name: 'Visitor', email: 'visitor@example.com' });
 
     expect(mockSend).toHaveBeenCalledWith(
-      expect.objectContaining({ to: 'admin@dominicwokorach.me', subject: 'Still waiting: Visitor in Live Chat' })
+      expect.objectContaining({ to: 'dominic.wokorach-o@outlook.com', subject: 'Still waiting: Visitor in Live Chat' })
     );
   });
 
@@ -83,7 +79,7 @@ describe('sendNewConversationEmail / sendChatWaitingReminderEmail', () => {
     mockSend.mockResolvedValue({ ok: false, error: 'domain_not_verified' });
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-    await sendNewConversationEmail({ id: 'conv-1', name: 'Visitor', email: 'visitor@example.com' });
+    await expect(sendNewConversationEmail({ id: 'conv-1', name: 'Visitor', email: 'visitor@example.com' })).rejects.toThrow('delivery failed');
 
     expect(errorSpy).toHaveBeenCalledWith(
       '[email] provider request failed',

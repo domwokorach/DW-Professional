@@ -250,7 +250,7 @@ function ChatShell({
                   onSend={sendReply}
                   onTyping={notifyTyping}
                   placeholder={isClosed ? "This conversation has ended." : "Reply to candidate…"}
-                  disabled={connectionState !== "online"}
+                  disabled={connectionState === "unauthorized"}
                   disabledHint={composerDisabledHint}
                   closed={isClosed}
                 />

@@ -65,7 +65,8 @@ export async function PATCH(request: NextRequest) {
     // page refresh. Best-effort — the new status still takes effect the
     // next time the aggregate is recomputed (connect/disconnect/sweep) even
     // if this publish is lost.
-    await publish(ADMIN_AVAILABILITY_CHANGED_CHANNEL, { adminId: user.id, availability });
+    await publish(ADMIN_AVAILABILITY_CHANGED_CHANNEL, { adminId: user.id, availability })
+      .catch((error) => console.error("[chat] availability broadcast failed", error));
   }
 
   return NextResponse.json({ preferences: updated.preferences, availability: updated.availability });

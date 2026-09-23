@@ -1,3 +1,4 @@
+import { canAccessConversation } from "@/lib/chat/permissions";
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdminApi } from "@/lib/auth/guard";
 import { markAsRead } from "@/lib/chat/mark-as-read";
@@ -26,6 +27,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid visitorId" }, { status: 400 });
   }
 
+  if (input.reader === "visitor" && !await canAccessConversation(input.conversationId, { visitorId: input.visitorId })) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
   await markAsRead(input.conversationId, input.reader);
   return NextResponse.json({ ok: true });
 }

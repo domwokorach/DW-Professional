@@ -13,6 +13,8 @@ export function useTyping(
   watchSender: "visitor" | "admin"
 ) {
   const [remoteTyping, setRemoteTyping] = useState(false);
+  const lastEmitRef = useRef(0);
+  const remoteTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -22,19 +24,26 @@ export function useTyping(
     const handler = (payload: TypingEventPayload) => {
       if (payload.conversationId !== conversationId || payload.sender !== watchSender) return;
       setRemoteTyping(payload.isTyping);
+      if (remoteTimeoutRef.current) clearTimeout(remoteTimeoutRef.current);
+      if (payload.isTyping) remoteTimeoutRef.current = setTimeout(() => setRemoteTyping(false), 6000);
     };
 
     socket.on(SOCKET_EVENTS.TYPING, handler);
     return () => {
       socket.off(SOCKET_EVENTS.TYPING, handler);
+      if (remoteTimeoutRef.current) clearTimeout(remoteTimeoutRef.current);
+      setRemoteTyping(false);
     };
   }, [socketRef, conversationId, watchSender]);
 
   const notifyTyping = useCallback(() => {
     const socket = socketRef.current;
-    if (!socket || !conversationId) return;
+    if (!socket?.connected || !conversationId) return;
 
-    socket.emit(SOCKET_EVENTS.TYPING, { conversationId });
+    if (Date.now() - lastEmitRef.current > 1000) {
+      socket.volatile.emit(SOCKET_EVENTS.TYPING, { conversationId });
+      lastEmitRef.current = Date.now();
+    }
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
       socket.emit(SOCKET_EVENTS.STOP_TYPING, { conversationId });

@@ -134,6 +134,7 @@ export async function getAdminAggregateStatus(): Promise<AdminPresenceState> {
     if (manual === "OFFLINE") return;
 
     const record = records[index];
+    if (!record) return;
     const effective: AdminPresenceState =
       manual === "BUSY" ? "busy" : record?.status === "away" ? "away" : manual === "AWAY" ? "away" : "online";
 

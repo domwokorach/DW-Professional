@@ -9,7 +9,8 @@
  */
 import { createServer } from "node:http";
 import { Server } from "socket.io";
-import { attachChatHandlers } from "../src/lib/socket/server";
+import { verifyRelay } from "../src/lib/socket/relay";
+import { attachChatHandlers, relayChatEvent } from "../src/lib/socket/server";
 import type { ClientToServerEvents, ServerToClientEvents, SocketData } from "../src/lib/socket/types";
 
 process.on("uncaughtException", (error) => {
@@ -91,6 +92,25 @@ if (!process.env.SOCKET_SECRET) {
 }
 
 const httpServer = createServer((req, res) => {
+  if (req.url === "/internal/chat/events" && req.method === "POST") {
+    void (async () => {
+      let body = "";
+      for await (const chunk of req) {
+        body += chunk.toString();
+        if (Buffer.byteLength(body) > 8192) { res.writeHead(413).end(); return; }
+      }
+      if (!verifyRelay(body, String(req.headers["x-chat-timestamp"] ?? ""), String(req.headers["x-chat-signature"] ?? ""), process.env.SOCKET_SECRET ?? "")) {
+        res.writeHead(401).end(); return;
+      }
+      const event = JSON.parse(body) as { channel: string; payload: unknown };
+      const accepted = await relayChatEvent(io, event.channel, event.payload);
+      res.writeHead(accepted ? 204 : 400).end();
+    })().catch((error) => {
+      console.error("[socket] event relay failed", error);
+      if (!res.headersSent) res.writeHead(500).end();
+    });
+    return;
+  }
   // Lets `curl http://localhost:PORT/health` distinguish "server isn't
   // running" from "server is running but the client can't connect" before
   // debugging further up the stack.

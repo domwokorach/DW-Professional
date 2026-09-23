@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
-import { del } from "@vercel/blob";
+
 import { isAdmin, canAccessConversation } from "@/lib/chat/permissions";
 import { checkRateLimit } from "@/lib/auth/rateLimit";
 import { extractClientIp } from "@/lib/auth/device";
@@ -53,6 +53,10 @@ export async function POST(request: NextRequest) {
 
         const payload = parseClientPayload(clientPayloadRaw);
         if (!payload) throw new Error("Missing conversation context.");
+        if (!/^[a-zA-Z0-9-]+$/.test(payload.conversationId) ||
+            !new RegExp(`^${CHAT_ATTACHMENT_BLOB_PREFIX}${payload.conversationId}/[a-f0-9-]{36}\\.(pdf|doc|docx|png|jpg|jpeg|txt)$`).test(pathname)) {
+          throw new Error("Invalid conversation upload path.");
+        }
 
         const conversation = await canAccessConversation(payload.conversationId, {
           admin,
@@ -86,22 +90,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-/** Deletes an attachment blob the sender selected then removed before sending, or abandoned mid-upload. */
-export async function DELETE(request: NextRequest) {
-  const ip = extractClientIp(request.headers) ?? "unknown";
-  const limit = await checkRateLimit(`chat-upload-delete:ip:${ip}`, 30, 60 * 60);
-  if (!limit.allowed) return NextResponse.json({ error: "Too many requests." }, { status: 429 });
-
-  const body = (await request.json().catch(() => null)) as { url?: string } | null;
-  const url = body?.url;
-  if (!url || typeof url !== "string" || !url.includes(CHAT_ATTACHMENT_BLOB_PREFIX)) {
-    return NextResponse.json({ error: "Missing or invalid attachment URL." }, { status: 400 });
-  }
-
-  try {
-    await del(url);
-  } catch (error) {
-    console.error("[api/chat/attachments] delete failed:", error);
-  }
-  return NextResponse.json({ ok: true });
+/** Chat attachments are retained as history; arbitrary client deletion is forbidden. */
+export async function DELETE() {
+  return NextResponse.json({ error: "Chat attachments cannot be deleted directly." }, { status: 405 });
 }

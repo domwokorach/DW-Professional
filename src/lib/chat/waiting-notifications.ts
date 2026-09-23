@@ -17,12 +17,13 @@ export async function sendWaitingConversationNotifications(): Promise<void> {
   const due = await db.conversation.findMany({
     where: {
       awaitingAdminReply: true,
+      status: { not: "CLOSED" },
       OR: [
         { initialNotificationSentAt: null },
         { reminderNotificationSentAt: null, waitingSince: { lte: reminderCutoff } },
       ],
     },
-    include: { messages: { orderBy: { createdAt: "desc" }, take: 1 } },
+    include: { messages: { where: { sender: "VISITOR" }, orderBy: { createdAt: "desc" }, take: 1 } },
   });
 
   for (const row of due) {
@@ -37,14 +38,14 @@ export async function sendWaitingConversationNotifications(): Promise<void> {
     try {
       if (!row.initialNotificationSentAt) {
         await sendNewConversationEmail(conversationInput);
-        await db.conversation.update({
-          where: { id: row.id },
+        await db.conversation.updateMany({
+          where: { id: row.id, awaitingAdminReply: true, waitingSince: row.waitingSince },
           data: { initialNotificationSentAt: new Date() },
         });
       } else if (!row.reminderNotificationSentAt && row.waitingSince && row.waitingSince <= reminderCutoff) {
         await sendChatWaitingReminderEmail(conversationInput);
-        await db.conversation.update({
-          where: { id: row.id },
+        await db.conversation.updateMany({
+          where: { id: row.id, awaitingAdminReply: true, waitingSince: row.waitingSince },
           data: { reminderNotificationSentAt: new Date() },
         });
       }
