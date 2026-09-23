@@ -16,7 +16,7 @@ describe('sendWaitingConversationNotifications', () => {
   beforeEach(() => {
     mockInitial.mockClear();
     mockReminder.mockClear();
-    (db.conversation.update as jest.Mock).mockResolvedValue({});
+    (db.conversation.updateMany as jest.Mock).mockResolvedValue({});
   });
 
   it('sends the initial alert and stamps initialNotificationSentAt for a never-notified conversation', async () => {
@@ -35,8 +35,8 @@ describe('sendWaitingConversationNotifications', () => {
 
     expect(mockInitial).toHaveBeenCalledWith(expect.objectContaining({ id: 'conv-1', messagePreview: 'Hello?' }));
     expect(mockReminder).not.toHaveBeenCalled();
-    expect(db.conversation.update).toHaveBeenCalledWith({
-      where: { id: 'conv-1' },
+    expect(db.conversation.updateMany).toHaveBeenCalledWith({
+      where: { id: 'conv-1', awaitingAdminReply: true, waitingSince: conversation.waitingSince },
       data: { initialNotificationSentAt: expect.any(Date) },
     });
   });
@@ -56,8 +56,8 @@ describe('sendWaitingConversationNotifications', () => {
 
     expect(mockReminder).toHaveBeenCalledWith(expect.objectContaining({ id: 'conv-2' }));
     expect(mockInitial).not.toHaveBeenCalled();
-    expect(db.conversation.update).toHaveBeenCalledWith({
-      where: { id: 'conv-2' },
+    expect(db.conversation.updateMany).toHaveBeenCalledWith({
+      where: { id: 'conv-2', awaitingAdminReply: true, waitingSince: sixMinutesAgo },
       data: { reminderNotificationSentAt: expect.any(Date) },
     });
   });
@@ -85,12 +85,12 @@ describe('sendWaitingConversationNotifications', () => {
     await sendWaitingConversationNotifications();
 
     expect(mockInitial).toHaveBeenCalledTimes(2);
-    expect(db.conversation.update).toHaveBeenCalledWith({
-      where: { id: 'conv-b' },
+    expect(db.conversation.updateMany).toHaveBeenCalledWith({
+      where: { id: 'conv-b', awaitingAdminReply: true, waitingSince: expect.any(Date) },
       data: { initialNotificationSentAt: expect.any(Date) },
     });
-    expect(db.conversation.update).not.toHaveBeenCalledWith({
-      where: { id: 'conv-a' },
+    expect(db.conversation.updateMany).not.toHaveBeenCalledWith({
+      where: { id: 'conv-a', awaitingAdminReply: true, waitingSince: expect.any(Date) },
       data: { initialNotificationSentAt: expect.any(Date) },
     });
   });

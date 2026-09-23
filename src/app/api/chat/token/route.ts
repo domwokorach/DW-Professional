@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { isAdmin } from "@/lib/chat/permissions";
+import { isAdmin, canAccessConversation } from "@/lib/chat/permissions";
 import { findOrCreateConversation } from "@/lib/chat/create-conversation";
 import { createLiveChatToken } from "@/lib/liveChatAuth";
 import { safeParse, visitorIdSchema } from "@/lib/chat/validation";
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ token });
   }
 
-  const body = (await request.json().catch(() => ({}))) as { role?: string; visitorId?: string };
+  const body = (await request.json().catch(() => ({}))) as { role?: string; visitorId?: string; conversationId?: string };
 
   // The admin socket explicitly requests an admin token so a lost session
   // or a disabled/suspended account surfaces as an unambiguous 401
@@ -35,7 +35,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid visitorId" }, { status: 400 });
   }
 
-  const conversation = await findOrCreateConversation(visitorId);
+  const conversation = typeof body.conversationId === "string"
+    ? await canAccessConversation(body.conversationId, { visitorId })
+    : await findOrCreateConversation(visitorId);
+  if (!conversation) return NextResponse.json({ error: "Not found" }, { status: 404 });
   const token = createLiveChatToken(
     { role: "visitor", visitorId, conversationId: conversation.id },
     secret

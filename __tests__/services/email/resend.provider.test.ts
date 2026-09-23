@@ -42,7 +42,8 @@ describe('ResendEmailProvider', () => {
         from: 'Dominic Wokorach <no-reply@dominicwokorach.me>',
         to: 'user@example.com',
         subject: 'Reset your password',
-      })
+      }),
+      undefined
     );
   });
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { compareConversations } from "@/lib/chat/helpers";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChatSocket } from "@/lib/socket/client";
 import { SOCKET_EVENTS } from "@/lib/socket/events";
@@ -28,7 +29,7 @@ export function useConversations(
       const res = await fetch("/api/chat/conversations");
       if (res.ok) {
         const { conversations: list } = (await res.json()) as { conversations: Conversation[] };
-        setConversations(list);
+        setConversations(list.sort(compareConversations));
         setError(false);
       } else {
         setError(true);
@@ -61,9 +62,7 @@ export function useConversations(
     const upsert = ({ conversation }: ConversationEventPayload) => {
       setConversations((prev) => {
         const others = prev.filter((c) => c.id !== conversation.id);
-        return [conversation, ...others].sort((a, b) =>
-          (b.lastMessageAt ?? b.createdAt).localeCompare(a.lastMessageAt ?? a.createdAt)
-        );
+        return [conversation, ...others].sort(compareConversations);
       });
     };
 

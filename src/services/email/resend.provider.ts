@@ -23,7 +23,7 @@ export class ResendEmailProvider implements EmailProvider {
     return this.client;
   }
 
-  async send({ to, subject, html, text }: SendEmailOptions): Promise<SendEmailResult> {
+  async send({ to, subject, html, text, idempotencyKey }: SendEmailOptions): Promise<SendEmailResult> {
     const client = this.getClient();
     if (!client) {
       console.warn(`[email] RESEND_API_KEY not configured — skipping send of "${subject}" to recipient`);
@@ -36,7 +36,7 @@ export class ResendEmailProvider implements EmailProvider {
       subject,
       html,
       text,
-    });
+    }, idempotencyKey ? { idempotencyKey } : undefined);
 
     if (error) {
       console.error("[email] provider request failed", {

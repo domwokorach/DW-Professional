@@ -1,3 +1,5 @@
+import type { ChatMessage } from "@/types/message";
+export type MessageAcknowledgement = { message: ChatMessage; error?: never } | { error: string; message?: never };
 import type {
   AdminJoinedPayload,
   AdminOpenPayload,
@@ -18,9 +20,10 @@ import type {
 } from "@/types/socket";
 
 export interface ClientToServerEvents {
+  "chat:delivered": (payload: { messageId: string; conversationId: string }) => void;
   "chat:join": (payload: JoinPayload) => void;
-  "chat:message": (payload: SendMessagePayload) => void;
-  "chat:reply": (payload: ReplyPayload) => void;
+  "chat:message": (payload: SendMessagePayload, acknowledge?: (result: MessageAcknowledgement) => void) => void;
+  "chat:reply": (payload: ReplyPayload, acknowledge?: (result: MessageAcknowledgement) => void) => void;
   "chat:typing": (payload: TypingPayload) => void;
   "chat:stop-typing": (payload: TypingPayload) => void;
   "chat:read": (payload: ReadPayload) => void;
@@ -31,6 +34,7 @@ export interface ClientToServerEvents {
 }
 
 export interface ServerToClientEvents {
+  "chat:receipt": (payload: { conversationId: string; reader: "visitor" | "admin"; readAt: string }) => void;
   "chat:message": (payload: MessageEventPayload) => void;
   "chat:typing": (payload: TypingEventPayload) => void;
   "chat:presence": (payload: PresencePayload) => void;

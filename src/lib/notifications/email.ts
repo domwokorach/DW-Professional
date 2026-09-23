@@ -10,7 +10,7 @@ import { formatWaitingDuration } from "@/lib/chat/helpers";
 // value set after import either), so they silently never sent. Resolved
 // per-call, not at module scope, so it's testable and always current.
 function resolveAdminNotificationEmail(): string | undefined {
-  const raw = process.env.CONTACT_TO_EMAIL ?? process.env.ADMIN_NOTIFICATION_EMAIL ?? process.env.ADMIN_EMAILS ?? "";
+  const raw = process.env.ADMIN_NOTIFICATION_EMAIL ?? "dominic.wokorach-o@outlook.com";
   return raw.split(",")[0]?.trim() || undefined;
 }
 
@@ -45,19 +45,19 @@ async function sendChatWaitingEmail(conversation: ChatWaitingConversation, isRem
     console.error(
       "[email] Missing required environment variable: set CONTACT_TO_EMAIL, ADMIN_NOTIFICATION_EMAIL, or ADMIN_EMAILS — chat waiting notification not sent",
     );
-    return;
+    throw new Error("Chat notification recipient is not configured");
   }
 
   const candidateName = conversation.name || "A visitor";
   const waitingSince = conversation.waitingSince ? new Date(conversation.waitingSince) : new Date();
   const waitingFor = formatWaitingDuration(waitingSince).replace(/^Waiting /, "");
-  const adminChatUrl = `${resolveAppUrl()}/admin/chat?conversation=${conversation.id}`;
+  const adminChatUrl = `${resolveAppUrl()}/en-gb/admin/chat?conversation=${conversation.id}`;
 
   const props = {
     candidateName,
     candidateEmail: conversation.email,
     conversationId: conversation.id,
-    messagePreview: conversation.messagePreview || "(no message preview available)",
+    messagePreview: conversation.messagePreview?.slice(0, 160) || "(no message preview available)",
     receivedAt: formatReceivedAt(conversation.waitingSince),
     waitingFor,
     adminChatUrl,
@@ -72,7 +72,9 @@ async function sendChatWaitingEmail(conversation: ChatWaitingConversation, isRem
     render(ChatWaitingEmail(props), { plainText: true }),
   ]);
 
-  const result = await resendProvider.send({ to: adminNotificationEmail, subject, html, text });
+  const result = await resendProvider.send({ to: adminNotificationEmail, subject, html, text,
+    idempotencyKey: `chat-${conversation.id}-${waitingSince.toISOString()}-${isReminder ? "reminder" : "initial"}`,
+  });
 
   if (!result.ok) {
     console.error("[email] provider request failed", {
@@ -82,7 +84,7 @@ async function sendChatWaitingEmail(conversation: ChatWaitingConversation, isRem
       status: "failed",
       error: result.error,
     });
-    return;
+    throw new Error("Chat notification delivery failed");
   }
 
   console.log("[email] sent", {

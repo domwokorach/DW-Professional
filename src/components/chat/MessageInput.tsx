@@ -61,7 +61,7 @@ export default function MessageInput({
       setValue("");
       const result = await upload.send(file, trimmed);
       if (result) setPendingFile(null);
-      else setAttachmentError(upload.error);
+      else { setValue(trimmed); }
       return;
     }
 
@@ -88,9 +88,9 @@ export default function MessageInput({
           onRemove={() => setPendingFile(null)}
         />
       ) : null}
-      {attachmentError ? (
+      {(attachmentError || upload.error) ? (
         <p className="text-xs text-red-400" role="alert">
-          {attachmentError}
+          {attachmentError || upload.error}
         </p>
       ) : null}
 

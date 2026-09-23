@@ -358,7 +358,7 @@ describe('chat socket server', () => {
 
   it('dedupes on clientMessageId: sending the same clientMessageId twice persists and broadcasts only once', async () => {
     const conversationId = 'conv-dup-1';
-    const persisted = buildMessage({ conversationId, sender: 'VISITOR', content: 'First send', clientMessageId: 'same-client-id' });
+    const persisted = buildMessage({ conversationId, sender: 'VISITOR', content: 'First send', clientMessageId: 'same-client-id', senderId: 'visitor-dedupe' });
     let created = false;
 
     (db.message.findUnique as jest.Mock).mockImplementation(async (args: { where: { clientMessageId?: string } }) =>
@@ -371,27 +371,21 @@ describe('chat socket server', () => {
     (db.conversation.update as jest.Mock).mockResolvedValue({});
     (db.conversation.findUnique as jest.Mock).mockResolvedValue(buildConversation({ id: conversationId }));
 
-    const visitor = connectClient(visitorToken(conversationId));
+    const visitor = connectClient(visitorToken(conversationId, 'visitor-dedupe'));
     await once(visitor, 'connect');
 
     const received: unknown[] = [];
     visitor.on('chat:message', (payload) => received.push(payload));
 
-    visitor.emit('chat:message', { conversationId, content: 'First send', clientMessageId: 'same-client-id' });
+    visitor.emit('chat:message', { conversationId, content: 'First send', clientMessageId: 'same-client-id', senderId: 'visitor-dedupe' });
     await new Promise((resolve) => setTimeout(resolve, 150));
-    visitor.emit('chat:message', { conversationId, content: 'First send', clientMessageId: 'same-client-id' });
+    visitor.emit('chat:message', { conversationId, content: 'First send', clientMessageId: 'same-client-id', senderId: 'visitor-dedupe' });
     await new Promise((resolve) => setTimeout(resolve, 150));
 
-    // Each send now broadcasts twice: an immediate "sent" emit right after
-    // persistence, followed by a "delivered" emit once the (now
-    // non-blocking) presence/delivered-status lookup resolves — see
-    // src/lib/socket/server.ts's handleIncomingMessage. Still only one
-    // underlying message is ever created, and both sends broadcast the same
-    // deduped message content.
+    // Retries may repeat the event, but must retain one persisted identity.
     expect(db.message.create).toHaveBeenCalledTimes(1);
-    expect(received).toHaveLength(4);
-    expect(received[0]).toEqual(received[2]);
-    expect(received[1]).toEqual(received[3]);
+    expect(received).toHaveLength(2);
+    expect(received[0]).toEqual(received[1]);
   });
 
   it('admin:status broadcasts "online" to a visitor room when an admin connects', async () => {
@@ -578,4 +572,45 @@ describe('chat socket server', () => {
 
     expect(db.message.updateMany).not.toHaveBeenCalled();
   });
+  it('delivers a visitor message to an admin who has not opened the conversation and acknowledges persistence', async () => {
+    const conversationId = 'conv-global-notification';
+    (db.message.create as jest.Mock).mockResolvedValue(buildMessage({ conversationId, content: 'Global alert' }));
+    (db.conversation.update as jest.Mock).mockResolvedValue({});
+    const admin = connectClient(adminToken());
+    await once(admin, 'connect');
+    const visitor = connectClient(visitorToken(conversationId));
+    await once(visitor, 'connect');
+    const received = once<{ message: { content: string } }>(admin, 'chat:message');
+    const ack = new Promise<{ message: { id: string } }>((resolve) => visitor.emit('chat:message', { conversationId, content: 'Global alert', clientMessageId: 'global-id' }, resolve));
+    expect((await received).message.content).toBe('Global alert');
+    expect((await ack).message.id).toBeTruthy();
+    expect(db.message.create).toHaveBeenCalledTimes(1);
+  });
+
+  it('rejects cross-conversation typing and forged read roles', async () => {
+    const visitor = connectClient(visitorToken('own-room'));
+    await once(visitor, 'connect');
+    const admin = connectClient(adminToken());
+    await once(admin, 'connect');
+    admin.emit('chat:join', { conversationId: 'other-room' });
+    const typing = jest.fn();
+    admin.on('chat:typing', typing);
+    visitor.emit('chat:typing', { conversationId: 'other-room' });
+    visitor.emit('chat:stop-typing', { conversationId: 'other-room' });
+    visitor.emit('chat:read', { conversationId: 'other-room', reader: 'visitor' });
+    visitor.emit('chat:read', { conversationId: 'own-room', reader: 'admin' });
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    expect(typing).not.toHaveBeenCalled();
+    expect(db.message.updateMany).not.toHaveBeenCalled();
+  });
+
+  it('reports persistence errors through acknowledgement', async () => {
+    (db.message.create as jest.Mock).mockRejectedValueOnce(new Error('database unavailable'));
+    (db.conversation.update as jest.Mock).mockResolvedValue({});
+    const visitor = connectClient(visitorToken('conv-error'));
+    await once(visitor, 'connect');
+    const response = await new Promise<{ error: string }>((resolve) => visitor.emit('chat:message', { conversationId: 'conv-error', content: 'Save me' }, resolve));
+    expect(response.error).toContain('could not be saved');
+  });
+
 });

@@ -41,7 +41,7 @@ export function useChatAttachmentUpload(target: UploadTarget) {
       setError(null);
 
       try {
-        const blob = await upload(`chat-uploads/${crypto.randomUUID()}-${file.name}`, file, {
+        const blob = await upload(`chat-uploads/${target.conversationId}/${crypto.randomUUID()}.${file.name.split(".").pop()?.toLowerCase()}`, file, {
           access: "public",
           handleUploadUrl: "/api/chat/attachments",
           clientPayload: JSON.stringify(target),
@@ -55,7 +55,7 @@ export function useChatAttachmentUpload(target: UploadTarget) {
             ...target,
             url: blob.url,
             originalName: file.name,
-            mimeType: file.type || "application/octet-stream",
+            mimeType: file.type || (file.name.toLowerCase().endsWith(".txt") ? "text/plain" : "application/octet-stream"),
             size: file.size,
             content: caption,
           }),
@@ -68,6 +68,7 @@ export function useChatAttachmentUpload(target: UploadTarget) {
         }
 
         const { message } = (await res.json()) as { message: ChatMessage };
+        window.dispatchEvent(new CustomEvent("chat:persisted-message", { detail: message }));
         return message;
       } catch {
         setError("Upload failed.");

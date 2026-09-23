@@ -19,11 +19,13 @@ export interface MessageAttachment {
 
 export interface ChatMessage {
   id: string;
+  clientMessageId?: string;
   conversationId: string;
   sender: MessageSender;
   senderId?: string;
   content: string;
   status: MessageStatus;
+  localStatus?: "sending" | "failed";
   createdAt: string;
   actions?: ChatAction[];
   deleted?: boolean;

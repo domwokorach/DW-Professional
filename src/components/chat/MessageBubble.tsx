@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, CheckCheck, Copy, EllipsisVertical, Trash2 } from "lucide-react";
+import { Check, CheckCheck, Clock, Copy, EllipsisVertical, Trash2 } from "lucide-react";
 import { Message, MessageContent } from "@/components/ui/message";
 import { ChatButton } from "@/components/ui/chat-button";
 import {
@@ -102,7 +102,11 @@ export default function MessageBubble({
       <span className="flex items-center gap-1 px-1 text-[11px] text-muted">
         {formatChatDate(message.createdAt)}
         {isAdmin && !isDeleted ? (
-          message.status === "read" ? (
+          message.localStatus === "failed" ? (
+            <span role="alert">Message failed to send. Use Retry in the notification.</span>
+          ) : message.localStatus === "sending" ? (
+            <Clock className="h-3 w-3" aria-label="Sending" />
+          ) : message.status === "read" ? (
             <CheckCheck className="h-3 w-3 text-accent3" aria-label="Read" />
           ) : (
             <Check className="h-3 w-3" aria-label={message.status === "delivered" ? "Delivered" : "Sent"} />

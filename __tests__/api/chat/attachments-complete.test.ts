@@ -16,7 +16,7 @@ function mockFetchOnce(bytes: Uint8Array, ok = true) {
   (global.fetch as jest.Mock) = jest.fn().mockResolvedValue({
     ok,
     status: ok ? 200 : 500,
-    arrayBuffer: async () => bytes.buffer,
+    body: new ReadableStream({ start(controller) { controller.enqueue(bytes); controller.close(); } }),
   });
 }
 
@@ -30,6 +30,7 @@ async function authAsAdmin() {
 }
 
 describe('POST /api/chat/attachments/complete', () => {
+  beforeEach(() => { process.env.BLOB_READ_WRITE_TOKEN = 'vercel_blob_rw_teststore_test'; });
   afterEach(() => {
     clearMockAuthCookies();
     jest.clearAllMocks();
@@ -37,7 +38,7 @@ describe('POST /api/chat/attachments/complete', () => {
 
   const validBody = {
     conversationId: 'conv-1',
-    url: 'https://blob.example/chat-uploads/abc-report.pdf',
+    url: 'https://teststore.public.blob.vercel-storage.com/chat-uploads/conv-1/12345678-1234-1234-1234-123456789abc.pdf',
     originalName: 'report.pdf',
     mimeType: 'application/pdf',
     size: 8,
@@ -63,7 +64,7 @@ describe('POST /api/chat/attachments/complete', () => {
     expect(response.status).toBe(400);
   });
 
-  it('rejects a declared size over the 5 MB limit and deletes the blob', async () => {
+  it('rejects a declared size over the 5 MB limit without deleting a client-supplied blob', async () => {
     const request = makeRequest('http://localhost:3000/api/chat/attachments/complete', {
       method: 'POST',
       body: { ...validBody, size: 6 * 1024 * 1024 },
@@ -71,7 +72,7 @@ describe('POST /api/chat/attachments/complete', () => {
 
     const response = await POST(request);
     expect(response.status).toBe(400);
-    expect(del).toHaveBeenCalledWith(validBody.url);
+    expect(del).not.toHaveBeenCalled();
   });
 
   it('returns 404 when the visitor does not own the conversation', async () => {

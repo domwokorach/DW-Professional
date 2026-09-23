@@ -1,5 +1,8 @@
 "use client";
 
+import { toast } from "sonner";
+import { mergeMessages as mergeById } from "@/lib/chat/merge-messages";
+import { sendClientMessage } from "@/lib/chat/send-client-message";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChatSocket } from "@/lib/socket/client";
 import { SOCKET_EVENTS } from "@/lib/socket/events";
@@ -14,11 +17,6 @@ import type {
   TypingEventPayload,
 } from "@/types/socket";
 
-function mergeById(prev: ChatMessage[], incoming: ChatMessage[]): ChatMessage[] {
-  const byId = new Map(prev.map((message) => [message.id, message]));
-  for (const message of incoming) byId.set(message.id, message);
-  return Array.from(byId.values()).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
-}
 
 /** Admin-side thread state for one selected conversation: history + realtime messages/typing + reply. */
 export function useAdminThread(
@@ -30,13 +28,14 @@ export function useAdminThread(
   const [conversation, setConversation] = useState<ConversationWithMessages | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [typing, setTyping] = useState(false);
+  const remoteTypingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [loading, setLoading] = useState(false);
 
   const fetchConversation = useCallback((id: string) => {
     return fetch(`/api/chat/conversations/${id}`)
       .then((res) => (res.ok ? (res.json() as Promise<{ conversation: ConversationWithMessages }>) : Promise.reject(res)))
       .then(({ conversation: loaded }) => loaded)
-      .catch(() => null);
+      .catch(() => { toast.error("Unable to load this conversation. Please try again."); return null; });
   }, []);
 
   useEffect(() => {
@@ -52,7 +51,7 @@ export function useAdminThread(
       .then((loaded) => {
         if (cancelled || !loaded) return;
         setConversation(loaded);
-        setMessages(loaded.messages);
+        setMessages((prev) => mergeById(prev, loaded.messages));
         onRead?.();
       })
       .finally(() => {
@@ -83,14 +82,16 @@ export function useAdminThread(
 
     socket.emit(SOCKET_EVENTS.JOIN, { conversationId });
 
+    let cancelled = false;
     if (!wasOnline.current) {
       fetchConversation(conversationId).then((loaded) => {
-        if (!loaded) return;
+        if (!loaded || cancelled) return;
         setConversation(loaded);
         setMessages((prev) => mergeById(prev, loaded.messages));
       });
     }
     wasOnline.current = true;
+    return () => { cancelled = true; };
   }, [socketRef, conversationId, connectionState, fetchConversation]);
 
   useEffect(() => {
@@ -100,23 +101,14 @@ export function useAdminThread(
     const handleMessage = ({ message, clientMessageId }: MessageEventPayload) => {
       if (message.conversationId !== conversationId) return;
       setTyping(false);
-      setMessages((prev) => {
-        if (prev.some((m) => m.id === message.id)) return prev;
-        if (clientMessageId) {
-          const optimisticIndex = prev.findIndex((m) => m.id === clientMessageId);
-          if (optimisticIndex !== -1) {
-            const next = prev.slice();
-            next[optimisticIndex] = message;
-            return next;
-          }
-        }
-        return [...prev, message];
-      });
+      setMessages((prev) => mergeById(prev, [{ ...message, clientMessageId: clientMessageId ?? message.clientMessageId }]));
     };
 
     const handleTyping = (payload: TypingEventPayload) => {
       if (payload.conversationId !== conversationId || payload.sender !== "visitor") return;
       setTyping(payload.isTyping);
+      if (remoteTypingTimer.current) clearTimeout(remoteTypingTimer.current);
+      if (payload.isTyping) remoteTypingTimer.current = setTimeout(() => setTyping(false), 6000);
     };
 
     const handleMessageDeleted = (payload: MessageDeletedPayload) => {
@@ -131,17 +123,48 @@ export function useAdminThread(
       setConversation((prev) => (prev ? { ...prev, status: payload.status } : prev));
     };
 
+    const handleReceipt = (payload: { conversationId: string; reader: "visitor" | "admin"; readAt: string }) => {
+      if (payload.conversationId !== conversationId) return;
+      setMessages((previous) => previous.map((message) =>
+        message.sender !== payload.reader && message.sender !== "bot" && message.createdAt <= payload.readAt
+          ? { ...message, status: "read" } : message));
+    };
+    socket.on("chat:receipt", handleReceipt);
     socket.on(SOCKET_EVENTS.MESSAGE, handleMessage);
     socket.on(SOCKET_EVENTS.TYPING, handleTyping);
     socket.on(SOCKET_EVENTS.MESSAGE_DELETED, handleMessageDeleted);
     socket.on(SOCKET_EVENTS.CONVERSATION_STATUS, handleStatus);
     return () => {
+      socket.off("chat:receipt", handleReceipt);
       socket.off(SOCKET_EVENTS.MESSAGE, handleMessage);
       socket.off(SOCKET_EVENTS.TYPING, handleTyping);
+      if (remoteTypingTimer.current) clearTimeout(remoteTypingTimer.current);
+      setTyping(false);
       socket.off(SOCKET_EVENTS.MESSAGE_DELETED, handleMessageDeleted);
       socket.off(SOCKET_EVENTS.CONVERSATION_STATUS, handleStatus);
     };
   }, [socketRef, conversationId]);
+
+  useEffect(() => {
+    if (!conversationId) return;
+    const markVisible = () => {
+      if (document.visibilityState === "visible" && socketRef.current?.connected) {
+        socketRef.current.emit(SOCKET_EVENTS.READ, { conversationId, reader: "admin" });
+      }
+    };
+    markVisible();
+    document.addEventListener("visibilitychange", markVisible);
+    return () => document.removeEventListener("visibilitychange", markVisible);
+  }, [conversationId, connectionState, messages.length, socketRef]);
+
+  useEffect(() => {
+    const receivePersisted = (event: Event) => {
+      const message = (event as CustomEvent<ChatMessage>).detail;
+      if (message.conversationId === conversationId) setMessages((previous) => mergeById(previous, [message]));
+    };
+    window.addEventListener("chat:persisted-message", receivePersisted);
+    return () => window.removeEventListener("chat:persisted-message", receivePersisted);
+  }, [conversationId]);
 
   const sendReply = useCallback(
     (content: string) => {
@@ -149,7 +172,6 @@ export function useAdminThread(
       if (!trimmed || !conversationId) return;
 
       const socket = socketRef.current;
-      if (!socket?.connected) return;
 
       const clientMessageId = generateId();
       const optimistic: ChatMessage = {
@@ -158,11 +180,25 @@ export function useAdminThread(
         sender: "admin",
         content: trimmed,
         status: "sent",
+        localStatus: "sending",
         createdAt: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, optimistic]);
 
-      socket.emit(SOCKET_EVENTS.REPLY, { conversationId, content: trimmed, clientMessageId });
+      const deliver = async () => {
+        setMessages((prev) => prev.map((message) => message.id === clientMessageId ? { ...message, localStatus: "sending" } : message));
+        try {
+          const message = await sendClientMessage(socketRef.current, { conversationId, content: trimmed, clientMessageId });
+          setMessages((prev) => mergeById(prev, [{ ...message, clientMessageId }]));
+        } catch (error) {
+          setMessages((prev) => prev.map((message) => message.id === clientMessageId ? { ...message, localStatus: "failed" } : message));
+          toast.error(error instanceof Error ? error.message : "Message failed to send.", {
+            action: { label: "Retry", onClick: () => void deliver() }, duration: Infinity,
+          });
+        }
+      };
+      void deliver();
+      if (socket?.connected) socket.emit(SOCKET_EVENTS.STOP_TYPING, { conversationId });
     },
     [socketRef, conversationId]
   );

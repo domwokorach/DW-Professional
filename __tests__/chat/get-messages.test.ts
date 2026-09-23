@@ -5,7 +5,7 @@ import { buildMessage } from '../../test/factories';
 jest.mock('@/lib/database/db');
 
 describe('getMessages', () => {
-  it('queries by conversationId, ordered ascending, and maps rows', async () => {
+  it('queries by conversationId, fetches newest first and returns chronological order, and maps rows', async () => {
     const rows = [buildMessage({ conversationId: 'conv-1' }), buildMessage({ conversationId: 'conv-1' })];
     (db.message.findMany as jest.Mock).mockResolvedValue(rows);
 
@@ -13,7 +13,7 @@ describe('getMessages', () => {
 
     expect(db.message.findMany).toHaveBeenCalledWith({
       where: { conversationId: 'conv-1' },
-      orderBy: { createdAt: 'asc' },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
       take: 200,
       include: { attachments: true },
     });

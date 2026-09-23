@@ -1,7 +1,7 @@
 import { POST } from '@/app/api/chat/read/route';
 import { db } from '@/lib/database/db';
 import { makeRequest, authCookiesFor, clearMockAuthCookies } from '../../../test/testRequest';
-import { buildSession, buildUser } from '../../../test/factories';
+import { buildSession, buildUser, buildConversation } from '../../../test/factories';
 
 jest.mock('@/lib/database/db');
 
@@ -75,9 +75,8 @@ describe('POST /api/chat/read', () => {
       expect(response.status).toBe(400);
     });
 
-    it('does NOT verify the supplied visitorId against the conversation — any syntactically valid visitorId is accepted', async () => {
-      (db.message.updateMany as jest.Mock).mockResolvedValue({ count: 1 });
-      (db.conversation.update as jest.Mock).mockResolvedValue({});
+    it('rejects a visitor trying to read another conversation', async () => {
+      (db.conversation.findUnique as jest.Mock).mockResolvedValue(buildConversation({ id: 'conv-1', visitorId: 'owner' }));
 
       const request = makeRequest('http://localhost:3000/api/chat/read', {
         method: 'POST',
@@ -86,15 +85,9 @@ describe('POST /api/chat/read', () => {
 
       const response = await POST(request);
 
-      expect(response.status).toBe(200);
-      // No conversation lookup or ownership check occurs before markAsRead —
-      // confirms this route trusts the client-supplied visitorId's mere
-      // presence, not its correctness.
-      expect(db.conversation.findUnique).not.toHaveBeenCalled();
-      expect(db.conversation.update).toHaveBeenCalledWith({
-        where: { id: 'conv-1' },
-        data: { unreadByVisitor: 0 },
-      });
+      expect(response.status).toBe(404);
+      expect(db.conversation.findUnique).toHaveBeenCalled();
+      expect(db.conversation.update).not.toHaveBeenCalled();
     });
   });
 });

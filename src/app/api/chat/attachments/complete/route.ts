@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createHash } from "node:crypto";
+import { isConversationAttachmentUrl } from "@/lib/chat/attachment-url";
 import { del } from "@vercel/blob";
 import { isAdmin, canAccessConversation } from "@/lib/chat/permissions";
 import { sendMessage } from "@/lib/chat/send-message";
@@ -8,7 +10,7 @@ import { extractClientIp } from "@/lib/auth/device";
 import { publish } from "@/lib/redis/pubsub";
 import { CHAT_MESSAGE_CREATED_CHANNEL } from "@/lib/chat/message-created-channel";
 import {
-  CHAT_ATTACHMENT_BLOB_PREFIX,
+  validateChatAttachmentMeta,
   CHAT_ATTACHMENT_MAX_BYTES,
   verifyChatAttachmentSignatureFromBuffer,
 } from "@/lib/chat/attachments";
@@ -50,11 +52,10 @@ export async function POST(request: NextRequest) {
   ) {
     return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
   }
-  if (!body.url.includes(CHAT_ATTACHMENT_BLOB_PREFIX)) {
+  if (!isConversationAttachmentUrl(body.url, body.conversationId)) {
     return NextResponse.json({ error: "Invalid attachment URL." }, { status: 400 });
   }
   if (body.size > CHAT_ATTACHMENT_MAX_BYTES) {
-    await del(body.url).catch(() => {});
     return NextResponse.json({ error: "This file is larger than the 5 MB limit." }, { status: 400 });
   }
 
@@ -65,17 +66,32 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "This conversation has been closed." }, { status: 400 });
   }
 
+  const validationError = validateChatAttachmentMeta({ name: body.originalName, type: body.mimeType, size: body.size });
+  if (validationError || body.size <= 0 || !Number.isInteger(body.size)) return NextResponse.json({ error: validationError || "Invalid file size." }, { status: 400 });
+  if (body.originalName.includes("/") || body.originalName.includes("\\") || body.originalName.length > 255) return NextResponse.json({ error: "Invalid filename." }, { status: 400 });
+
   let buffer: Buffer;
   try {
-    const res = await fetch(body.url);
+    const res = await fetch(body.url, { redirect: "error", signal: AbortSignal.timeout(15000) });
     if (!res.ok) throw new Error(`fetch failed with status ${res.status}`);
-    buffer = Buffer.from(await res.arrayBuffer());
+        const reader = res.body?.getReader();
+    if (!reader) throw new Error("Missing file body");
+    const chunks: Uint8Array[] = [];
+    let size = 0;
+    while (true) {
+      const part = await reader.read();
+      if (part.done) break;
+      size += part.value.byteLength;
+      if (size > CHAT_ATTACHMENT_MAX_BYTES) { await reader.cancel(); throw new Error("File too large"); }
+      chunks.push(part.value);
+    }
+    buffer = Buffer.concat(chunks);
   } catch (error) {
     console.error("[api/chat/attachments/complete] failed to fetch uploaded blob:", error);
     return NextResponse.json({ error: "Couldn't verify the uploaded file." }, { status: 400 });
   }
 
-  if (buffer.byteLength > CHAT_ATTACHMENT_MAX_BYTES || !verifyChatAttachmentSignatureFromBuffer(buffer, body.originalName)) {
+  if (buffer.byteLength !== body.size || buffer.byteLength > CHAT_ATTACHMENT_MAX_BYTES || !verifyChatAttachmentSignatureFromBuffer(buffer, body.originalName)) {
     await del(body.url).catch(() => {});
     return NextResponse.json({ error: "This file's contents don't match a supported file type." }, { status: 400 });
   }
@@ -88,13 +104,14 @@ export async function POST(request: NextRequest) {
     sender: admin ? "admin" : "visitor",
     senderId: admin ? admin.userId : body.visitorId,
     content,
-    clientMessageId: body.clientMessageId,
+    clientMessageId: `attachment-${createHash("sha256").update(body.url).digest("hex")}`,
     attachments: [
       { originalName: body.originalName, storageKey: body.url, mimeType: body.mimeType, size: body.size },
     ],
   });
 
-  await publish(CHAT_MESSAGE_CREATED_CHANNEL, { conversationId: body.conversationId, messageId: message.id });
+  await publish(CHAT_MESSAGE_CREATED_CHANNEL, { conversationId: body.conversationId, messageId: message.id })
+    .catch((error) => console.error("[chat] attachment broadcast failed", error));
 
   return NextResponse.json({ message });
 }

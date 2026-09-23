@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAdmin, canAccessConversation } from "@/lib/chat/permissions";
-import { getMessages } from "@/lib/chat/get-messages";
+import { getTranscriptMessages } from "@/lib/chat/get-messages";
 import { visitorIdSchema, safeParse } from "@/lib/chat/validation";
 
 export const runtime = "nodejs";
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const conversation = await canAccessConversation(id, { admin, visitorId });
   if (!conversation) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  const messages = await getMessages(id);
+  const messages = await getTranscriptMessages(id);
 
   const lines: string[] = [
     "Live Chat conversation transcript",
