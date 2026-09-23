@@ -356,9 +356,9 @@ html[data-high-contrast="true"] .gradient-text-button {
   border-radius: 1.75rem;
   background: radial-gradient(
     circle at var(--pointer-x) var(--pointer-y),
-    rgba(var(--color-accent), 0.55) 0%,
+    var(--behind-glow-color, rgba(var(--color-accent), 0.55)) 0%,
     rgba(var(--color-accent2), 0.25) 35%,
-    transparent 65%
+    transparent var(--behind-glow-size, 65%)
   );
   filter: blur(36px);
   opacity: 0;
@@ -373,11 +373,16 @@ html[data-high-contrast="true"] .gradient-text-button {
 .profile-card-shell {
   position: relative;
   z-index: 1;
+  width: 100%;
+  aspect-ratio: 0.718;
+  max-height: 540px;
+  margin-inline: auto;
 }
 
 .profile-card {
   position: relative;
   overflow: hidden;
+  height: 100%;
   border-radius: 1.5rem;
   background: rgb(var(--color-surface));
   border: 1px solid var(--color-line);
@@ -395,6 +400,100 @@ html[data-high-contrast="true"] .gradient-text-button {
 
 .profile-card-shell.entering .profile-card {
   transition: transform 180ms ease-out;
+}
+
+.profile-card-avatar-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.profile-card-avatar {
+  transition: transform 300ms ease-out;
+  transform: translate3d(calc((var(--pointer-from-left) - 0.5) * 8px), calc((var(--pointer-from-top) - 0.5) * 8px), 0)
+    scale(1.05);
+}
+
+.profile-card-top-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, transparent 30%);
+}
+
+.profile-card-bottom-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, transparent 42%);
+}
+
+.profile-card-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background-image: var(--grain);
+  background-size: 220px;
+  mix-blend-mode: overlay;
+  opacity: 0.35;
+}
+
+.profile-card-icon {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background-image: var(--icon);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  mix-blend-mode: overlay;
+  opacity: 0.5;
+}
+
+.profile-card-holo {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: var(
+    --inner-gradient,
+    linear-gradient(
+      115deg,
+      transparent 20%,
+      rgba(255, 0, 168, 0.25) 36%,
+      rgba(0, 231, 255, 0.25) 48%,
+      rgba(255, 215, 0, 0.2) 60%,
+      transparent 80%
+    )
+  );
+  background-position: 20% 20%;
+  background-size: 250% 250%;
+  mix-blend-mode: color-dodge;
+  opacity: 0;
+  animation: holo-bg 8s ease-in-out infinite;
+  transition: opacity 300ms ease;
+}
+
+.profile-card-wrap:hover .profile-card-holo,
+.profile-card-wrap.active .profile-card-holo {
+  opacity: 0.6;
+  animation: none;
+  background-position: var(--background-x) var(--background-y);
+}
+
+@keyframes holo-bg {
+  0%,
+  100% {
+    background-position: 20% 20%;
+  }
+  50% {
+    background-position: 80% 80%;
+  }
 }
 
 .profile-card-glare {
@@ -417,26 +516,31 @@ html[data-high-contrast="true"] .gradient-text-button {
   opacity: 1;
 }
 
-.profile-card-avatar {
-  transition: transform 300ms ease-out;
-  transform: translate3d(calc((var(--pointer-from-left) - 0.5) * 8px), calc((var(--pointer-from-top) - 0.5) * 8px), 0)
-    scale(1.02);
+.profile-card-header {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 6;
+  padding: 1.25rem 1.25rem 0;
 }
 
-.profile-card-scrim {
+.profile-card-user-info {
   position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  background: linear-gradient(to bottom, transparent 55%, rgb(var(--color-surface)) 100%);
+  inset: auto 0.75rem 0.75rem 0.75rem;
+  z-index: 6;
+  border-radius: 1rem;
+  padding: 0.875rem 1rem;
+  background: rgba(17, 17, 17, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 html[data-theme="light"] .profile-card-glow {
   background: radial-gradient(
     circle at var(--pointer-x) var(--pointer-y),
-    rgba(var(--color-accent), 0.3) 0%,
+    var(--behind-glow-color, rgba(var(--color-accent), 0.3)) 0%,
     rgba(var(--color-accent2), 0.15) 35%,
-    transparent 65%
+    transparent var(--behind-glow-size, 65%)
   );
 }
 
@@ -453,7 +557,8 @@ html[data-theme="light"] .profile-card-glare {
 }
 
 html[data-high-contrast="true"] .profile-card-glow,
-html[data-high-contrast="true"] .profile-card-glare {
+html[data-high-contrast="true"] .profile-card-glare,
+html[data-high-contrast="true"] .profile-card-holo {
   display: none;
 }
 
