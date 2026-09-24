@@ -11,7 +11,7 @@ const SECRET = process.env.SOCKET_SECRET as string;
 describe('POST /api/chat/token', () => {
   afterEach(() => clearMockAuthCookies());
 
-  it('issues an admin-scoped token for an authenticated admin session', async () => {
+  it('issues an admin-scoped token for an authenticated admin session that explicitly requests role:"admin"', async () => {
     const user = buildUser();
     const session = buildSession({ userId: user.id });
     (db.user.findUnique as jest.Mock).mockResolvedValue(user);
@@ -25,7 +25,7 @@ describe('POST /api/chat/token', () => {
 
     const request = makeRequest('http://localhost:3000/api/chat/token', {
       method: 'POST',
-      body: {},
+      body: { role: 'admin' },
       cookies,
     });
 
@@ -35,6 +35,40 @@ describe('POST /api/chat/token', () => {
     expect(response.status).toBe(200);
     const claims = verifyLiveChatToken(body.token, SECRET);
     expect(claims).toEqual({ role: 'admin', adminId: user.id });
+  });
+
+  it('issues a visitor-scoped token for a valid visitorId even when the request carries an authenticated admin session', async () => {
+    // Regression test: the candidate-facing widget must never be silently
+    // upgraded to an admin token just because the browser also has an
+    // admin session cookie (e.g. an admin testing the widget in the same
+    // browser as the dashboard) — that admin-scoped socket then rejects
+    // every chat:message the visitor-side widget sends as unauthorized.
+    const user = buildUser();
+    const session = buildSession({ userId: user.id });
+    (db.user.findUnique as jest.Mock).mockResolvedValue(user);
+    (db.session.findUnique as jest.Mock).mockResolvedValue(session);
+    const cookies = await authCookiesFor({
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      sessionId: session.id,
+    });
+    (db.conversation.findFirst as jest.Mock).mockResolvedValue(null);
+    const created = buildConversation({ id: 'conv-1', visitorId: 'visitor-1' });
+    (db.conversation.create as jest.Mock).mockResolvedValue(created);
+
+    const request = makeRequest('http://localhost:3000/api/chat/token', {
+      method: 'POST',
+      body: { visitorId: 'visitor-1' },
+      cookies,
+    });
+
+    const response = await POST(request);
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    const claims = verifyLiveChatToken(body.token, SECRET);
+    expect(claims).toEqual({ role: 'visitor', visitorId: 'visitor-1', conversationId: 'conv-1' });
   });
 
   it('returns 401 (not 400) when body requests {role:"admin"} while unauthenticated', async () => {
