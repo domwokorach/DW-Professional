@@ -21,6 +21,9 @@ dist-ssr
 .next
 *.tsbuildinfo
 
+# Generated Prisma clients
+src/generated
+
 # Test output
 coverage
 test-results

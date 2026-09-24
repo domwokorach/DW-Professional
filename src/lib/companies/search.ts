@@ -1,5 +1,5 @@
-import type { Prisma, CompanyRecord } from "@prisma/client";
-import { db } from "@/lib/database/db";
+import type { Prisma, CompanyRecord } from "@/generated/company-client";
+import { companyDb as db } from "@/lib/database/company-db";
 import type { CompanySearchResult } from "@/types/company";
 import type { ParsedCompanyRow } from "@/lib/companies/csv-import";
 

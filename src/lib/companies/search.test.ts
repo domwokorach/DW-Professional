@@ -1,4 +1,4 @@
-import { db } from "@/lib/database/db";
+import { companyDb as db } from "@/lib/database/company-db";
 import {
   searchCompanies,
   fetchCompanyProfile,
@@ -7,7 +7,7 @@ import {
   COMPANY_SEARCH_RESULT_LIMIT,
 } from "@/lib/companies/search";
 
-jest.mock("@/lib/database/db");
+jest.mock("@/lib/database/company-db");
 
 function record(overrides: Partial<Record<string, unknown>> = {}) {
   return {

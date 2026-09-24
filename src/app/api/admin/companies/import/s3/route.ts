@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { S3Client, HeadObjectCommand } from "@aws-sdk/client-s3";
 import { requireAdminApi } from "@/lib/auth/guard";
 import { apiError } from "@/lib/auth/apiError";
-import { db } from "@/lib/database/db";
+import { companyDb as db } from "@/lib/database/company-db";
 import {
   getCompaniesS3Config,
   companiesSourceKey,

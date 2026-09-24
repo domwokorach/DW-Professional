@@ -1,0 +1,93 @@
+// Standalone Prisma schema for the Companies House search dataset, isolated
+// onto its own Prisma Postgres database (COMPANY_DATABASE_URL) so this
+// large, independently-imported dataset doesn't share infra/blast-radius
+// with the main application database (see prisma/schema.prisma). Generate
+// and migrate this schema explicitly with --schema prisma/company/schema.prisma
+// (see the db:company:* package.json scripts) — it is not part of the main
+// `prisma generate`/`prisma migrate` invocations.
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../src/generated/company-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("COMPANY_DATABASE_URL")
+}
+
+// Local mirror of Companies House's free "Basic Company Data" bulk CSV
+// export (https://download.companieshouse.gov.uk/en_output.html), imported
+// via scripts/import-companies-house-csv.mjs. Company search reads from this
+// table instead of calling the Companies House REST API — no API key or
+// network dependency at request time.
+model CompanyRecord {
+  id                String    @id @default(cuid())
+  companyNumber     String    @unique
+  name              String
+  // Lowercased, whitespace-collapsed copy of `name`, used for indexed
+  // equality/prefix search so the original display casing in `name` is
+  // never altered.
+  nameNormalized    String
+  status            String?
+  category          String?
+  incorporationDate DateTime?
+  addressLine1      String?
+  addressLine2      String?
+  locality          String?
+  region            String?
+  postalCode        String?
+  // Lowercased, space-stripped copy of `postalCode` (e.g. "sw1a2aa"), so a
+  // search matches "SW1A 2AA" and "sw1a2aa" alike while `postalCode` keeps
+  // its original, displayable formatting.
+  postcodeNormalized String?
+  country           String?
+  // Companies House's per-company profile URL from the bulk export's URI column.
+  uri               String?
+  sicCodes          String[]  @default([])
+  // Tags which import run last wrote/touched this row. A monthly full-file
+  // reimport upserts every row with a new generation and then deletes only
+  // rows left on an older generation — see
+  // scripts/import-companies-house-csv.mjs — so search never sees the
+  // table empty or half-replaced mid-import.
+  importGeneration  BigInt    @default(0)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([name])
+  @@index([nameNormalized])
+  @@index([postcodeNormalized])
+  @@index([status])
+  @@index([importGeneration])
+}
+
+// One row per attempt to import CompanyRecord from the configured R2/S3
+// object (see scripts/import-companies-house-s3.mjs and
+// src/app/api/admin/companies/import/s3/route.ts). "running" rows double as
+// resume checkpoints: byteOffset + headerFields let a restarted run seek
+// straight to where it left off with `Range: bytes=<byteOffset>-` instead of
+// re-streaming the whole file, and generation ties the run to the
+// CompanyRecord.importGeneration batch it wrote so stale-row cleanup only
+// happens after a run reaches "succeeded".
+model CompanyImportRun {
+  id            String    @id @default(cuid())
+  // "<bucket>/<key>", e.g. "dw-portfoilo/BasicCompanyDataAsOneFile-2026.csv".
+  sourceKey     String
+  generation    BigInt
+  status        String    @default("running") // "running" | "succeeded" | "failed"
+  // Column-name -> index map read from the CSV header, saved so a resumed
+  // run (which seeks past the header) doesn't need to re-read it.
+  headerFields  Json?
+  byteOffset    BigInt    @default(0)
+  totalBytes    BigInt?
+  rowCount      Int       @default(0)
+  rejectedRows  Int       @default(0)
+  // Capped sample of {row, reason} entries — not every rejection, just
+  // enough to diagnose a bad file without unbounded row storage.
+  errorDetails  Json?
+  startedAt     DateTime  @default(now())
+  completedAt   DateTime?
+  updatedAt     DateTime  @updatedAt
+
+  @@index([sourceKey, status])
+  @@index([sourceKey, startedAt])
+}

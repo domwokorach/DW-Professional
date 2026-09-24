@@ -27,7 +27,7 @@
  */
 import { createReadStream } from "node:fs";
 import { createInterface } from "node:readline";
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient, Prisma } from "../src/generated/company-client/index.js";
 import { createId } from "@paralleldrive/cuid2";
 
 // 17 bind params per row; Postgres caps a prepared statement at 32767 total,
