@@ -32,7 +32,7 @@
  *   node scripts/import-companies-house-s3.mjs [--no-replace]
  */
 import { S3Client, GetObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../src/generated/company-client/index.js";
 import { parseCsvLine, indexHeader, buildCompanyRow } from "./lib/companies-house-csv.mjs";
 import { categorizeS3Error, safeS3ErrorLogFields } from "./lib/s3-errors.mjs";
 
