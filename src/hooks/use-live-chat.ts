@@ -10,6 +10,7 @@ import { SOCKET_EVENTS } from "@/lib/socket/events";
 import { CONVERSATION_ID_STORAGE_KEY, REGISTERED_STORAGE_KEY, TYPING_DEBOUNCE_MS } from "@/lib/chat/constants";
 import { generateId } from "@/lib/utils/generate-id";
 import { getVisitorId } from "@/lib/chat/visitor-id";
+import { traceChat } from "@/lib/chat/trace";
 import type { ChatMessage } from "@/types/message";
 import type {
   AdminJoinedPayload,
@@ -172,6 +173,7 @@ export function useLiveChat(isOpen = false) {
 
     const handleMessage = ({ message, clientMessageId }: MessageEventPayload) => {
       if (message.conversationId !== conversationId) return;
+      traceChat("client:receive", { cid: clientMessageId ?? message.clientMessageId, conversationId: message.conversationId, role: message.sender });
       setTyping(false);
       if (message.sender === "admin" && message.status === "sent") socket.emit("chat:delivered", { conversationId: message.conversationId, messageId: message.id });
       if (clientMessageId) {
@@ -279,11 +281,19 @@ export function useLiveChat(isOpen = false) {
       const deliver = async () => {
         setMessages((prev) => prev.map((message) => message.id === optimistic.id ? { ...message, localStatus: "sending" } : message));
         setPendingMessageIds((prev) => new Set(prev).add(optimistic.id));
+        traceChat("client:send_attempt", {
+          cid: optimistic.id,
+          conversationId,
+          connectionState,
+          connected: socketRef.current?.connected ?? false,
+        });
         try {
           const message = await sendClientMessage(socketRef.current, { conversationId, content: trimmed, clientMessageId: optimistic.id }, getVisitorId());
+          traceChat("client:send_result", { cid: optimistic.id, conversationId, ok: true });
           setMessages((prev) => mergeById(prev, [{ ...message, clientMessageId: optimistic.id }]));
           outboxRef.current.delete(optimistic.id);
         } catch (error) {
+          traceChat("client:send_result", { cid: optimistic.id, conversationId, ok: false, error: error instanceof Error ? error.message : "unknown error" });
           setMessages((prev) => prev.map((message) => message.id === optimistic.id ? { ...message, localStatus: "failed" } : message));
           toast.error(error instanceof Error ? error.message : "Message failed to send.", {
             action: { label: "Retry", onClick: () => void deliver() }, duration: Infinity,
@@ -295,7 +305,7 @@ export function useLiveChat(isOpen = false) {
       void deliver();
       if (socket?.connected) socket.emit(SOCKET_EVENTS.STOP_TYPING, { conversationId });
     },
-    [socketRef, conversationId, conversationStatus]
+    [socketRef, conversationId, conversationStatus, connectionState]
   );
 
   // Debounced chat:typing/chat:stop-typing for the candidate's own typing —

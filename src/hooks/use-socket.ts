@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createSocket, type ChatSocket } from "@/lib/socket/client";
 import { ChatUnavailableError, SessionExpiredError } from "@/lib/socket/errors";
+import { traceChat } from "@/lib/chat/trace";
 import type { ConnectionState } from "@/types/chat";
 
 // socket.io-client's own reconnectionAttempts is kept at Infinity (see
@@ -55,12 +56,15 @@ export function useSocket(fetchToken: () => Promise<string>, enabled = true) {
     let reconnectAttempts = 0;
 
     const handleConnect = () => {
+      const wasReconnect = reconnectAttempts > 0;
       reconnectAttempts = 0;
       console.log("[chat] connected", socket.id);
+      traceChat("client:connection", { socketId: socket.id, connectionState: "online", ok: true, attempt: wasReconnect ? 1 : 0 });
       setConnectionState("online");
     };
     const handleDisconnect = (reason: string) => {
       console.log("[chat] disconnected", reason);
+      traceChat("client:connection", { connectionState: "reconnecting", error: reason });
       setConnectionState("reconnecting");
     };
     const handleConnectError = (error: Error) => {
@@ -78,6 +82,7 @@ export function useSocket(fetchToken: () => Promise<string>, enabled = true) {
       // which is indistinguishable from a real transient outage. Treat it
       // the same as a client-side SessionExpiredError: stop and surface it.
       if (failureRef.current === "session-expired" || error.message === "Unauthorized") {
+        traceChat("client:connection", { connectionState: "unauthorized", ok: false, error: error.message });
         setConnectionState("unauthorized");
         socket.disconnect();
         return;
@@ -85,16 +90,22 @@ export function useSocket(fetchToken: () => Promise<string>, enabled = true) {
       // A request that can never succeed (bad payload, live chat not
       // configured server-side) — same idea, different terminal state.
       if (failureRef.current === "auth-failed") {
+        traceChat("client:connection", { connectionState: "auth-failed", ok: false, error: error.message });
         setConnectionState("auth-failed");
         socket.disconnect();
         return;
       }
+      traceChat("client:connection", { connectionState: reconnectAttempts >= OFFLINE_AFTER_ATTEMPTS ? "offline" : "reconnecting", ok: false, error: error.message, attempt: reconnectAttempts });
       setConnectionState(reconnectAttempts >= OFFLINE_AFTER_ATTEMPTS ? "offline" : "reconnecting");
     };
-    const handleReconnectFailed = () => setConnectionState("offline");
+    const handleReconnectFailed = () => {
+      traceChat("client:connection", { connectionState: "offline" });
+      setConnectionState("offline");
+    };
     const handleReconnectAttempt = (attempt: number) => {
       reconnectAttempts = attempt;
       console.log("[chat] reconnect attempt", attempt);
+      traceChat("client:connection", { connectionState: attempt > OFFLINE_AFTER_ATTEMPTS ? "offline" : "reconnecting", attempt });
       setConnectionState(attempt > OFFLINE_AFTER_ATTEMPTS ? "offline" : "reconnecting");
     };
     const handleReconnect = (attempt: number) => console.log("[chat] reconnected", attempt);

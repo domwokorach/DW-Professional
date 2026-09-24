@@ -26,6 +26,7 @@ import {
   typingPayloadSchema,
 } from "@/lib/chat/validation";
 import { SOCKET_EVENTS } from "./events";
+import { traceChat } from "@/lib/chat/trace";
 import { ADMIN_ROOM, PRESENCE_ROOM, getConversationRoom } from "./rooms";
 import type { ClientToServerEvents, ServerToClientEvents, SocketData } from "./types";
 import type { AdminPresenceState } from "@/types/socket";
@@ -62,10 +63,16 @@ export function attachChatHandlers(io: ChatServer): void {
 
   io.use((socket, next) => {
     const token = socket.handshake.auth?.token;
-    if (typeof token !== "string") return next(new Error("Unauthorized"));
+    if (typeof token !== "string") {
+      traceChat("server:auth", { socketId: socket.id, ok: false, error: "missing token" });
+      return next(new Error("Unauthorized"));
+    }
 
     const claims = verifyLiveChatToken(token, secret);
-    if (!claims) return next(new Error("Unauthorized"));
+    if (!claims) {
+      traceChat("server:auth", { socketId: socket.id, ok: false, error: "invalid or expired token" });
+      return next(new Error("Unauthorized"));
+    }
 
     if (claims.role === "visitor") {
       socket.data.role = "visitor";
@@ -75,6 +82,12 @@ export function attachChatHandlers(io: ChatServer): void {
       socket.data.role = "admin";
       socket.data.adminId = claims.adminId;
     }
+    traceChat("server:auth", {
+      socketId: socket.id,
+      ok: true,
+      role: claims.role,
+      conversationId: claims.role === "visitor" ? claims.conversationId : undefined,
+    });
     next();
   });
 
@@ -214,17 +227,26 @@ async function handleConnection(
   });
 
   socket.on(SOCKET_EVENTS.MESSAGE, async (payload, acknowledge) => {
+    const rawCid = typeof payload === "object" && payload !== null ? (payload as { clientMessageId?: unknown }).clientMessageId : undefined;
+    const rawConversationId = typeof payload === "object" && payload !== null ? (payload as { conversationId?: unknown }).conversationId : undefined;
+    traceChat("server:receipt", { socketId: socket.id, role: socket.data.role, cid: typeof rawCid === "string" ? rawCid : undefined, conversationId: typeof rawConversationId === "string" ? rawConversationId : undefined });
+
     const parsed = safeParse(candidateMessageSchema, payload);
-    if (!parsed || socket.data.role !== "visitor" || parsed.conversationId !== socket.data.conversationId) {
+    const authorized = Boolean(parsed) && socket.data.role === "visitor" && parsed?.conversationId === socket.data.conversationId;
+    traceChat("server:validation", { socketId: socket.id, cid: parsed?.clientMessageId, conversationId: parsed?.conversationId, ok: authorized });
+    if (!parsed || !authorized) {
       acknowledge?.({ error: "Message not authorized or invalid." });
+      traceChat("server:ack", { socketId: socket.id, ok: false });
       return;
     }
     try {
       const message = await handleIncomingMessage(io, socket, parsed.conversationId, parsed.content, parsed.clientMessageId);
       acknowledge?.(message ? { message } : { error: "Message rejected. Check the conversation or try again shortly." });
+      traceChat("server:ack", { socketId: socket.id, cid: parsed.clientMessageId, conversationId: parsed.conversationId, ok: Boolean(message) });
     } catch (error) {
       console.error("[socket] message failed", error);
       acknowledge?.({ error: "Message could not be saved. Please retry." });
+      traceChat("server:ack", { socketId: socket.id, cid: parsed.clientMessageId, conversationId: parsed.conversationId, ok: false, error: error instanceof Error ? error.message : "unknown error" });
     }
   });
 
@@ -390,21 +412,38 @@ async function handleIncomingMessage(
   clientMessageId?: string
 ) {
   const content = sanitizeMessage(rawContent);
-  if (!content) return;
+  if (!content) {
+    traceChat("server:validation", { cid: clientMessageId, conversationId, ok: false, error: "empty after sanitize" });
+    return;
+  }
 
   const rateLimitKey = socket.data.visitorId ?? socket.id;
-  if (isRateLimited(rateLimitKey)) return;
+  if (isRateLimited(rateLimitKey)) {
+    traceChat("server:validation", { cid: clientMessageId, conversationId, ok: false, error: "rate limited" });
+    return;
+  }
 
   const conversation = await getConversationById(conversationId);
-  if (!conversation || conversation.status === "closed") return;
+  if (!conversation || conversation.status === "closed") {
+    traceChat("server:validation", { cid: clientMessageId, conversationId, ok: false, error: !conversation ? "conversation not found" : "conversation closed" });
+    return;
+  }
 
-  const message = await sendMessage({
-    conversationId,
-    sender: "visitor",
-    senderId: socket.data.visitorId,
-    content,
-    clientMessageId,
-  });
+  const persistStart = Date.now();
+  let message;
+  try {
+    message = await sendMessage({
+      conversationId,
+      sender: "visitor",
+      senderId: socket.data.visitorId,
+      content,
+      clientMessageId,
+    });
+  } catch (error) {
+    traceChat("server:persist", { cid: clientMessageId, conversationId, ok: false, durationMs: Date.now() - persistStart, error: error instanceof Error ? error.message : "unknown error" });
+    throw error;
+  }
+  traceChat("server:persist", { cid: clientMessageId, conversationId, ok: true, durationMs: Date.now() - persistStart });
 
   // Broadcast immediately once the message is persisted — everything below
   // (delivered-status flip, admin-list refresh, offline bot reply) is
@@ -413,6 +452,7 @@ async function handleIncomingMessage(
   // used to block this emit.
   const room = getConversationRoom(conversationId);
   io.to(room).to(ADMIN_ROOM).emit(SOCKET_EVENTS.MESSAGE, { message, clientMessageId });
+  traceChat("server:broadcast", { cid: clientMessageId, conversationId, adminRoomSize: io.sockets.adapter.rooms.get(ADMIN_ROOM)?.size ?? 0 });
 
   void (async () => {
     const updatedConversation = await getConversationById(conversationId);

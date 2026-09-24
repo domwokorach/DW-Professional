@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { Check, CheckCheck, Clock, Minus, Paperclip, Send, X } from "lucide-react";
+import { AlertCircle, Check, CheckCheck, Clock, Minus, Paperclip, Send, X } from "lucide-react";
 import type { ChatAction, ChatMessage, ConnectionState } from "@/types/chat";
 import type { AdminPresenceState } from "@/types/socket";
 import TypingIndicator from "@/components/chat/TypingIndicator";
@@ -47,7 +47,7 @@ const NEAR_BOTTOM_THRESHOLD_PX = 80;
 
 const MESSAGE_STATUS_ICON = {
   sending: Clock,
-  failed: Clock,
+  failed: AlertCircle,
   sent: Check,
   delivered: CheckCheck,
   read: CheckCheck,
@@ -274,10 +274,15 @@ export default function LiveChatPanel({
                 : null}
               <span className="flex items-center gap-1 px-1 text-[11px] text-muted">
                 {formatTimestamp(message.createdAt)}
-                {message.localStatus === "failed" ? <span role="alert">Message failed to send. Use Retry in the notification.</span> : null}
+                {statusKey === "sending" ? <span>Sending…</span> : null}
+                {message.localStatus === "failed" ? (
+                  <span role="alert" className="text-red-400">
+                    Failed — Retry in the notification
+                  </span>
+                ) : null}
                 {StatusIcon ? (
                   <StatusIcon
-                    className={`h-3 w-3 ${statusKey === "read" ? "text-accent" : ""}`}
+                    className={`h-3 w-3 ${statusKey === "read" ? "text-accent" : ""} ${statusKey === "failed" ? "text-red-400" : ""}`}
                     aria-label={statusKey}
                   />
                 ) : null}
