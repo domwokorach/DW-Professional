@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChatSocket } from "@/lib/socket/client";
 import { SOCKET_EVENTS } from "@/lib/socket/events";
 import { generateId } from "@/lib/utils/generate-id";
+import { traceChat } from "@/lib/chat/trace";
 import type { ChatMessage } from "@/types/message";
 import type { ConversationWithMessages } from "@/types/conversation";
 import type { ConnectionState } from "@/types/chat";
@@ -100,6 +101,7 @@ export function useAdminThread(
 
     const handleMessage = ({ message, clientMessageId }: MessageEventPayload) => {
       if (message.conversationId !== conversationId) return;
+      traceChat("admin:receive", { cid: clientMessageId ?? message.clientMessageId, conversationId: message.conversationId, role: message.sender });
       setTyping(false);
       setMessages((prev) => mergeById(prev, [{ ...message, clientMessageId: clientMessageId ?? message.clientMessageId }]));
     };

@@ -4,6 +4,7 @@ import { compareConversations } from "@/lib/chat/helpers";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChatSocket } from "@/lib/socket/client";
 import { SOCKET_EVENTS } from "@/lib/socket/events";
+import { traceChat } from "@/lib/chat/trace";
 import type { Conversation } from "@/types/conversation";
 import type { ConnectionState } from "@/types/chat";
 import type { ConversationEventPayload } from "@/types/socket";
@@ -60,6 +61,7 @@ export function useConversations(
     if (!socket) return;
 
     const upsert = ({ conversation }: ConversationEventPayload) => {
+      traceChat("admin:receive_conversation_update", { conversationId: conversation.id });
       setConversations((prev) => {
         const others = prev.filter((c) => c.id !== conversation.id);
         return [conversation, ...others].sort(compareConversations);
@@ -72,7 +74,13 @@ export function useConversations(
       socket.off(SOCKET_EVENTS.NEW_CONVERSATION, upsert);
       socket.off(SOCKET_EVENTS.CONVERSATION_UPDATED, upsert);
     };
-  }, [socketRef]);
+    // `socketRef` alone never changes identity, so without `connectionState`
+    // this would only ever attach once at mount — and if `socketRef.current`
+    // was still null at that first render (the socket hadn't been created
+    // yet), these listeners would never attach for the component's
+    // lifetime. Re-running on every connection-state change makes
+    // (re)attaching self-healing instead of a one-shot snapshot.
+  }, [socketRef, connectionState]);
 
   return { conversations, loading, error, refresh };
 }
