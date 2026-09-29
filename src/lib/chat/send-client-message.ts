@@ -2,6 +2,7 @@ import type { ChatSocket } from "@/lib/socket/client";
 import type { MessageAcknowledgement } from "@/lib/socket/types";
 import type { SendMessagePayload } from "@/types/socket";
 import { traceChat } from "@/lib/chat/trace";
+import { MESSAGE_SAVE_FAILED_ERROR } from "@/lib/chat/constants";
 
 /** Retry an uncertain acknowledgement with the SAME id; persistence is idempotent. */
 export async function sendClientMessage(socket: ChatSocket | null, payload: SendMessagePayload, visitorId?: string) {
@@ -29,6 +30,10 @@ export async function sendClientMessage(socket: ChatSocket | null, payload: Send
         traceChat("transport:ack_timeout", { cid, conversationId, attempt, durationMs });
       } else if (result.error) {
         traceChat("transport:ack", { cid, conversationId, attempt, durationMs, ok: false, error: result.error });
+        // A save failure on the socket host (e.g. a stale deploy whose Prisma
+        // client lags the schema) says nothing about the app host, so let HTTP
+        // try. Auth, rate-limit and closed-conversation rejections stay final.
+        if (result.error === MESSAGE_SAVE_FAILED_ERROR) break;
         throw new Error(result.error);
       } else if (result.message) {
         traceChat("transport:ack", { cid, conversationId, attempt, durationMs, ok: true });
@@ -37,7 +42,8 @@ export async function sendClientMessage(socket: ChatSocket | null, payload: Send
       if (!socket.connected) break;
     }
   }
-  // HTTP still persists messages when the independent socket host is unavailable.
+  // HTTP still persists messages when the independent socket host is unavailable
+  // or failed to save.
   traceChat("transport:fallback_http", { cid, conversationId, connected: socket?.connected ?? false });
   const start = Date.now();
   let response: Response;

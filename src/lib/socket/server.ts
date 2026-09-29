@@ -27,6 +27,7 @@ import {
 } from "@/lib/chat/validation";
 import { SOCKET_EVENTS } from "./events";
 import { traceChat } from "@/lib/chat/trace";
+import { MESSAGE_SAVE_FAILED_ERROR } from "@/lib/chat/constants";
 import { ADMIN_ROOM, PRESENCE_ROOM, getConversationRoom } from "./rooms";
 import type { ClientToServerEvents, ServerToClientEvents, SocketData } from "./types";
 import type { AdminPresenceState } from "@/types/socket";
@@ -245,7 +246,7 @@ async function handleConnection(
       traceChat("server:ack", { socketId: socket.id, cid: parsed.clientMessageId, conversationId: parsed.conversationId, ok: Boolean(message) });
     } catch (error) {
       console.error("[socket] message failed", error);
-      acknowledge?.({ error: "Message could not be saved. Please retry." });
+      acknowledge?.({ error: MESSAGE_SAVE_FAILED_ERROR });
       traceChat("server:ack", { socketId: socket.id, cid: parsed.clientMessageId, conversationId: parsed.conversationId, ok: false, error: error instanceof Error ? error.message : "unknown error" });
     }
   });
@@ -261,7 +262,7 @@ async function handleConnection(
       acknowledge?.(message ? { message } : { error: "Message rejected. The conversation may be closed." });
     } catch (error) {
       console.error("[socket] reply failed", error);
-      acknowledge?.({ error: "Message could not be saved. Please retry." });
+      acknowledge?.({ error: MESSAGE_SAVE_FAILED_ERROR });
     }
   });
 

@@ -5,6 +5,7 @@ import { checkRateLimit } from "@/lib/auth/rateLimit";
 import { publish } from "@/lib/redis/pubsub";
 import { CHAT_MESSAGE_CREATED_CHANNEL } from "@/lib/chat/message-created-channel";
 import { traceChat } from "@/lib/chat/trace";
+import { MESSAGE_SAVE_FAILED_ERROR } from "@/lib/chat/constants";
 import { NextRequest, NextResponse } from "next/server";
 import { getMessages } from "@/lib/chat/get-messages";
 import { canAccessConversation, isAdmin } from "@/lib/chat/permissions";
@@ -85,6 +86,6 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     traceChat("server:http_persist", { cid: input.clientMessageId, conversationId: input.conversationId, ok: false, durationMs: Date.now() - persistStart, error: error instanceof Error ? error.message : "unknown error" });
     console.error("[chat] fallback persistence failed", error);
-    return NextResponse.json({ error: "Message could not be saved. Please retry." }, { status: 500 });
+    return NextResponse.json({ error: MESSAGE_SAVE_FAILED_ERROR }, { status: 500 });
   }
 }

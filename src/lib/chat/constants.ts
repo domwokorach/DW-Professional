@@ -15,3 +15,10 @@ export const REGISTERED_STORAGE_KEY = "live-chat-registered";
 export const CHAT_ROOMS = {
   ADMINS: "admins",
 } as const;
+
+/**
+ * Ack/response error for a persistence failure (as opposed to auth, rate
+ * limit or a closed conversation). Clients match on this exact text to retry
+ * over HTTP, so it must stay identical to what older socket builds send.
+ */
+export const MESSAGE_SAVE_FAILED_ERROR = "Message could not be saved. Please retry.";
