@@ -13,7 +13,6 @@
   },
   "license": "MIT",
   "author": "Dominic Wokorach Olanya",
-  "type": "commonjs",
   "main": "index.js",
   "directories": {
     "doc": "docs",
