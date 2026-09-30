@@ -27,6 +27,14 @@ src/generated
 # Test output
 coverage
 test-results
+lcov-report
+*.lcov
+lcov.info
+clover.xml
+coverage-final.json
+
+# Accidentally generated coverage output (mangled --coverageDirectory path)
+/pip install --upgrade pipclear/
 
 # Editor directories and files
 .vscode/*
