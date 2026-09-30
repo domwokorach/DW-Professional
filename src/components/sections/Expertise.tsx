@@ -8,15 +8,12 @@ import FullStackOverview from "@/components/sections/FullStackOverview";
 import ShowMoreButton from "@/components/ui/ShowMoreButton";
 import ExpandableCardDetails from "@/components/ui/ExpandableCardDetails";
 import { useExpandable } from "@/hooks/use-expandable";
-import { skillCategories, type SkillItem } from "@/data/skills";
+import { skillCategories, type SkillCategory } from "@/data/skills";
 import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
 
-/** Core items stay visible by default; the rest sit behind Show more. */
-function splitSkillItems(items: SkillItem[]) {
-  const core = items.filter((item) => item.core);
-  const summary = core.length > 0 ? core : items.slice(0, Math.min(2, items.length));
-  const rest = items.filter((item) => !summary.includes(item));
-  return { summary, rest };
+/** The first `initiallyVisible` items stay visible; the rest sit behind Show More. */
+function splitSkillItems({ items, initiallyVisible }: SkillCategory) {
+  return { summary: items.slice(0, initiallyVisible), rest: items.slice(initiallyVisible) };
 }
 
 const CATEGORY_ANCHORS: Record<string, string> = {
@@ -26,10 +23,15 @@ const CATEGORY_ANCHORS: Record<string, string> = {
   "Cloud & DevOps": "cloud-devops",
   "Databases & ORM": "databases-orm",
   "Development Tools": "development-tools",
-  "AI & LLM": "ai-llm",
   "Security & Authentication": "security-authentication",
   "UI/UX & Design": "ui-ux-design",
   "CSS & Styling": "css-styling",
+  "AI Solutions": "ai-solutions",
+  "LLMs & Agentic AI": "llms-agentic-ai",
+  "RAG, Search & Machine Learning": "rag-search-ml",
+  "AI APIs & Integrations": "ai-apis-integrations",
+  "AI Backend Development": "ai-backend-development",
+  "AI Automation, Cloud & Operations": "ai-automation-cloud-operations",
 };
 
 export default function Expertise() {
@@ -61,7 +63,7 @@ export default function Expertise() {
         <div id={listId} className="mt-16 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           <AnimatePresence initial={false}>
           {visibleItems.map((category, i) => {
-            const { summary, rest } = splitSkillItems(category.items);
+            const { summary, rest } = splitSkillItems(category);
             return (
             <motion.article
               key={category.title}
@@ -125,7 +127,7 @@ export default function Expertise() {
               </ul>
 
               {rest.length > 0 && (
-                <ExpandableCardDetails title={category.title} className="relative">
+                <ExpandableCardDetails title={category.title} toggleVariant="trailing" className="relative">
                   <ul className="flex flex-wrap gap-2 pt-1">
                     {rest.map((item) => (
                       <li

@@ -11,6 +11,11 @@ export interface ShowMoreToggleProps {
   controls: string;
   /** Accessible-name suffix appended after "Show more"/"Show less", e.g. "services" or "for Frontend". */
   label: string;
+  /**
+   * "leading" (default): "→ Show more" / "← Show less".
+   * "trailing": "Show More →" / "Show Less ↑".
+   */
+  variant?: "leading" | "trailing";
   className?: string;
 }
 
@@ -23,7 +28,31 @@ export interface ShowMoreToggleProps {
  * identical everywhere in the app.
  */
 const ShowMoreToggle = forwardRef<HTMLButtonElement, ShowMoreToggleProps>(
-  ({ expanded, onToggle, controls, label, className }, ref) => {
+  ({ expanded, onToggle, controls, label, variant = "leading", className }, ref) => {
+    const trailing = variant === "trailing";
+    const arrow = (
+      <span
+        aria-hidden="true"
+        className={cn(
+          "inline-block transition-transform duration-300 ease-out motion-reduce:transition-none",
+          expanded
+            ? trailing
+              ? "group-hover/toggle:-translate-y-0.5"
+              : "group-hover/toggle:-translate-x-0.5"
+            : "group-hover/toggle:translate-x-0.5"
+        )}
+      >
+        {expanded ? (trailing ? "↑" : "←") : "→"}
+      </span>
+    );
+    const text = trailing
+      ? expanded
+        ? "Show Less"
+        : "Show More"
+      : expanded
+        ? "Show less"
+        : "Show more";
+
     return (
       <button
         ref={ref}
@@ -40,18 +69,9 @@ const ShowMoreToggle = forwardRef<HTMLButtonElement, ShowMoreToggleProps>(
           className
         )}
       >
-        <span
-          aria-hidden="true"
-          className={cn(
-            "inline-block transition-transform duration-300 ease-out motion-reduce:transition-none",
-            expanded
-              ? "group-hover/toggle:-translate-x-0.5"
-              : "group-hover/toggle:translate-x-0.5"
-          )}
-        >
-          {expanded ? "←" : "→"}
-        </span>
-        <span>{expanded ? "Show less" : "Show more"}</span>
+        {!trailing && arrow}
+        <span>{text}</span>
+        {trailing && arrow}
       </button>
     );
   }
