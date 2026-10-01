@@ -144,7 +144,7 @@ CONTACT_TO_EMAIL=replace_with_the_inbox_that_should_receive_enquiries
 | Variable | Used by | Required for |
 | --- | --- | --- |
 | `DATABASE_URL` | `prisma/schema.prisma`, `src/lib/database/db.ts` | Everything database-backed: admin auth, comments, chat, company data |
-| `JWT_ACCESS_SECRET` | `src/lib/auth/tokens.ts`, `src/middleware.ts` | Admin auth (access tokens) |
+| `JWT_ACCESS_SECRET` | `src/lib/auth/tokens.ts`, `src/proxy.ts` | Admin auth (access tokens) |
 | `TOKEN_HASH_PEPPER` | `src/lib/auth/env.ts` | Hashing refresh/reset/email-change tokens |
 | `APP_URL` / `NEXT_PUBLIC_APP_URL` | `src/lib/email/mailer.ts` callers, socket client | Absolute links in auth emails; client-side socket origin |
 | `ADMIN_INITIAL_EMAIL` / `ADMIN_INITIAL_PASSWORD` | `prisma/seed.ts` | Optional idempotent seeded super-admin (there is no public sign-up route) |

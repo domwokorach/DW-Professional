@@ -5,7 +5,7 @@ import { getAdminSession } from "@/lib/auth/guard";
 import AdminShell from "@/components/admin/AdminShell";
 
 // Middleware already redirects requests with no valid access token before
-// they reach this layout (see src/middleware.ts's isAdminRoute check). This
+// they reach this layout (see src/proxy.ts's isAdminRoute check). This
 // re-checks server-side as defense in depth — a route guard must never rely
 // solely on middleware or the client — including the live account status,
 // which middleware's stateless JWT check cannot see.

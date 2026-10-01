@@ -15,7 +15,7 @@ function isAdminRoute(remainingPath: string) {
 }
 
 /**
- * Edge-safe check: verifies the access token's signature and expiry only.
+ * Lightweight first-gate check: verifies the access token's signature and expiry only.
  * This is the first gate (fast redirect for the common case); the admin
  * layout and every admin API route re-check the live user/session against
  * the database as defense in depth, since a token can be valid but its
@@ -48,7 +48,7 @@ function preferredLocale(request: NextRequest) {
   return defaultLocale;
 }
 
-export default async function middleware(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/api")) {
