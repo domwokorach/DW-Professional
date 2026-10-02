@@ -8,7 +8,7 @@ import LiveChatLoader from "@/components/live-chat/LiveChatLoader";
 import HiddenOnPaths from "@/components/layout/HiddenOnPaths";
 
 // Standalone pages rendered without the header, footer and live chat.
-const STANDALONE_PAGES = ["/barcode"];
+const STANDALONE_PAGES = ["/barcode", "/info"];
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (

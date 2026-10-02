@@ -1,9 +1,9 @@
 import type { CSSProperties } from "react";
 import { Body, Button, Column, Container, Head, Heading, Hr, Html, Link, Preview, Row, Section, Text } from "@react-email/components";
 
-const BRAND_NAME = "Dominic Wokorach";
-const SITE_HOST = "dominicwokorach.me";
-const SITE_URL = `https://${SITE_HOST}`;
+export const BRAND_NAME = "Dominic Wokorach";
+export const SITE_HOST = "dominicwokorach.me";
+export const SITE_URL = `https://${SITE_HOST}`;
 
 export interface ContactEnquiryAttachment {
   /** Sanitised, display-safe filename (never the raw upload path). */
@@ -31,7 +31,7 @@ export interface ContactEnquiryEmailProps {
 }
 
 /** Splits on newlines and inserts real <br/> elements so paragraph breaks survive — text nodes stay React-escaped throughout. */
-function renderMultiline(text: string) {
+export function renderMultiline(text: string) {
   const lines = text.split("\n");
   return lines.map((line, index) => (
     <span key={index}>
@@ -41,7 +41,7 @@ function renderMultiline(text: string) {
   ));
 }
 
-function InfoRow({ label, value }: { label: string; value: string }) {
+export function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <Row style={styles.infoRow}>
       <Column style={styles.infoLabelCol}>
@@ -159,7 +159,7 @@ ContactEnquiryEmail.PreviewProps = {
   attachment: { filename: "project-brief.pdf", type: "PDF document", size: "842 KB" },
 } satisfies ContactEnquiryEmailProps;
 
-const styles: Record<string, CSSProperties> = {
+export const styles: Record<string, CSSProperties> = {
   body: {
     backgroundColor: "#f4f4f5",
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',

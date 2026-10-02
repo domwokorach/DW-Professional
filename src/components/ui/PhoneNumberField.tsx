@@ -12,6 +12,8 @@ export interface PhoneNumberFieldProps {
   onCountryChange: (country: string) => void;
   error?: string;
   helperId?: string;
+  /** Marks the number as required instead of optional (the contact form leaves it optional). */
+  required?: boolean;
 }
 
 // Digits plus the characters people commonly type/paste into a phone field —
@@ -55,6 +57,7 @@ export default function PhoneNumberField({
   onCountryChange,
   error,
   helperId,
+  required = false,
 }: PhoneNumberFieldProps) {
   const [countryOptions, setCountryOptions] = useState<CountryOption[]>(() =>
     buildCountryOptions(false)
@@ -74,7 +77,8 @@ export default function PhoneNumberField({
   return (
     <div>
       <label htmlFor="mobile" className="mb-2 block text-sm text-muted">
-        Mobile number <span className="text-xs">(optional)</span>
+        Mobile number{" "}
+        {required ? <span aria-hidden="true">(required)</span> : <span className="text-xs">(optional)</span>}
       </label>
 
       <div
@@ -108,6 +112,7 @@ export default function PhoneNumberField({
           value={value}
           onChange={handleNumberChange}
           aria-label="Mobile number"
+          aria-required={required || undefined}
           aria-describedby={describedBy}
           aria-invalid={Boolean(error)}
           className="w-full min-w-0 bg-transparent px-4 py-3 text-paper placeholder:text-muted/60 outline-none"
