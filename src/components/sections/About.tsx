@@ -2,6 +2,7 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
 import ProtectedParagraph from "@/components/ui/ProtectedParagraph";
+import { TracingBeam } from "@/components/ui/tracing-beam";
 
 const paragraphs = [
   "Frontend Software Engineer with commercial experience at Sky and Lloyds Banking Group, specialising in React, TypeScript and accessible digital products.",
@@ -22,7 +23,7 @@ export default function About() {
             headingEffect="typing"
           />
 
-          <div>
+          <TracingBeam>
             <div className="grid max-w-2xl gap-6">
               {paragraphs.map((p, i) => (
                 <MotionReveal key={p} delay={0.05 * i}>
@@ -32,7 +33,7 @@ export default function About() {
                 </MotionReveal>
               ))}
             </div>
-          </div>
+          </TracingBeam>
         </div>
       </Container>
     </section>

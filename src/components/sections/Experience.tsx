@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
+import { TracingBeam } from "@/components/ui/tracing-beam";
 import ExperienceAccordionItem from "@/components/experience/ExperienceAccordionItem";
 import { certifications, education, experience } from "@/data/experience";
 
@@ -38,55 +39,57 @@ export default function Experience() {
           typingSpeed={32}
         />
 
-        <ol className="mt-16">
-          {experience.map((item) => (
-            <ExperienceAccordionItem
-              key={`${item.role}-${item.period}`}
-              item={item}
-              id={ROLE_ANCHORS[item.role]}
-              isOpen={openRole === item.role}
-              onToggle={() => setOpenRole((current) => (current === item.role ? null : item.role))}
-            />
-          ))}
-        </ol>
+        <TracingBeam className="mt-16">
+          <ol>
+            {experience.map((item) => (
+              <ExperienceAccordionItem
+                key={`${item.role}-${item.period}`}
+                item={item}
+                id={ROLE_ANCHORS[item.role]}
+                isOpen={openRole === item.role}
+                onToggle={() => setOpenRole((current) => (current === item.role ? null : item.role))}
+              />
+            ))}
+          </ol>
 
-        <div className="mt-20 grid gap-10 sm:grid-cols-2">
-          <MotionReveal>
-            <h3 className="text-sm font-mono uppercase tracking-widest text-accent">
-              Professional Development
-            </h3>
-            <div className="mt-4 space-y-4">
-              <div>
-                <p className="text-sm font-medium text-paper">Codecademy</p>
-                <p className="text-sm text-muted">{certifications.codecademy.join(", ")}</p>
+          <div className="mt-20 grid gap-10 sm:grid-cols-2">
+            <MotionReveal>
+              <h3 className="text-sm font-mono uppercase tracking-widest text-accent">
+                Professional Development
+              </h3>
+              <div className="mt-4 space-y-4">
+                <div>
+                  <p className="text-sm font-medium text-paper">Codecademy</p>
+                  <p className="text-sm text-muted">{certifications.codecademy.join(", ")}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-paper">HackerRank</p>
+                  <p className="text-sm text-muted">{certifications.hackerrank.join(", ")}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-paper">Additional</p>
+                  <p className="text-sm text-muted">{certifications.additional.join(", ")}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-medium text-paper">HackerRank</p>
-                <p className="text-sm text-muted">{certifications.hackerrank.join(", ")}</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-paper">Additional</p>
-                <p className="text-sm text-muted">{certifications.additional.join(", ")}</p>
-              </div>
-            </div>
-          </MotionReveal>
+            </MotionReveal>
 
-          <MotionReveal delay={0.1}>
-            <h3 className="text-sm font-mono uppercase tracking-widest text-accent">
-              Education
-            </h3>
-            <ul className="mt-4 space-y-3">
-              {education.map((ed) => (
-                <li key={ed.qualification}>
-                  <p className="text-sm font-medium text-paper">{ed.qualification}</p>
-                  {ed.institution && (
-                    <p className="text-sm text-muted">{ed.institution}</p>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </MotionReveal>
-        </div>
+            <MotionReveal delay={0.1}>
+              <h3 className="text-sm font-mono uppercase tracking-widest text-accent">
+                Education
+              </h3>
+              <ul className="mt-4 space-y-3">
+                {education.map((ed) => (
+                  <li key={ed.qualification}>
+                    <p className="text-sm font-medium text-paper">{ed.qualification}</p>
+                    {ed.institution && (
+                      <p className="text-sm text-muted">{ed.institution}</p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </MotionReveal>
+          </div>
+        </TracingBeam>
       </Container>
     </section>
   );
