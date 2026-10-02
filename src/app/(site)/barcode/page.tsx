@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Container from "@/components/ui/Container";
 import ProjectProfileCard from "@/components/contact/ProjectProfileCard";
+import { FontWeightText } from "@/components/ui/font-weight-text";
 
 export const metadata = { title: "Barcode | Dominic Wokorach" };
 
@@ -23,9 +24,16 @@ export default function BarcodePage() {
           </Link>
 
           <div className="mt-10 flex flex-col items-center gap-6 sm:mt-12 sm:gap-8">
-            <h1 className="text-center text-2xl font-semibold tracking-tight text-paper sm:text-3xl">
-              Barcode Me
-            </h1>
+            <FontWeightText
+              as="h1"
+              text="Barcode Me"
+              minWeight={300}
+              maxWeight={800}
+              staticWeight={650}
+              animationDuration={1.5}
+              delayMultiplier={0.15}
+              className="text-center text-2xl tracking-tight text-paper sm:text-3xl"
+            />
             <ProjectProfileCard
               avatarUrl={PROFILE_AVATAR_URL}
               miniAvatarUrl={PROFILE_AVATAR_URL}

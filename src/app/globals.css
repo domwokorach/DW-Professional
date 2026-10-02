@@ -765,3 +765,28 @@ html[data-high-contrast="true"] :focus-visible {
     animation: none;
     mix-blend-mode: normal;
 }
+/* Eldora UI Font Weight Text (src/components/ui/font-weight-text.tsx): each
+   letter "breathes" between --fwt-min and --fwt-max on the variable font's
+   wght axis, staggered by an inline animation-delay. */
+.font-weight-text-char {
+  font-variation-settings: "wght" var(--fwt-min, 0);
+  animation: font-weight-text-breath var(--fwt-duration, 1.5s) cubic-bezier(0.37, 0, 0.63, 1) infinite alternate both;
+}
+
+@keyframes font-weight-text-breath {
+  from {
+    font-variation-settings: "wght" var(--fwt-min, 0);
+  }
+  to {
+    font-variation-settings: "wght" var(--fwt-max, 840);
+  }
+}
+
+/* The global reduced-motion rule would stop each letter on an arbitrary
+   frame; show one steady, readable weight instead. */
+@media (prefers-reduced-motion: reduce) {
+  .font-weight-text-char {
+    animation: none !important;
+    font-variation-settings: "wght" var(--fwt-static, 700);
+  }
+}
