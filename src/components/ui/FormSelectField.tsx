@@ -72,7 +72,7 @@ export default function FormSelectField({
         >
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
-        <SelectContent className="w-(--anchor-width)">
+        <SelectContent>
           {options.map((option) => (
             <SelectItem key={option.value} value={option.value}>
               {option.label}

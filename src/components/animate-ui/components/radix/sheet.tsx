@@ -81,7 +81,7 @@ function SheetContent({
       >
         {children}
         {showCloseButton && (
-          <SheetClose className="ring-offset-ink focus:ring-accent/50 data-[state=open]:bg-surface absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none dark:focus:ring-accent/50 dark:data-[state=open]:bg-surface">
+          <SheetClose className="ring-offset-ink focus:ring-accent/50 data-[state=open]:bg-surface absolute top-4 right-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:pointer-events-none dark:focus:ring-accent/50 dark:data-[state=open]:bg-surface">
             <XIcon className="size-4" />
             <span className="sr-only">Close</span>
           </SheetClose>

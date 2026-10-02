@@ -98,15 +98,19 @@ export default function Header() {
   // on the home page the nav text needs to stay light regardless of theme —
   // same treatment as Hero's own copy. `.hero-scrim-text` is a no-op above
   // `lg` and once `scrolled` swaps in the opaque, theme-adaptive bg-ink/70.
+  // The open mobile menu paints its own theme-adaptive panel inside the
+  // header, so it gets the same opaque treatment — otherwise the pinned
+  // light tokens leave its text white-on-white in light mode.
   const isHome = stripLocale(pathname) === "/";
-  const overHeroScrim = isHome && !scrolled;
+  const solidHeader = scrolled || menuOpen;
+  const overHeroScrim = isHome && !solidHeader;
 
   return (
     <header
       className={`fixed inset-x-0 top-0 z-[60] transition-colors duration-300 ${
         overHeroScrim ? "hero-scrim-text" : ""
       } ${
-        scrolled ? "border-b border-line bg-ink/70 backdrop-blur-lg" : "bg-ink/30 backdrop-blur-sm"
+        solidHeader ? "border-b border-line bg-ink/70 backdrop-blur-lg" : "bg-ink/30 backdrop-blur-sm"
       }`}
     >
       <nav className="mx-auto flex h-16 w-full max-w-content items-center justify-between gap-2 px-6 sm:px-8 lg:px-10">

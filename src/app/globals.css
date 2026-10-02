@@ -41,7 +41,11 @@ html[data-theme="light"] {
   --color-greeting: 11 31 58;
 }
 
+/* position: relative makes <html> the offset parent framer-motion's
+   useScroll({ target }) measures against (it warns when the default
+   document scroll container is static). Used by the TracingBeam. */
 html {
+  position: relative;
   scroll-behavior: smooth;
 }
 
