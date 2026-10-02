@@ -7,7 +7,11 @@ import GradientText from "@/components/ui/GradientText";
 import MotionReveal from "@/components/ui/MotionReveal";
 import Container from "@/components/ui/Container";
 import GlyphMatrixBackground from "@/components/magicui/glyph-matrix-background";
-import FileUploadField, { type AttachmentUploadStatus, type UploadedAttachment } from "@/components/ui/FileUploadField";
+import FileUploadField, {
+  UPLOAD_FAILED_MESSAGE,
+  type AttachmentUploadStatus,
+  type UploadedAttachment,
+} from "@/components/ui/FileUploadField";
 import FormSelectField from "@/components/ui/FormSelectField";
 import PhoneNumberField from "@/components/ui/PhoneNumberField";
 import CompanySearchField from "@/components/companies/CompanySearchField";
@@ -145,7 +149,7 @@ export default function Contact() {
       nextFieldErrors.message = `Keep your message to ${MESSAGE_MAX_CHARS.toLocaleString()} characters or fewer.`;
     }
     if (attachmentStatus === "error") {
-      nextFieldErrors.attachment = "Upload failed. Please try again.";
+      nextFieldErrors.attachment = UPLOAD_FAILED_MESSAGE;
     }
 
     if (Object.keys(nextFieldErrors).length > 0) {

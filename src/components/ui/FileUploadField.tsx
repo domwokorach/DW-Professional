@@ -33,6 +33,9 @@ export interface FileUploadFieldProps {
   helperId?: string;
 }
 
+/** Shown when the browser-to-Blob upload fails. The file is optional, so the visitor is told they can still send the form without it. */
+export const UPLOAD_FAILED_MESSAGE = "We couldn't upload your file. Please try again, or remove it and send the form without it.";
+
 /** Fire-and-forget delete of a temp blob — used for cancel/remove/replace, never blocks the UI on its result. */
 function deleteBlob(url: string) {
   fetch("/api/contact/upload", {
@@ -131,9 +134,11 @@ export default function FileUploadField({
         onStatusChange("idle");
         return;
       }
-      setLocalError("Upload failed. Please try again.");
+      // Logged so a server-side cause (e.g. a rejected Blob token) is visible in the console.
+      console.error("[FileUploadField] upload failed:", err);
+      setLocalError(UPLOAD_FAILED_MESSAGE);
       onStatusChange("error");
-      announce("Upload failed. Please try again.");
+      announce(UPLOAD_FAILED_MESSAGE);
     }
   }
 
@@ -272,7 +277,7 @@ export default function FileUploadField({
             )}
 
             {status === "error" && (
-              <p className="mt-1.5 text-xs font-medium text-red-400">Upload failed. Please try again.</p>
+              <p className="mt-1.5 text-xs font-medium text-red-400">{UPLOAD_FAILED_MESSAGE}</p>
             )}
           </div>
 

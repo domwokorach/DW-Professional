@@ -3,7 +3,11 @@
 import { useEffect, useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { AlertCircle, CheckCircle2, Loader2, RotateCcw } from "lucide-react";
 import GradientText from "@/components/ui/GradientText";
-import FileUploadField, { type AttachmentUploadStatus, type UploadedAttachment } from "@/components/ui/FileUploadField";
+import FileUploadField, {
+  UPLOAD_FAILED_MESSAGE,
+  type AttachmentUploadStatus,
+  type UploadedAttachment,
+} from "@/components/ui/FileUploadField";
 import FormSelectField from "@/components/ui/FormSelectField";
 import PhoneNumberField from "@/components/ui/PhoneNumberField";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -155,7 +159,7 @@ export default function InfoForm() {
       errors.message = `Please include no more than ${INFO_MAX_MESSAGE_LINKS} links in your message.`;
     }
     if (attachmentStatus === "uploading") errors.attachment = "Please wait for your file to finish uploading.";
-    else if (attachmentStatus === "error") errors.attachment = "Your file didn't upload. Remove it or try again.";
+    else if (attachmentStatus === "error") errors.attachment = UPLOAD_FAILED_MESSAGE;
     return errors;
   }
 
