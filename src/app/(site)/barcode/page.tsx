@@ -16,7 +16,25 @@ const QR_CODE_URL =
 
 export default function BarcodePage() {
   return (
-    <article className="flex min-h-[100svh] items-center py-32 sm:py-40">
+    <article className="relative isolate flex min-h-[100svh] items-center overflow-hidden py-32 sm:py-40">
+      {/* Decorative backdrop: oversized, faint "Barcode Me" behind the card.
+          Hidden from assistive tech (the h1 below already says it), ignores
+          pointer events, and sits under the card so the QR code stays clean. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 flex select-none items-center justify-center"
+      >
+        <FontWeightText
+          text="Barcode Me"
+          minWeight={200}
+          maxWeight={900}
+          staticWeight={700}
+          animationDuration={2.4}
+          delayMultiplier={0.2}
+          className="whitespace-nowrap text-center text-[15vw] leading-none tracking-tighter text-paper/[0.07] 2xl:text-[14rem]"
+        />
+      </div>
+
       <Container className="flex flex-col items-center">
         <div className="w-full max-w-5xl">
           <Link href="/" className="text-sm text-muted hover:text-paper transition-colors">

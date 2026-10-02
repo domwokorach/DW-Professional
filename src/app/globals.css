@@ -790,3 +790,31 @@ html[data-high-contrast="true"] :focus-visible {
     font-variation-settings: "wght" var(--fwt-static, 700);
   }
 }
+
+/* Homepage hero globe (src/components/sections/HeroGlobe.tsx). Sits between
+   the portrait scrim (z-10) and the hero copy (z-20); kept faint and faded
+   to transparent at its edge so it never competes with the text. */
+.hero-globe {
+  z-index: 15;
+  opacity: 0.32;
+  -webkit-mask-image: radial-gradient(circle at center, #000 38%, transparent 70%);
+  mask-image: radial-gradient(circle at center, #000 38%, transparent 70%);
+}
+
+html[data-theme="light"] .hero-globe {
+  opacity: 0.28;
+}
+
+/* Static stand-in when WebGL is unavailable: a soft accent-tinted sphere. */
+.hero-globe-fallback {
+  background: radial-gradient(
+    circle at 35% 30%,
+    rgb(var(--color-accent) / 0.35) 0%,
+    rgb(var(--color-accent2) / 0.18) 40%,
+    transparent 68%
+  );
+}
+
+html[data-high-contrast="true"] .hero-globe {
+  display: none;
+}
