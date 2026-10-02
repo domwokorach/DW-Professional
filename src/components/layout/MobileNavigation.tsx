@@ -22,7 +22,7 @@ function MobileNavItem({
       <button
         onClick={() => onNavigate(item.id)}
         aria-current={isActive ? "true" : undefined}
-        className={`block min-h-11 w-full rounded py-3 text-left text-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${
+        className={`block min-h-11 w-full rounded py-3 text-center text-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent ${
           isActive ? "text-paper" : "text-muted"
         }`}
       >
