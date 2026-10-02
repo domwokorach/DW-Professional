@@ -59,6 +59,7 @@ export interface ProfileCardProps {
   status?: string;
 
   contactText?: string;
+  showContactButton?: boolean;
   showUserInfo?: boolean;
 
   onContactClick?: () => void;
@@ -90,6 +91,7 @@ export default function ProjectProfileCard({
   handle = "domwokorach",
   status = "Available",
   contactText = "Start a Project",
+  showContactButton = true,
   showUserInfo = true,
   onContactClick,
 }: ProfileCardProps) {
@@ -406,13 +408,15 @@ export default function ProjectProfileCard({
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
                   {status}
                 </span>
-                <button
-                  type="button"
-                  onClick={onContactClick}
-                  className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-medium text-black transition-colors hover:bg-accent hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-                >
-                  {contactText}
-                </button>
+                {showContactButton && (
+                  <button
+                    type="button"
+                    onClick={onContactClick}
+                    className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-white px-4 py-2 text-xs font-medium text-black transition-colors hover:bg-accent hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                  >
+                    {contactText}
+                  </button>
+                )}
               </div>
             </div>
           )}

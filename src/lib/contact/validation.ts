@@ -21,6 +21,8 @@ export const PROJECT_TYPE_OPTIONS = [
   { value: "api_backend", label: "API or backend development" },
   { value: "ai_integration", label: "AI integration" },
   { value: "maintenance_support", label: "Maintenance and support" },
+  { value: "recruitment", label: "Recruitment" },
+  { value: "hiring_manager", label: "Hiring Manager" },
   { value: "other", label: "Other" },
 ] as const;
 
