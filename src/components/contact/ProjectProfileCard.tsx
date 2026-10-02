@@ -60,6 +60,8 @@ export interface ProfileCardProps {
 
   contactText?: string;
   showContactButton?: boolean;
+  /** Optional image (e.g. a QR code) shown on a white tile in the centre of the portrait. */
+  centerImage?: { src: string; alt: string };
   showUserInfo?: boolean;
 
   onContactClick?: () => void;
@@ -92,6 +94,7 @@ export default function ProjectProfileCard({
   status = "Available",
   contactText = "Start a Project",
   showContactButton = true,
+  centerImage,
   showUserInfo = true,
   onContactClick,
 }: ProfileCardProps) {
@@ -347,6 +350,23 @@ export default function ProjectProfileCard({
           {iconUrl && <div className="profile-card-icon" aria-hidden="true" />}
           <div className="profile-card-holo" aria-hidden="true" />
           <div className="profile-card-glare" aria-hidden="true" />
+
+          {centerImage && (
+            <div className="profile-card-center-media">
+              <div className="profile-card-center-tile">
+                {/* Served unoptimised so the QR modules aren't softened by AVIF/WebP re-encoding. */}
+                <Image
+                  src={centerImage.src}
+                  alt={centerImage.alt}
+                  width={600}
+                  height={600}
+                  unoptimized
+                  loading="eager"
+                  className="h-full w-full"
+                />
+              </div>
+            </div>
+          )}
 
           <div className="profile-card-header">
             <h3 className="text-xl font-semibold text-white drop-shadow-sm">{name}</h3>

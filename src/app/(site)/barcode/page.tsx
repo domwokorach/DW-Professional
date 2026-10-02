@@ -7,6 +7,12 @@ export const metadata = { title: "Barcode | Dominic Wokorach" };
 const PROFILE_AVATAR_URL =
   "https://res.cloudinary.com/dkkuwmr42/image/upload/v1790089893/dominic_zw1v8s.png";
 
+// Square crop of the "Scan me!" poster (MyQRCode_cogruq.png) down to just the
+// QR code plus a white margin, scaled to 600px. It encodes a qrfy.io link
+// that redirects to /en-gb/info.
+const QR_CODE_URL =
+  "https://res.cloudinary.com/dkkuwmr42/image/upload/c_crop,x_396,y_459,w_1022,h_1022/c_scale,w_600/v1790964030/MyQRCode_cogruq.png";
+
 export default function BarcodePage() {
   return (
     <article className="flex min-h-[100svh] items-center py-32 sm:py-40">
@@ -28,6 +34,7 @@ export default function BarcodePage() {
               handle="domwokorach"
               status="Available"
               showContactButton={false}
+              centerImage={{ src: QR_CODE_URL, alt: "QR code: scan to share your information with Dominic" }}
               showUserInfo
               enableTilt
               enableMobileTilt={false}

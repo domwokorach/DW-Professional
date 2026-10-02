@@ -527,6 +527,31 @@ html[data-high-contrast="true"] .gradient-text-button {
   padding: 1.25rem 1.25rem 0;
 }
 
+/* Centred over the whole card. The tile is sized as a share of the card's
+   width so it scales with the card and stays clear of the header above and
+   the user-info panel below at every breakpoint; it sits above the holo and
+   glare layers so their blend modes never tint it, keeping a QR code
+   scannable. Padding is a % of the card width too, adding white quiet zone. */
+.profile-card-center-media {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.profile-card-center-tile {
+  /* ~96px on a 257px card, ~166px on the full 380px card. */
+  width: clamp(88px, calc(57% - 50px), 180px);
+  aspect-ratio: 1;
+  padding: 2.5%;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+}
+
 .profile-card-user-info {
   position: absolute;
   inset: auto 0.75rem 0.75rem 0.75rem;
