@@ -2,12 +2,13 @@
 
 import { useEffect, useRef, useState, type DragEvent } from "react";
 import { upload } from "@vercel/blob/client";
-import { AlertCircle, CheckCircle2, FileText, UploadCloud, X } from "lucide-react";
+import { AlertCircle, CheckCircle2, FileText, RotateCcw, UploadCloud, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   ATTACHMENT_ACCEPT,
   buildAttachmentPathname,
   formatFileSize,
+  resolveAttachmentContentType,
   validateAttachmentMeta,
 } from "@/lib/contact/attachments";
 import { Progress, ProgressIndicator, ProgressTrack, ProgressValue } from "@/components/ui/motion/progress";
@@ -35,6 +36,22 @@ export interface FileUploadFieldProps {
 
 /** Shown when the browser-to-Blob upload fails. The file is optional, so the visitor is told they can still send the form without it. */
 export const UPLOAD_FAILED_MESSAGE = "We couldn't upload your file. Please try again, or remove it and send the form without it.";
+
+const UPLOAD_OFFLINE_MESSAGE = "You appear to be offline. Check your connection and try again, or remove the file and send the form without it.";
+const UPLOAD_START_FAILED_MESSAGE = "We couldn't start the upload. Please wait a moment and try again, or remove the file and send the form without it.";
+
+/**
+ * Maps an upload() rejection to a message that's safe to show a visitor —
+ * the raw error (which may mention tokens or store internals) only goes to
+ * the console.
+ */
+function describeUploadError(err: unknown): string {
+  if (typeof navigator !== "undefined" && navigator.onLine === false) return UPLOAD_OFFLINE_MESSAGE;
+  // Thrown by @vercel/blob/client when /api/contact/upload refuses to issue
+  // a token (rate limit, invalid path, server misconfiguration).
+  if (err instanceof Error && /retrieve the client token/i.test(err.message)) return UPLOAD_START_FAILED_MESSAGE;
+  return UPLOAD_FAILED_MESSAGE;
+}
 
 /** Fire-and-forget delete of a temp blob — used for cancel/remove/replace, never blocks the UI on its result. */
 function deleteBlob(url: string) {
@@ -110,11 +127,15 @@ export default function FileUploadField({
     onStatusChange("uploading");
     announce(`Uploading ${file.name}.`);
 
+    // Browsers can report an empty or non-canonical type; the Blob token only
+    // allows the canonical MIME types, so derive it from the extension.
+    const contentType = resolveAttachmentContentType(file);
+
     try {
       const pathname = buildAttachmentPathname(file.name);
       const blob = await upload(pathname, file, {
         access: "public",
-        contentType: file.type,
+        contentType,
         handleUploadUrl: "/api/contact/upload",
         abortSignal: controller.signal,
         onUploadProgress: ({ percentage }) => setProgress(Math.round(percentage)),
@@ -124,11 +145,14 @@ export default function FileUploadField({
 
       setProgress(100);
       onStatusChange("success");
-      onAttachmentChange({ url: blob.url, name: file.name, size: file.size, type: file.type });
+      onAttachmentChange({ url: blob.url, name: file.name, size: file.size, type: contentType });
       announce("Upload complete.");
     } catch (err) {
       if (abortRef.current !== controller) return; // superseded, ignore this failure
-      if (err instanceof DOMException && err.name === "AbortError") {
+      // A cancel can surface as a DOMException (during the token request) or
+      // as @vercel/blob's BlobRequestAbortedError (during the byte upload),
+      // so check our own signal rather than the error's shape.
+      if (controller.signal.aborted) {
         setSelectedFile(null);
         setProgress(0);
         onStatusChange("idle");
@@ -136,9 +160,10 @@ export default function FileUploadField({
       }
       // Logged so a server-side cause (e.g. a rejected Blob token) is visible in the console.
       console.error("[FileUploadField] upload failed:", err);
-      setLocalError(UPLOAD_FAILED_MESSAGE);
+      const message = describeUploadError(err);
+      setLocalError(message);
       onStatusChange("error");
-      announce(UPLOAD_FAILED_MESSAGE);
+      announce(message);
     }
   }
 
@@ -157,17 +182,18 @@ export default function FileUploadField({
     void startUpload(next, attachment);
   }
 
-  function syncInputFiles(next: File) {
+  function handleInputChange() {
     const input = inputRef.current;
-    if (!input) return;
-    const transfer = new DataTransfer();
-    transfer.items.add(next);
-    input.files = transfer.files;
+    const next = input?.files?.[0] ?? null;
+    // The input carries no form name — the confirmed blob reference is what
+    // gets submitted — so clear it to let the same file be picked again
+    // (e.g. after a failed upload) and still fire a change event.
+    if (input) input.value = "";
+    applyFile(next);
   }
 
-  function handleInputChange() {
-    const next = inputRef.current?.files?.[0] ?? null;
-    applyFile(next);
+  function handleRetry() {
+    if (selectedFile) void startUpload(selectedFile, null);
   }
 
   function handleDrop(event: DragEvent<HTMLLabelElement>) {
@@ -176,7 +202,6 @@ export default function FileUploadField({
     if (status === "uploading") return;
     const next = event.dataTransfer.files?.[0];
     if (!next) return;
-    syncInputFiles(next);
     applyFile(next);
   }
 
@@ -277,7 +302,19 @@ export default function FileUploadField({
             )}
 
             {status === "error" && (
-              <p className="mt-1.5 text-xs font-medium text-red-400">{UPLOAD_FAILED_MESSAGE}</p>
+              <>
+                <p id={errorId} className="mt-1.5 text-xs font-medium text-red-400">
+                  {error}
+                </p>
+                <button
+                  type="button"
+                  onClick={handleRetry}
+                  className="mt-2 inline-flex items-center gap-1.5 rounded-md border border-line px-2.5 py-1 text-xs font-medium text-paper transition-colors hover:border-accent/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
+                  Retry upload
+                </button>
+              </>
             )}
           </div>
 

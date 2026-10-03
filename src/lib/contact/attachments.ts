@@ -74,6 +74,18 @@ export function validateAttachmentMeta(file: { name: string; size: number; type:
 }
 
 /**
+ * The canonical MIME type for an allowed attachment, derived from its
+ * extension. Browsers sometimes report an empty `File.type` (common for
+ * .docx on Windows and some mobile pickers), which would otherwise be
+ * rejected by the Blob token's `allowedContentTypes` and by the submit
+ * validation. Call only after {@link validateAttachmentMeta} has passed.
+ */
+export function resolveAttachmentContentType(file: { name: string; type: string }): string {
+  const rule = ALLOWED_ATTACHMENT_TYPES.find((candidate) => candidate.extension === getExtension(file.name));
+  return rule?.mimeTypes[0] ?? file.type;
+}
+
+/**
  * Reads the first few bytes and checks them against the expected file
  * signature — a renamed executable or arbitrary blob won't pass this even
  * if its extension and reported MIME type were spoofed. Server-side only

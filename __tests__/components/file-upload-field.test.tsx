@@ -86,4 +86,65 @@ describe('FileUploadField', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Remove cv.pdf' }));
     await waitFor(() => expect(screen.queryByText(UPLOAD_FAILED_MESSAGE, { selector: 'p.text-red-400' })).not.toBeInTheDocument());
   });
+
+  it('uploads a file with an empty browser MIME type using the type implied by its extension', async () => {
+    mockUpload.mockResolvedValue({ url: 'https://store.public.blob.vercel-storage.com/contact-uploads/tmp/x-brief.docx' } as never);
+    const { container } = render(<Harness />);
+
+    await userEvent.upload(
+      screen.getByLabelText(/CV, job description/i, { selector: 'input[type=file]' }),
+      new File(['PK'], 'brief.docx', { type: '' })
+    );
+
+    expect(await screen.findByText('Upload complete')).toBeInTheDocument();
+    const docx = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    expect(mockUpload).toHaveBeenCalledWith(expect.any(String), expect.any(File), expect.objectContaining({ contentType: docx }));
+    expect(container.querySelector('input[name=attachmentType]')).toHaveValue(docx);
+  });
+
+  it('retries the same file after a failed upload, from the Retry button or by picking it again', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    mockUpload
+      .mockRejectedValueOnce(new Error('Vercel Blob: Access denied'))
+      .mockRejectedValueOnce(new Error('Vercel Blob: Access denied'))
+      .mockResolvedValue({ url: 'https://store.public.blob.vercel-storage.com/contact-uploads/tmp/x-cv.pdf' } as never);
+    render(<Harness />);
+    const input = screen.getByLabelText(/CV, job description/i, { selector: 'input[type=file]' });
+    const file = pdf();
+
+    await userEvent.upload(input, file);
+    await userEvent.click(await screen.findByRole('button', { name: /Retry upload/ }));
+    expect(await screen.findByRole('button', { name: /Retry upload/ })).toBeInTheDocument();
+
+    await userEvent.upload(input, file); // same file again must still trigger an upload
+    expect(await screen.findByText('Upload complete')).toBeInTheDocument();
+    expect(mockUpload).toHaveBeenCalledTimes(3);
+    expect(mockUpload.mock.calls.every(([, f]) => f === file)).toBe(true);
+  });
+
+  it('shows a specific message when the server refuses to start the upload, without leaking internals', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    mockUpload.mockRejectedValue(new Error('Vercel Blob: Failed to  retrieve the client token'));
+    render(<Harness />);
+
+    await userEvent.upload(screen.getByLabelText(/CV, job description/i, { selector: 'input[type=file]' }), pdf());
+
+    expect(await screen.findByText(/couldn't start the upload/, { selector: 'p.text-red-400' })).toBeInTheDocument();
+    expect(screen.queryByText(/token/i)).not.toBeInTheDocument();
+  });
+
+  it('returns to the empty state when an in-flight upload is cancelled, even if Blob reports its own abort error', async () => {
+    mockUpload.mockImplementation((_path, _file, options) =>
+      new Promise((_resolve, reject) => {
+        options?.abortSignal?.addEventListener('abort', () => reject(new Error('The request was aborted.')));
+      }) as never
+    );
+    render(<Harness />);
+
+    await userEvent.upload(screen.getByLabelText(/CV, job description/i, { selector: 'input[type=file]' }), pdf());
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel upload of cv.pdf' }));
+
+    await waitFor(() => expect(screen.queryByText('cv.pdf')).not.toBeInTheDocument());
+    expect(screen.queryByText(UPLOAD_FAILED_MESSAGE)).not.toBeInTheDocument();
+  });
 });
