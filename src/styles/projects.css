@@ -1,0 +1,43 @@
+/* projects */
+.work-section{background:linear-gradient(#efe7b6 0 14%,var(--cream) 14%)}
+/* Project cards. Secondary text is darker than --muted so it clears WCAG AA (≈6:1 on the card). */
+.work-section{--pc-muted:#5f5c56;--pc-body:#4f4c47;--pc-live:#2f7a4c;--pc-radius:18px}
+.pg-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;max-width:1200px;margin-inline:auto}
+.pg-item{display:flex;min-width:0}
+.pc{position:relative;display:flex;flex-direction:column;width:100%;padding:28px 28px 26px;background:var(--white);border:1px solid var(--line);border-radius:var(--pc-radius);box-shadow:0 1px 0 rgba(37,35,63,.04);transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease,border-color .3s ease,background-color .3s ease}
+.pc-kicker{display:flex;align-items:center;gap:8px;margin:0 0 22px;font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--pc-muted)}
+.pc-num{color:var(--ink);font-weight:700}
+.pc-kicker__sep{opacity:.5}
+.pc-live{display:inline-flex;align-items:center;gap:6px;margin:-5px 0 -5px auto;padding:3px 9px;border:1px solid var(--line);border-radius:999px;color:var(--ink);letter-spacing:.14em}
+.pc-live__dot{width:6px;height:6px;border-radius:999px;background:var(--pc-live)}
+.pc h3{margin:0;font-size:clamp(22px,1.9vw,27px);line-height:1.12;letter-spacing:-.035em;font-weight:700;color:var(--ink);text-wrap:balance}
+.pc-headline{margin:10px 0 0;font-size:15.5px;line-height:1.45;font-weight:600;color:var(--ink2);text-wrap:pretty}
+.pc-desc{margin-top:14px}
+.pc-desc p{margin:0;font-size:14px;line-height:1.7;color:var(--pc-body)}
+.pc-desc p+p{margin-top:10px}
+/* Focus, tags and action sit at the bottom so cards in a row line up without padding them out. */
+.pc-foot{margin-top:auto;padding-top:22px}
+.pc-focus{margin:0;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;line-height:1.6;color:var(--pc-muted)}
+.pc-focus__sep{opacity:.6}
+.pc-tags{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.pc-tags li{padding:4px 9px;border:1px solid var(--line);border-radius:6px;background:var(--cream2);font-family:var(--font-mono);font-size:11.5px;line-height:1.4;color:var(--ink)}
+/* The link is the card's single interactive element; its ::after stretches over the card so the
+   whole card is clickable while keyboard and screen-reader users get one well-named link. */
+.pc-link{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-top:16px;padding:0 16px;border:1px solid var(--ink);border-radius:999px;font-size:13px;font-weight:600;color:var(--ink);text-decoration:none;transition:background-color .2s ease,color .2s ease}
+.pc-link:after{content:"";position:absolute;inset:0;border-radius:var(--pc-radius)}
+.pc-link:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.pc-link__icon{transition:transform .25s cubic-bezier(.22,1,.36,1)}
+/* Where :has() is supported the whole card shows the focus ring instead of just the link. */
+@supports selector(:has(*)){.pc-link:focus-visible{outline:none}.pc--live:has(.pc-link:focus-visible){outline:3px solid var(--ink);outline-offset:4px}.pc--live:has(.pc-link:focus-visible) .pc-link{background:var(--ink);color:var(--white)}}
+@media(hover:hover){
+  .pc:hover{border-color:rgba(37,35,63,.26)}
+  .pc--live:hover{transform:translateY(-3px);background:#fffefa;box-shadow:0 18px 36px -24px rgba(37,35,63,.45)}
+  .pc--live:hover .pc-link{background:var(--ink);color:var(--white)}
+  .pc--live:hover .pc-link__icon{transform:translate(2px,-2px)}
+}
+/* Entrance: only applied once JS is running and motion is allowed. */
+.pg-reveal .pg-item{opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .45s cubic-bezier(.22,1,.36,1)}
+.pg-reveal .pg-item.is-visible{opacity:1;transform:none}
+@media(max-width:1100px){.pg-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.pg-grid{grid-template-columns:minmax(0,1fr);gap:14px}.pc{padding:22px 20px 20px}.pc-kicker{margin-bottom:16px}}
+@media(prefers-reduced-motion:reduce){.pc,.pc-link,.pc-link__icon{transition:none}.pc--live:hover{transform:none}.pc--live:hover .pc-link__icon{transform:none}}

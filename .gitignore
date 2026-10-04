@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+
+# Build output and caches
+.next/
+out/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+.vercel
+.turbo/
+.eslintcache
+
+# Generated Prisma Client (recreated by `npm install` → postinstall → prisma generate)
+/generated/prisma
+
+# Environment files: real values never leave this machine; the template is committed
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# AI-assistant skill folders added by `prisma init` (tooling, not app code)
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
+
+# Avaturn inputs/outputs (personal photos, downloaded models)
+scripts/photos/
+scripts/out/
+# 3D avatar model: large, and the current file is a placeholder (the hero falls back to images without it)
+public/avatar/*.glb
+
+# Local uploads / database files
+uploads/
+*.sqlite
+*.db

@@ -1,0 +1,60 @@
+/* experience */
+/* Experience timeline (Aceternity Timeline, restyled) */
+/* Timeline: date | rail | content. The line is centred in the rail column, positioned from the
+   same variables the grid uses, so it stays aligned however the content wraps or expands. */
+.tl{--tl-date:190px;--tl-rail:48px;--tl-col-gap:24px;--tl-gap:clamp(64px,7vw,104px);--tl-date-size:clamp(14px,1.25vw,17px);--tl-line-color:rgba(37,35,63,.2);--tl-accent:var(--ink);position:relative;max-width:1200px;margin-inline:auto}
+.tl-list{list-style:none;margin:0;padding:0 0 24px}
+.tl-item{display:grid;grid-template-columns:var(--tl-date) var(--tl-rail) minmax(0,1fr);column-gap:var(--tl-col-gap);padding-top:var(--tl-gap)}
+.tl-item:first-child{padding-top:8px}
+.tl-head{grid-column:1 / 3;display:grid;grid-template-columns:subgrid;position:sticky;top:120px;z-index:2;align-self:start}
+.tl-title--desktop{text-align:right}
+.tl-title--mobile{display:none}
+/* One date-line tall, in the date's font size, so the dot centres on the first line of the date. */
+.tl-rail{position:relative;align-self:start;height:1.5em;font-size:var(--tl-date-size)}
+.tl-dot{position:absolute;left:50%;top:50%;width:10px;height:10px;border-radius:999px;background:var(--cream);border:2px solid var(--tl-line-color);transform:translate(-50%,-50%);transition:background-color .4s ease,border-color .4s ease}
+.tl-list:not(.tl-reveal) .tl-dot,.tl-item.is-visible .tl-dot{background:var(--tl-accent);border-color:var(--tl-accent)}
+.tl-item.is-current .tl-dot{width:12px;height:12px;background:var(--tl-accent);border-color:var(--tl-accent);box-shadow:0 0 0 4px rgba(37,35,63,.1)}
+.tl-body{min-width:0}
+.tl-line{position:absolute;top:0;left:calc(var(--tl-date) + var(--tl-col-gap) + var(--tl-rail) / 2);width:2px;transform:translateX(-50%);overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 4%,#000 96%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0%,#000 4%,#000 96%,transparent 100%)}
+.tl-line:before{content:"";position:absolute;top:0;bottom:0;left:50%;width:1px;transform:translateX(-50%);background:var(--tl-line-color)}
+.tl-line__progress{position:absolute;left:0;right:0;top:0;border-radius:999px;background:linear-gradient(to top,var(--tl-accent) 0%,rgba(37,35,63,.55) 12%,transparent 100%)}
+.tl-reveal .tl-item .tl-body{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s cubic-bezier(.22,1,.36,1);transition-delay:inherit}
+.tl-reveal .tl-item.is-visible .tl-body{opacity:1;transform:none}
+/* Darker than --muted so small secondary text clears WCAG AA (≈6:1 on --cream). */
+.experience-section{--xp-muted:#5f5c56;--xp-body:#4f4c47;--xp-live:#2f7a4c;--xp-pad:clamp(20px,2.2vw,28px)}
+.xp-date{margin:0;font-family:var(--font-mono);font-size:clamp(14px,1.25vw,17px);letter-spacing:.06em;color:var(--xp-muted);line-height:1.5}
+.xp-date time,.xp-date>span{white-space:nowrap}
+.xp-present{color:var(--ink);font-weight:700}
+/* Current-role marker: a small status dot with one slow, soft ring. */
+.xp-live{position:relative;display:inline-block;width:7px;height:7px;margin-left:8px;vertical-align:.12em;border-radius:999px;background:var(--xp-live)}
+.xp-live:after{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--xp-live);opacity:.35;animation:xp-live 2.6s cubic-bezier(.22,1,.36,1) infinite}
+@keyframes xp-live{0%{transform:scale(1);opacity:.35}70%,100%{transform:scale(2.6);opacity:0}}
+/* Card: invisible at rest, a quiet border/background lift on hover. Pulled up by its padding on
+   desktop so the role title stays level with the sticky date and dot. */
+.xp-entry{max-width:820px;margin-top:calc(-1 * var(--xp-pad));padding:var(--xp-pad);border:1px solid transparent;border-radius:18px;transition:background-color .3s ease,border-color .3s ease,box-shadow .3s ease,transform .3s cubic-bezier(.22,1,.36,1)}
+@media(hover:hover){.xp-entry:hover{background:var(--cream2);border-color:var(--line);box-shadow:0 10px 30px -18px rgba(37,35,63,.28);transform:translateY(-2px)}}
+.tl-item.is-current .xp-entry{border-color:var(--line)}
+.xp-entry h3{font-size:clamp(24px,2.4vw,34px);line-height:1.12;letter-spacing:-.035em;font-weight:700;margin:0 0 12px;text-wrap:balance}
+.xp-meta{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:0}
+.xp-org{font-size:15px;font-weight:600;color:var(--ink)}
+.xp-sep{font-size:14px;color:rgba(37,35,63,.3)}
+.xp-location{font-size:14px;color:var(--xp-muted)}
+.xp-bullets{list-style:none;padding:0;margin:20px 0 0;max-width:68ch}
+.xp-bullets li{position:relative;padding-left:20px;color:var(--xp-body);font-size:14.5px;line-height:1.75;margin-bottom:7px}
+.xp-bullets li:last-child{margin-bottom:0}
+.xp-bullets li:before{content:"";position:absolute;left:0;top:.85em;width:9px;height:1px;background:var(--ink);opacity:.45}
+.xp-label{margin:0;font-family:var(--font-mono);font-size:11px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--xp-muted)}
+.xp-projects{margin-top:26px;border-top:1px solid var(--line);padding-top:18px}
+.xp-projects__list{list-style:none;padding:0;margin:6px 0 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:32px}
+.xp-projects__list li{display:grid;grid-template-columns:26px minmax(0,1fr);align-content:start;gap:4px 10px;padding:14px 0;border-bottom:1px solid var(--line)}
+.xp-projects__index{font-family:var(--font-mono);font-size:10px;color:var(--xp-muted);padding-top:3px;grid-row:span 2}
+.xp-projects__list h5{margin:0;font-size:14px;font-weight:600;line-height:1.45;color:var(--ink)}
+.xp-projects__list p{margin:0;color:var(--xp-muted);font-size:13px;line-height:1.65}
+@supports not (grid-template-columns:subgrid){.tl-head{grid-template-columns:var(--tl-date) var(--tl-rail);column-gap:var(--tl-col-gap)}@media(max-width:768px){.tl-head{grid-template-columns:var(--tl-rail)}}}
+@media(max-width:1050px){.tl{--tl-date:140px;--tl-rail:40px;--tl-col-gap:18px}}
+@media(max-width:900px){.xp-projects__list{grid-template-columns:minmax(0,1fr)}.xp-projects__list li:last-child{border-bottom:0}}
+/* Mobile: rail moves to the left edge; the date sits above the role in the content column.
+   The card drops its inset so text uses the full width. */
+@media(max-width:768px){.tl{--tl-rail:24px;--tl-col-gap:14px;--tl-gap:56px;--tl-date-size:12px}.tl-item{grid-template-columns:var(--tl-rail) minmax(0,1fr)}.tl-line{left:calc(var(--tl-rail) / 2)}.tl-head{grid-column:1 / 2;position:static}.tl-title--desktop{display:none}.tl-title--mobile{display:block;margin:0 0 12px}.xp-date{font-size:12px}.xp-entry{margin-top:0;padding:0;border:0;border-radius:0}.xp-entry:hover{background:none;box-shadow:none;transform:none}}
+@media(max-width:720px){.xp-bullets li{font-size:13.5px}}
+@media(prefers-reduced-motion:reduce){.tl-dot,.xp-entry{transition:none}.xp-entry:hover{transform:none}.xp-live:after{animation:none;opacity:0}}

@@ -1,0 +1,11 @@
+/* animations */
+.encrypted-text{position:relative;display:inline-block}
+.encrypted-text__ghost{visibility:hidden}
+.encrypted-text__live{position:absolute;inset:0;white-space:nowrap;opacity:.75}
+/* Heading text effects */
+.tt-word{white-space:nowrap}
+/* TextType: hidden until in view, then each character fades in on its own delay. */
+.tt-pending .tt-char{opacity:0}
+.tt-play .tt-char{animation:tt-in .06s ease-out both}
+@keyframes tt-in{from{opacity:0}to{opacity:1}}
+.tf-word{display:inline-block;transform-origin:50% 60%;will-change:filter,opacity,transform}
