@@ -1,0 +1,66 @@
+/* achievements */
+.achievements-section{background:linear-gradient(180deg,#f0e6a8 0%,#f4efdd 45%,var(--cream) 100%)}
+/* The tilted cards behind the front one can poke a few px past narrow screens; clip sideways only. */
+.achievements-section{overflow-x:hidden}
+@supports (overflow:clip){.achievements-section{overflow-x:clip}}
+/* Proud moments: Animated Testimonials (Aceternity UI, restyled). Media | content on desktop,
+   stacked on mobile. Secondary text is darker than --muted so it clears WCAG AA. */
+.at{--at-muted:#5f5c56;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(40px,7vw,96px);align-items:center;max-width:960px;margin:clamp(16px,3vw,40px) auto 0;padding-block:24px 40px}
+.at-stage{position:relative;width:100%;min-width:0;max-width:440px;aspect-ratio:4/5;justify-self:center;perspective:1000px}
+.at-card{position:absolute;inset:0;isolation:isolate;transform-origin:bottom center;border-radius:24px;overflow:hidden;background:var(--sand);box-shadow:0 20px 35px rgba(45,40,44,.1)}
+.at-card .pm-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;user-select:none}
+/* Video: the wrapper is the frame; the video is letterboxed inside it on the card's neutral
+   background, showing the whole picture at its own proportions (never cropped or scaled). */
+.pm-video{position:relative;isolation:isolate;width:100%;max-width:100%;height:100%;overflow:hidden;background:var(--sand)}
+.pm-video__el{display:block;width:100%;max-width:100%;height:100%;max-height:100%;object-fit:contain;object-position:center}
+/* The preview itself opens the pop-out player: a transparent button over the whole frame. Hover
+   only dims the video slightly and draws a thin inner border; nothing covers the picture. */
+.pm-open{position:absolute;inset:0;z-index:1;width:100%;height:100%;padding:0;border:0;border-radius:24px;background:transparent;cursor:pointer;transition:box-shadow .2s ease}
+.pm-video__el{transition:opacity .25s ease}
+.pm-open:focus-visible{outline:none;box-shadow:inset 0 0 0 3px var(--ink),inset 0 0 0 6px var(--white)}
+@media(hover:hover){.pm-video:hover .pm-video__el{opacity:.9}.pm-video:hover .pm-open{box-shadow:inset 0 0 0 1px rgba(37,35,63,.35)}.pm-video:hover .pm-open:focus-visible{box-shadow:inset 0 0 0 3px var(--ink),inset 0 0 0 6px var(--white)}}
+.pm-play{position:absolute;z-index:2;right:12px;bottom:12px;display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:999px;background:rgba(255,253,247,.85);color:var(--ink);cursor:pointer;box-shadow:0 4px 12px rgba(37,35,63,.16);transition:background-color .2s ease,color .2s ease}
+.pm-play:hover{background:var(--ink);color:var(--white)}
+.pm-play:focus-visible{outline:3px solid var(--white);outline-offset:2px;box-shadow:0 0 0 6px var(--ink)}
+/* Pop-out player: the overlay fills the viewport; the video keeps its own proportions within
+   viewport-aware limits, never cropped or stretched. */
+.pm-modal{width:100vw;height:100vh;height:100dvh;max-width:none;max-height:none;margin:0;padding:clamp(64px,7vh,80px) 24px 32px;border:0;background:transparent;color:#fffdf7;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
+.pm-modal::backdrop{background:rgba(20,19,40,.93)}
+.pm-modal[open]{display:flex}
+/* Video first, then number, title and description underneath, as wide as the video. The
+   overlay scrolls if the whole thing is taller than the viewport (e.g. phones in landscape). */
+.pm-modal__content{width:fit-content;max-width:94vw;margin:auto;display:flex;flex-direction:column;gap:18px}
+/* Width is the largest that fits both limits at the video's aspect ratio (--ar, set on load;
+   16:9 until then), so landscape fills the width and portrait the height. */
+.pm-modal__video{--pm-max-h:68dvh;display:block;width:min(90vw,1200px,calc(var(--pm-max-h) * var(--ar,1.7778)));height:auto;max-width:min(90vw,1200px);max-height:var(--pm-max-h);object-fit:contain;object-position:center;border-radius:12px;background:#000}
+/* width:0 + min-width:100% keeps the caption to the video's width instead of widening it. */
+.pm-modal__caption{width:0;min-width:100%}
+.pm-modal__num{display:block;font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;color:rgba(255,253,247,.72)}
+.pm-modal__title{margin:8px 0 0;font-size:clamp(20px,2.2vw,26px);line-height:1.15;letter-spacing:-.03em;font-weight:700;color:#fffdf7}
+.pm-modal__desc{margin:8px 0 0;max-width:62ch;font-size:15px;line-height:1.6;color:rgba(255,253,247,.8)}
+.pm-modal__close{position:fixed;top:16px;right:16px;display:grid;place-items:center;width:48px;height:48px;padding:0;border:1px solid rgba(255,253,247,.4);border-radius:999px;background:rgba(20,19,40,.6);color:#fffdf7;cursor:pointer}
+.pm-modal__close:hover{background:#fffdf7;color:var(--ink)}
+.pm-modal__close:focus-visible{outline:3px solid #fffdf7;outline-offset:3px}
+@supports not (height:1dvh){.pm-modal__video{--pm-max-h:68vh}}
+@media(max-width:720px){.pm-modal{padding:72px 16px 24px}.pm-modal__content{max-width:100%;gap:16px}.pm-modal__video{--pm-max-h:60dvh;width:min(calc(100vw - 32px),calc(var(--pm-max-h) * var(--ar,1.7778)));max-width:100%}.pm-modal__close{top:12px;right:12px}}
+@supports not (height:1dvh){@media(max-width:720px){.pm-modal__video{--pm-max-h:60vh}}}
+.at-content{display:flex;flex-direction:column;justify-content:space-between;gap:40px}
+/* Tall enough for the longest item, so the controls do not jump as the text changes. */
+.at-live{min-height:270px}
+.at-eyebrow{margin:0 0 14px;font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;color:var(--at-muted)}
+.at-title{margin:0;font-size:clamp(28px,3vw,40px);line-height:1.05;letter-spacing:-.045em;font-weight:700;color:var(--ink)}
+.at-body{margin:22px 0 0;max-width:42ch;font-size:16px;line-height:1.65;color:#4f4c47}
+.at-word{display:inline-block}
+.at-nav{display:flex;align-items:center;gap:12px}
+.at-btn{display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.5);color:var(--ink);cursor:pointer;transition:background-color .2s ease,color .2s ease,border-color .2s ease}
+.at-btn svg{transition:transform .25s ease}
+.at-btn:first-child:hover svg{transform:translateX(-2px)}
+.at-btn:nth-child(2):hover svg{transform:translateX(2px)}
+.at-btn:hover{background:var(--ink);border-color:var(--ink);color:var(--white)}
+.at-btn:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+/* Stat tile: same frame as the photos, for the items that have no photo. */
+.pm-tile{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:28px;background:var(--cream2)}
+.pm-tile__badge{width:58px;height:58px;border-radius:16px;background:#f4f1e7;box-shadow:0 8px 18px rgba(40,35,40,.12);display:grid;place-items:center;font-weight:700;color:var(--ink)}
+.pm-tile__value{margin-top:auto;font-size:clamp(56px,7vw,84px);line-height:1;letter-spacing:-.06em;color:var(--ink)}
+@media(max-width:768px){.at{grid-template-columns:minmax(0,1fr);gap:40px;padding-top:56px}.at-stage{max-width:340px}.at-live{min-height:250px}}
+@media(prefers-reduced-motion:reduce){.at-btn,.at-btn svg,.pm-play,.pm-open,.pm-video__el{transition:none}.at-btn:hover svg{transform:none}}

@@ -4,8 +4,8 @@
   "rsc": true,
   "tsx": true,
   "tailwind": {
-    "config": "tailwind.config.mts",
-    "css": "src/app/globals.css",
+    "config": "",
+    "css": "src/styles/shadcn-unused.css",
     "baseColor": "neutral",
     "cssVariables": false,
     "prefix": ""
@@ -17,12 +17,5 @@
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
-  "registries": {
-    "@animate-ui": "https://animate-ui.com/r/{name}.json",
-    "@magicui": "https://magicui.design/r/{name}",
-    "@eldoraui": "https://eldoraui.site/r/{name}.json",
-    "@paceui": "https://paceui.com/r/{name}.json",
-    "@react-bits": "https://reactbits.dev/r/{name}.json",
-    "@aceternity": "https://ui.aceternity.com/registry/{name}.json"
-  }
+  "iconLibrary": "lucide"
 }

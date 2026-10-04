@@ -1,0 +1,27 @@
+/* base */
+:root{--font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono","Courier New",monospace;--ink:#25233f;--ink2:#383653;--cream:#f1eedf;--cream2:#f8f5e9;--sand:#e6e0ce;--muted:#817e77;--line:rgba(37,35,63,.16);--white:#fffdf7}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+.orbs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.orb{position:absolute;filter:blur(90px);opacity:.22;pointer-events:none}
+.orb-one{width:34vw;height:34vw;background:#fff4a8;top:-8vw;right:-8vw}
+.orb-two{width:28vw;height:28vw;background:#d8d0ff;bottom:10vh;left:-12vw}
+button,a{font:inherit;color:inherit}
+button{cursor:pointer}
+.kicker,.mini-title{font-family:var(--font-mono);font-size:11px;letter-spacing:.24em}
+.hero h1,.section-heading h2,.about h2{font-size:clamp(58px,7.4vw,118px);line-height:.82;letter-spacing:-.065em;margin:16px 0 22px}
+.hero-actions button,.button-row button,.button-row a{border:1px solid var(--line);background:rgba(255,255,255,.3);padding:13px 18px;border-radius:999px;text-decoration:none}
+.primary{background:var(--ink)!important;color:white!important;border-color:var(--ink)!important}
+.section{padding:110px 7vw;position:relative;border-top:1px solid rgba(37,35,63,.06)}
+.section-tag{display:flex;align-items:center;gap:14px;font-family:var(--font-mono);font-size:11px;letter-spacing:.22em;margin-bottom:54px}
+.section-tag i{width:38px;height:1px;background:var(--ink);opacity:.35}
+.section-tag span{opacity:.65}
+.section-heading{display:flex;justify-content:space-between;gap:30px;align-items:flex-end;margin-bottom:46px}
+.section-heading h2{font-size:clamp(48px,6vw,94px);margin:0;line-height:.92}
+.section-heading em,.about h2 em{font-family:Georgia,serif;font-weight:400}
+.section-heading p{max-width:360px;color:var(--muted);line-height:1.6;font-size:14px}
+@media(max-width:720px){.section{padding:90px 20px}.section-heading{display:block}.section-heading p{margin-top:20px}}
+/* Encrypted text reveal (hero) */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.tech-icon--fallback{display:grid;place-items:center;font-style:normal;font-size:8px;font-weight:700;border:1px solid currentColor;border-radius:5px}

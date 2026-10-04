@@ -1,0 +1,12 @@
+/* learning */
+.cert-grid{display:grid;grid-template-columns:.7fr 1.3fr;gap:8vw}
+.cert-intro{display:block}
+.cert-intro h2{font-size:clamp(60px,7vw,108px)}
+.cert-intro p{margin-top:30px}
+.cert-list article{display:grid;grid-template-columns:44px 1fr;padding:19px 10px;border-bottom:1px solid var(--line);transition:.2s}
+.cert-list article:hover,.cert-list article.highlight{background:var(--ink);color:white;padding-left:20px}
+.cert-list article>span{font-family:var(--font-mono);font-size:9px;opacity:.6}
+.cert-list h3{font-size:17px;font-weight:500;margin:0 0 6px}
+.cert-list p{font-size:10px;opacity:.6;margin:0}
+@media(max-width:1050px){.cert-grid{grid-template-columns:1fr}}
+@media(max-width:720px){.cert-grid{display:block}.cert-intro{margin-bottom:30px}.cert-intro p{margin-top:20px}/* same as .section-heading p on mobile (base.css); restated because base loads first */}

@@ -1,159 +1,73 @@
-import type { Project } from "@/types/project";
+import type { Project } from '@/types';
 
 export const projects: Project[] = [
   {
-    slug: "news",
-    title: "News",
-    technology: ["Next.js", "TypeScript", "REST APIs"],
-    description:
-      "A modern news web application delivering UK and world headlines across politics, business, health, tech, sport and weather.",
-    features: [
-      "Section-based navigation",
-      "Live weather widget",
-      "Top stories feed",
-      "Newsletter subscription",
-      "Responsive interface",
-      "Modern Next.js architecture",
+    id: 'specialist-disability',
+    title: 'Specialist Disability',
+    headline: 'Improving accessibility across online banking experiences.',
+    description: [
+      'Contributed to accessibility-focused work within online banking, helping create digital experiences that were more usable and inclusive for customers with disabilities.',
     ],
-    image: "/images/projects/news.webp",
-    imageAlt: "The Daily Wire news application header navigation and newsletter footer",
-    liveUrl: "https://the-daily-wire-two.vercel.app/",
-    overview:
-      "A freelance news web application built to explore modern content delivery, covering UK and world news across multiple sections.",
-    challenge:
-      "Structuring a multi-section news experience — politics, world, business, health, tech, sport and weather — in a way that stays clear, fast and easy to navigate.",
-    approach:
-      "Built with Next.js and TypeScript, integrating external APIs for headline and weather data, with a section-based navigation model and a responsive layout.",
-    outcome:
-      "A working news application demonstrating Next.js architecture, API integration and responsive frontend engineering.",
+    category: 'Accessibility',
+    focus: ['Accessibility', 'Digital Banking', 'Frontend'],
+    tech: ['Accessibility', 'Semantic HTML', 'Frontend Development', 'Digital Banking'],
   },
   {
-    slug: "dog-booking-system",
-    title: "Dog Booking System",
-    technology: ["React", "TypeScript", "Booking Workflow"],
-    description:
-      "A booking-system web application designed around managing dog-related appointments and bookings, including grooming, training, daycare and boarding.",
-    features: [
-      "Appointment booking",
-      "Sign in / registration",
-      "Service categories",
-      "Booking management",
-      "Responsive interface",
+    id: 'innovation-x',
+    title: 'Innovation X',
+    headline: 'Making internal knowledge and people easier to discover.',
+    description: [
+      'Contributed to an Innovation X internal search experience backed by Neo4j graph database technology. My frontend work included CSS3 interface improvements and toolbar icons designed to make people-search functionality clearer and easier to use.',
     ],
-    image: "/images/projects/dog-booking.webp",
-    imageAlt: "Pawside dog booking system landing page with appointment booking call to action",
-    liveUrl: "https://booking-system-for-dogs.vercel.app/",
-    overview:
-      "A booking-system web application built around managing dog-related appointments, covering services such as grooming, training, daycare and boarding.",
-    challenge:
-      "Designing a booking flow that feels simple for customers arranging appointments across multiple dog-care services.",
-    approach:
-      "Built with React and TypeScript, implementing sign in / registration, service selection and an appointment booking workflow within a responsive interface.",
-    outcome:
-      "A working booking-system application demonstrating appointment-workflow design and modern frontend engineering.",
+    category: 'Internal Tools',
+    focus: ['Neo4j', 'Search', 'Frontend', 'Internal Tools'],
+    tech: ['Neo4j', 'CSS3', 'Frontend Development', 'Search UX'],
+    url: 'https://organisation-overview.vercel.app/',
   },
   {
-    slug: "air-quality-weather-forecasting",
-    title: "Air Quality & Weather Forecasting",
-    technology: ["Next.js", "React", "D3.js", "Node.js", "OJS", "API", "OpenWeather"],
-    description:
-      "An environmental research dashboard delivering real-time air-quality monitoring, weather observations and forecasting, with D3.js visualisation and international geographic comparison.",
-    features: [
-      "Real-time AQI and pollutant monitoring",
-      "Current weather conditions and forecasts",
-      "D3.js charts and bivariate choropleth mapping",
-      "International country and city search",
-      "Monitoring-station analysis",
-      "Responsive research interface",
+    id: 'innovation-community',
+    title: 'Innovation Community',
+    headline: 'Supporting the Innovation Communities Conference 2018.',
+    description: [
+      'Worked as part of the team supporting the delivery of the Innovation Communities Conference 2018, contributing to the digital experience used to support innovation programmes and community engagement.',
     ],
-    image: "/images/projects/air-quality-weather-forecasting.webp",
-    imageAlt: "Air Quality, Weather & Research Dashboard showing current AQI, pollutant levels and weather summary",
-    liveUrl: "https://air-quality-weather-forecasting.vercel.app/en",
-    overview:
-      "A freelance environmental research platform combining live air-quality and weather data with forecasting, historical analysis and D3.js geographic visualisation.",
-    challenge:
-      "Bringing together air-quality and weather data from separate providers into one coherent, research-grade dashboard, including a bivariate choropleth map that stays honest about missing station coverage.",
-    approach:
-      "Built with Next.js and React, integrating the OpenWeather and WAQI APIs on the backend and rendering D3.js time-series charts and an international bivariate choropleth on the frontend.",
-    outcome:
-      "A working research dashboard demonstrating API integration, data visualisation with D3.js and responsive frontend engineering.",
+    category: 'Events',
+    focus: ['Frontend Development', 'Innovation', 'Events'],
+    tech: ['Frontend Development', 'Responsive UI', 'Reusable Components', 'Agile'],
   },
   {
-    slug: "ai-application-jobs",
-    title: "AI Application Jobs",
-    technology: ["Next.js", "TypeScript", "AI"],
-    description:
-      "An AI-assisted job application platform helping candidates track, complete and manage job applications through a structured, section-based workflow.",
-    features: [
-      "Application progress tracking",
-      "Section-based application workflow",
-      "Draft saving and resuming",
-      "Recent activity timeline",
-      "Account creation and profile summary",
-      "Responsive interface",
+    id: 'halifax-piggy-banking',
+    title: 'Halifax Piggy Banking',
+    headline: 'Exploring digital banking experiences for younger customers.',
+    description: [
+      'Designed UX prototypes and wireframes for a digital banking concept aimed at younger customers, exploring how banking interactions could be made approachable, intuitive, and engaging for a youth audience.',
     ],
-    image: "/images/projects/ai-application-jobs.webp",
-    imageAlt:
-      "Northstar Careers dashboard showing an in-progress job application with a 5 of 14 sections progress bar and recent activity feed",
-    liveUrl: "https://ai-application-jobs-special.vercel.app/",
-    overview:
-      "A freelance AI-assisted job application platform built to help candidates manage and complete job applications through a clear, section-based workflow.",
-    challenge:
-      "Presenting a multi-section job application process in a way that keeps progress visible, lets candidates save drafts, and stays approachable across devices.",
-    approach:
-      "Built with Next.js and TypeScript, implementing a section-based application workflow, progress tracking, draft persistence and an activity feed within a responsive interface.",
-    outcome:
-      "A working application-tracking platform demonstrating structured workflow design, state management and responsive frontend engineering.",
+    category: 'UX/UI',
+    focus: ['UX/UI', 'Digital Banking', 'Prototyping'],
+    tech: ['UX Prototyping', 'Wireframing', 'Interaction Design', 'Mobile-first Design'],
+    url: 'https://piggy-bank-wine.vercel.app/',
   },
   {
-    slug: "jira-project-management-system",
-    title: "JIRA Project Management System",
-    technology: ["React", "TypeScript", "Project Management"],
-    description:
-      "A project-management application exploring task organisation, issue tracking and workflow-based delivery.",
-    features: [
-      "Project dashboard",
-      "Sprint / task tracking",
-      "Status workflow",
-      "Issue tracking",
-      "Responsive interface",
+    id: 'ai-search-assistant',
+    title: 'Internal AI Search Assistant',
+    headline: 'Exploring a conversational way for colleagues to find internal information more easily.',
+    description: [
+      'A proof-of-concept conversational search experience designed to help colleagues discover internal knowledge and workplace information more easily, exploring natural-language search instead of manual intranet navigation.',
     ],
-    image: "/images/projects/jira-project-management.webp",
-    imageAlt: "Atlas project management application dashboard showing sprint tasks and status",
-    liveUrl: "https://jiraprojectmanagementsystem.vercel.app/",
-    overview:
-      "A project-management application exploring task organisation, issue tracking and workflow-based delivery, inspired by tools such as JIRA.",
-    challenge:
-      "Presenting roadmaps, sprints, tasks and issue status in a focused workspace that stays clear as work scales.",
-    approach:
-      "Built with React and TypeScript, implementing a sprint-based dashboard, task/issue tracking and status workflow within a responsive interface.",
-    outcome:
-      "A working project-management application demonstrating workflow design, state management and responsive frontend engineering.",
+    category: 'AI Search',
+    focus: ['AI Search', 'Chatbot UX', 'Accessibility', 'Internal Tools'],
+    tech: ['Next.js', 'OpenAI Responses API'],
   },
   {
-    slug: "coding-challenge-assessment",
-    title: "Coding Challenge Assessment",
-    technology: ["Next.js", "TypeScript", "Tailwind CSS"],
-    description:
-      "A guided coding-assessment workspace for a software engineer programme, taking candidates through structured, level-based coding challenges from beginner to intermediate.",
-    features: [
-      "Guided, level-based coding challenges",
-      "Beginner Friendly to Intermediate progression",
-      "Structured learning path",
-      "Clean, focused workspace UI",
-      "Responsive interface",
+    id: 'ui-delivery',
+    title: 'UI Delivery & Transformation',
+    headline: 'Supporting reliable digital banking releases across Lloyds Bank and Halifax.',
+    description: [
+      'As part of the UI Delivery & Transformation team, I supported the review, testing, and resolution of frontend issues across customer-facing digital banking experiences for Lloyds Bank and Halifax.',
+      'Our team reviewed defects, error codes, and application updates before business releases, helping ensure changes were tested and validated across desktop and mobile environments before progressing through the wider release process.',
     ],
-    image: "/images/projects/coding-challenge-assessment.webp",
-    imageAlt:
-      "Coding Challenge Assessment welcome screen for the Software Engineer Programme with a Start Programme call to action",
-    liveUrl: "https://coding-challenege-assessment.vercel.app/",
-    overview:
-      "A freelance coding-assessment platform built to guide candidates through a structured software engineer programme via practical coding challenges.",
-    challenge:
-      "Presenting a multi-level coding programme in a way that feels approachable to beginners while still scaling cleanly to intermediate challenges.",
-    approach:
-      "Built with Next.js and TypeScript, using Tailwind CSS for a clean, structured layout and a guided progression from Beginner Friendly to Intermediate levels.",
-    outcome:
-      "A working coding-assessment platform demonstrating structured learning-flow design and responsive frontend engineering.",
+    category: 'Release Quality',
+    focus: ['Frontend Engineering', 'Digital Banking', 'Release Quality'],
+    tech: ['HTML5', 'CSS3', 'JavaScript', 'Git', 'Jenkins'],
   },
 ];

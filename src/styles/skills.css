@@ -1,0 +1,24 @@
+/* skills */
+/* Core technologies. The item styles below are the original Core technologies item, unchanged
+   (`[icon] Name`, monochrome icon, divider on the left); the groups only arrange them. */
+.core-tech__label{font-family:var(--font-mono);font-size:11px;font-weight:400;letter-spacing:.22em;text-transform:uppercase;margin:0 0 18px;opacity:.75}
+/* Category LogoLoops (same item treatment and edge fade as the original strip). React Bits
+   assumes Tailwind's preflight reset; this project has none. */
+.core-tech__loop .logoloop__list{list-style:none;margin:0;padding:0}
+.core-tech__loop{-webkit-mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent)}
+/* Items in a moving loop never wrap (phones allow wrapping in the static lists only). */
+.core-tech__loop .core-tech__item{white-space:nowrap}
+/* One full-width row per category. */
+.core-tech__groups{display:grid;gap:30px}
+.core-tech__group{min-width:0}
+.core-tech__group-title{margin:0 0 8px;font-family:var(--font-mono);font-size:10.5px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:#5f5c56}
+.core-tech__item{display:inline-flex;align-items:center;gap:.65rem;padding:.7rem 1.6rem;white-space:nowrap;border-left:1px solid var(--line);color:var(--ink)}
+/* Brand-coloured icons sit at near-full strength; hover still brings them to full (as before). */
+.core-tech__icon{width:24px;height:24px;flex:none;opacity:.9;transition:opacity .2s ease,transform .2s ease}
+.core-tech__name{font-size:.85rem;font-weight:600;letter-spacing:-.01em;line-height:1}
+.core-tech__item:hover .core-tech__icon{opacity:1;transform:scale(1.05)}
+.core-tech__static{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 0}
+@media(max-width:1050px){.core-tech__item{padding:.65rem 1.25rem}}
+/* Phones: long names may wrap rather than overflow. */
+@media(max-width:720px){.core-tech__icon{width:20px;height:20px}.core-tech__name{font-size:.8rem;line-height:1.25}.core-tech__item{padding:.6rem 1.05rem;white-space:normal}}
+@media(prefers-reduced-motion:reduce){.core-tech__icon{transition:none}.core-tech__item:hover .core-tech__icon{transform:none}}

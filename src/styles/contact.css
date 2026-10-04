@@ -1,0 +1,191 @@
+/* contact */
+
+/* Contact colour tokens — the only colour literals in this file.
+   Every dark detail below uses var(--contact-dark); tints are derived with color-mix(). */
+:root{
+  --contact-bg:#F8F5EE;
+  --contact-surface:#FFFDF8;
+  --contact-dark:#111827;
+  --contact-muted:#667085;
+  --contact-border:rgba(17,24,39,.22);
+  --contact-border-strong:rgba(17,24,39,.55);
+  --contact-accent:#2563EB;
+  --contact-accent-soft:rgba(37,99,235,.08);
+  --contact-success:#047857;
+  --contact-error:#B42318;
+}
+
+.contact-section{
+  background:var(--contact-bg);
+  color:var(--contact-dark);
+  /* Keep the page-wide hairline between sections, expressed in Contact's dark. */
+  border-top-color:color-mix(in srgb,var(--contact-dark) 6%,transparent);
+}
+/* Decorative Cobe globe (ContactGlobe) behind the content: its own clipping layer, so the section
+   never clips the Project Type popup or focus outlines. */
+.contact-section{isolation:isolate}
+.contact-section>.section-tag,.contact-section>.contact-layout{position:relative;z-index:1}
+.contact-globe-background{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;mix-blend-mode:multiply}
+/* Globe: top-right, partly off-canvas and mostly behind the form card, so only an arc shows in the
+   open space above and beside the form. Tinted entirely by var(--contact-dark) (see ContactGlobe):
+   the canvas is inverted to dark-on-white, the ink layer lightens black to the token, and the
+   background layer multiplies onto the section so the white disappears (the blend sits on that
+   layer because its z-index isolates everything inside it). #fff is the blend's neutral. */
+.contact-globe{--globe-w:clamp(460px,40vw,620px);position:absolute;top:calc(var(--globe-w) * -.12);right:calc(var(--globe-w) * -.24);width:var(--globe-w);aspect-ratio:1;opacity:.24;isolation:isolate;background:#fff}
+.contact-globe canvas{pointer-events:none;filter:invert(1) brightness(1.12)}
+.contact-globe__ink{position:absolute;inset:0;background:var(--contact-dark);mix-blend-mode:lighten}
+@media(max-width:1050px){.contact-globe{opacity:.2}}
+/* Stacked layouts: smaller, fainter, still top-right beside the heading and well clear of Send. */
+@media(max-width:860px){.contact-globe{--globe-w:400px;opacity:.18}}
+@media(max-width:720px){.contact-globe{--globe-w:300px;top:-10px;right:-100px;opacity:.16}}
+.contact-section .section-tag{color:var(--contact-dark)}
+.contact-section .section-tag span{color:var(--contact-dark);opacity:.55;border:1px solid var(--contact-border);border-radius:6px;padding:4px 7px}
+.contact-section .section-tag i{background:var(--contact-dark);opacity:.35}
+
+.contact-layout{display:grid;grid-template-columns:minmax(280px,.7fr) minmax(0,1.3fr);gap:clamp(48px,7vw,110px);align-items:start}
+
+/* Editorial introduction */
+.contact-intro{position:sticky;top:110px;color:var(--contact-dark)}
+.contact-kicker{display:flex;align-items:center;gap:10px;margin:0;font-family:var(--font-mono);font-size:11px;letter-spacing:.24em;color:var(--contact-dark)}
+.contact-kicker:before{content:"";width:22px;height:2px;background:var(--contact-dark)}
+.contact-intro h2{margin:22px 0 24px;font-size:clamp(42px,4.4vw,68px);line-height:.9;letter-spacing:-.055em;color:var(--contact-dark)}
+.contact-intro h2 em{font-family:Georgia,serif;font-weight:400}
+.contact-lede{max-width:36ch;margin:0 0 34px;font-size:15px;line-height:1.7;color:var(--contact-muted)}
+.contact-info{margin:0;padding:0;border-top:1px solid var(--contact-border)}
+.contact-info__row{display:grid;grid-template-columns:20px 92px minmax(0,1fr);align-items:center;gap:12px;padding:15px 0;border-bottom:1px solid var(--contact-border)}
+.contact-info__icon{width:18px;height:18px;color:var(--contact-dark)}
+.contact-info dt{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--contact-muted)}
+.contact-info dd{margin:0;font-size:14px;font-weight:600;overflow-wrap:anywhere;color:var(--contact-dark)}
+.contact-info a,.contact-link{color:var(--contact-dark);text-decoration:underline;text-decoration-color:var(--contact-border-strong);text-underline-offset:4px;transition:color .18s ease,text-decoration-color .18s ease}
+.contact-info a:hover,.contact-link:hover{color:var(--contact-accent);text-decoration-color:var(--contact-accent)}
+.contact-info a:focus-visible,.contact-link:focus-visible{outline:2px solid var(--contact-accent);outline-offset:3px;border-radius:3px}
+.contact-link{display:inline-flex;gap:6px;margin-top:26px;font-size:14px;font-weight:600}
+.contact-meta{margin:44px 0 0;font-family:var(--font-mono);font-size:10px;letter-spacing:.24em;color:var(--contact-muted)}
+.contact-meta:before{content:"+ "}
+
+/* Form surface: flat, separated by a hairline rather than a shadow. */
+/* The 3px top accent below is the form's only top edge, so the hairline border skips the top. */
+.contact-form{position:relative;overflow:hidden;padding:clamp(24px,4vw,48px);background:var(--contact-surface);color:var(--contact-dark);border:1px solid var(--contact-border);border-top:0;border-radius:24px}
+.contact-form::before{content:"";position:absolute;top:0px;left:0px;right:0px;height:3px;background:var(--contact-dark)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px 24px}
+.contact-field{min-width:0}
+.contact-field--full{grid-column:1/-1}
+.contact-label{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--contact-dark);opacity:.72;transition:opacity .18s ease}
+.contact-label:before{content:"";width:5px;height:5px;border-radius:1px;background:var(--contact-dark);transition:background-color .18s ease}
+.contact-field:focus-within .contact-label{opacity:1}
+.contact-field:focus-within .contact-label:before{background:var(--contact-accent)}
+.contact-optional{font-weight:400;text-transform:none;letter-spacing:.02em;color:var(--contact-muted)}
+.contact-label-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.contact-count{font-family:var(--font-mono);font-size:11px;color:var(--contact-muted)}
+
+/* Fields: entered text is always var(--contact-dark); only borders change state. */
+.contact-control{display:block;width:100%;min-height:48px;margin-top:10px;padding:12px 14px;font:inherit;font-size:16px;color:var(--contact-dark);background:transparent;border:1px solid var(--contact-border);border-radius:12px;outline:none;transition:border-color .18s ease,box-shadow .18s ease}
+.contact-control::placeholder{color:var(--contact-muted)}
+.contact-control:hover{border-color:var(--contact-border-strong)}
+.contact-control:focus{color:var(--contact-dark);border-color:var(--contact-accent);box-shadow:0 0 0 3px var(--contact-accent-soft)}
+.contact-control[aria-invalid="true"]{color:var(--contact-dark);border-color:var(--contact-error)}
+.contact-control[aria-invalid="true"]:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--contact-error) 10%,transparent)}
+.contact-textarea{min-height:190px;max-height:520px;resize:vertical;line-height:1.6}
+.contact-error{margin:8px 0 0;font-size:13px;line-height:1.45;color:var(--contact-error)}
+
+/* Project Type: Pace UI Motion Combobox. The popup is portalled to <body>, so it sets the
+   Contact tokens' colours itself rather than inheriting them from the section. */
+.project-type-trigger{display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;cursor:pointer}
+.project-type-trigger[data-placeholder]{color:var(--contact-muted)}
+.project-type-trigger[data-filled]{color:var(--contact-dark);border-color:var(--contact-border-strong)}
+.project-type-trigger[data-popup-open],.project-type-trigger:focus-visible{color:var(--contact-dark);border-color:var(--contact-accent);box-shadow:0 0 0 3px var(--contact-accent-soft)}
+.project-type-trigger[data-popup-open][data-placeholder]{color:var(--contact-muted)}
+.project-type-trigger[aria-invalid="true"]{border-color:var(--contact-error)}
+.pace-combobox-chevron{width:16px;height:16px;flex:none;color:var(--contact-dark);transition:transform .2s ease}
+[data-popup-open]>.pace-combobox-chevron{transform:rotate(180deg)}
+.pace-combobox-positioner{z-index:45;isolation:isolate}
+.project-type-popup{display:flex;flex-direction:column;width:var(--anchor-width);max-width:var(--available-width);max-height:min(20rem,var(--available-height));overflow:hidden;transform-origin:var(--transform-origin);background:var(--contact-surface);color:var(--contact-dark);border:1px solid var(--contact-border);border-radius:12px;box-shadow:0 12px 32px color-mix(in srgb,var(--contact-dark) 10%,transparent)}
+.project-type-search{flex:none;margin:6px 6px 0;min-height:44px;padding:10px 12px;font:inherit;font-size:16px;color:var(--contact-dark);background:transparent;border:1px solid var(--contact-border);border-radius:8px;outline:none;transition:border-color .18s ease}
+.project-type-search::placeholder{color:var(--contact-muted)}
+.project-type-search:focus{border-color:var(--contact-accent)}
+.project-type-popup .pace-combobox-list{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:4px;scroll-padding-block:4px}
+.project-type-popup .pace-combobox-item{position:relative;display:flex;align-items:center;min-height:44px;padding:10px 36px 10px 12px;border-radius:8px;font-size:15px;line-height:1.35;color:var(--contact-dark);cursor:pointer;user-select:none;outline:none}
+.project-type-popup .pace-combobox-item__highlight{position:absolute;inset:0;z-index:0;border-radius:8px;background:var(--contact-accent-soft);pointer-events:none}
+.project-type-popup .pace-combobox-item__label{position:relative;z-index:1;flex:1;min-width:0;overflow-wrap:anywhere}
+.project-type-popup .pace-combobox-item__indicator{position:absolute;right:12px;z-index:1;display:flex;width:16px;height:16px;color:var(--contact-accent);pointer-events:none}
+.project-type-popup .pace-combobox-item__indicator svg{width:16px;height:16px}
+.project-type-popup .pace-combobox-empty{padding:14px 12px;font-size:14px;color:var(--contact-muted);text-align:center}
+.project-type-popup .pace-combobox-empty:empty{padding:0} /* stays mounted for announcements; no gap when there are results */
+@media(prefers-reduced-motion:reduce){.pace-combobox-chevron,.project-type-search{transition:none}}
+
+/* Upload */
+.contact-upload{position:relative;margin-top:10px;min-height:156px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:26px 20px;text-align:center;color:var(--contact-dark);background:transparent;border:1px dashed var(--contact-border-strong);border-radius:16px;cursor:pointer;transition:border-color .18s ease,background-color .18s ease}
+.contact-upload:hover{border-color:var(--contact-dark)}
+.contact-upload.is-dragging{border-style:solid;border-color:var(--contact-accent);background:var(--contact-accent-soft)}
+.contact-upload.has-error{border-color:var(--contact-error)}
+.contact-upload:focus-within{outline:2px solid var(--contact-accent);outline-offset:3px}
+.contact-upload__input{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.contact-upload__icon{width:42px;height:42px;display:grid;place-items:center;margin-bottom:6px;border:1px solid var(--contact-border-strong);border-radius:50%;color:var(--contact-dark);font-size:17px;font-weight:700;transition:border-color .18s ease,color .18s ease}
+.contact-upload.is-dragging .contact-upload__icon,.contact-upload:focus-within .contact-upload__icon{border-color:var(--contact-accent);color:var(--contact-accent)}
+.contact-upload__title{font-size:15px;font-weight:700;color:var(--contact-dark)}
+.contact-upload__sub{font-size:13px;color:var(--contact-muted)}
+.contact-upload__hint{margin-top:8px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--contact-muted)}
+.contact-upload__file{display:flex;align-items:center;gap:16px;margin-top:12px;padding:6px 6px 6px 16px;border:1px solid var(--contact-border);border-radius:12px;font-size:14px;color:var(--contact-dark)}
+.contact-upload__name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;color:var(--contact-dark)}
+.contact-upload__size{font-family:var(--font-mono);font-size:12px;color:var(--contact-muted);white-space:nowrap}
+.contact-upload__remove{min-height:44px;padding:0 12px;border:0;border-radius:8px;background:transparent;color:var(--contact-dark);font-size:13px;text-decoration:underline;text-underline-offset:3px}
+.contact-upload__remove:hover{background:color-mix(in srgb,var(--contact-dark) 5%,transparent)}
+.contact-upload__remove:focus-visible{outline:2px solid var(--contact-accent);outline-offset:2px}
+.contact-upload__remove:disabled{opacity:.45;cursor:not-allowed;background:transparent}
+/* Upload progress (Pace UI Motion Progress) — appears only once a send with a file begins. */
+.contact-progress{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:12px;min-width:0}
+.contact-progress__track{position:relative;flex:1 0 100%;display:flex;align-items:center;height:6px;overflow:hidden;border-radius:999px;background:var(--contact-border)}
+.contact-progress__fill{height:100%;border-radius:999px;background:var(--contact-dark)}
+.contact-progress__fill.is-static{opacity:.45}
+.contact-progress.is-success .contact-progress__fill{background:var(--contact-success)}
+.contact-progress.is-error .contact-progress__fill{background:var(--contact-error)}
+.contact-progress__label{flex:1;min-width:0;font-size:13px;font-weight:600;color:var(--contact-dark)}
+.contact-progress.is-success .contact-progress__label{color:var(--contact-success)}
+.contact-progress.is-error .contact-progress__label{color:var(--contact-error)}
+.contact-progress__value{margin-left:auto;font-family:var(--font-mono);font-size:12px;font-variant-numeric:tabular-nums;color:var(--contact-dark)}
+.contact-progress__retry{margin-left:auto}
+
+/* Footer, status and submit */
+.contact-hp{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
+.contact-hp input{border:1px solid var(--contact-border)} /* off-screen honeypot; tokenised so no UA colours remain */
+.contact-footer{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;margin-top:32px;padding-top:24px;border-top:1px solid var(--contact-border)}
+.contact-status{flex:1;min-width:240px;font-size:14px;line-height:1.55}
+.contact-status p{margin:0;max-width:520px;color:var(--contact-dark)}
+.contact-status__ok strong{color:var(--contact-success)}
+.contact-status__ok strong:before{content:"✓ "}
+.contact-status__err strong{color:var(--contact-error)}
+.contact-submit{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:52px;padding:15px 28px;border:1px solid var(--contact-dark);border-radius:999px;background:var(--contact-dark);color:var(--contact-bg);font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;transition:background-color .2s ease,border-color .2s ease}
+.contact-submit__arrow{display:inline-block;font-size:15px;letter-spacing:0;transition:transform .2s ease}
+.contact-submit:hover:not(:disabled){background:var(--contact-accent);border-color:var(--contact-accent)}
+.contact-submit:hover:not(:disabled) .contact-submit__arrow{transform:translateX(4px)}
+.contact-submit:focus-visible{outline:2px solid var(--contact-accent);outline-offset:3px}
+.contact-submit:disabled{opacity:.75;cursor:progress}
+.contact-submit.is-success{background:var(--contact-success);border-color:var(--contact-success)}
+
+@media(max-width:1050px){
+  .contact-layout{grid-template-columns:minmax(240px,.8fr) minmax(0,1.2fr);gap:44px}
+  .contact-grid{grid-template-columns:1fr}
+}
+@media(max-width:860px){
+  .contact-layout{grid-template-columns:1fr;gap:40px}
+  .contact-intro{position:static}
+  .contact-grid{grid-template-columns:1fr 1fr}
+  .contact-meta{display:none}
+}
+@media(max-width:720px){
+  .contact-grid{grid-template-columns:1fr;gap:22px}
+  .contact-intro h2{font-size:44px}
+  .contact-lede{margin-bottom:26px}
+  .contact-form{border-radius:20px;padding:24px 18px}
+  .contact-footer{flex-direction:column-reverse;align-items:stretch}
+  .contact-submit{width:100%}
+  .contact-upload__file{flex-wrap:wrap}
+}
+@media(prefers-reduced-motion:reduce){
+  .contact-label,.contact-label:before,.contact-control,.contact-upload,.contact-upload__icon,.contact-submit,.contact-submit__arrow,.contact-info a,.contact-link{transition:none}
+  .contact-submit:hover:not(:disabled) .contact-submit__arrow{transform:none}
+}
+/* Space held for the contact form until its script loads (heights measured from the real form). */
+.contact-form--placeholder{min-height:967px}
+@media(max-width:1050px){.contact-form--placeholder{min-height:932px}}
+@media(max-width:720px){.contact-form--placeholder{min-height:1136px}}

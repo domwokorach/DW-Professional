@@ -1,41 +1,22 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  outputFileTracingRoot: __dirname,
-  // Version-skew protection: tabs opened before a deploy detect the new
-  // deployment on their next navigation and do a full reload instead of
-  // requesting assets that no longer exist. Vercel sets this per deployment;
-  // undefined elsewhere (e.g. Cloudflare builds), which leaves it off.
-  deploymentId: process.env.VERCEL_DEPLOYMENT_ID,
-  images: {
-    qualities: [75, 80],
-    formats: ["image/avif", "image/webp"],
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "res.cloudinary.com",
-        pathname: "/dkkuwmr42/**",
-      },
-    ],
+  reactStrictMode: true,
+  // The portfolio lives at /en-gb. Temporary (307) for now; switch to permanent once the domain
+  // setup is final, since browsers cache permanent redirects indefinitely.
+  async redirects() {
+    return [{ source: '/', destination: '/en-gb', permanent: false }];
   },
-  async headers() {
-    return [
-      {
-        source: "/images/:path*",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-        ],
-      },
-      {
-        source: "/fonts/:path*",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-        ],
-      },
-    ];
+  images: {
+    // AVIF where supported (usually smaller than WebP), WebP otherwise.
+    formats: ['image/avif', 'image/webp'],
+    // Cloudinary URLs are versioned (…/v123/…), so an optimised copy never goes stale.
+    minimumCacheTTL: 2678400,
+    qualities: [75, 85],
+    remotePatterns: [
+      { protocol: 'https', hostname: 'res.cloudinary.com', pathname: '/dkkuwmr42/**' },
+    ],
   },
 };
 
 export default nextConfig;
-
-import('@opennextjs/cloudflare').then(m => m.initOpenNextCloudflareForDev());

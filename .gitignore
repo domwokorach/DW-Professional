@@ -1,64 +1,53 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# Dependencies
+node_modules/
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Environment variables
-.env
-.env.local
-.env.*.local
-
-# Next.js
-.next
+# Build output and caches
+.next/
+out/
+dist/
+build/
+coverage/
 *.tsbuildinfo
-
-# Generated Prisma clients
-src/generated
-
-# Test output
-coverage
-test-results
-lcov-report
-*.lcov
-lcov.info
-clover.xml
-coverage-final.json
-
-# Accidentally generated coverage output (mangled --coverageDirectory path)
-/pip install --upgrade pipclear/
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
 .vercel
-.env*
-.neon
+.turbo/
+.eslintcache
 
-# OpenNext
-.open-next
+# Generated Prisma Client (recreated by `npm install` → postinstall → prisma generate)
+/generated/prisma
 
-# wrangler files
-.wrangler
-.dev.vars*
-!.dev.vars.example
-
+# Environment files: real values never leave this machine; the template is committed
+.env
+.env.*
 !.env.example
 
-# Resume is served only via the PIN-gated download route; keep it out of the public repo
-private/resume.pdf
+# Local backups (e.g. .env.backup-full is already covered by .env.*)
+*.backup
+*.bak
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# AI-assistant skill folders added by `prisma init` (tooling, not app code)
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
+
+# Avaturn inputs/outputs (personal photos, downloaded models)
+scripts/photos/
+scripts/out/
+# 3D avatar model: large, and the current file is a placeholder (the hero falls back to images without it)
+public/avatar/*.glb
+
+# Local uploads / database files
+uploads/
+*.sqlite
+*.db
