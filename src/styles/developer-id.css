@@ -36,9 +36,13 @@
 .dev-id__details div{border-top:1px solid var(--line);padding-top:7px}
 .dev-id__details dt{font-family:var(--font-mono);font-size:7px;letter-spacing:.12em;color:var(--muted)}
 .dev-id__details dd{margin:3px 0 0;font-size:9px;font-weight:700;white-space:nowrap}
-.dev-id__barcode{margin:auto 16px 14px;display:grid;gap:3px}
-.dev-id__barcode svg{width:100%;height:30px;display:block;fill:var(--ink)}
-.dev-id__barcode span{font-family:var(--font-mono);font-size:7px;letter-spacing:.42em;text-align:center;color:var(--muted)}
+/* The barcode SVG has only a viewBox (172x10), so at 30px tall its natural width is ~516px, wider than
+   the card. The track is capped (minmax(0,1fr), so the SVG can't widen it), the SVG can't exceed it
+   (width/max-width 100%), and the wrapper clips as a last resort. Keep height fixed: `height:auto`
+   would derive it from that same ratio. */
+.dev-id__barcode{margin:auto 16px 14px;display:grid;grid-template-columns:minmax(0,1fr);gap:3px;min-width:0;max-width:100%;overflow:hidden}
+.dev-id__barcode svg{width:100%;max-width:100%;height:30px;display:block;fill:var(--ink)}
+.dev-id__barcode span{min-width:0;font-family:var(--font-mono);font-size:7px;letter-spacing:.42em;text-align:center;color:var(--muted)}
 .dev-id__back-head{display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:9px;letter-spacing:.2em;opacity:.7;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.15)}
 .dev-id__back-head b{border:1px solid rgba(255,255,255,.45);border-radius:50%;width:26px;height:26px;display:grid;place-items:center;font-size:9px;letter-spacing:0}
 .dev-id__back-name{font-size:21px;letter-spacing:.02em;line-height:1.05;margin:18px 0 4px}
