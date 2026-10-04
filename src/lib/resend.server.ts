@@ -11,7 +11,3 @@ export function getResend(): Resend | null {
   client ??= new Resend(key);
   return client;
 }
-
-/** Escapes text for safe inclusion in the HTML email body. */
-export const escapeHtml = (s: string) =>
-  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');

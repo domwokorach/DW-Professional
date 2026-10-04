@@ -8,7 +8,8 @@ import {
   type ContactErrors,
   type ContactFields,
 } from '@/lib/contact';
-import { escapeHtml, getResend } from '@/lib/resend.server';
+import { getResend } from '@/lib/resend.server';
+import { renderEnquiryEmail } from '@/lib/enquiry-email.server';
 import { deleteUpload, DOWNLOAD_URL_TTL, isUploadKey, presignDownload, verifyUpload } from '@/lib/s3.server';
 import { CONTENT_TYPES, extensionOf, formatBytes } from '@/lib/contact';
 import { setEmailStatus, storeEnquiry, type MediaMeta } from '@/lib/contact-store.server';
@@ -69,6 +70,7 @@ export async function POST(request: Request) {
   const errors: ContactErrors = validateFields(fields);
 
   let attachment: { filename: string; content: string } | undefined;
+  let attachedBytes = 0;
   // Either a file already uploaded to S3 (the form sends its key), or a file in this request.
   let linked: { key: string; filename: string; size: number; url: string } | undefined;
   const fileKey = text(form, 'fileKey');
@@ -98,6 +100,7 @@ export async function POST(request: Request) {
       } else {
         // Base64 is Resend's documented string form; a raw Buffer would be JSON-serialised as {type,data}.
         attachment = { filename: safeFilename(file.name), content: content.toString('base64') };
+        attachedBytes = content.length;
       }
     }
   }
@@ -124,36 +127,17 @@ export async function POST(request: Request) {
     return json({ error: 'unavailable' }, 503);
   }
 
-  const body = [
-    `Name: ${fields.fullName}`,
-    `Email: ${fields.email}`,
-    `Mobile: ${fields.mobileNumber || '—'}`,
-    `Company: ${fields.company || '—'}`,
-    `Project type: ${fields.projectType}`,
-    `Attachment: ${attachment ? attachment.filename : linked ? `${linked.filename} (${formatBytes(linked.size)}), download link below` : 'none'}`,
-    '',
-    fields.message,
-    ...(linked ? ['', `Download ${linked.filename} (link expires in ${DOWNLOAD_URL_TTL / 86400} days):`, linked.url] : []),
-  ].join('\n');
-
-  // Same content as HTML for mail clients that prefer it; every visitor value is escaped.
-  const row = (label: string, value: string) =>
-    `<tr><th align="left" style="padding:4px 16px 4px 0;vertical-align:top">${label}</th><td style="padding:4px 0">${escapeHtml(value)}</td></tr>`;
-  const html = [
-    '<h2 style="margin:0 0 12px">New portfolio enquiry</h2>',
-    '<table style="border-collapse:collapse;font:14px/1.5 sans-serif">',
-    row('Name', fields.fullName),
-    row('Email', fields.email),
-    row('Mobile', fields.mobileNumber || '—'),
-    row('Company', fields.company || '—'),
-    row('Project type', fields.projectType),
-    row('Attachment', attachment ? attachment.filename : linked ? `${linked.filename} (${formatBytes(linked.size)})` : 'none'),
-    '</table>',
-    `<p style="font:14px/1.6 sans-serif;white-space:pre-wrap">${escapeHtml(fields.message)}</p>`,
-    linked
-      ? `<p style="font:14px/1.6 sans-serif"><a href="${escapeHtml(linked.url)}">Download ${escapeHtml(linked.filename)}</a> (link expires in ${DOWNLOAD_URL_TTL / 86400} days)</p>`
-      : '',
-  ].join('');
+  const { html, text: body } = renderEnquiryEmail({
+    fields,
+    attachment: linked
+      ? { filename: linked.filename, sizeLabel: formatBytes(linked.size), url: linked.url, expiresInDays: DOWNLOAD_URL_TTL / 86400 }
+      : attachment
+        ? { filename: attachment.filename, sizeLabel: formatBytes(attachedBytes) }
+        : undefined,
+    reference: submissionId.slice(0, 8).toUpperCase(),
+    submittedAt: new Date(),
+    siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://www.dominicwokorach.me',
+  });
 
   try {
     const { error } = await resend.emails.send({
