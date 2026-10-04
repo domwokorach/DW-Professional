@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import LegalPage from './LegalPage';
+import { HOME } from '@/config';
 
 const FEATURES = [
   {
@@ -67,7 +68,7 @@ export default function AccessibilityView() {
         <p>
           If you experience an accessibility barrier while using this portfolio, please get in touch and describe the problem, the page you were using, and the assistive technology or browser involved if relevant. I will use that information to help investigate and improve the experience.
         </p>
-        <Link href="/#contact" className="legal-cta">
+        <Link href={`${HOME}#contact`} className="legal-cta">
           Contact me about an accessibility issue <span aria-hidden="true">→</span>
         </Link>
       </section>

@@ -1,7 +1,11 @@
 import { closeSync, existsSync, openSync, readSync } from 'node:fs';
 import path from 'node:path';
 import { AVATAR_FILES, type AvatarAssets } from '@/components/hero/avatar/config';
+import type { Metadata } from 'next';
+import { HOME } from '@/config';
 import HomeView from '@/views/HomeView';
+
+export const metadata: Metadata = { alternates: { canonical: HOME } };
 
 const publicFile = (url: string) => path.join(process.cwd(), 'public', url);
 

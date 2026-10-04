@@ -25,7 +25,7 @@ cp .env.example .env   # then fill in your own values (see below)
 npm run dev
 ```
 
-Open http://localhost:3000.
+Open http://localhost:3000/en-gb (`/` redirects there).
 
 The site runs without any environment variables: the pages work, and the contact form shows its
 error state (the API returns 503) until email is configured. **Provide your own values** — no
@@ -38,6 +38,7 @@ credentials are included in this repository.
 | `npm run dev` | Development server on port 3000 |
 | `npm run build` | Production build (first regenerates icons and Prisma Client) |
 | `npm start` | Serve the production build |
+| `npm run typecheck` | TypeScript check |
 | `npm run icons` | Rebuild `src/data/stack-icons.ts` from the icon ids used in `src/data/` |
 | `npm run db:generate` | Generate Prisma Client |
 | `npm run db:migrate` | Create/apply migrations in development (`prisma migrate dev`) |
@@ -50,6 +51,7 @@ All are **server-side only** — never prefix them with `NEXT_PUBLIC_`. See `.en
 
 | Variable | Needed for | Notes |
 |---|---|---|
+| `NEXT_PUBLIC_SITE_URL` | Metadata (recommended in production) | Public origin, e.g. `https://www.dominicwokorach.me` |
 | `RESEND_API_KEY` | Contact email | Resend API key |
 | `CONTACT_TO_EMAIL` | Contact email | Where enquiries are delivered |
 | `CONTACT_FROM_EMAIL` | Contact email (optional) | Sender on a domain verified in Resend. Defaults to Resend's onboarding sender, which only delivers to your own Resend account address |
@@ -134,4 +136,3 @@ reset). Each file notes its source and changes at the top.
 | `components/ui/timeline.tsx` | Aceternity UI Timeline |
 | `components/ui/animated-testimonials.tsx` | Aceternity UI Animated Testimonials (React original of Inspira UI's) |
 | `components/ui/rubber-segment.tsx` | Vue Bits RubberSegment, ported to React |
-| `components/ui/AccordionGallery.tsx/.css` | React Bits AccordionGallery (currently unused) |

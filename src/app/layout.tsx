@@ -18,13 +18,14 @@ import '@/styles/legal.css';
 import '@/styles/privacy.css';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(site.url),
   title: site.title,
   description: site.description,
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en-GB">
       <body>
         {children}
         <AppFooter />

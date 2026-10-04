@@ -20,6 +20,10 @@ coverage/
 .env.*
 !.env.example
 
+# Local backups (e.g. .env.backup-full is already covered by .env.*)
+*.backup
+*.bak
+
 # Logs
 *.log
 npm-debug.log*

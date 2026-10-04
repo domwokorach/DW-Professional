@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { TechIcon } from '@/components/ui';
-import { legalLinks } from '@/config';
+import { HOME, legalLinks } from '@/config';
 import { socialLinks } from '@/data';
 import { resetCookieConsent, scrollToTop } from '@/lib';
 
@@ -11,7 +11,7 @@ export default function AppFooter() {
     <footer className="site-footer">
       <div className="site-footer__inner">
         <div className="site-footer__brand">
-          <Link href="/" className="site-footer__name">DOMINIC OLANYA</Link>
+          <Link href={HOME} className="site-footer__name">DOMINIC OLANYA</Link>
           <p className="site-footer__role">Frontend Software Engineer · London</p>
         </div>
 
