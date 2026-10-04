@@ -15,6 +15,7 @@ export const experiences: Experience[] = [
     bullets: [
       'Delivered scalable frontend applications that improve WCAG accessibility, performance, and overall user experience.',
     ],
+    projectsLabel: 'Freelance projects',
     projects: [
       { name: 'Modern News Web Application', description: 'Built a responsive news interface focused on accessible story presentation and intuitive navigation.' },
       { name: 'Dog Booking System', description: 'Built a React and TypeScript booking workflow for grooming, training, daycare, and boarding appointments.' },
@@ -61,6 +62,14 @@ export const experiences: Experience[] = [
       'Improved digital accessibility through WCAG 2.1 AA-compliant user interfaces across desktop and mobile platforms.',
       'Developed reusable design-system components adopted across multiple projects, reducing duplication and accelerating feature delivery.',
       'Collaborated with cross-functional stakeholders to successfully deliver features within Agile release cycles.',
+    ],
+    projectsLabel: 'Work projects',
+    projects: [
+      { name: 'Web Accessibility on Banking', description: 'Accessible digital banking interfaces and inclusive frontend experiences.' },
+      { name: 'Innovation Community', description: 'Conference facilitation, graph-based visual work, web construction and innovation collaboration.' },
+      { name: 'Innovation X', description: 'Team values, KPIs, internal innovation and search/frontend experience.' },
+      { name: 'Applied Technology and Strategy Team', description: 'Prototype showcases, emerging technology and applied innovation.' },
+      { name: 'Banner Design for Early Careers', description: 'LBG campaign/banner design supporting student, apprenticeship and early-career engagement.' },
     ],
   },
   {

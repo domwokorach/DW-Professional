@@ -26,6 +26,8 @@ export type Experience = {
   /** Omitted for the current role. */
   end?: Period;
   bullets: string[];
+  /** Heading for `projects`, e.g. "Freelance projects"; the count is added automatically. */
+  projectsLabel?: string;
   projects?: { name: string; description: string }[];
 };
 

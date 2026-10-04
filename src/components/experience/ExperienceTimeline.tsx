@@ -2,12 +2,12 @@ import { Timeline, type TimelineEntry } from '@/components/ui';
 import { experiences } from '@/data';
 import type { Experience } from '@/types';
 
-function Projects({ projects }: { projects: NonNullable<Experience['projects']> }) {
-  const headingId = 'xp-projects-heading';
+function Projects({ id, label, projects }: { id: string; label: string; projects: NonNullable<Experience['projects']> }) {
+  const headingId = `${id}-projects`;
 
   return (
     <section className="xp-projects" aria-labelledby={headingId}>
-      <h4 className="xp-label" id={headingId}>Freelance projects <span aria-hidden="true">· {String(projects.length).padStart(2, '0')}</span></h4>
+      <h4 className="xp-label" id={headingId}>{label} <span aria-hidden="true">· {String(projects.length).padStart(2, '0')}</span></h4>
       <ol className="xp-projects__list">
         {projects.map((proj, i) => (
           <li key={proj.name}>
@@ -53,7 +53,7 @@ function Entry({ xp }: { xp: Experience }) {
       <ul className="xp-bullets">
         {xp.bullets.map((b) => <li key={b}>{b}</li>)}
       </ul>
-      {xp.projects && <Projects projects={xp.projects} />}
+      {xp.projects && <Projects id={`xp-${xp.start.iso}`} label={xp.projectsLabel ?? 'Projects'} projects={xp.projects} />}
     </article>
   );
 }
