@@ -135,8 +135,3 @@ reset). Each file notes its source and changes at the top.
 | `components/ui/animated-testimonials.tsx` | Aceternity UI Animated Testimonials (React original of Inspira UI's) |
 | `components/ui/rubber-segment.tsx` | Vue Bits RubberSegment, ported to React |
 | `components/ui/AccordionGallery.tsx/.css` | React Bits AccordionGallery (currently unused) |
-
-## Static preview
-
-`static/index.html` is an early no-install snapshot of the design and is out of date; use
-`npm run dev` for the current site.

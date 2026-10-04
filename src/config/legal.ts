@@ -8,9 +8,9 @@ export const legal = {
   location: 'London, United Kingdom',
   lastUpdated: '4 October 2026',
   /** Company that hosts the site and may keep standard server/access logs, e.g. "Vercel Inc.". */
-  hostingProvider: null as string | null,
+  hostingProvider: 'Vercel Inc.' as string | null,
   /** How long enquiries are kept: the emails, the saved database copy, and any file stored in S3. */
-  enquiryRetention: null as string | null,
+  enquiryRetention: '12 months' as string | null,
 };
 
 export const legalLinks = [
