@@ -37,6 +37,14 @@ export const experiences: Experience[] = [
       'Earned multiple industry-recognised certifications and completed coding challenges across React, JavaScript, TypeScript, Python, SQL, REST APIs, Express, Angular, search algorithms, and software engineering, strengthening expertise across modern frontend and full-stack technologies.',
       'Strengthened expertise in clean code, API integration, databases, testing, and scalable application architecture.',
     ],
+    projectsLabel: 'Learning Courses',
+    projects: [
+      { name: 'HackerRank', description: 'C#, SQL, React, REST API, JavaScript and problem-solving learning/assessment.' },
+      { name: 'Codecademy', description: 'Python, search algorithms, Express and React.' },
+      { name: 'Learn TypeScript Online', description: 'Primitive types, unions, narrowing, arrays, tuples and literal types.' },
+      { name: 'Learn JavaScript Online', description: 'Strings, numbers, arrays, objects, functions, classes and prototypical inheritance.' },
+      { name: 'Learn Programming', description: 'Variables, data types, arrays, objects, functions and conditionals.' },
+    ],
   },
   {
     role: 'Software Engineer Intern',
