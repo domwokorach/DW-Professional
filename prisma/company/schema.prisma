@@ -1,0 +1,38 @@
+// Company dataset (UK basic company data), imported from a CSV in S3 by `npm run companies:import`.
+// A separate schema, client and migrations from the portfolio's own database (prisma/schema.prisma),
+// so the two can never be queried by mistake. Connection: COMPANY_DATABASE_URL (see
+// prisma.company.config.ts).
+//
+// Columns follow the public Companies House "basic company data" CSV. The importer matches CSV
+// headers by name (ignoring spaces and case) and refuses to run if CompanyNumber or CompanyName
+// is missing, so a file with a different layout fails loudly instead of loading wrong data.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../../generated/company"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Company {
+  /// Company number, unique per company: the key imports upsert on.
+  companyNumber     String    @id
+  companyName       String
+  /// Lower-cased, whitespace-collapsed name used for prefix search.
+  nameSearch        String
+  /// CompanyStatus, e.g. "Active".
+  status            String?
+  /// CompanyCategory, e.g. "Private Limited Company".
+  companyType       String?
+  incorporationDate DateTime? @db.Date
+  postTown          String?
+  postcode          String?
+  /// First SIC code line as supplied (code and description).
+  sicText           String?
+  updatedAt         DateTime  @updatedAt
+
+  /// text_pattern_ops lets Postgres use this index for `LIKE 'prefix%'` whatever the database collation.
+  @@index([nameSearch(ops: raw("text_pattern_ops"))])
+}

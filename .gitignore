@@ -13,7 +13,7 @@ coverage/
 .eslintcache
 
 # Generated Prisma Client (recreated by `npm install` → postinstall → prisma generate)
-/generated/prisma
+/generated/
 
 # Environment files: real values never leave this machine; the template is committed
 .env
