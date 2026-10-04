@@ -50,6 +50,15 @@ export const experiences: Experience[] = [
       'Contributed to cloud-native solutions deployed through Docker and Kubernetes environments.',
       'Supported high-quality software delivery through Agile collaboration, code reviews, testing, and CI/CD practices.',
     ],
+    projectsLabel: 'Work Learning',
+    projects: [
+      { name: 'Analysis — Technical Analyst', description: 'Requirements, dependencies, system understanding and impact analysis.' },
+      { name: 'Design', description: 'Technical design, solution planning and implementation preparation.' },
+      { name: 'Testing & Integration', description: 'E2E testing, Jenkins, CI/CD pipelines and cross-service validation.' },
+      { name: 'Deployment', description: 'Build/release workflows, deployment pipelines and environment checks.' },
+      { name: 'Testing', description: 'Regression testing, functional validation and release confidence.' },
+      { name: 'Maintenance', description: 'Feature requests, issue reporting, stakeholder feedback and ongoing support.' },
+    ],
   },
   {
     role: 'Senior Frontend Developer',
