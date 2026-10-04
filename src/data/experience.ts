@@ -84,6 +84,14 @@ export const experiences: Experience[] = [
       'Designed UX prototypes and wireframes supporting youth customer-focused digital banking concepts.',
       'Built AI-powered search proof-of-concepts that improved access to internal knowledge resources.',
     ],
+    projectsLabel: 'Work projects',
+    projects: [
+      { name: 'Data Analytics, Data Science & Machine Learning', description: 'Python foundations supporting backend, data-analysis, data-science and machine-learning understanding.' },
+      { name: 'Innovation X Team', description: 'Neo4j-backed internal search, API/JSON workflows, CSS3/Sass interface improvements and toolbar UI icons.' },
+      { name: 'Programming Languages & Technical Development', description: 'Continuous technical learning supporting progression toward advanced frontend and software-engineering responsibilities.' },
+      { name: 'UI/UX — Piggy Bank Web Application', description: "Prototype for parent-managed children's finances, financial education and stakeholder presentation." },
+      { name: 'Internal AI Chatbot Prototype', description: 'Conversational interface concept helping colleagues find authorised internal HR, payroll, annual-leave and workplace information more efficiently.' },
+    ],
   },
   {
     role: 'Junior UI Delivery and Transformation',
@@ -96,6 +104,11 @@ export const experiences: Experience[] = [
       'Improved application quality through performance enhancements and defect resolution.',
       'Contributed to responsive web applications supporting multiple business functions.',
     ],
+    projectsLabel: 'Work projects',
+    projects: [
+      { name: 'UI Delivery and Transformation', description: 'Frontend testing, Jenkins/Git workflows, debugging, defect investigation and release validation for digital banking changes.' },
+      { name: 'HTML Email', description: 'Internal HTML email template development and communication support across Lloyds Banking Group.' },
+    ],
   },
   {
     role: 'Trainee Digital Transformation',
@@ -107,6 +120,13 @@ export const experiences: Experience[] = [
       'Completed an engineering apprenticeship, gaining cross-functional experience across DevOps, Mobile Engineering, and UI Digital Transformation.',
       'Supported digital initiatives while building strong foundations in software engineering and operational practices.',
       'Collaborated with multidisciplinary teams to gain practical experience across the software development lifecycle.',
+    ],
+    projectsLabel: 'Work Trainee',
+    projects: [
+      { name: 'HR', description: 'Shadowing and organisational learning across HR and business operations.' },
+      { name: 'Mobile Engineering', description: 'Exposure to iOS, Android, Touch ID, Apple Pay, authentication and mobile banking workflows.' },
+      { name: 'UI Delivery and Transformation', description: 'The trainee rotation that most closely matched my interests and helped shape my move into UI/frontend work.' },
+      { name: 'DevOps', description: 'Exposure to testing, release workflows, collaboration and software delivery processes.' },
     ],
   },
 ];
