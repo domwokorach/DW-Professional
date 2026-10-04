@@ -22,6 +22,7 @@ export default defineConfig({
     path: 'prisma/migrations',
   },
   datasource: {
-    url: withSchema(process.env['DATABASE_URL']),
+    // Same precedence as the runtime client (src/lib/prisma.server.ts).
+    url: withSchema(process.env['PORTFOLIO_DATABASE_URL'] || process.env['DATABASE_URL']),
   },
 });

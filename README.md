@@ -56,6 +56,7 @@ All are **server-side only** — never prefix them with `NEXT_PUBLIC_`. See `.en
 | `CONTACT_TO_EMAIL` | Contact email | Where enquiries are delivered |
 | `CONTACT_FROM_EMAIL` | Contact email (optional) | Sender on a domain verified in Resend. Defaults to Resend's onboarding sender, which only delivers to your own Resend account address |
 | `DATABASE_URL` | Saving enquiries (optional) | PostgreSQL connection string |
+| `PORTFOLIO_DATABASE_URL` | Saving enquiries (optional) | Takes precedence over `DATABASE_URL`; use it when `DATABASE_URL` belongs to another app |
 | `DATABASE_SCHEMA` | Saving enquiries (optional) | Postgres schema for this app's tables, default `portfolio` |
 | `AWS_REGION` | S3 attachments (optional) | e.g. `eu-west-2` |
 | `AWS_S3_BUCKET_NAME` | S3 attachments (optional) | Private bucket. Without it, files ≤ 4 MB are attached to the email instead |

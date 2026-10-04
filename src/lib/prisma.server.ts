@@ -7,9 +7,13 @@ import { PrismaClient } from '../../generated/prisma/client';
 // client is kept on globalThis to avoid opening a new connection pool on every change.
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
-/** The shared Prisma client, or null when DATABASE_URL isn't configured (storage is then skipped). */
+/**
+ * The shared Prisma client, or null when no database is configured (storage is then skipped).
+ * PORTFOLIO_DATABASE_URL wins over DATABASE_URL, so the portfolio can use its own database where
+ * DATABASE_URL already belongs to something else (e.g. a Vercel project carried over from another app).
+ */
 export function getPrisma(): PrismaClient | null {
-  const connectionString = process.env.DATABASE_URL;
+  const connectionString = process.env.PORTFOLIO_DATABASE_URL || process.env.DATABASE_URL;
   if (!connectionString) return null;
   if (!globalForPrisma.prisma) {
     // Queries target the portfolio's own Postgres schema (see prisma.config.ts).
