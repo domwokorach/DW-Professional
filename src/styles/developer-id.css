@@ -58,7 +58,7 @@
 .dev-id__access dt{font-weight:700;opacity:1}
 .dev-id__access dd{margin:0;opacity:.75;display:flex;align-items:center;gap:6px}
 .dev-id__dot{width:6px;height:6px;border-radius:50%;background:#9fe0a8;box-shadow:0 0 0 3px rgba(159,224,168,.18)}
-.dev-id__qr{width:72px;height:72px;flex:none;fill:var(--ink);border-radius:6px}
+.dev-id__qr{width:88px;height:88px;flex:none;fill:#25233f;border-radius:6px}
 .dev-id__qr .dev-id__qr-bg{fill:#f7f3e7}
 .dev-id__hint{font-family:var(--font-mono);font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;opacity:.4;text-align:center;margin:12px 0 0}
 .dev-id-caption{font-family:var(--font-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:22px 0 0}

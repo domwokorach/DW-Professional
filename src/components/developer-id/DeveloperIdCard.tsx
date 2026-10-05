@@ -1,7 +1,9 @@
 'use client';
 
 import Image from 'next/image';
+import { encode } from 'uqr';
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
+import { PORTFOLIO_ACCESS_URL } from '@/config';
 import DeveloperIdEvervault, { useEvervaultPointer } from './DeveloperIdEvervault';
 import FloatingCard from './FloatingCard';
 
@@ -43,34 +45,22 @@ function Barcode({ value }: { value: string }) {
   );
 }
 
+// A real, scannable QR code (not a decorative pattern): it opens the Portfolio Access page, which
+// hands the visitor the CV. Deterministic, so server and client render the same SVG.
 function QrBlock({ value }: { value: string }) {
-  const size = 21;
-  const cells = useMemo(() => {
-    const rand = seeded(value);
-    const inFinder = (r: number, c: number) =>
-      (r < 8 && c < 8) || (r < 8 && c >= size - 8) || (r >= size - 8 && c < 8);
-    const finder = (r: number, c: number) => {
-      const fr = r >= size - 8 ? r - (size - 7) : r;
-      const fc = c >= size - 8 ? c - (size - 7) : c;
-      if (fr < 0 || fc < 0 || fr > 6 || fc > 6) return false; // separator ring
-      const edge = fr === 0 || fr === 6 || fc === 0 || fc === 6;
-      const core = fr >= 2 && fr <= 4 && fc >= 2 && fc <= 4;
-      return edge || core;
-    };
+  const { size, cells } = useMemo(() => {
+    const { size, data } = encode(value, { ecc: 'L', boostEcc: false });
     const out: [number, number][] = [];
-    for (let r = 0; r < size; r++) {
-      for (let c = 0; c < size; c++) {
-        const on = inFinder(r, c) ? finder(r, c) : r === 6 || c === 6 ? (r + c) % 2 === 0 : rand() > 0.52;
-        if (on) out.push([r, c]);
-      }
-    }
-    return out;
+    data.forEach((row, r) => row.forEach((on, c) => { if (on) out.push([r, c]); }));
+    return { size, cells: out };
   }, [value]);
 
+  // Four modules of quiet zone around the code, as the QR spec asks, so cameras lock on reliably.
+  const q = 4;
   return (
-    <svg className="dev-id__qr" viewBox={`-1 -1 ${size + 2} ${size + 2}`} aria-hidden="true">
-      <rect x={-1} y={-1} width={size + 2} height={size + 2} className="dev-id__qr-bg" />
-      {cells.map(([r, c]) => <rect key={`${r}-${c}`} x={c} y={r} width={1.02} height={1.02} />)}
+    <svg className="dev-id__qr" viewBox={`${-q} ${-q} ${size + q * 2} ${size + q * 2}`} shapeRendering="crispEdges" role="img" aria-label="QR code that opens Dominic's portfolio access page">
+      <rect x={-q} y={-q} width={size + q * 2} height={size + q * 2} className="dev-id__qr-bg" />
+      {cells.map(([r, c]) => <rect key={`${r}-${c}`} x={c} y={r} width={1} height={1} />)}
     </svg>
   );
 }
@@ -183,7 +173,7 @@ export default function DeveloperIdCard({ flipOnHover = false }: Props) {
                 <dd><span className="dev-id__dot" />STATUS: ACTIVE</dd>
                 <dd>ID: DO-0001</dd>
               </dl>
-              <QrBlock value="DO-0001" />
+              <QrBlock value={PORTFOLIO_ACCESS_URL} />
             </div>
             <p className="dev-id__hint">Tap to return</p>
           </div>

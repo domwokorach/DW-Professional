@@ -1,0 +1,34 @@
+/* Portfolio Access: the page the Developer ID QR code opens */
+/* QuarterRing (src/components/ui/QuarterRing.tsx): the supplied Tailwind utilities, as plain CSS. */
+.quarter-ring{display:inline-block;border-radius:9999px;border-style:solid;border-width:0;border-top-width:3px;border-right-width:3px;border-top-color:currentColor;border-right-color:transparent}
+
+.pa{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:max(24px,env(safe-area-inset-top)) 20px max(24px,env(safe-area-inset-bottom))}
+/* A focused, full-screen page: no site footer under it. */
+body:has(.pa) .site-footer,body:has(.pa) .cookie-consent{display:none}
+/* (The cookie banner would cover the buttons on a phone; this page sets no cookies and the banner shows on the portfolio itself.) */
+.pa-card{width:100%;max-width:440px;display:flex;flex-direction:column;align-items:center;gap:22px;padding:44px 28px 28px;border:1px solid var(--line);border-radius:28px;background:rgba(var(--surface-rgb),.78);box-shadow:0 28px 70px -30px rgba(var(--shadow-rgb),.4);text-align:center;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.pa-panel{display:flex;flex-direction:column;align-items:center;gap:22px;width:100%}
+.pa-panel--enter{animation:pa-enter .35s ease-out both}
+@keyframes pa-enter{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+.pa-visual{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);color:var(--ink)}
+.pa-ring{width:40px;height:40px;color:var(--ink)}
+.pa-visual svg{width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.pa-visual--success{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
+.pa-visual--error{border:2px solid var(--ink)}
+.pa-visual--error svg{stroke-width:2.8}
+.pa-eyebrow{margin:0 0 10px;font-family:var(--font-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-2)}
+.pa-title{margin:0;font-size:clamp(30px,8.5vw,42px);line-height:1.02;letter-spacing:-.045em;font-weight:700;text-wrap:balance}
+.pa-text{margin:12px auto 0;max-width:34ch;font-size:16px;line-height:1.6;color:var(--text-3)}
+.pa-actions{display:flex;flex-direction:column;gap:12px;width:100%;margin-top:4px}
+.pa-btn{display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:14px 24px;border-radius:999px;border:1px solid var(--ink);font-size:15px;font-weight:600;text-decoration:none;transition:background-color .2s ease,color .2s ease,transform .2s ease}
+.pa-btn--primary{background:var(--ink);color:var(--on-ink)}
+.pa-btn--secondary{background:transparent;color:var(--ink)}
+.pa-btn--primary:hover{transform:translateY(-1px)}
+.pa-btn--secondary:hover{background:var(--ink);color:var(--on-ink)}
+.pa-btn:focus-visible,.pa-back:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.pa-meta{margin:0;text-wrap:balance;font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-2)}
+.pa-back{margin-top:2px;padding:10px 14px;border-radius:999px;font-size:13px;color:var(--text-2);text-decoration:none}
+.pa-back:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+@media(min-width:520px){.pa-card{padding:48px 40px 30px}.pa-actions{flex-direction:row}.pa-btn{flex:1}}
+@media(prefers-reduced-motion:reduce){.pa-panel--enter{animation-name:pa-fade;animation-duration:.15s}.pa-btn{transition:none}.pa-btn--primary:hover{transform:none}}
+@keyframes pa-fade{from{opacity:0}to{opacity:1}}

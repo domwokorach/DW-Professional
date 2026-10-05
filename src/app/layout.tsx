@@ -17,6 +17,7 @@ import '@/styles/achievements.css';
 import '@/styles/contact.css';
 import '@/styles/legal.css';
 import '@/styles/privacy.css';
+import '@/styles/portfolio-access.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),

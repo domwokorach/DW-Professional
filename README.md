@@ -116,6 +116,16 @@ docs/               Setup notes (S3)
 - **Technology icons**: set an Iconify id on the item in `src/data/core-tech.ts` (`simple-icons:…`, `logos:…` or `tabler:…`, plus an optional brand `color`), then run `npm run icons`. The script fails on unknown ids and writes only the icons in use; don't edit `stack-icons.ts` by hand.
 - **Styles**: one file per section in `src/styles/`; import order in `src/app/layout.tsx` matters.
 
+## Portfolio Access (QR code → CV)
+
+The QR code on the back of the Developer ID card is a real, scannable code that opens
+`/portfolio-access` (`src/views/portfolio-access/`), not the CV file itself. That page shows a short
+loading animation, vibrates once where the browser supports it (Android Chromium; iOS has no
+Vibration API), then offers **Open CV** and **Download CV**. The CV URL is defined once in
+`src/config/portfolio-access.ts`; the page never embeds the `.docx`. The QR encodes
+`NEXT_PUBLIC_SITE_URL` + `/portfolio-access` (falling back to the live domain in production), so set
+that variable correctly before printing or sharing the card.
+
 ## Privacy, cookies and legal pages
 
 The site sets **no cookies** and loads **no analytics or tracking**; the only browser storage is
