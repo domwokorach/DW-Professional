@@ -1,6 +1,8 @@
 'use client';
 
 import { useRef, useState, type ChangeEvent, type FormEvent, type InputHTMLAttributes } from 'react';
+import { MoveRightIcon } from '@/components/animate-ui/icons/move-right';
+import { useIconTrigger } from '@/composables/useIconTrigger';
 import {
   MAX_FILE_BYTES,
   MAX_UPLOAD_BYTES,
@@ -104,6 +106,7 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
   const [touched, setTouched] = useState<Partial<Record<ContactField, boolean>>>({});
   const [status, setStatus] = useState<Status>('idle');
   const [honeypot, setHoneypot] = useState('');
+  const sendIcon = useIconTrigger();
   const formRef = useRef<HTMLFormElement>(null);
   // Latest Project Type value, so validation on popup close sees a just-made selection.
   const projectTypeRef = useRef('');
@@ -348,9 +351,9 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
             <p className="contact-status__err"><strong>Unable to send your message right now.</strong> Please try again.</p>
           )}
         </div>
-        <button type="submit" className={`contact-submit is-${status}`} disabled={status === 'submitting'}>
+        <button type="submit" className={`contact-submit is-${status}`} disabled={status === 'submitting'} {...sendIcon.bind}>
           {BUTTON_LABEL[status]}
-          {status === 'idle' && <span className="contact-submit__arrow" aria-hidden="true">→</span>}
+          {status === 'idle' && <MoveRightIcon className="contact-submit__arrow" animate={sendIcon.active} size={18} aria-hidden="true" />}
         </button>
       </div>
     </form>

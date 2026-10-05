@@ -26,6 +26,10 @@ body{margin:0;background:var(--cream);color:var(--ink);font-family:Arial,Helveti
 .orb-one{width:34vw;height:34vw;background:var(--orb-1);top:-8vw;right:-8vw}
 .orb-two{width:28vw;height:28vw;background:var(--orb-2);bottom:10vh;left:-12vw}
 button,a{font:inherit;color:inherit}
+/* Links with a trailing Animate UI icon (components/ui/IconLink): the icon sits centred after the label and may
+   overshoot its box while animating (overflow visible) without moving the layout. */
+.cta-icon-link{display:inline-flex;align-items:center;gap:8px}
+.cta-icon,.contact-submit__arrow,.contact-upload__icon svg{flex:none;overflow:visible}
 button{cursor:pointer}
 .kicker,.mini-title{font-family:var(--font-mono);font-size:11px;letter-spacing:.24em}
 .hero h1,.section-heading h2,.about h2{font-size:clamp(58px,7.4vw,118px);line-height:.82;letter-spacing:-.065em;margin:16px 0 22px}

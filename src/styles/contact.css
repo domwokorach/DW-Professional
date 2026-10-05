@@ -155,9 +155,8 @@
 .contact-status__ok strong:before{content:"✓ "}
 .contact-status__err strong{color:var(--contact-error)}
 .contact-submit{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:52px;padding:15px 28px;border:1px solid var(--contact-dark);border-radius:999px;background:var(--contact-dark);color:var(--contact-bg);font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;transition:background-color .2s ease,border-color .2s ease}
-.contact-submit__arrow{display:inline-block;font-size:15px;letter-spacing:0;transition:transform .2s ease}
+.contact-submit__arrow{flex:none}
 .contact-submit:hover:not(:disabled){background:var(--contact-accent);border-color:var(--contact-accent)}
-.contact-submit:hover:not(:disabled) .contact-submit__arrow{transform:translateX(4px)}
 .contact-submit:focus-visible{outline:2px solid var(--contact-accent);outline-offset:3px}
 .contact-submit:disabled{opacity:.75;cursor:progress}
 .contact-submit.is-success{background:var(--contact-success);border-color:var(--contact-success)}
@@ -182,8 +181,7 @@
   .contact-upload__file{flex-wrap:wrap}
 }
 @media(prefers-reduced-motion:reduce){
-  .contact-label,.contact-label:before,.contact-control,.contact-upload,.contact-upload__icon,.contact-submit,.contact-submit__arrow,.contact-info a,.contact-link{transition:none}
-  .contact-submit:hover:not(:disabled) .contact-submit__arrow{transform:none}
+  .contact-label,.contact-label:before,.contact-control,.contact-upload,.contact-upload__icon,.contact-submit,.contact-info a,.contact-link{transition:none}
 }
 /* Space held for the contact form until its script loads (heights measured from the real form). */
 .contact-form--placeholder{min-height:967px}

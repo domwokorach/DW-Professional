@@ -1,3 +1,6 @@
+import { DownloadIcon } from '@/components/animate-ui/icons/download';
+import { LinkIcon } from '@/components/animate-ui/icons/link';
+import { IconLink } from '@/components/ui';
 import { quickFacts, socialLinks } from '@/data';
 import DeveloperIdCard from './DeveloperIdCard';
 import LondonClock from './LondonClock';
@@ -12,8 +15,8 @@ export default function AboutSection() {
           <p>Software engineer with commercial experience at Sky and Lloyds Banking Group, specialising in React, TypeScript, and accessible digital products.</p>
           <p>I deliver scalable web applications, improve user experiences, and collaborate with Agile teams, with a passion for creating inclusive solutions for diverse audiences.</p>
           <div className="button-row">
-            <a className="primary" href="/Dominic_Wokorach_Olanya_CV.pdf" download>Résumé ↓</a>
-            {socialLinks.map(({ label, href }) => <a key={label} href={href} target="_blank" rel="noopener noreferrer">{label} ↗</a>)}
+            <IconLink className="primary" href="/Dominic_Wokorach_Olanya_CV.pdf" download icon={DownloadIcon}>Résumé</IconLink>
+            {socialLinks.map(({ label, href }) => <IconLink key={label} href={href} target="_blank" rel="noopener noreferrer" icon={LinkIcon}>{label}</IconLink>)}
           </div>
         </article>
 

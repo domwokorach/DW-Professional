@@ -1,4 +1,5 @@
-import { TechIcon } from '@/components/ui';
+import { LinkIcon } from '@/components/animate-ui/icons/link';
+import { IconLink, TechIcon } from '@/components/ui';
 import { contactInfo } from '@/data';
 import LazyContactForm from './LazyContactForm';
 
@@ -25,7 +26,7 @@ export default function ContactSection() {
               </div>
             ))}
           </dl>
-          <a className="contact-link" href="#work">View work <span aria-hidden="true">↗</span></a>
+          <IconLink className="contact-link" href="#work" icon={LinkIcon}>View work</IconLink>
           <p className="contact-meta" aria-hidden="true">CONTACT / PORTFOLIO / 2026</p>
         </div>
         <LazyContactForm directUploads={directUploads()} />

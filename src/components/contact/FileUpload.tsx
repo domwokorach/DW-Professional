@@ -1,6 +1,8 @@
 'use client';
 
 import { useRef, useState, type DragEvent } from 'react';
+import { DownloadIcon } from '@/components/animate-ui/icons/download';
+import { useIconTrigger } from '@/composables/useIconTrigger';
 import { ACCEPT_ATTR, formatBytes, validateFile } from '@/lib/contact';
 import { Progress, ProgressIndicator, ProgressLabel, ProgressTrack, ProgressValue } from '@/components/ui/motion/progress';
 
@@ -38,6 +40,7 @@ const ANNOUNCE: Partial<Record<UploadStatus, string>> = {
 export default function FileUpload({ id, file, error, upload, onChange, maxBytes }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
+  const icon = useIconTrigger();
   const hintId = `${id}-hint`;
   const errorId = `${id}-error`;
   const { status, percent } = upload;
@@ -69,6 +72,7 @@ export default function FileUpload({ id, file, error, upload, onChange, maxBytes
       <div
         className={`contact-upload${dragging ? ' is-dragging' : ''}${error ? ' has-error' : ''}`}
         onClick={() => inputRef.current?.click()}
+        {...icon.bind}
         onDragEnter={(e) => onDrag(e, true)}
         onDragOver={(e) => onDrag(e, true)}
         onDragLeave={(e) => onDrag(e, false)}
@@ -90,7 +94,7 @@ export default function FileUpload({ id, file, error, upload, onChange, maxBytes
           onClick={(e) => e.stopPropagation()}
           onChange={(e) => choose(e.target.files)}
         />
-        <span className="contact-upload__icon" aria-hidden="true">↑</span>
+        <span className="contact-upload__icon" aria-hidden="true"><DownloadIcon animate={icon.active || dragging} size={20} /></span>
         <span className="contact-upload__title" aria-hidden="true">Click to upload</span>
         <span className="contact-upload__sub" aria-hidden="true">or drag and drop a file</span>
         <span className="contact-upload__hint" id={hintId}>PDF, DOC, DOCX, PNG, JPG or WEBP · up to {maxBytes / 1024 / 1024} MB · optional</span>
