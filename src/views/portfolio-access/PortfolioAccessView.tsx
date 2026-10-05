@@ -12,9 +12,9 @@ type PortfolioAccessState = 'loading' | 'success' | 'error';
 const LOADING_MS = 5000;
 
 /** Returns whether the browser accepted the vibration. Never throws: haptics are optional. */
-const triggerHapticFeedback = (): boolean => {
+const triggerHapticFeedback = (pattern: number | number[] = [80, 40, 80]): boolean => {
   try {
-    return typeof navigator !== 'undefined' && 'vibrate' in navigator && navigator.vibrate([80, 40, 80]);
+    return typeof navigator !== 'undefined' && 'vibrate' in navigator && navigator.vibrate(pattern);
   } catch {
     return false;
   }
@@ -25,13 +25,17 @@ export default function PortfolioAccessView() {
   const reduce = useReducedMotion();
   const buzzed = useRef(false);
 
-  // Vibrate once per visit (Chromium on Android; iOS/Safari have no Vibration API, so nothing happens).
+  // Vibrate once per visit, when access is confirmed ("CV Ready"), not while the page is still preparing it
+  // (Chromium on Android; iOS/Safari have no Vibration API, so nothing happens there).
   // Chrome only honours vibrate() after the visitor has touched the page, and a page opened by scanning a
-  // QR code hasn't been touched yet, so if the first attempt is refused it is retried once, on the first tap.
+  // QR code hasn't been touched yet. So if the visitor has already tapped, it buzzes straight away; if not, the
+  // buzz waits for their first tap (or key press), which is the earliest moment the browser will allow it.
   useEffect(() => {
-    if (buzzed.current) return;
-    buzzed.current = triggerHapticFeedback();
-    if (buzzed.current || !('vibrate' in navigator)) return;
+    if (state !== 'success' || buzzed.current || !('vibrate' in navigator)) return;
+    if (navigator.userActivation?.hasBeenActive) {
+      buzzed.current = triggerHapticFeedback();
+      if (buzzed.current) return;
+    }
     const retry = () => {
       if (!buzzed.current) buzzed.current = triggerHapticFeedback();
       events.forEach((e) => window.removeEventListener(e, retry));
@@ -39,7 +43,10 @@ export default function PortfolioAccessView() {
     const events = ['pointerdown', 'keydown'] as const;
     events.forEach((e) => window.addEventListener(e, retry, { once: true }));
     return () => events.forEach((e) => window.removeEventListener(e, retry));
-  }, []);
+  }, [state]);
+
+  /** A tap on Open / Download always counts as a touch, so this short buzz is always allowed on Android. */
+  const tapFeedback = () => { triggerHapticFeedback(40); };
 
   // Loading -> success. If anything throws, show the fallback instead of spinning forever.
   useEffect(() => {
@@ -63,11 +70,11 @@ export default function PortfolioAccessView() {
 
   const actions = (
     <motion.div className="pa-actions" variants={item}>
-      <a className="pa-btn pa-btn--primary" href={CV_URL} target="_blank" rel="noopener noreferrer">
+      <a className="pa-btn pa-btn--primary" href={CV_URL} target="_blank" rel="noopener noreferrer" onClick={tapFeedback}>
         Open CV<span className="sr-only"> (opens in a new tab)</span>
       </a>
       {state === 'success' && (
-        <a className="pa-btn pa-btn--secondary" href={CV_DOWNLOAD_URL} download={CV_FILENAME}>Download CV</a>
+        <a className="pa-btn pa-btn--secondary" href={CV_DOWNLOAD_URL} download={CV_FILENAME} onClick={tapFeedback}>Download CV</a>
       )}
     </motion.div>
   );
