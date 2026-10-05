@@ -1,6 +1,10 @@
 /* learning */
 .cert-grid{display:grid;grid-template-columns:.7fr 1.3fr;gap:8vw}
 .cert-intro{display:block}
+/* Confetti on the heading (components/animations/ConfettiOnInteract): shrink-wrapped so only the text reacts; the
+   canvas is a click-through overlay below the header and cookie banner (z-index 50). */
+.confetti-target{width:fit-content;max-width:100%}
+.confetti-layer{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:40}
 .cert-intro h2{font-size:clamp(60px,7vw,108px)}
 .cert-intro p{margin-top:30px}
 .cert-list article{display:grid;grid-template-columns:44px 1fr;padding:19px 10px;border-bottom:1px solid var(--line);transition:.2s}

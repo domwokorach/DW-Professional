@@ -5,3 +5,4 @@ export { CardPattern, generateRandomString } from './evervault-card';
 export { AnimatedTestimonials, type AnimatedTestimonialItem } from './animated-testimonials';
 export { RubberSegment, type RubberSegmentItem } from './rubber-segment';
 export { default as IconLink } from './IconLink';
+export { default as IconButton } from './IconButton';

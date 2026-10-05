@@ -6,7 +6,7 @@
 export const legal = {
   owner: 'Dominic Olanya',
   location: 'London, United Kingdom',
-  lastUpdated: '4 October 2026',
+  lastUpdated: '5 October 2026',
   /** Company that hosts the site and may keep standard server/access logs, e.g. "Vercel Inc.". */
   hostingProvider: 'Vercel Inc.' as string | null,
   /** How long enquiries are kept: the emails, the saved database copy, and any file stored in S3. */

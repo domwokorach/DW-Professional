@@ -20,6 +20,8 @@ export default defineConfig({
   schema: 'prisma/schema.prisma',
   migrations: {
     path: 'prisma/migrations',
+    // `npx prisma db seed`: creates the first admin from ADMIN_EMAIL / ADMIN_PASSWORD (see prisma/seed.ts).
+    seed: 'tsx prisma/seed.ts',
   },
   datasource: {
     // Same precedence as the runtime client (src/lib/prisma.server.ts).

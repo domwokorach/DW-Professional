@@ -1,5 +1,6 @@
 import { AchievementsSection, CertificationsSection } from '@/components/learning';
 import { BackgroundOrbs, SiteHeader } from '@/components/layout';
+import { CommentsSection } from '@/components/comments';
 import { ContactSection } from '@/components/contact';
 import { AboutSection } from '@/components/developer-id';
 import { ExperienceSection } from '@/components/experience';
@@ -20,6 +21,7 @@ export default function HomeView({ heroAvatar }: { heroAvatar?: AvatarAssets }) 
       <CertificationsSection />
       <ExperienceSection />
       <AchievementsSection />
+      <CommentsSection />
       <ContactSection />
     </main>
   );

@@ -1,0 +1,89 @@
+/* What people are saying: Add Comment form + comment feed. Cards follow the project cards (.pc). */
+.comments-section{--cm-radius:18px;--cm-error:#B42318}
+:root[data-theme="dark"] .comments-section{--cm-error:#f87171}
+.cm-layout{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:28px;align-items:start;max-width:1200px;margin-inline:auto}
+
+/* Form */
+.cm-form{display:flex;flex-direction:column;gap:20px;padding:28px;background:var(--white);border:1px solid var(--line);border-radius:var(--cm-radius);box-shadow:0 1px 0 rgba(var(--shadow-rgb),.04)}
+.cm-form__title{margin:0;font-size:clamp(22px,1.9vw,27px);line-height:1.12;letter-spacing:-.035em;font-weight:700;color:var(--ink)}
+.cm-field{display:flex;flex-direction:column;gap:8px;min-width:0}
+.cm-field__head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.cm-field label,.cm-label{font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.cm-req{color:var(--cm-error)}
+.cm-opt{font-weight:400;letter-spacing:.04em;text-transform:none;color:var(--text-2)}
+.cm-count{font-family:var(--font-mono);font-size:11px;color:var(--text-2)}
+.cm-field input,.cm-field textarea{display:block;width:100%;min-height:48px;padding:12px 14px;font:inherit;font-size:16px;color:var(--ink);background:transparent;border:1px solid rgba(var(--ink-rgb),.28);border-radius:12px;outline:none;transition:border-color .18s ease,box-shadow .18s ease}
+.cm-field textarea{resize:vertical;min-height:132px;line-height:1.55}
+.cm-field input:hover:not(:disabled),.cm-field textarea:hover:not(:disabled){border-color:rgba(var(--ink-rgb),.55)}
+.cm-field input:focus-visible,.cm-field textarea:focus-visible{border-color:var(--ink);box-shadow:0 0 0 3px rgba(var(--ink-rgb),.14)}
+.cm-field input:disabled,.cm-field textarea:disabled{opacity:.65;cursor:progress}
+.cm-field [aria-invalid="true"]{border-color:var(--cm-error)}
+.cm-field [aria-invalid="true"]:focus-visible{box-shadow:0 0 0 3px color-mix(in srgb,var(--cm-error) 16%,transparent)}
+.cm-error{margin:0;font-size:13.5px;line-height:1.4;color:var(--cm-error)}
+.cm-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.cm-submit{display:inline-flex;align-items:center;justify-content:center;gap:10px;align-self:flex-start;min-height:52px;padding:14px 28px;border:1px solid var(--ink);border-radius:999px;background:var(--ink);color:var(--on-ink);font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;transition:opacity .2s ease,transform .2s ease}
+.cm-submit:hover:not(:disabled){transform:translateY(-1px)}
+.cm-submit:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.cm-submit:disabled{opacity:.75;cursor:progress}
+.cm-spinner{width:16px;height:16px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:cm-spin .8s linear infinite}
+@keyframes cm-spin{to{transform:rotate(360deg)}}
+.cm-status:empty,[role="alert"]:empty{display:none}
+.cm-status__ok,.cm-status__err{margin:0;padding:14px 16px;border-radius:12px;font-size:14.5px;line-height:1.5;border:1px solid var(--line);background:rgba(var(--ink-rgb),.05);color:var(--ink)}
+.cm-status__ok strong,.cm-status__err strong{display:block}
+.cm-status__err{border-color:var(--cm-error);color:var(--cm-error);background:color-mix(in srgb,var(--cm-error) 7%,transparent)}
+
+/* Two short fields side by side on wide screens. */
+.cm-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.cm-hint{font-size:13px;line-height:1.45;color:var(--text-2)}
+.cm-hint a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+
+/* Avatar picker: preview + a styled label around the native file input (kept focusable for keyboards). */
+.cm-avatar-pick{display:flex;align-items:center;gap:16px}
+.cm-avatar-pick__actions{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}
+.cm-avatar-pick__actions .cm-hint{flex-basis:100%}
+.cm-file{position:relative;display:inline-flex;align-items:center;min-height:40px;padding:8px 16px;border:1px solid rgba(var(--ink-rgb),.28);border-radius:999px;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);cursor:pointer;transition:border-color .18s ease}
+.cm-file:hover{border-color:var(--ink)}
+.cm-file input{position:absolute;inset:0;width:100%;height:100%;min-height:0;padding:0;opacity:0;cursor:pointer}
+.cm-file:focus-within{outline:2px solid var(--ink);outline-offset:3px}
+.cm-link{padding:4px 2px;border:0;background:none;font:inherit;font-size:13.5px;color:var(--ink);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+.cm-link:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:4px}
+
+/* Moderation permission: unticked by default, required. */
+.cm-consent{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 12px;align-items:start}
+.cm-consent input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--ink);cursor:pointer}
+.cm-consent input:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.cm-consent input[aria-invalid="true"]{outline:2px solid var(--cm-error);outline-offset:2px}
+.cm-consent label{font-size:14.5px;line-height:1.5;color:var(--ink);cursor:pointer}
+.cm-consent__note,.cm-consent .cm-error{grid-column:2}
+
+/* Feed */
+.cm-feed{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:16px}
+.cm-card{display:flex;flex-direction:column;gap:16px;padding:24px 26px;background:var(--white);border:1px solid var(--line);border-radius:var(--cm-radius);box-shadow:0 1px 0 rgba(var(--shadow-rgb),.04);animation:cm-in .5s cubic-bezier(.22,1,.36,1) both}
+@keyframes cm-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.cm-card__head{display:flex;align-items:center;gap:14px}
+.cm-avatar{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;overflow:hidden;background:var(--ink);color:var(--on-ink);font-size:13px;font-weight:700;letter-spacing:.02em}
+/* The image fills the circle exactly (absolutely positioned, so a tall photo can't grow the grid row) and is cropped
+   from the centre with object-fit, never stretched. */
+.cm-avatar{position:relative}
+.cm-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.cm-avatar--lg{width:56px;height:56px;font-size:16px}
+.cm-name{margin:0;font-size:17px;line-height:1.2;letter-spacing:-.02em;font-weight:700;color:var(--ink);overflow-wrap:anywhere}
+.cm-role{margin:3px 0 0;font-size:13.5px;line-height:1.4;color:var(--text-2);overflow-wrap:anywhere}
+.cm-text{margin:0;font-size:16px;line-height:1.65;color:var(--text-3);white-space:pre-line;overflow-wrap:anywhere}
+.cm-card__foot{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:var(--text-2)}
+.cm-empty{margin:0;padding:34px 26px;text-align:center;border:1px dashed rgba(var(--ink-rgb),.3);border-radius:var(--cm-radius);color:var(--text-2);font-size:15px;line-height:1.6}
+.cm-card--skeleton{gap:12px;animation:none}
+.cm-card--skeleton span{display:block;height:14px;border-radius:6px;background:rgba(var(--ink-rgb),.1)}
+.cm-card--skeleton span:nth-child(1){width:40%}
+.cm-card--skeleton span:nth-child(3){width:70%}
+
+@media(min-width:901px){.cm-form{position:sticky;top:104px}}
+@media(max-width:900px){.cm-layout{grid-template-columns:minmax(0,1fr)}.cm-submit{align-self:stretch}}
+@media(max-width:620px){.cm-row{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:560px){.cm-form{padding:22px 20px}.cm-card{padding:20px}}
+@media(prefers-reduced-motion:reduce){
+  .cm-card{animation:cm-fade .2s ease both;animation-delay:0s!important}
+  .cm-submit,.cm-submit:hover:not(:disabled){transition:none;transform:none}
+  .cm-field input,.cm-field textarea,.cm-file{transition:none}
+}
+@keyframes cm-fade{from{opacity:0}to{opacity:1}}

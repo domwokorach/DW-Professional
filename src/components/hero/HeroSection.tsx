@@ -1,6 +1,10 @@
 'use client';
 
 import { EncryptedText } from '@/components/animations';
+import { BriefcaseBusinessIcon } from '@/components/ui/briefcase-business';
+import { DownloadIcon } from '@/components/ui/download';
+import { SendIcon } from '@/components/ui/send';
+import { IconButton } from '@/components/ui';
 import { scrollToSection } from '@/lib';
 import HeroPhotonBackground from './HeroPhotonBackground';
 import HeroPortrait from './HeroPortrait';
@@ -25,9 +29,9 @@ export default function HeroSection({ heroAvatar }: { heroAvatar?: AvatarAssets 
       </div>
       <HeroPortrait avatar={heroAvatar} />
       <div className="hero-actions">
-        <button className="primary" onClick={() => scrollToSection('Work')}>Explore work ↗</button>
-        <button onClick={() => scrollToSection('Contact')}>Let&apos;s talk</button>
-        <button onClick={() => scrollToSection('About')}>Résumé ↓</button>
+        <IconButton className="primary" icon={BriefcaseBusinessIcon} onClick={() => scrollToSection('Work')}>Explore work</IconButton>
+        <IconButton icon={SendIcon} onClick={() => scrollToSection('Contact')}>Let&apos;s talk</IconButton>
+        <IconButton icon={DownloadIcon} onClick={() => scrollToSection('About')}>Résumé</IconButton>
       </div>
       <button className="scroll-mark" onClick={() => scrollToSection('About')} aria-label="Scroll to about">⌄</button>
     </section>

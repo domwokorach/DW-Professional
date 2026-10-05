@@ -28,25 +28,25 @@ export type EnquiryEmailInput = {
 };
 
 // ---- Brand (from the portfolio's cream/navy palette) ---------------------------------------
-const INK = '#25233f';
-const INK_SOFT = '#383653';
-const CREAM = '#f1eedf';
-const PANEL = '#f8f5e9';
-const CARD = '#fffdf7';
-const LINE = '#ddd8c6';
-const MUTED = '#5f5c56'; // 6.4:1 on CARD
-const ON_INK_MUTED = '#d6d3e6'; // 10:1 on INK
-const FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
+export const INK = '#25233f';
+export const INK_SOFT = '#383653';
+export const CREAM = '#f1eedf';
+export const PANEL = '#f8f5e9';
+export const CARD = '#fffdf7';
+export const LINE = '#ddd8c6';
+export const MUTED = '#5f5c56'; // 6.4:1 on CARD
+export const ON_INK_MUTED = '#d6d3e6'; // 10:1 on INK
+export const FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
 
 // ---- Helpers -------------------------------------------------------------------------------
-const esc = (s: string) =>
+export const esc = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
 /** Long unbroken strings (URLs, addresses, file names) wrap instead of stretching the layout. */
-const WRAP = 'word-break:break-word;overflow-wrap:anywhere;';
+export const WRAP = 'word-break:break-word;overflow-wrap:anywhere;';
 
 /** Paragraphs on blank lines, single line breaks kept. <br> rather than white-space:pre-wrap, which Outlook ignores. */
-function paragraphs(text: string) {
+export function paragraphs(text: string) {
   return text
     .trim()
     .split(/\r?\n[ \t]*\r?\n+/)
@@ -69,19 +69,19 @@ function fileKind(filename: string) {
 }
 
 /** `mailto:` with the address percent-encoded around the @, so odd characters can't add header fields. */
-function mailto(email: string, subject: string) {
+export function mailto(email: string, subject: string) {
   const at = email.lastIndexOf('@');
   const addr = `${encodeURIComponent(email.slice(0, at))}@${encodeURIComponent(email.slice(at + 1))}`;
   return `mailto:${addr}?subject=${encodeURIComponent(subject)}`;
 }
 
 /** Date and time in UK time, e.g. "Sunday 4 October 2026, 13:45 (UK time)". */
-function when(d: Date) {
+export function when(d: Date) {
   const fmt = new Intl.DateTimeFormat('en-GB', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Europe/London' }).format(d);
   return `${fmt.replace(' at ', ', ')} (UK time)`;
 }
 
-function host(siteUrl: string) {
+export function host(siteUrl: string) {
   try {
     const h = new URL(siteUrl).hostname.replace(/^www\./, '');
     return h === 'localhost' ? 'dominicwokorach.me' : h;
@@ -91,7 +91,7 @@ function host(siteUrl: string) {
 }
 
 /** Table-based "bulletproof" button: a VML round-rect for Outlook desktop, a padded link everywhere else. */
-function button(href: string, label: string, opts: { width: number; bg: string; color: string; border: string }) {
+export function button(href: string, label: string, opts: { width: number; bg: string; color: string; border: string }) {
   const h = esc(href);
   const l = esc(label);
   return `<table role="presentation" class="btn-table" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;"><tr><td align="center">
@@ -100,11 +100,11 @@ function button(href: string, label: string, opts: { width: number; bg: string; 
 </td></tr></table>`;
 }
 
-const sectionLabel = (text: string) =>
+export const sectionLabel = (text: string) =>
   `<p style="margin:0 0 12px;font-family:${FONT};font-size:12px;line-height:16px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:${MUTED};">${text}</p>`;
 
 /** One key/value row: two columns on wide screens, stacked on narrow ones (see .stack in the style block). */
-function detail(label: string, valueHtml: string, last = false) {
+export function detail(label: string, valueHtml: string, last = false) {
   const border = last ? '' : `border-bottom:1px solid ${LINE};`;
   return `<tr>
 <td class="stack k" width="140" valign="top" style="width:140px;padding:12px 16px 12px 0;${border}font-family:${FONT};font-size:14px;line-height:22px;font-weight:700;color:${MUTED};">${label}</td>
@@ -112,7 +112,7 @@ function detail(label: string, valueHtml: string, last = false) {
 </tr>`;
 }
 
-const linkStyle = `color:${INK};text-decoration:underline;`;
+export const linkStyle = `color:${INK};text-decoration:underline;`;
 
 // ---- Template ------------------------------------------------------------------------------
 export function renderEnquiryEmail({ fields: f, attachment, reference, submittedAt, siteUrl }: EnquiryEmailInput) {

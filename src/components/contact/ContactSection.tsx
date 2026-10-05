@@ -11,7 +11,7 @@ export default function ContactSection() {
   return (
     <section id="contact" className="section contact-section">
       <ContactGlobe />
-      <div className="section-tag"><span>07</span><i/>CONTACT</div>
+      <div className="section-tag"><span>08</span><i/>CONTACT</div>
       <div className="contact-layout">
         <div className="contact-intro">
           <p className="contact-kicker">LET&apos;S BUILD SOMETHING</p>

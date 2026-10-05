@@ -30,6 +30,9 @@ button,a{font:inherit;color:inherit}
    overshoot its box while animating (overflow visible) without moving the layout. */
 .cta-icon-link{display:inline-flex;align-items:center;gap:8px}
 .cta-icon,.contact-submit__arrow,.contact-upload__icon svg{flex:none;overflow:visible}
+/* Lucide Animated icons are a div wrapping an svg (see components/ui/IconButton). */
+.cta-icon--lucide{display:inline-flex;align-items:center;justify-content:center;line-height:0}
+.cta-icon--lucide svg{overflow:visible}
 button{cursor:pointer}
 .kicker,.mini-title{font-family:var(--font-mono);font-size:11px;letter-spacing:.24em}
 .hero h1,.section-heading h2,.about h2{font-size:clamp(58px,7.4vw,118px);line-height:.82;letter-spacing:-.065em;margin:16px 0 22px}

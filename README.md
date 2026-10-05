@@ -44,6 +44,8 @@ credentials are included in this repository.
 | `npm run db:migrate` | Create/apply migrations in development (`prisma migrate dev`) |
 | `npm run db:deploy` | Apply committed migrations in production (`prisma migrate deploy`) |
 | `npm run db:studio` | Browse the database locally (never expose in production) |
+| `npm run db:seed` | Create the first admin from `ADMIN_EMAIL` / `ADMIN_PASSWORD` (same as `npx prisma db seed`; see [Admin sign-in](#admin-sign-in-adminlogin)) |
+| `npm run admin -- <command>` | Create and manage admin accounts for comment moderation at `/admin/comments` (see [`docs/COMMENTS.md`](docs/COMMENTS.md)) |
 
 ## Environment variables
 
@@ -58,6 +60,7 @@ All are **server-side only** — never prefix them with `NEXT_PUBLIC_`. See `.en
 | `DATABASE_URL` | Saving enquiries (optional) | PostgreSQL connection string |
 | `PORTFOLIO_DATABASE_URL` | Saving enquiries (optional) | Takes precedence over `DATABASE_URL`; use it when `DATABASE_URL` belongs to another app |
 | `DATABASE_SCHEMA` | Saving enquiries (optional) | Postgres schema for this app's tables, default `portfolio` |
+| `COMMENTS_NOTIFY_EMAIL` | Comments (optional) | Where new-comment moderation emails go, default `dominic.wokorach-o@outlook.com`. Comments need the migrations applied (`npm run db:deploy`): [`docs/COMMENTS.md`](docs/COMMENTS.md) |
 | `AWS_REGION` | S3 attachments (optional) | e.g. `eu-west-2` |
 | `AWS_S3_BUCKET_NAME` | S3 attachments (optional) | Private bucket. Without it, files ≤ 4 MB are attached to the email instead |
 | `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | S3 attachments, local only | In production prefer an IAM role / OIDC |
@@ -79,6 +82,42 @@ npm run db:deploy
 Storage is best-effort: if the database is unavailable, enquiries are still emailed and the
 error is only logged. Each submission carries an id, so retries never create duplicate rows or
 duplicate emails.
+
+## Admin sign-in (`/admin/login`)
+
+There is **no default admin and no built-in password.** The sign-in page only works once you have created an
+administrator, and you choose its email and password yourself.
+
+**Local setup**
+
+1. Add your own credentials to `.env` (it is not committed; never prefix these with `NEXT_PUBLIC_`):
+
+   ```bash
+   ADMIN_EMAIL="you@yourdomain.com"
+   ADMIN_PASSWORD="a-strong-password-of-12-or-more-characters"
+   ```
+
+2. Make sure the database has the admin tables: `npm run db:migrate` (development) or `npm run db:deploy`.
+3. Create the administrator: `npx prisma db seed` (or `npm run db:seed`).
+4. Start the site (`npm run dev`) and open <http://localhost:3000/admin/login>.
+5. Sign in with the email and password from step 1. You land on `/admin/comments`.
+
+What the seed does: reads the two variables, refuses placeholder or weak values (the password needs 12+
+characters), hashes the password with **Argon2id**, and creates the admin only if that email doesn't exist yet. The
+plaintext password is never stored, logged or sent anywhere, so running the seed again never creates a duplicate:
+it just says the admin already exists. Missing variables stop it with a clear message, and nothing is created
+silently.
+
+**Changing a password.** Either run the seed again with `ADMIN_RESET_PASSWORD=true` (it replaces that admin's
+password and signs them out everywhere), or use `npm run admin -- reset-password <email>`, which asks for the new
+one at a hidden prompt. `npm run admin -- list` shows who exists; the same command can deactivate an admin or sign
+them out.
+
+**Production.** Don't keep a plaintext password in the deployment environment. Apply migrations (`npm run
+db:deploy`), run the seed **once** from a trusted machine with the production database URL and `ADMIN_*` set only
+for that command, then delete `ADMIN_PASSWORD` from every `.env` and hosting setting. From then on the only copy of
+the password is its hash in the database, and you manage it with `npm run admin -- ...`. Sign-in is rate limited,
+every attempt is audit-logged, and sessions are server-side with an HttpOnly cookie.
 
 ## Contact form
 
@@ -151,4 +190,6 @@ reset). Each file notes its source and changes at the top.
 | `components/ui/rubber-segment.tsx` | Vue Bits RubberSegment, ported to React |
 | `components/animate-ui/` (`icons/`, `primitives/`) | Animate UI icons (`npx shadcn@latest add @animate-ui/icons-download icons-link icons-send-horizontal icons-moon icons-sun`) used by the CTA links; driven by `components/ui/IconLink.tsx`, `layout/ThemeToggle.tsx` and `composables/useIconTrigger.ts`. The shadcn CLI mangles `viewBox` attributes here, so after re-running it, compare the files with the registry |
 | `components/ui/hyper-text.tsx` | Magic UI Hyper Text (`npx shadcn@latest add @magicui/hyper-text`), the ID card's flip hint (`developer-id/FlipCaption.tsx`). Don't trust the CLI's copy: it strips the space in `letter === " "`, so compare with the registry after re-running it |
+| `components/ui/{briefcase-business,send,download}.tsx` | Lucide Animated icons (`npx shadcn@latest add https://lucide-animated.com/r/<name>.json`) on the hero buttons; driven by `components/ui/IconButton.tsx` and `composables/useIconHandle.ts`. The shadcn CLI mangles `viewBox` in these too: compare with the registry after re-running it |
+| `components/ui/confetti.tsx` | Magic UI Confetti (`npx shadcn@latest add @magicui/confetti`), on the "Always learning." heading via `animations/ConfettiOnInteract.tsx`. `ConfettiButton` is removed: the CLI would also add a shadcn `Button` and `radix-ui` for it |
 | `components/loading-ui/fade-arc.tsx` | Loading UI Fade Arc (`npx shadcn@latest add @loading-ui/fade-arc`), the Portfolio Access loader |

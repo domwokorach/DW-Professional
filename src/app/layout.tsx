@@ -14,6 +14,7 @@ import '@/styles/projects.css';
 import '@/styles/learning.css';
 import '@/styles/experience.css';
 import '@/styles/achievements.css';
+import '@/styles/comments.css';
 import '@/styles/contact.css';
 import '@/styles/legal.css';
 import '@/styles/privacy.css';
