@@ -19,10 +19,10 @@ export default function HeroSection({ heroAvatar }: { heroAvatar?: AvatarAssets 
         <div className="kicker"><EncryptedText text="DOMINIC WOKORACH OLANYA" duration={1000} /></div>
         <h1 id="hero-title">
           <EncryptedText
-            text="Frontend Software Engineer."
+            text="Software Engineer & Frontend Developer."
             delay={250}
             duration={1150}
-            render={(v) => <>{v.slice(0, 8)}<br/>{v.slice(9, 17)}<br/>{v.slice(18, 26)}<span className="hero-dot">{v.slice(26)}</span></>}
+            render={(v) => <>{v.slice(0, 8)}<br/>{v.slice(9, 19)}<br/>{v.slice(20, 28)}<br/>{v.slice(29, 38)}<span className="hero-dot">{v.slice(38)}</span></>}
           />
         </h1>
         <p>Creative developer · AI &amp; web technology</p>

@@ -1,6 +1,6 @@
 export const site = {
-  title: 'DOMINIC WOKORACH OLANYA — Frontend Software Engineer',
-  description: 'Portfolio of DOMINIC WOKORACH OLANYA, a London-based frontend software engineer: accessible, high-performance web applications with React, Next.js and TypeScript.',
+  title: 'DOMINIC WOKORACH OLANYA — Software Engineer & Frontend Developer.',
+  description: 'Portfolio of DOMINIC WOKORACH OLANYA, a London-based Software Engineer & Frontend Developer: accessible, high-performance web applications with React, Next.js and TypeScript.',
   /** Public origin, used for canonical URLs and metadata. Set NEXT_PUBLIC_SITE_URL in production. */
   url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
 };

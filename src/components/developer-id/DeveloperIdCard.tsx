@@ -145,7 +145,7 @@ export default function DeveloperIdCard({ flipOnHover = false }: Props) {
             </div>
             <div className="dev-id__layer" style={{ '--z': '12px' } as CSSProperties}>
               <h3 className="dev-id__name">DOMINIC WOKORACH OLANYA</h3>
-              <p className="dev-id__role">Frontend Software Engineer</p>
+              <p className="dev-id__role">Software Engineer &amp; Frontend Developer.</p>
             </div>
             <dl className="dev-id__details">
               <div><dt>ID NO.</dt><dd>DO-0001</dd></div>
@@ -163,7 +163,7 @@ export default function DeveloperIdCard({ flipOnHover = false }: Props) {
               <b>DO</b>
             </header>
             <h3 className="dev-id__back-name">DOMINIC WOKORACH OLANYA</h3>
-            <p className="dev-id__back-role">FRONTEND SOFTWARE ENGINEER</p>
+            <p className="dev-id__back-role">SOFTWARE ENGINEER &amp; FRONTEND DEVELOPER.</p>
             <p className="dev-id__bio">
               I build responsive web applications, interactive digital experiences, and AI-powered platforms.
             </p>

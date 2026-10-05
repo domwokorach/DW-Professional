@@ -12,7 +12,7 @@ export default function AppFooter() {
       <div className="site-footer__inner">
         <div className="site-footer__brand">
           <Link href={HOME} className="site-footer__name">DOMINIC WOKORACH OLANYA</Link>
-          <p className="site-footer__role">Frontend Software Engineer · London</p>
+          <p className="site-footer__role">Software Engineer &amp; Frontend Developer. · London</p>
         </div>
 
         <nav className="site-footer__group" aria-labelledby="footer-legal">
