@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { AnimatePresence, motion, useReducedMotion, type Variants } from 'motion/react';
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CV_DOWNLOAD_URL, CV_FILENAME, CV_URL, HOME } from '@/config';
-import { QuarterRing } from '@/components/ui';
+import { FadeArc } from '@/components/loading-ui/fade-arc';
 
 type PortfolioAccessState = 'loading' | 'success' | 'error';
 
@@ -80,12 +80,14 @@ export default function PortfolioAccessView() {
         <AnimatePresence mode="wait" initial={false}>
           {state === 'loading' && (
             <motion.div key="loading" className="pa-panel pa-panel--enter" variants={panel} initial="hidden" animate="show" exit="exit">
-              <motion.div className="pa-visual" variants={item}>
-                <QuarterRing className="pa-ring" style={{ '--duration': '0.8s' } as CSSProperties} />
+              <motion.div className="pa-visual pa-visual--loading" variants={item}>
+                {/* Decorative: the status text below is what screen readers announce. */}
+                <FadeArc className="pa-arc" aria-hidden="true" />
               </motion.div>
-              <motion.div variants={item}>
+              <motion.div variants={item} role="status" aria-live="polite">
                 <h1 id="pa-title" className="pa-title">Preparing your CV…</h1>
                 <p className="pa-text">Securely getting Dominic Wokorach Olanya&rsquo;s CV ready for you.</p>
+                <span className="sr-only">CV loading. Please wait.</span>
               </motion.div>
             </motion.div>
           )}

@@ -1,7 +1,4 @@
 /* Portfolio Access: the page the Developer ID QR code opens */
-/* QuarterRing (src/components/ui/QuarterRing.tsx): the supplied Tailwind utilities, as plain CSS. */
-.quarter-ring{display:inline-block;border-radius:9999px;border-style:solid;border-width:0;border-top-width:3px;border-right-width:3px;border-top-color:currentColor;border-right-color:transparent}
-
 .pa{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:max(24px,env(safe-area-inset-top)) 20px max(24px,env(safe-area-inset-bottom))}
 /* A focused, full-screen page: no site footer under it. */
 body:has(.pa) .site-footer,body:has(.pa) .cookie-consent{display:none}
@@ -11,8 +8,9 @@ body:has(.pa) .site-footer,body:has(.pa) .cookie-consent{display:none}
 .pa-panel--enter{animation:pa-enter .35s ease-out both}
 @keyframes pa-enter{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
 .pa-visual{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);color:var(--ink)}
-.pa-ring{width:40px;height:40px;color:var(--ink)}
-.pa-visual svg{width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.pa-visual--loading{border-color:transparent}
+.pa-arc{width:60px;height:60px;color:var(--ink)}
+.pa-visual--success svg,.pa-visual--error svg{width:34px;height:34px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 .pa-visual--success{background:var(--ink);color:var(--on-ink);border-color:var(--ink)}
 .pa-visual--error{border:2px solid var(--ink)}
 .pa-visual--error svg{stroke-width:2.8}

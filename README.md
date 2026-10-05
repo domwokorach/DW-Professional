@@ -149,3 +149,4 @@ reset). Each file notes its source and changes at the top.
 | `components/ui/timeline.tsx` | Aceternity UI Timeline |
 | `components/ui/animated-testimonials.tsx` | Aceternity UI Animated Testimonials (React original of Inspira UI's) |
 | `components/ui/rubber-segment.tsx` | Vue Bits RubberSegment, ported to React |
+| `components/loading-ui/fade-arc.tsx` | Loading UI Fade Arc (`npx shadcn@latest add @loading-ui/fade-arc`), the Portfolio Access loader |
