@@ -1,19 +1,37 @@
 /* base */
-:root{--font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono","Courier New",monospace;--ink:#25233f;--ink2:#383653;--cream:#f1eedf;--cream2:#f8f5e9;--sand:#e6e0ce;--muted:#817e77;--line:rgba(37,35,63,.16);--white:#fffdf7}
+:root{--font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono","Courier New",monospace;--ink:#25233f;--ink2:#383653;--cream:#f1eedf;--cream2:#f8f5e9;--sand:#e6e0ce;--muted:#817e77;--line:rgba(var(--ink-rgb),.16);--white:#fffdf7;
+  /* Theme tokens. --ink is both the text colour and the colour of emphasis surfaces (primary buttons,
+     the active nav item), so --on-ink is the text that sits on those surfaces. Dark mode (below)
+     redefines all of these; most of the CSS just uses the tokens. */
+  --on-ink:#fff;--ink-rgb:37,35,63;--shadow-rgb:37,35,63;--surface-rgb:255,253,247;--glass:rgba(255,255,255,.3);--glass-strong:rgba(255,255,255,.5);
+  --band:#efe7b6;--band2:#f4efdd;--card-hover:#fffefa;--badge:#f4f1e7;--lanyard:#25233f;
+  --text-2:#5f5c56;--text-3:#4f4c47;--text-4:#6e6b69;--legal-body:#4f4c58;--live:#2f7a4c;
+  --orb-1:#fff4a8;--orb-2:#d8d0ff;--orb-opacity:.22;
+  --footer-bg:#111827;--footer-fg:#F8F5EE;
+  color-scheme:light}
+/* Dark theme: applied by data-theme="dark" on <html> (set before first paint by the inline script in
+   layout.tsx, from the visitor's saved choice or their system setting). */
+:root[data-theme="dark"]{--ink:#ece8d9;--ink2:#d2cee3;--cream:#14132a;--cream2:#1a1933;--sand:#272547;--muted:#a09db3;--line:rgba(236,232,217,.16);--white:#1d1c38;
+  --on-ink:#17162b;--ink-rgb:236,232,217;--shadow-rgb:0,0,0;--surface-rgb:29,28,56;--glass:rgba(255,255,255,.05);--glass-strong:rgba(255,255,255,.07);
+  --band:#23213f;--band2:#181731;--card-hover:#23224a;--badge:#2a2850;--lanyard:#3a3860;
+  --text-2:#b3b0c4;--text-3:#c8c5d6;--text-4:#b8b5c8;--legal-body:#c4c1d2;--live:#5fd08f;
+  --orb-1:#6a5acd;--orb-2:#3b6bd6;--orb-opacity:.1;
+  --footer-bg:#0d0c1e;--footer-fg:#F3F1EA;
+  color-scheme:dark}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--cream);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
 .orbs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
-.orb{position:absolute;filter:blur(90px);opacity:.22;pointer-events:none}
-.orb-one{width:34vw;height:34vw;background:#fff4a8;top:-8vw;right:-8vw}
-.orb-two{width:28vw;height:28vw;background:#d8d0ff;bottom:10vh;left:-12vw}
+.orb{position:absolute;filter:blur(90px);opacity:var(--orb-opacity);pointer-events:none}
+.orb-one{width:34vw;height:34vw;background:var(--orb-1);top:-8vw;right:-8vw}
+.orb-two{width:28vw;height:28vw;background:var(--orb-2);bottom:10vh;left:-12vw}
 button,a{font:inherit;color:inherit}
 button{cursor:pointer}
 .kicker,.mini-title{font-family:var(--font-mono);font-size:11px;letter-spacing:.24em}
 .hero h1,.section-heading h2,.about h2{font-size:clamp(58px,7.4vw,118px);line-height:.82;letter-spacing:-.065em;margin:16px 0 22px}
-.hero-actions button,.button-row button,.button-row a{border:1px solid var(--line);background:rgba(255,255,255,.3);padding:13px 18px;border-radius:999px;text-decoration:none}
-.primary{background:var(--ink)!important;color:white!important;border-color:var(--ink)!important}
-.section{padding:110px 7vw;position:relative;border-top:1px solid rgba(37,35,63,.06)}
+.hero-actions button,.button-row button,.button-row a{border:1px solid var(--line);background:var(--glass);padding:13px 18px;border-radius:999px;text-decoration:none}
+.primary{background:var(--ink)!important;color:var(--on-ink)!important;border-color:var(--ink)!important}
+.section{padding:110px 7vw;position:relative;border-top:1px solid rgba(var(--ink-rgb),.06)}
 .section-tag{display:flex;align-items:center;gap:14px;font-family:var(--font-mono);font-size:11px;letter-spacing:.22em;margin-bottom:54px}
 .section-tag i{width:38px;height:1px;background:var(--ink);opacity:.35}
 .section-tag span{opacity:.65}

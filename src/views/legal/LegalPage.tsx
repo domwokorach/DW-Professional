@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { HOME, legal } from '@/config';
+import { ThemeToggle } from '@/components/layout';
 
 /** Shared shell for the legal pages: simple header, readable article column, last-updated line. */
 export default function LegalPage({ eyebrow, title, children }: { eyebrow: string; title: ReactNode; children: ReactNode }) {
@@ -8,7 +9,10 @@ export default function LegalPage({ eyebrow, title, children }: { eyebrow: strin
     <>
       <header className="legal-header">
         <Link href={HOME} className="legal-header__brand"><span>DO</span><b>Dominic Olanya</b></Link>
-        <Link href={HOME} className="legal-header__back">← Back to portfolio</Link>
+        <div className="legal-header__end">
+          <Link href={HOME} className="legal-header__back">← Back to portfolio</Link>
+          <ThemeToggle />
+        </div>
       </header>
       <main className="legal-page">
         <article className="legal-article">

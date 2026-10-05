@@ -4,6 +4,8 @@ export type CoreTech = {
   icon: string;
   /** Icon colour; omitted for multi-colour logos, which carry their own colours. */
   color?: string;
+  /** Icon colour in dark mode (a lighter variant); falls back to `color`. */
+  colorDark?: string;
 };
 
 /** A labelled group of technologies in the Skills section. */

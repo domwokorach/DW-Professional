@@ -1,16 +1,16 @@
 /* hero */
 .hero{min-height:100vh;min-height:100svh;padding:110px 7vw 70px;position:relative;display:grid;grid-template-columns:1.15fr .75fr .55fr;align-items:end;overflow:hidden}
-.hero-watermark{position:absolute;font-size:22vw;line-height:1;letter-spacing:-.08em;font-weight:700;color:rgba(37,35,63,.045);left:2vw;top:22vh;white-space:nowrap}
+.hero-watermark{position:absolute;font-size:22vw;line-height:1;letter-spacing:-.08em;font-weight:700;color:rgba(var(--ink-rgb),.045);left:2vw;top:22vh;white-space:nowrap}
 .hero-copy{position:relative;z-index:2;align-self:end}
 .hero h1 .hero-dot{font-size:.5em}
 .hero-copy p{color:var(--muted);font-size:14px}
 .hero-portrait-wrap{position:relative;height:clamp(560px,78vh,850px);height:clamp(560px,78svh,850px);align-self:end;mix-blend-mode:multiply;filter:saturate(.8)}
 .hero-person-frame{position:absolute;left:0;right:0;bottom:0;top:clamp(30px,6vh,70px)}
 .hero-actions{align-self:center;display:flex;flex-direction:column;gap:12px;align-items:flex-end;position:relative;z-index:2}
-.scroll-mark{position:absolute;bottom:25px;left:28px;border:0;background:var(--ink);color:white;border-radius:50%;width:36px;height:36px}
+.scroll-mark{position:absolute;bottom:25px;left:28px;border:0;background:var(--ink);color:var(--on-ink);border-radius:50%;width:36px;height:36px}
 @media(max-width:1050px){.hero{grid-template-columns:1fr 1fr;padding-left:5vw;padding-right:5vw}.hero-actions{position:absolute;right:5vw;bottom:80px}}
 @media(max-width:720px){.hero{min-height:880px;display:block;padding:120px 20px 80px}.hero-watermark{font-size:34vw;top:31vh}.hero-copy{position:relative;z-index:4}.hero h1{font-size:64px}.hero-portrait-wrap{position:absolute;right:4vw;bottom:82px;width:54vw;height:55vh;height:55svh;min-height:420px;opacity:.88}.hero-person-frame{top:clamp(24px,4vh,40px)}.hero-actions{left:20px;right:auto;bottom:120px;align-items:flex-start;z-index:5}.hero-actions button:nth-child(2),.hero-actions button:nth-child(3){display:none}}
-.sound-toggle{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:3;border:0;border-radius:999px;background:var(--ink);color:white;padding:9px 14px;font-size:11px;cursor:pointer;white-space:nowrap}
+.sound-toggle{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:3;border:0;border-radius:999px;background:var(--ink);color:var(--on-ink);padding:9px 14px;font-size:11px;cursor:pointer;white-space:nowrap}
 /* Photon Beam background (decorative, behind all hero content).
    The beam renders light-on-black; invert + multiply turns it into ink on the cream page,
    so there is no visible canvas rectangle. Blend sits on the clip: a z-indexed parent would isolate it. */
@@ -37,3 +37,11 @@
 .hero-avatar-stage canvas{display:block;width:100%;height:100%}
 .hero-portrait-wrap.has-avatar .hero-avatar-stage{opacity:1}
 .hero-portrait-wrap.has-avatar .hero-poses{opacity:0;visibility:hidden}
+
+/* Dark theme. The beam is light-on-black: instead of inverting and multiplying (ink on cream), it is
+   screened onto the dark page. The portraits are renders on a pure white background, so in dark they
+   sit on a rounded cream panel (multiplied onto it, which keeps the crossfade between poses intact). */
+:root[data-theme="dark"] .hero-photon-clip{mix-blend-mode:screen}
+:root[data-theme="dark"] .hero-photon-background{filter:none}
+:root[data-theme="dark"] .hero-portrait-wrap{mix-blend-mode:normal;filter:none;background:#ece8d9;border-radius:28px;overflow:hidden}
+:root[data-theme="dark"] .hero-poses{mix-blend-mode:multiply;filter:brightness(1.012)} /* lifts the render's 254 background to pure white, so no seam shows on the panel */

@@ -2,7 +2,7 @@
 /* Experience timeline (Aceternity Timeline, restyled) */
 /* Timeline: date | rail | content. The line is centred in the rail column, positioned from the
    same variables the grid uses, so it stays aligned however the content wraps or expands. */
-.tl{--tl-date:190px;--tl-rail:48px;--tl-col-gap:24px;--tl-gap:clamp(64px,7vw,104px);--tl-date-size:clamp(14px,1.25vw,17px);--tl-line-color:rgba(37,35,63,.2);--tl-accent:var(--ink);position:relative;max-width:1200px;margin-inline:auto}
+.tl{--tl-date:190px;--tl-rail:48px;--tl-col-gap:24px;--tl-gap:clamp(64px,7vw,104px);--tl-date-size:clamp(14px,1.25vw,17px);--tl-line-color:rgba(var(--ink-rgb),.2);--tl-accent:var(--ink);position:relative;max-width:1200px;margin-inline:auto}
 .tl-list{list-style:none;margin:0;padding:0 0 24px}
 .tl-item{display:grid;grid-template-columns:var(--tl-date) var(--tl-rail) minmax(0,1fr);column-gap:var(--tl-col-gap);padding-top:var(--tl-gap)}
 .tl-item:first-child{padding-top:8px}
@@ -13,15 +13,15 @@
 .tl-rail{position:relative;align-self:start;height:1.5em;font-size:var(--tl-date-size)}
 .tl-dot{position:absolute;left:50%;top:50%;width:10px;height:10px;border-radius:999px;background:var(--cream);border:2px solid var(--tl-line-color);transform:translate(-50%,-50%);transition:background-color .4s ease,border-color .4s ease}
 .tl-list:not(.tl-reveal) .tl-dot,.tl-item.is-visible .tl-dot{background:var(--tl-accent);border-color:var(--tl-accent)}
-.tl-item.is-current .tl-dot{width:12px;height:12px;background:var(--tl-accent);border-color:var(--tl-accent);box-shadow:0 0 0 4px rgba(37,35,63,.1)}
+.tl-item.is-current .tl-dot{width:12px;height:12px;background:var(--tl-accent);border-color:var(--tl-accent);box-shadow:0 0 0 4px rgba(var(--shadow-rgb),.1)}
 .tl-body{min-width:0}
 .tl-line{position:absolute;top:0;left:calc(var(--tl-date) + var(--tl-col-gap) + var(--tl-rail) / 2);width:2px;transform:translateX(-50%);overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 4%,#000 96%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0%,#000 4%,#000 96%,transparent 100%)}
 .tl-line:before{content:"";position:absolute;top:0;bottom:0;left:50%;width:1px;transform:translateX(-50%);background:var(--tl-line-color)}
-.tl-line__progress{position:absolute;left:0;right:0;top:0;border-radius:999px;background:linear-gradient(to top,var(--tl-accent) 0%,rgba(37,35,63,.55) 12%,transparent 100%)}
+.tl-line__progress{position:absolute;left:0;right:0;top:0;border-radius:999px;background:linear-gradient(to top,var(--tl-accent) 0%,rgba(var(--ink-rgb),.55) 12%,transparent 100%)}
 .tl-reveal .tl-item .tl-body{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s cubic-bezier(.22,1,.36,1);transition-delay:inherit}
 .tl-reveal .tl-item.is-visible .tl-body{opacity:1;transform:none}
 /* Darker than --muted so small secondary text clears WCAG AA (≈6:1 on --cream). */
-.experience-section{--xp-muted:#5f5c56;--xp-body:#4f4c47;--xp-live:#2f7a4c;--xp-pad:clamp(20px,2.2vw,28px)}
+.experience-section{--xp-muted:var(--text-2);--xp-body:var(--text-3);--xp-live:var(--live);--xp-pad:clamp(20px,2.2vw,28px)}
 .xp-date{margin:0;font-family:var(--font-mono);font-size:clamp(14px,1.25vw,17px);letter-spacing:.06em;color:var(--xp-muted);line-height:1.5}
 .xp-date time,.xp-date>span{white-space:nowrap}
 .xp-present{color:var(--ink);font-weight:700}
@@ -32,12 +32,12 @@
 /* Card: invisible at rest, a quiet border/background lift on hover. Pulled up by its padding on
    desktop so the role title stays level with the sticky date and dot. */
 .xp-entry{max-width:820px;margin-top:calc(-1 * var(--xp-pad));padding:var(--xp-pad);border:1px solid transparent;border-radius:18px;transition:background-color .3s ease,border-color .3s ease,box-shadow .3s ease,transform .3s cubic-bezier(.22,1,.36,1)}
-@media(hover:hover){.xp-entry:hover{background:var(--cream2);border-color:var(--line);box-shadow:0 10px 30px -18px rgba(37,35,63,.28);transform:translateY(-2px)}}
+@media(hover:hover){.xp-entry:hover{background:var(--cream2);border-color:var(--line);box-shadow:0 10px 30px -18px rgba(var(--shadow-rgb),.28);transform:translateY(-2px)}}
 .tl-item.is-current .xp-entry{border-color:var(--line)}
 .xp-entry h3{font-size:clamp(24px,2.4vw,34px);line-height:1.12;letter-spacing:-.035em;font-weight:700;margin:0 0 12px;text-wrap:balance}
 .xp-meta{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:0}
 .xp-org{font-size:15px;font-weight:600;color:var(--ink)}
-.xp-sep{font-size:14px;color:rgba(37,35,63,.3)}
+.xp-sep{font-size:14px;color:rgba(var(--ink-rgb),.3)}
 .xp-location{font-size:14px;color:var(--xp-muted)}
 .xp-bullets{list-style:none;padding:0;margin:20px 0 0;max-width:68ch}
 .xp-bullets li{position:relative;padding-left:20px;color:var(--xp-body);font-size:14.5px;line-height:1.75;margin-bottom:7px}

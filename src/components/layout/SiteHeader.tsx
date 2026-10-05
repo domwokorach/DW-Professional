@@ -5,6 +5,7 @@ import { media, navItems, type NavItem } from '@/config';
 import { useActiveSection, useMediaQuery } from '@/composables';
 import { scrollToSection, scrollToTop } from '@/lib';
 import { RubberSegment } from '@/components/ui';
+import ThemeToggle from './ThemeToggle';
 
 const NAV_ITEMS = navItems.map((item) => ({ value: item, label: item }));
 
@@ -81,39 +82,43 @@ export default function SiteHeader() {
         <span>DO</span><b>Dominic Olanya</b>
       </button>
 
-      <nav className="nav-pill" aria-label="Primary navigation">
-        <RubberSegment items={NAV_ITEMS} value={target ?? active} onSelect={selectDesktop} />
-      </nav>
+      <div className="site-header__end">
+        <nav className="nav-pill" aria-label="Primary navigation">
+          <RubberSegment items={NAV_ITEMS} value={target ?? active} onSelect={selectDesktop} />
+        </nav>
 
-      <div className="mnav">
-        <button
-          ref={toggleRef}
-          type="button"
-          className="mnav-toggle"
-          aria-expanded={open}
-          aria-controls={panelId}
-          aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
-          onClick={() => setOpen((o) => !o)}
-        >
-          <span className="mnav-icon" aria-hidden="true"><i /><i /><i /></span>
-        </button>
-        <div ref={panelRef} id={panelId} className={`mnav-panel${open ? ' is-open' : ''}`} inert={!open}>
-          <nav aria-label="Primary navigation">
-            <ul>
-              {navItems.map(item => (
-                <li key={item}>
-                  <button
-                    type="button"
-                    className={active === item ? 'active' : ''}
-                    aria-current={active === item ? 'true' : undefined}
-                    onClick={() => go(item)}
-                  >
-                    {item}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
+        <ThemeToggle />
+
+        <div className="mnav">
+          <button
+            ref={toggleRef}
+            type="button"
+            className="mnav-toggle"
+            aria-expanded={open}
+            aria-controls={panelId}
+            aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
+            onClick={() => setOpen((o) => !o)}
+          >
+            <span className="mnav-icon" aria-hidden="true"><i /><i /><i /></span>
+          </button>
+          <div ref={panelRef} id={panelId} className={`mnav-panel${open ? ' is-open' : ''}`} inert={!open}>
+            <nav aria-label="Primary navigation">
+              <ul>
+                {navItems.map(item => (
+                  <li key={item}>
+                    <button
+                      type="button"
+                      className={active === item ? 'active' : ''}
+                      aria-current={active === item ? 'true' : undefined}
+                      onClick={() => go(item)}
+                    >
+                      {item}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
         </div>
       </div>
     </header>

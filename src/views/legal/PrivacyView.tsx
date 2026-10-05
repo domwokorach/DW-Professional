@@ -12,7 +12,7 @@ export default function PrivacyView() {
       <h2>What this site does not do</h2>
       <ul>
         <li>It does not use analytics, advertising or tracking tools.</li>
-        <li>It does not set cookies. See the <Link href="/cookies">Cookie</Link> page for the one item it stores in your browser.</li>
+        <li>It does not set cookies. See the <Link href="/cookies">Cookie</Link> page for the items it stores in your browser (your privacy choice and, if you use the theme button, your light or dark preference).</li>
         <li>It does not keep a record of visitors. Only enquiries you choose to send are saved (see below).</li>
       </ul>
 

@@ -2,12 +2,12 @@
 .site-header{position:fixed;z-index:50;top:20px;left:28px;right:28px;display:flex;align-items:center;justify-content:space-between;pointer-events:none}
 .site-header>*{pointer-events:auto}
 .brand{border:0;background:transparent;display:flex;align-items:center;gap:10px}
-.brand span{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:white;font-size:11px}
+.brand span{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:var(--on-ink);font-size:11px}
 .brand b{font-size:13px;font-weight:500}
 .nav-pill{display:flex}
 /* RubberSegment (desktop nav): the pill is the track; the thumb is ink with white labels clipped
    to it. Items keep the old nav sizes (12px, 10px 14px padding, 5px inset). */
-.rs{--rs-inset:5px;--rs-thumb-radius:999px;position:relative;display:inline-grid;grid-auto-flow:column;grid-auto-columns:auto;padding:var(--rs-inset);border-radius:999px;background:rgba(255,253,247,.84);box-shadow:0 10px 30px rgba(41,38,54,.08);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);-webkit-tap-highlight-color:transparent}
+.rs{--rs-inset:5px;--rs-thumb-radius:999px;position:relative;display:inline-grid;grid-auto-flow:column;grid-auto-columns:auto;padding:var(--rs-inset);border-radius:999px;background:rgba(var(--surface-rgb),.84);box-shadow:0 10px 30px rgba(var(--shadow-rgb),.08);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);-webkit-tap-highlight-color:transparent}
 .rs-item{display:inline-flex;align-items:center;justify-content:center;margin:0;padding:10px 14px;border:0;border-radius:999px;background:transparent;font:inherit;font-size:12px;line-height:1.2;white-space:nowrap;color:var(--ink);cursor:pointer;transition:opacity .16s ease,transform .16s cubic-bezier(.23,1,.32,1)}
 .rs-item:not([aria-current]){opacity:.72}
 @media(hover:hover) and (pointer:fine){.rs-item:not([aria-current]):hover{opacity:1}}
@@ -15,14 +15,23 @@
 .rs-item[aria-current]{cursor:default}
 .rs-item:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 .rs-thumb{position:absolute;inset:var(--rs-inset);display:grid;grid-auto-flow:column;grid-auto-columns:auto;pointer-events:none;background:var(--ink);border-radius:999px}
-.rs-item--ghost{color:#fff;opacity:1;cursor:default}
+.rs-item--ghost{color:var(--on-ink);opacity:1;cursor:default}
 /* Until the thumb is measured (server render, before hydration), the current item is filled directly. */
-.rs:not([data-ready]) .rs-item[aria-current]{background:var(--ink);color:#fff}
+.rs:not([data-ready]) .rs-item[aria-current]{background:var(--ink);color:var(--on-ink)}
 @media(prefers-reduced-motion:reduce){.rs-item{transition:none}.rs-item:not([aria-current]):active{transform:none}}
+/* Header right-hand group: nav pill (or menu button) and the theme switch. */
+.site-header__end{display:flex;align-items:center;gap:10px}
+.theme-toggle{display:grid;place-items:center;flex:none;width:46px;height:46px;padding:0;border:0;border-radius:999px;background:rgba(var(--surface-rgb),.9);color:var(--ink);box-shadow:0 10px 30px rgba(var(--shadow-rgb),.1);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);cursor:pointer;transition:background-color .2s ease,color .2s ease}
+.theme-toggle:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+@media(hover:hover) and (pointer:fine){.theme-toggle:hover{background:var(--ink);color:var(--on-ink)}}
+/* Moon in light mode (press for dark), sun in dark mode (press for light). */
+.theme-toggle__sun{display:none}
+:root[data-theme="dark"] .theme-toggle__sun{display:block}
+:root[data-theme="dark"] .theme-toggle__moon{display:none}
 /* Compact navigation (tablet, phone, dual-screen): a menu button opening a dropdown panel with
    the same links, in the nav pill's style. Hidden on desktop; the nav pill is hidden here. */
 .mnav{display:none;position:relative}
-.mnav-toggle{display:grid;place-items:center;width:46px;height:46px;padding:0;border:0;border-radius:999px;background:rgba(255,253,247,.9);color:var(--ink);box-shadow:0 10px 30px rgba(41,38,54,.1);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);cursor:pointer}
+.mnav-toggle{display:grid;place-items:center;width:46px;height:46px;padding:0;border:0;border-radius:999px;background:rgba(var(--surface-rgb),.9);color:var(--ink);box-shadow:0 10px 30px rgba(var(--shadow-rgb),.1);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);cursor:pointer}
 .mnav-toggle:focus-visible,.mnav-panel button:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 .mnav-icon{position:relative;display:block;width:18px;height:12px}
 .mnav-icon i{position:absolute;left:0;width:100%;height:1.5px;border-radius:2px;background:currentColor;transition:transform .25s ease,opacity .2s ease,top .25s ease}
@@ -30,22 +39,22 @@
 .mnav-toggle[aria-expanded="true"] .mnav-icon i:nth-child(1){top:5.25px;transform:rotate(45deg)}
 .mnav-toggle[aria-expanded="true"] .mnav-icon i:nth-child(2){opacity:0}
 .mnav-toggle[aria-expanded="true"] .mnav-icon i:nth-child(3){top:5.25px;transform:rotate(-45deg)}
-.mnav-panel{position:absolute;top:calc(100% + 10px);right:0;width:min(320px,calc(100vw - 32px));padding:8px;border-radius:24px;background:rgba(255,253,247,.97);box-shadow:0 18px 40px rgba(41,38,54,.16);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .2s ease,transform .2s ease,visibility 0s linear .2s}
+.mnav-panel{position:absolute;top:calc(100% + 10px);right:0;width:min(320px,calc(100vw - 32px));padding:8px;border-radius:24px;background:rgba(var(--surface-rgb),.97);box-shadow:0 18px 40px rgba(var(--shadow-rgb),.16);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .2s ease,transform .2s ease,visibility 0s linear .2s}
 .mnav-panel.is-open{opacity:1;visibility:visible;transform:none;transition:opacity .2s ease,transform .2s ease,visibility 0s}
 .mnav-panel ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
 .mnav-panel button{display:flex;align-items:center;width:100%;min-height:48px;padding:12px 18px;border:0;border-radius:16px;background:transparent;color:var(--ink);font-size:16px;text-align:left;overflow-wrap:anywhere;cursor:pointer}
-.mnav-panel button:hover{background:rgba(37,35,63,.06)}
-.mnav-panel button.active{background:var(--ink);color:#fff}
+.mnav-panel button:hover{background:rgba(var(--ink-rgb),.06)}
+.mnav-panel button.active{background:var(--ink);color:var(--on-ink)}
 /* Sections receive focus after a menu jump; the scroll already shows where you are. */
 section[tabindex="-1"]:focus{outline:none}
 @media(max-width:1050px){.site-header{left:16px;right:16px}.brand b{display:none}.nav-pill{display:none}.mnav{display:block}}
 /* Dual-screen spanning: menu, not the pill, with the panel kept on the right-hand screen. */
 @media(horizontal-viewport-segments:2){.nav-pill{display:none}.mnav{display:block}.mnav-panel{width:min(320px,calc(env(viewport-segment-width 1 0,100vw) - 32px))}}
-@media(prefers-reduced-motion:reduce){.mnav-panel,.mnav-panel.is-open,.mnav-icon i{transition:none}}
+@media(prefers-reduced-motion:reduce){.mnav-panel,.mnav-panel.is-open,.mnav-icon i,.theme-toggle{transition:none}}
 
 /* Site footer (all pages) */
-.site-footer{background:var(--contact-dark);color:var(--contact-bg);padding:72px 7vw 28px}
-.site-footer__inner{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:48px;padding-bottom:56px;border-bottom:1px solid color-mix(in srgb,var(--contact-bg) 16%,transparent)}
+.site-footer{background:var(--footer-bg);color:var(--footer-fg);padding:72px 7vw 28px}
+.site-footer__inner{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:48px;padding-bottom:56px;border-bottom:1px solid color-mix(in srgb,var(--footer-fg) 16%,transparent)}
 .site-footer__name{font-family:var(--font-mono);font-size:13px;font-weight:700;letter-spacing:.24em;color:inherit;text-decoration:none}
 .site-footer__role{margin:12px 0 0;font-size:14px;opacity:.65}
 .site-footer__heading{margin:0 0 18px;font-family:var(--font-mono);font-size:10.5px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;opacity:.65}
@@ -54,15 +63,15 @@ section[tabindex="-1"]:focus{outline:none}
 .footer-link:after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .22s ease}
 .footer-link:hover,.footer-link:focus-visible{opacity:1}
 .footer-link:hover:after,.footer-link:focus-visible:after{transform:scaleX(1);transform-origin:left}
-.footer-link:focus-visible,.site-footer__top:focus-visible,.site-footer__name:focus-visible{outline:2px solid var(--contact-bg);outline-offset:4px;border-radius:2px}
+.footer-link:focus-visible,.site-footer__top:focus-visible,.site-footer__name:focus-visible{outline:2px solid var(--footer-fg);outline-offset:4px;border-radius:2px}
 .footer-link--social:after{left:24px}
 .site-footer__icon{width:14px;height:14px;flex:none;opacity:.8}
 .site-footer__bottom{display:flex;justify-content:space-between;align-items:center;gap:20px;padding-top:24px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.15em}
 .site-footer__bottom p{margin:0;opacity:.65}
 .site-footer__actions{display:flex;align-items:center;gap:20px}
 .site-footer__textbutton{border:0;background:transparent;padding:0;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;cursor:pointer}
-.site-footer__top{width:40px;height:40px;border:1px solid color-mix(in srgb,var(--contact-bg) 35%,transparent);border-radius:50%;background:transparent;color:inherit;font-size:15px;cursor:pointer;transition:background-color .2s ease,color .2s ease}
-.site-footer__top:hover{background:var(--contact-bg);color:var(--contact-dark)}
+.site-footer__top{width:40px;height:40px;border:1px solid color-mix(in srgb,var(--footer-fg) 35%,transparent);border-radius:50%;background:transparent;color:inherit;font-size:15px;cursor:pointer;transition:background-color .2s ease,color .2s ease}
+.site-footer__top:hover{background:var(--footer-fg);color:var(--footer-bg)}
 @media(max-width:860px){.site-footer__inner{grid-template-columns:1fr 1fr}.site-footer__brand{grid-column:1/-1}}
 @media(max-width:560px){.site-footer{padding:56px 20px 24px}.site-footer__inner{grid-template-columns:1fr;gap:36px;padding-bottom:40px}.footer-link{min-height:36px}.site-footer__bottom{flex-wrap:wrap}}
 @media(prefers-reduced-motion:reduce){.footer-link,.footer-link:after,.site-footer__top{transition:none}}

@@ -11,9 +11,12 @@
 /* One full-width row per category. */
 .core-tech__groups{display:grid;gap:30px}
 .core-tech__group{min-width:0}
-.core-tech__group-title{margin:0 0 8px;font-family:var(--font-mono);font-size:10.5px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:#5f5c56}
+.core-tech__group-title{margin:0 0 8px;font-family:var(--font-mono);font-size:10.5px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--text-2)}
 .core-tech__item{display:inline-flex;align-items:center;gap:.65rem;padding:.7rem 1.6rem;white-space:nowrap;border-left:1px solid var(--line);color:var(--ink)}
 /* Brand-coloured icons sit at near-full strength; hover still brings them to full (as before). */
+/* Brand icons draw in currentColor: --tech-c in light mode, a lighter --tech-c-dark in dark mode. */
+.tech-colored{color:var(--tech-c)}
+:root[data-theme="dark"] .tech-colored{color:var(--tech-c-dark)}
 .core-tech__icon{width:24px;height:24px;flex:none;opacity:.9;transition:opacity .2s ease,transform .2s ease}
 .core-tech__name{font-size:.85rem;font-weight:600;letter-spacing:-.01em;line-height:1}
 .core-tech__item:hover .core-tech__icon{opacity:1;transform:scale(1.05)}

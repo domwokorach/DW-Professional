@@ -1,5 +1,5 @@
 /* privacy: cookie consent panel and cookie preferences */
-.cookie-consent{position:fixed;z-index:50;right:24px;bottom:24px;width:min(400px,calc(100% - 32px));padding:22px 22px 20px;background:var(--contact-surface);color:var(--contact-dark);border:1px solid var(--contact-border);border-top:3px solid var(--contact-dark);border-radius:18px;box-shadow:0 18px 50px color-mix(in srgb,var(--contact-dark) 14%,transparent);opacity:0;transform:translateY(20px) scale(.98);transition:opacity .5s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1)}
+.cookie-consent{position:fixed;z-index:50;right:24px;bottom:24px;width:min(400px,calc(100% - 32px));padding:22px 22px 20px;background:var(--contact-surface);color:var(--contact-dark);border:1px solid var(--contact-border);border-top:3px solid var(--contact-dark);border-radius:18px;box-shadow:0 18px 50px rgba(var(--shadow-rgb),.14);opacity:0;transform:translateY(20px) scale(.98);transition:opacity .5s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1)}
 .cookie-consent.is-shown{opacity:1;transform:none}
 .cookie-consent.is-leave{opacity:0;transform:translateY(10px);transition-duration:.3s}
 .cookie-consent__title{margin:0 0 10px;font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
@@ -24,5 +24,5 @@
 
 .cookie-prefs{display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px;margin-top:20px;padding:20px;border:1px solid var(--line);border-radius:14px}
 .cookie-prefs__status{margin:0;flex:1;min-width:200px}
-.cookie-prefs__button{min-height:46px;padding:12px 20px;border:1px solid var(--ink);border-radius:999px;background:var(--ink);color:var(--cream);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+.cookie-prefs__button{min-height:46px;padding:12px 20px;border:1px solid var(--ink);border-radius:999px;background:var(--ink);color:var(--on-ink);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
 .cookie-prefs__button:focus-visible{outline:2px solid var(--ink);outline-offset:3px}

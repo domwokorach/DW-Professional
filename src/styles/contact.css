@@ -99,7 +99,7 @@
 .pace-combobox-chevron{width:16px;height:16px;flex:none;color:var(--contact-dark);transition:transform .2s ease}
 [data-popup-open]>.pace-combobox-chevron{transform:rotate(180deg)}
 .pace-combobox-positioner{z-index:45;isolation:isolate}
-.project-type-popup{display:flex;flex-direction:column;width:var(--anchor-width);max-width:var(--available-width);max-height:min(20rem,var(--available-height));overflow:hidden;transform-origin:var(--transform-origin);background:var(--contact-surface);color:var(--contact-dark);border:1px solid var(--contact-border);border-radius:12px;box-shadow:0 12px 32px color-mix(in srgb,var(--contact-dark) 10%,transparent)}
+.project-type-popup{display:flex;flex-direction:column;width:var(--anchor-width);max-width:var(--available-width);max-height:min(20rem,var(--available-height));overflow:hidden;transform-origin:var(--transform-origin);background:var(--contact-surface);color:var(--contact-dark);border:1px solid var(--contact-border);border-radius:12px;box-shadow:0 12px 32px rgba(var(--shadow-rgb),.1)}
 .project-type-search{flex:none;margin:6px 6px 0;min-height:44px;padding:10px 12px;font:inherit;font-size:16px;color:var(--contact-dark);background:transparent;border:1px solid var(--contact-border);border-radius:8px;outline:none;transition:border-color .18s ease}
 .project-type-search::placeholder{color:var(--contact-muted)}
 .project-type-search:focus{border-color:var(--contact-accent)}
@@ -189,3 +189,13 @@
 .contact-form--placeholder{min-height:967px}
 @media(max-width:1050px){.contact-form--placeholder{min-height:932px}}
 @media(max-width:720px){.contact-form--placeholder{min-height:1136px}}
+
+/* Dark theme. The contact tokens are redefined here (after the :root light values above, which would
+   otherwise win by source order); same values as the dark block in base.css. */
+:root[data-theme="dark"]{--contact-bg:#12131f;--contact-surface:#1a1c2e;--contact-dark:#f3f1ea;--contact-muted:#9aa3b8;--contact-border:rgba(243,241,234,.22);--contact-border-strong:rgba(243,241,234,.55);--contact-accent:#60a5fa;--contact-accent-soft:rgba(96,165,250,.12);--contact-success:#34d399;--contact-error:#f87171}
+/* Globe in dark: no inversion; white land dots on black are tinted light by the ink layer (multiply)
+   and screened onto the dark section, where the black disappears. */
+:root[data-theme="dark"] .contact-globe-background{mix-blend-mode:screen}
+:root[data-theme="dark"] .contact-globe{background:#000}
+:root[data-theme="dark"] .contact-globe canvas{filter:none}
+:root[data-theme="dark"] .contact-globe__ink{mix-blend-mode:multiply}

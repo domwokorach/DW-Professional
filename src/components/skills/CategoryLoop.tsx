@@ -7,7 +7,7 @@ import type { CoreTech } from '@/types';
 
 const item = (t: CoreTech) => (
   <span className="core-tech__item">
-    <TechIcon icon={t.icon} fallback={t.name} className="core-tech__icon" color={t.color} />
+    <TechIcon icon={t.icon} fallback={t.name} className="core-tech__icon" color={t.color} colorDark={t.colorDark} />
     <span className="core-tech__name">{t.name}</span>
   </span>
 );

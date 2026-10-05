@@ -119,7 +119,8 @@ docs/               Setup notes (S3)
 ## Privacy, cookies and legal pages
 
 The site sets **no cookies** and loads **no analytics or tracking**; the only browser storage is
-the cookie-consent choice in localStorage. If you add an optional script, load it through
+the cookie-consent choice and, once the visitor presses the theme button, their light/dark
+preference (`portfolio-theme`), both in localStorage and both listed on the Cookie page. If you add an optional script, load it through
 `whenConsented()` from `src/lib/consent.ts` and list it on the Cookie page.
 
 The legal pages describe what the code does. Before publishing, set the two operational facts in

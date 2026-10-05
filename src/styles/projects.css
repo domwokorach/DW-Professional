@@ -1,10 +1,10 @@
 /* projects */
-.work-section{background:linear-gradient(#efe7b6 0 14%,var(--cream) 14%)}
+.work-section{background:linear-gradient(var(--band) 0 14%,var(--cream) 14%)}
 /* Project cards. Secondary text is darker than --muted so it clears WCAG AA (≈6:1 on the card). */
-.work-section{--pc-muted:#5f5c56;--pc-body:#4f4c47;--pc-live:#2f7a4c;--pc-radius:18px}
+.work-section{--pc-muted:var(--text-2);--pc-body:var(--text-3);--pc-live:var(--live);--pc-radius:18px}
 .pg-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;max-width:1200px;margin-inline:auto}
 .pg-item{display:flex;min-width:0}
-.pc{position:relative;display:flex;flex-direction:column;width:100%;padding:28px 28px 26px;background:var(--white);border:1px solid var(--line);border-radius:var(--pc-radius);box-shadow:0 1px 0 rgba(37,35,63,.04);transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease,border-color .3s ease,background-color .3s ease}
+.pc{position:relative;display:flex;flex-direction:column;width:100%;padding:28px 28px 26px;background:var(--white);border:1px solid var(--line);border-radius:var(--pc-radius);box-shadow:0 1px 0 rgba(var(--shadow-rgb),.04);transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease,border-color .3s ease,background-color .3s ease}
 .pc-kicker{display:flex;align-items:center;gap:8px;margin:0 0 22px;font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--pc-muted)}
 .pc-num{color:var(--ink);font-weight:700}
 .pc-kicker__sep{opacity:.5}
@@ -28,11 +28,11 @@
 .pc-link:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
 .pc-link__icon{transition:transform .25s cubic-bezier(.22,1,.36,1)}
 /* Where :has() is supported the whole card shows the focus ring instead of just the link. */
-@supports selector(:has(*)){.pc-link:focus-visible{outline:none}.pc--live:has(.pc-link:focus-visible){outline:3px solid var(--ink);outline-offset:4px}.pc--live:has(.pc-link:focus-visible) .pc-link{background:var(--ink);color:var(--white)}}
+@supports selector(:has(*)){.pc-link:focus-visible{outline:none}.pc--live:has(.pc-link:focus-visible){outline:3px solid var(--ink);outline-offset:4px}.pc--live:has(.pc-link:focus-visible) .pc-link{background:var(--ink);color:var(--on-ink)}}
 @media(hover:hover){
-  .pc:hover{border-color:rgba(37,35,63,.26)}
-  .pc--live:hover{transform:translateY(-3px);background:#fffefa;box-shadow:0 18px 36px -24px rgba(37,35,63,.45)}
-  .pc--live:hover .pc-link{background:var(--ink);color:var(--white)}
+  .pc:hover{border-color:rgba(var(--ink-rgb),.26)}
+  .pc--live:hover{transform:translateY(-3px);background:var(--card-hover);box-shadow:0 18px 36px -24px rgba(var(--shadow-rgb),.45)}
+  .pc--live:hover .pc-link{background:var(--ink);color:var(--on-ink)}
   .pc--live:hover .pc-link__icon{transform:translate(2px,-2px)}
 }
 /* Entrance: only applied once JS is running and motion is allowed. */
