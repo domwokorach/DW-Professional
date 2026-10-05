@@ -6,3 +6,4 @@ export { AnimatedTestimonials, type AnimatedTestimonialItem } from './animated-t
 export { RubberSegment, type RubberSegmentItem } from './rubber-segment';
 export { default as IconLink } from './IconLink';
 export { default as IconButton } from './IconButton';
+export { default as PulseHeart } from './pulse-heart';

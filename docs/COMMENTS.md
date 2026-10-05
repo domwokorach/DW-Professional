@@ -117,3 +117,8 @@ also holds while the pointer is over the comment, while the comment has keyboard
 while the carousel is off screen and while the tab is hidden. With "reduce motion" on, autoplay starts off. All
 slides share one grid cell, so the carousel is always as tall as the longest comment and nothing jumps between
 slides. With a single comment there is nothing to cycle, so the controls are not shown.
+
+Each comment card also has a heart at the bottom-right (`PulseHeart`). It is a personal toggle: liking is remembered
+while the page stays open (it survives sliding to other comments) but is not saved anywhere and there is no like
+count, because no like data is stored. Making likes real (a count shared between visitors) would need a database
+table, abuse protection, and a line in the privacy notice.

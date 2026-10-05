@@ -1,0 +1,14 @@
+/* PulseHeart (components/ui/pulse-heart.tsx). Colours come from the site's tokens; the liked colour is a rose that
+   keeps 4.5:1 on the card in light mode and a lighter rose in dark mode. */
+.ph{--ph-liked:#e11d48;--ph-idle:var(--text-2);--ph-pill:rgba(var(--ink-rgb),.06);position:relative;display:inline-flex;align-items:center;justify-content:center;flex:none;margin:0;padding:0;border:0;border-radius:999px;background:transparent;color:var(--ph-idle);cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none}
+:root[data-theme="dark"] .ph{--ph-liked:#fb7185}
+.ph-pill{display:inline-flex;align-items:center;justify-content:center;padding:calc(var(--ph-size) * .4);border-radius:999px;background:var(--ph-pill);transform-origin:center}
+.ph-heart{display:block;width:var(--ph-size);height:var(--ph-size);color:var(--ph-idle);transition:color .16s ease}
+.ph-heart svg{display:block;width:100%;height:100%;overflow:visible;fill:none;stroke:currentColor;stroke-width:calc(var(--ph-size) * .08);stroke-linecap:round;stroke-linejoin:round}
+.ph[data-liked="true"] .ph-heart{color:var(--ph-liked)}
+.ph[data-liked="true"] .ph-heart svg{fill:currentColor}
+@media(hover:hover) and (pointer:fine){.ph[data-liked="false"]:hover .ph-heart{color:color-mix(in srgb,var(--ph-idle) 45%,var(--ph-liked))}}
+.ph:active .ph-pill{transform:scale(.97)}
+.ph:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+@media(pointer:coarse){.ph{min-width:44px;min-height:44px}}
+@media(prefers-reduced-motion:reduce){.ph-heart{transition:color .2s ease}.ph:active .ph-pill{transform:none}}

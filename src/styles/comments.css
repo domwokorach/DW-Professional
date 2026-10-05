@@ -83,6 +83,10 @@
 .cm-role{margin:3px 0 0;font-size:13.5px;line-height:1.4;color:var(--text-2);overflow-wrap:anywhere}
 .cm-text{margin:0;font-size:16px;line-height:1.65;color:var(--text-3);white-space:pre-line;overflow-wrap:anywhere}
 .cm-card__foot{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:var(--text-2)}
+/* The heart sits at the bottom-right of the card, level with the date (the extra class beats the component's own `.ph{margin:0}`, which loads later). Negative margins let its 36px (44px on touch)
+   hit area use the card's padding instead of making the footer row taller or reaching the comment text above. */
+.cm-card__foot .cm-like{margin:-12px -8px -12px auto}
+@media(pointer:coarse){.cm-card__foot .cm-like{margin:-14px -12px -14px auto}}
 .cm-empty{margin:0;padding:34px 26px;text-align:center;border:1px dashed rgba(var(--ink-rgb),.3);border-radius:var(--cm-radius);color:var(--text-2);font-size:15px;line-height:1.6}
 .cm-card--skeleton{gap:12px;animation:none}
 .cm-card--skeleton span{display:block;height:14px;border-radius:6px;background:rgba(var(--ink-rgb),.1)}

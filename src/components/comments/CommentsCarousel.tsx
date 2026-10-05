@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
 import { useReducedMotion } from 'motion/react';
+import PulseHeart from '@/components/ui/pulse-heart';
 import type { PublicComment } from '@/lib/comments';
 import { formatCommentDate, initials } from './format';
 import VerifiedBadge from './VerifiedBadge';
@@ -49,6 +50,10 @@ export default function CommentsCarousel({ items }: { items: PublicComment[] }) 
   const [touching, setTouching] = useState(false);
   const [onScreen, setOnScreen] = useState(true);
   const [tabHidden, setTabHidden] = useState(false);
+  // Which comments the visitor has hearted. Kept here (not in each card) so it survives sliding away and back. It lives
+  // only in this page view: nothing is saved or counted, because there is no like data behind it.
+  const [liked, setLiked] = useState<ReadonlySet<string>>(new Set());
+  const setLike = (id: string, on: boolean) => setLiked((s) => { const n = new Set(s); if (on) n.add(id); else n.delete(id); return n; });
   const viewport = useRef<HTMLDivElement>(null);
   const swipe = useRef<{ x: number; y: number } | null>(null);
   const leaveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -160,6 +165,7 @@ export default function CommentsCarousel({ items }: { items: PublicComment[] }) 
                 <blockquote className="cm-text">{c.comment}</blockquote>
                 <footer className="cm-card__foot">
                   <time dateTime={c.createdAt}>{formatCommentDate(c.createdAt)}</time>
+                  <PulseHeart className="cm-like" liked={liked.has(c.id)} onChange={(on) => setLike(c.id, on)} />
                 </footer>
               </article>
             </li>
