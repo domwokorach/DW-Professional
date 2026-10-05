@@ -82,6 +82,8 @@
 .cm-name{margin:0;font-size:17px;line-height:1.2;letter-spacing:-.02em;font-weight:700;color:var(--ink);overflow-wrap:anywhere}
 .cm-role{margin:3px 0 0;font-size:13.5px;line-height:1.4;color:var(--text-2);overflow-wrap:anywhere}
 .cm-text{margin:0;font-size:16px;line-height:1.65;color:var(--text-3);white-space:pre-line;overflow-wrap:anywhere}
+/* Set per comment by an admin ("Show in italics" in /admin/comments). */
+.cm-text--italic{font-style:italic}
 .cm-card__foot{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:var(--text-2)}
 /* The heart sits at the bottom-right of the card, level with the date (the extra class beats the component's own `.ph{margin:0}`, which loads later). Negative margins let its 36px (44px on touch)
    hit area use the card's padding instead of making the footer row taller or reaching the comment text above. */

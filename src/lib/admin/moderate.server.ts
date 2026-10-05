@@ -1,7 +1,7 @@
-// Server-only: shared handlers for the approve / reject and verify / unverify moderation endpoints.
+// Server-only: shared handlers for the approve / reject, verify / unverify and italic / unitalic moderation endpoints.
 import { audit } from '@/lib/admin/audit.server';
 import { requireAdminSession } from '@/lib/admin/session.server';
-import { moderateComment, setCommentVerified } from '@/lib/comment-store.server';
+import { moderateComment, setCommentItalic, setCommentVerified } from '@/lib/comment-store.server';
 
 const ID = /^[a-z0-9]{20,40}$/;
 const noStore = { 'Cache-Control': 'no-store' };
@@ -35,6 +35,23 @@ export async function handleVerification(request: Request, id: string, verified:
     return Response.json({ ok: true, isVerified: verified }, { headers: noStore });
   } catch (err) {
     console.error('[admin-comments] Verification failed:', (err as Error).name);
+    return Response.json({ error: 'unavailable' }, { status: 503, headers: noStore });
+  }
+}
+
+/** Italic / upright: admin session + CSRF only. 409 if the comment is already in that state. */
+export async function handleItalic(request: Request, id: string, italic: boolean) {
+  const auth = await requireAdminSession(request, { csrf: true });
+  if (auth instanceof Response) return auth;
+  if (!ID.test(id)) return Response.json({ error: 'not_found' }, { status: 404, headers: noStore });
+  try {
+    const result = await setCommentItalic(id, italic);
+    if (result === 'not_found') return Response.json({ error: 'not_found' }, { status: 404, headers: noStore });
+    if (result === 'unchanged') return Response.json({ error: 'invalid_transition' }, { status: 409, headers: noStore });
+    await audit(italic ? 'COMMENT_ITALIC_ON' : 'COMMENT_ITALIC_OFF', { adminUserId: auth.admin.id, commentId: id, request });
+    return Response.json({ ok: true, isItalic: italic }, { headers: noStore });
+  } catch (err) {
+    console.error('[admin-comments] Italic change failed:', (err as Error).name);
     return Response.json({ error: 'unavailable' }, { status: 503, headers: noStore });
   }
 }

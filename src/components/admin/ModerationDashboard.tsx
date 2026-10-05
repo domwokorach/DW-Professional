@@ -7,7 +7,7 @@ import VerifiedBadge from '@/components/comments/VerifiedBadge';
 
 type Counts = Record<CommentStatusValue, number>;
 type Filter = 'pending' | 'approved' | 'rejected';
-type Action = 'approve' | 'reject' | 'delete' | 'verify' | 'unverify';
+type Action = 'approve' | 'reject' | 'delete' | 'verify' | 'unverify' | 'italic' | 'unitalic';
 
 const FILTERS: { key: Filter; status: CommentStatusValue; label: string }[] = [
   { key: 'pending', status: 'PENDING', label: 'Pending' },
@@ -120,6 +120,18 @@ export default function ModerationDashboard({
         });
         return;
       }
+      if (action === 'italic' || action === 'unitalic') {
+        // A display choice: the comment stays in this list, updated in place.
+        const isItalic = action === 'italic';
+        setComments((list) => list?.map((c) => (c.id === comment.id ? { ...c, isItalic } : c)) ?? list);
+        setNotice({
+          kind: 'ok',
+          text: isItalic
+            ? `${comment.fullName}'s comment now shows in italics.`
+            : `${comment.fullName}'s comment now shows upright.`,
+        });
+        return;
+      }
       const from = comment.status;
       setComments((list) => list?.filter((c) => c.id !== comment.id) ?? list);
       setCounts((c) => {
@@ -222,7 +234,7 @@ export default function ModerationDashboard({
                       <span className={`adm-status adm-status--${c.status.toLowerCase()}`}>{STATUS_LABEL[c.status]}</span>
                     </header>
 
-                    <blockquote className="cm-text">{c.comment}</blockquote>
+                    <blockquote className={`cm-text${c.isItalic ? ' cm-text--italic' : ''}`}>{c.comment}</blockquote>
 
                     <dl className="adm-meta">
                       <div><dt>Email</dt><dd><a href={`mailto:${encodeURIComponent(c.email).replace('%40', '@')}`}>{c.email}</a></dd></div>
@@ -258,6 +270,9 @@ export default function ModerationDashboard({
                           {c.isVerified ? 'Remove verification' : 'Mark as verified'}
                         </button>
                       )}
+                      <button type="button" className="adm-btn adm-btn--ghost" onClick={() => act(c, c.isItalic ? 'unitalic' : 'italic')} disabled={busy} aria-pressed={c.isItalic}>
+                        Show in italics
+                      </button>
                       {c.status !== 'REJECTED' && (
                         <button type="button" className="adm-btn adm-btn--ghost" onClick={() => act(c, 'reject')} disabled={busy}>
                           {c.status === 'APPROVED' ? 'Reject (unpublish)' : 'Reject'}

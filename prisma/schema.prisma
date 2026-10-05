@@ -90,6 +90,9 @@ model Comment {
   verifiedAt         DateTime?
   verifiedBy         AdminUser?    @relation("CommentVerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
   verifiedById       String?
+  /// Set only by an admin ("Show in italics" in /admin/comments): the comment's text shows in italics on the public
+  /// card. A display choice only, independent of approval and verification. Never settable through the public form or API.
+  isItalic           Boolean       @default(false)
 
   /// The public feed: approved comments, newest first. Also the admin status filters.
   @@index([status, createdAt])
@@ -149,6 +152,8 @@ enum AdminAuditEvent {
   COMMENT_DELETED
   COMMENT_VERIFIED
   COMMENT_UNVERIFIED
+  COMMENT_ITALIC_ON
+  COMMENT_ITALIC_OFF
 }
 
 /// Security-relevant admin events. Never holds passwords or tokens.

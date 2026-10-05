@@ -37,6 +37,8 @@ export type PublicComment = {
   createdAt: string;
   /** An admin marked it verified (separate from approval); shows the verified badge on the avatar. */
   isVerified: boolean;
+  /** An admin chose to show its text in italics. */
+  isItalic: boolean;
 };
 export type CommentStatusValue = 'PENDING' | 'APPROVED' | 'REJECTED';
 

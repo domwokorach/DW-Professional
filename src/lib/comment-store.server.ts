@@ -20,7 +20,7 @@ export async function listApprovedComments(limit = 50): Promise<PublicComment[] 
       where: { status: 'APPROVED' },
       orderBy: { createdAt: 'desc' },
       take: limit,
-      select: { id: true, fullName: true, company: true, comment: true, avatarKey: true, createdAt: true, isVerified: true },
+      select: { id: true, fullName: true, company: true, comment: true, avatarKey: true, createdAt: true, isVerified: true, isItalic: true },
     });
     return rows.map((r) => ({
       id: r.id,
@@ -30,6 +30,7 @@ export async function listApprovedComments(limit = 50): Promise<PublicComment[] 
       avatarUrl: r.avatarKey ? avatarPath(r.id) : null,
       createdAt: r.createdAt.toISOString(),
       isVerified: r.isVerified,
+      isItalic: r.isItalic,
     }));
   } catch (err) {
     logError('Could not list comments', err);
@@ -90,6 +91,7 @@ export async function storeComment(submissionId: string, c: NewComment): Promise
         consentGivenAt: c.consentGivenAt,
         status: 'PENDING',
         isVerified: false,
+        isItalic: false,
       },
       select,
     });
@@ -134,6 +136,7 @@ export type AdminComment = {
   isVerified: boolean;
   verifiedAt: string | null;
   verifiedBy: string | null;
+  isItalic: boolean;
 };
 
 export async function adminAvatarKey(id: string): Promise<string | null> {
@@ -152,7 +155,7 @@ export async function listCommentsForAdmin(status: CommentStatusValue, limit = 2
       id: true, fullName: true, email: true, company: true, comment: true, avatarKey: true, device: true,
       ipAddress: true, consentGivenAt: true, status: true, notificationStatus: true, createdAt: true, moderatedAt: true,
       moderatedBy: { select: { email: true } },
-      isVerified: true, verifiedAt: true, verifiedBy: { select: { email: true } },
+      isVerified: true, verifiedAt: true, verifiedBy: { select: { email: true } }, isItalic: true,
     },
   });
   return rows.map((r) => ({
@@ -173,6 +176,7 @@ export async function listCommentsForAdmin(status: CommentStatusValue, limit = 2
     isVerified: r.isVerified,
     verifiedAt: r.verifiedAt?.toISOString() ?? null,
     verifiedBy: r.verifiedBy?.email ?? null,
+    isItalic: r.isItalic,
   }));
 }
 
@@ -221,6 +225,19 @@ export async function setCommentVerified(id: string, verified: boolean, adminUse
       ? { isVerified: true, verifiedAt: new Date(), verifiedById: adminUserId }
       : { isVerified: false, verifiedAt: null, verifiedById: null },
   });
+  if (count) return 'ok' as const;
+  const exists = await prisma.comment.findUnique({ where: { id }, select: { id: true } });
+  return exists ? ('unchanged' as const) : ('not_found' as const);
+}
+
+/**
+ * Shows a comment's text in italics on the public card (or stops). Works in any status, so it can be set before
+ * approval. Returns 'not_found' / 'unchanged' when there's nothing to do.
+ */
+export async function setCommentItalic(id: string, italic: boolean) {
+  const prisma = getPrisma();
+  if (!prisma) throw new Error('Database is not configured');
+  const { count } = await prisma.comment.updateMany({ where: { id, isItalic: !italic }, data: { isItalic: italic } });
   if (count) return 'ok' as const;
   const exists = await prisma.comment.findUnique({ where: { id }, select: { id: true } });
   return exists ? ('unchanged' as const) : ('not_found' as const);

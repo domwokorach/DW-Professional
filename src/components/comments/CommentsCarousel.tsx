@@ -162,7 +162,7 @@ export default function CommentsCarousel({ items }: { items: PublicComment[] }) 
                     {c.company && <p className="cm-role">{c.company}</p>}
                   </div>
                 </header>
-                <blockquote className="cm-text">{c.comment}</blockquote>
+                <blockquote className={`cm-text${c.isItalic ? ' cm-text--italic' : ''}`}>{c.comment}</blockquote>
                 <footer className="cm-card__foot">
                   <time dateTime={c.createdAt}>{formatCommentDate(c.createdAt)}</time>
                   <PulseHeart className="cm-like" liked={liked.has(c.id)} onChange={(on) => setLike(c.id, on)} />
