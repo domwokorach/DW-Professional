@@ -75,5 +75,7 @@ section[tabindex="-1"]:focus{outline:none}
 .site-footer__top{width:40px;height:40px;border:1px solid color-mix(in srgb,var(--footer-fg) 35%,transparent);border-radius:50%;background:transparent;color:inherit;font-size:15px;cursor:pointer;transition:background-color .2s ease,color .2s ease}
 .site-footer__top:hover{background:var(--footer-fg);color:var(--footer-bg)}
 @media(max-width:860px){.site-footer__inner{grid-template-columns:1fr 1fr}.site-footer__brand{grid-column:1/-1}}
-@media(max-width:560px){.site-footer{padding:56px 20px 24px}.site-footer__inner{grid-template-columns:1fr;gap:36px;padding-bottom:40px}.footer-link{min-height:36px}.site-footer__bottom{flex-wrap:wrap}}
+@media(max-width:560px){.site-footer{padding:56px 20px 24px}.site-footer__inner{grid-template-columns:1fr;gap:36px;padding-bottom:40px}.footer-link{min-height:36px}.site-footer__bottom{flex-wrap:wrap;justify-content:center}.site-footer__bottom p{flex-basis:100%;text-align:center}
+  /* Phones: everything in the footer is centred. */
+  .site-footer__inner{text-align:center}.site-footer__group ul{justify-items:center}}
 @media(prefers-reduced-motion:reduce){.footer-link,.footer-link:after,.site-footer__top{transition:none}}
