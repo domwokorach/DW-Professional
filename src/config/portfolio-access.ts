@@ -1,5 +1,10 @@
-/** Where the Developer ID QR code leads: a branded page that then hands the visitor the CV. */
-export const PORTFOLIO_ACCESS_PATH = '/portfolio-access';
+import { HOME } from './site';
+
+/**
+ * Where the Developer ID QR code leads: a branded page that then hands the visitor the CV. This is the
+ * canonical, localised route; the bare /portfolio-access redirects to it (next.config.ts).
+ */
+export const PORTFOLIO_ACCESS_PATH = `${HOME}/portfolio-access`;
 
 /**
  * Absolute address encoded in the QR code. Phones scan it away from this site, so it can't be relative.

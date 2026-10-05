@@ -119,11 +119,12 @@ docs/               Setup notes (S3)
 ## Portfolio Access (QR code → CV)
 
 The QR code on the back of the Developer ID card is a real, scannable code that opens
-`/portfolio-access` (`src/views/portfolio-access/`), not the CV file itself. That page shows a short
+`/en-gb/portfolio-access` (`src/views/portfolio-access/`), not the CV file itself; the bare
+`/portfolio-access` redirects there. That page shows a short
 loading animation, vibrates once where the browser supports it (Android Chromium; iOS has no
 Vibration API), then offers **Open CV** and **Download CV**. The CV URL is defined once in
 `src/config/portfolio-access.ts`; the page never embeds the `.docx`. The QR encodes
-`NEXT_PUBLIC_SITE_URL` + `/portfolio-access` (falling back to the live domain in production), so set
+`NEXT_PUBLIC_SITE_URL` + `/en-gb/portfolio-access` (falling back to the live domain in production), so set
 that variable correctly before printing or sharing the card.
 
 ## Privacy, cookies and legal pages

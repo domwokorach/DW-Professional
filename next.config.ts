@@ -5,7 +5,11 @@ const nextConfig: NextConfig = {
   // The portfolio lives at /en-gb. Temporary (307) for now; switch to permanent once the domain
   // setup is final, since browsers cache permanent redirects indefinitely.
   async redirects() {
-    return [{ source: '/', destination: '/en-gb', permanent: false }];
+    return [
+      { source: '/', destination: '/en-gb', permanent: false },
+      // The QR code encodes the localised route; the bare one stays valid as a fallback.
+      { source: '/portfolio-access', destination: '/en-gb/portfolio-access', permanent: false },
+    ];
   },
   images: {
     // AVIF where supported (usually smaller than WebP), WebP otherwise.
