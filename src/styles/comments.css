@@ -67,11 +67,17 @@
 .cm-avatar{position:relative}
 .cm-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .cm-avatar--lg{width:56px;height:56px;font-size:16px}
-/* Verified badge: sits on the avatar's top-left edge (outside the clipped circle, so the face stays clear), with a
-   card-coloured ring that separates it from the photo in both themes. Sized relative to the avatar. */
-.cm-avatar-wrap{position:relative;display:inline-flex;flex:none;--cm-badge:18px}
-.cm-avatar-wrap:has(.cm-avatar--lg){--cm-badge:22px}
-.cm-verified{position:absolute;top:calc(var(--cm-badge) * -.22);left:calc(var(--cm-badge) * -.22);z-index:1;width:var(--cm-badge);height:var(--cm-badge);padding:2px;box-sizing:border-box;border-radius:50%;background:var(--white);color:var(--ink);box-shadow:0 0 0 1px var(--line),0 1px 3px rgba(var(--shadow-rgb),.18);pointer-events:auto}
+/* Verified badge: sits on the avatar's top-left edge (outside the clipped circle, so the face stays clear), on a
+   card-coloured disc with a 1px ring that separates it from the photo in both themes. Kept crisp on purpose: whole-pixel
+   sizes and offsets (fractional ones smear the edges on normal-density screens), a real border instead of a shadow,
+   and no blur, glow, filter, opacity or transform on the badge. */
+.cm-avatar-wrap{position:relative;display:inline-flex;flex:none;--cm-badge:24px;--cm-badge-offset:-5px}
+.cm-avatar-wrap:has(.cm-avatar--lg){--cm-badge:28px;--cm-badge-offset:-6px}
+.cm-verified{position:absolute;top:var(--cm-badge-offset);left:var(--cm-badge-offset);z-index:1;width:var(--cm-badge);height:var(--cm-badge);padding:1px;box-sizing:border-box;border:1px solid var(--line);border-radius:50%;background:var(--white);color:var(--cm-verified-blue);pointer-events:auto}
+/* The badge icon strokes with currentColor, so this is its colour. Blue = the Contact section's accent (#2563EB), with
+   the lighter blue that section uses in dark mode so the badge stays readable on the dark card. */
+.cm-verified{--cm-verified-blue:#2563eb}
+:root[data-theme="dark"] .cm-verified{--cm-verified-blue:#60a5fa}
 .cm-verified svg{display:block}
 .cm-name{margin:0;font-size:17px;line-height:1.2;letter-spacing:-.02em;font-weight:700;color:var(--ink);overflow-wrap:anywhere}
 .cm-role{margin:3px 0 0;font-size:13.5px;line-height:1.4;color:var(--text-2);overflow-wrap:anywhere}
