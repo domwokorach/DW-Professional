@@ -8,8 +8,8 @@ import { QuarterRing } from '@/components/ui';
 
 type PortfolioAccessState = 'loading' | 'success' | 'error';
 
-/** How long the "preparing" screen shows before the confirmation. Short on purpose: it is a moment, not a wait. */
-const LOADING_MS = 1600;
+/** How long the "preparing" screen shows before the confirmation. */
+const LOADING_MS = 5000;
 
 /** Returns whether the browser accepted the vibration. Never throws: haptics are optional. */
 const triggerHapticFeedback = (): boolean => {
