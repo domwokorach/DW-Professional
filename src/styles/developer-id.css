@@ -61,7 +61,7 @@
 .dev-id__qr{width:88px;height:88px;flex:none;fill:#25233f;border-radius:6px}
 .dev-id__qr .dev-id__qr-bg{fill:#f7f3e7}
 .dev-id__hint{font-family:var(--font-mono);font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;opacity:.4;text-align:center;margin:12px 0 0}
-.dev-id-caption{font-family:var(--font-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:22px 0 0}
+.dev-id-caption{font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:22px 0 0}
 @media(prefers-reduced-motion:reduce){.dev-id__inner,.dev-id{transition-duration:1ms}}
 .floating-card-stage{perspective:1200px;width:min(100%,290px)}
 .floating-card{transform-style:preserve-3d;will-change:transform}

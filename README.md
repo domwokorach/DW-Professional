@@ -149,5 +149,6 @@ reset). Each file notes its source and changes at the top.
 | `components/ui/timeline.tsx` | Aceternity UI Timeline |
 | `components/ui/animated-testimonials.tsx` | Aceternity UI Animated Testimonials (React original of Inspira UI's) |
 | `components/ui/rubber-segment.tsx` | Vue Bits RubberSegment, ported to React |
-| `components/animate-ui/` (`icons/`, `primitives/`) | Animate UI icons (`npx shadcn@latest add @animate-ui/icons-download icons-link icons-move-right`) used by the CTA links; driven by `components/ui/IconLink.tsx` and `composables/useIconTrigger.ts`. The shadcn CLI mangles `viewBox` attributes here, so after re-running it, compare the files with the registry |
+| `components/animate-ui/` (`icons/`, `primitives/`) | Animate UI icons (`npx shadcn@latest add @animate-ui/icons-download icons-link icons-send-horizontal icons-moon icons-sun`) used by the CTA links; driven by `components/ui/IconLink.tsx`, `layout/ThemeToggle.tsx` and `composables/useIconTrigger.ts`. The shadcn CLI mangles `viewBox` attributes here, so after re-running it, compare the files with the registry |
+| `components/ui/hyper-text.tsx` | Magic UI Hyper Text (`npx shadcn@latest add @magicui/hyper-text`), the ID card's flip hint (`developer-id/FlipCaption.tsx`). Don't trust the CLI's copy: it strips the space in `letter === " "`, so compare with the registry after re-running it |
 | `components/loading-ui/fade-arc.tsx` | Loading UI Fade Arc (`npx shadcn@latest add @loading-ui/fade-arc`), the Portfolio Access loader |

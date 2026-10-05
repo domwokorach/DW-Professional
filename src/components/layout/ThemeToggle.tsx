@@ -1,6 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useReducedMotion } from 'motion/react';
+import { useEffect, useRef, useState } from 'react';
+import { MoonIcon } from '@/components/animate-ui/icons/moon';
+import { SunIcon } from '@/components/animate-ui/icons/sun';
+import { useIconTrigger } from '@/composables/useIconTrigger';
 import { THEME_KEY, type Theme } from '@/lib/theme';
 
 const readSaved = (): Theme | null => {
@@ -15,11 +19,19 @@ const readSaved = (): Theme | null => {
 /**
  * Light/dark switch. The theme itself is applied by the inline script in <head> (before paint); this
  * button flips it and remembers the choice, but only once the visitor presses it. Until then the page
- * follows the system setting, live. Icons are switched by CSS, so the markup is identical on server and
- * client; `aria-pressed` is set after mount.
+ * follows the system setting, live. The icon and label show the CURRENT theme (Moon + "Dark", Sun + "Light").
+ * They are switched by CSS, so the markup is identical on server and client (the theme is only known in the
+ * browser). The Animate UI icons animate on hover/focus of the whole button and play once when the theme
+ * changes (not at all under reduced motion). The title (set after mount) says what pressing will do.
  */
 export default function ThemeToggle({ className = '' }: { className?: string }) {
   const [theme, setTheme] = useState<Theme | null>(null);
+  const reduce = useReducedMotion();
+  const { active, bind } = useIconTrigger();
+  // Plays the icons after each switch so the newly shown one animates in (the Sun's rays take ~1.7s).
+  const [switched, setSwitched] = useState(false);
+  const switchTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(switchTimer.current), []);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -40,6 +52,11 @@ export default function ThemeToggle({ className = '' }: { className?: string }) 
     const next: Theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
     document.documentElement.dataset.theme = next;
     setTheme(next);
+    if (!reduce) {
+      setSwitched(true);
+      clearTimeout(switchTimer.current);
+      switchTimer.current = setTimeout(() => setSwitched(false), 1700);
+    }
     try {
       window.localStorage.setItem(THEME_KEY, next);
     } catch {
@@ -47,16 +64,19 @@ export default function ThemeToggle({ className = '' }: { className?: string }) 
     }
   };
 
+  const dark = theme === 'dark';
   return (
-    <button type="button" className={`theme-toggle ${className}`.trim()} aria-pressed={theme === null ? undefined : theme === 'dark'} onClick={toggle}>
-      <span className="sr-only">Dark mode</span>
-      <svg className="theme-toggle__moon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-        <path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
-      </svg>
-      <svg className="theme-toggle__sun" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-        <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="1.8" />
-        <path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-      </svg>
+    <button
+      type="button"
+      className={`theme-toggle ${className}`.trim()}
+      title={theme === null ? undefined : dark ? 'Switch to light mode' : 'Switch to dark mode'}
+      onClick={toggle}
+      {...bind}
+    >
+      <span className="sr-only theme-toggle__label theme-toggle__label--light">Light</span>
+      <span className="sr-only theme-toggle__label theme-toggle__label--dark">Dark</span>
+      <SunIcon className="theme-toggle__sun" size={20} strokeWidth={1.8} animate={switched || (active && !dark)} aria-hidden="true" focusable="false" />
+      <MoonIcon className="theme-toggle__moon" size={20} strokeWidth={1.8} animate={switched || (active && dark)} aria-hidden="true" focusable="false" />
     </button>
   );
 }

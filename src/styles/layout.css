@@ -24,10 +24,12 @@
 .theme-toggle{display:grid;place-items:center;flex:none;width:46px;height:46px;padding:0;border:0;border-radius:999px;background:rgba(var(--surface-rgb),.9);color:var(--ink);box-shadow:0 10px 30px rgba(var(--shadow-rgb),.1);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);cursor:pointer;transition:background-color .2s ease,color .2s ease}
 .theme-toggle:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 @media(hover:hover) and (pointer:fine){.theme-toggle:hover{background:var(--ink);color:var(--on-ink)}}
-/* Moon in light mode (press for dark), sun in dark mode (press for light). */
-.theme-toggle__sun{display:none}
-:root[data-theme="dark"] .theme-toggle__sun{display:block}
-:root[data-theme="dark"] .theme-toggle__moon{display:none}
+/* The icon and label show the current theme: Sun + "Light" by default, Moon + "Dark" in dark mode. */
+.theme-toggle__sun,.theme-toggle__moon{display:block;flex:none;overflow:visible}
+.theme-toggle__moon,.theme-toggle__label--dark{display:none}
+:root[data-theme="dark"] .theme-toggle__moon{display:block}
+:root[data-theme="dark"] .theme-toggle__label--dark{display:block}
+:root[data-theme="dark"] .theme-toggle__sun,:root[data-theme="dark"] .theme-toggle__label--light{display:none}
 /* Compact navigation (tablet, phone, dual-screen): a menu button opening a dropdown panel with
    the same links, in the nav pill's style. Hidden on desktop; the nav pill is hidden here. */
 .mnav{display:none;position:relative}

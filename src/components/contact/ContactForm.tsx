@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState, type ChangeEvent, type FormEvent, type InputHTMLAttributes } from 'react';
-import { MoveRightIcon } from '@/components/animate-ui/icons/move-right';
+import { SendHorizontalIcon } from '@/components/animate-ui/icons/send-horizontal';
 import { useIconTrigger } from '@/composables/useIconTrigger';
 import {
   MAX_FILE_BYTES,
@@ -353,7 +353,7 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
         </div>
         <button type="submit" className={`contact-submit is-${status}`} disabled={status === 'submitting'} {...sendIcon.bind}>
           {BUTTON_LABEL[status]}
-          {status === 'idle' && <MoveRightIcon className="contact-submit__arrow" animate={sendIcon.active} size={18} aria-hidden="true" />}
+          {status === 'idle' && <SendHorizontalIcon className="contact-submit__arrow" animate={sendIcon.active} size={18} aria-hidden="true" />}
         </button>
       </div>
     </form>

@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties, type Keyboard
 import { PORTFOLIO_ACCESS_URL } from '@/config';
 import DeveloperIdEvervault, { useEvervaultPointer } from './DeveloperIdEvervault';
 import FloatingCard from './FloatingCard';
+import FlipCaption from './FlipCaption';
 
 const HERO_TEXT_SETTLED_MS = 1500;
 
@@ -72,6 +73,8 @@ type Props = {
 
 export default function DeveloperIdCard({ flipOnHover = false }: Props) {
   const [flipped, setFlipped] = useState(false);
+  // Counts flips so the caption's text animation replays each time the card turns.
+  const [flips, setFlips] = useState(0);
   const evervault = useEvervaultPointer();
   // idle → pending (hidden, waiting to be seen) → enter (dropping) → idle
   const [entrance, setEntrance] = useState<'idle' | 'pending' | 'enter'>('idle');
@@ -94,12 +97,12 @@ export default function DeveloperIdCard({ flipOnHover = false }: Props) {
     return () => { io.disconnect(); clearTimeout(timer); };
   }, []);
 
-  const toggle = () => setFlipped((f) => !f);
+  const toggle = () => { setFlipped((f) => !f); setFlips((n) => n + 1); };
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
   };
   const hover = (next: boolean) => (e: PointerEvent<HTMLDivElement>) => {
-    if (flipOnHover && e.pointerType === 'mouse') setFlipped(next);
+    if (flipOnHover && e.pointerType === 'mouse') { setFlipped(next); setFlips((n) => n + 1); }
   };
 
   return (
@@ -183,7 +186,7 @@ export default function DeveloperIdCard({ flipOnHover = false }: Props) {
       </div>
       </div>
       </div>
-      <p className="dev-id-caption">Click or tap the card to flip</p>
+      <FlipCaption replay={flips} />
     </div>
   );
 }
