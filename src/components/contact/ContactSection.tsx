@@ -1,6 +1,7 @@
 import { LinkIcon } from '@/components/animate-ui/icons/link';
-import { IconLink, TechIcon } from '@/components/ui';
+import { IconLink } from '@/components/ui';
 import { contactInfo } from '@/data';
+import ContactInfoRow from './ContactInfoRow';
 import LazyContactForm from './LazyContactForm';
 
 /** Whether attachments go straight to S3 (bigger files) or through the server (fallback). Read on the server. */
@@ -19,11 +20,9 @@ export default function ContactSection() {
           <p className="contact-lede">Available for freelance projects, product development, frontend engineering and full-stack opportunities.</p>
           <dl className="contact-info">
             {contactInfo.map((item) => (
-              <div key={item.label} className="contact-info__row">
-                <TechIcon icon={item.icon} fallback={item.label} className="contact-info__icon" />
-                <dt>{item.label}</dt>
-                <dd>{item.href ? <a href={item.href}>{item.value}</a> : item.value}</dd>
-              </div>
+              <ContactInfoRow key={item.label} label={item.label} icon={item.icon}>
+                {item.href ? <a href={item.href}>{item.value}</a> : item.value}
+              </ContactInfoRow>
             ))}
           </dl>
           <IconLink className="contact-link" href="#work" icon={LinkIcon}>View work</IconLink>

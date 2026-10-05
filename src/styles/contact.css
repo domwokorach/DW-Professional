@@ -53,7 +53,12 @@
 .contact-lede{max-width:36ch;margin:0 0 34px;font-size:15px;line-height:1.7;color:var(--contact-muted)}
 .contact-info{margin:0;padding:0;border-top:1px solid var(--contact-border)}
 .contact-info__row{display:grid;grid-template-columns:20px 92px minmax(0,1fr);align-items:center;gap:12px;padding:15px 0;border-bottom:1px solid var(--contact-border)}
-.contact-info__icon{width:18px;height:18px;color:var(--contact-dark)}
+.contact-info__icon{width:18px;height:18px;color:var(--contact-dark);transition:color .18s ease}
+/* The animated icons are a div around an svg (Lucide Animated); the pin lifts a few px, so the svg must not clip it. */
+.contact-info__icon svg{display:block;overflow:visible}
+/* Accent colour while the row is hovered or its link is keyboard-focused, matching the link's own hover colour. */
+.contact-info__row:focus-within .contact-info__icon{color:var(--contact-accent)}
+@media(hover:hover){.contact-info__row:hover .contact-info__icon{color:var(--contact-accent)}}
 .contact-info dt{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--contact-muted)}
 .contact-info dd{margin:0;font-size:14px;font-weight:600;overflow-wrap:anywhere;color:var(--contact-dark)}
 .contact-info a,.contact-link{color:var(--contact-dark);text-decoration:underline;text-decoration-color:var(--contact-border-strong);text-underline-offset:4px;transition:color .18s ease,text-decoration-color .18s ease}
@@ -181,7 +186,7 @@
   .contact-upload__file{flex-wrap:wrap}
 }
 @media(prefers-reduced-motion:reduce){
-  .contact-label,.contact-label:before,.contact-control,.contact-upload,.contact-upload__icon,.contact-submit,.contact-info a,.contact-link{transition:none}
+  .contact-label,.contact-label:before,.contact-control,.contact-upload,.contact-upload__icon,.contact-submit,.contact-info a,.contact-info__icon,.contact-link{transition:none}
 }
 /* Space held for the contact form until its script loads (heights measured from the real form). */
 .contact-form--placeholder{min-height:967px}
