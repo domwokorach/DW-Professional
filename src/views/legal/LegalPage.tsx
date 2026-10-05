@@ -8,7 +8,7 @@ export default function LegalPage({ eyebrow, title, children }: { eyebrow: strin
   return (
     <>
       <header className="legal-header">
-        <Link href={HOME} className="legal-header__brand"><span>DO</span><b>Dominic Olanya</b></Link>
+        <Link href={HOME} className="legal-header__brand"><span>DO</span><b>DOMINIC WOKORACH OLANYA</b></Link>
         <div className="legal-header__end">
           <Link href={HOME} className="legal-header__back">← Back to portfolio</Link>
           <ThemeToggle />

@@ -30,7 +30,7 @@ export const HERO_HEADS: Record<Exclude<HeroLook, 'centre'>, string> = {
   downRight: img('c_crop,w_254,h_270,x_705,y_0/c_pad,w_254,h_284,g_south,b_rgb:fefefe', 'v1791070973', 'ChatGPT_Image_Oct_4_2026_12_41_57_AM-6_xo9mku.png'),
 };
 
-export const heroAlt = 'Dominic Olanya 3D character';
+export const heroAlt = 'DOMINIC WOKORACH OLANYA 3D character';
 
 /**
  * Where the pointer must be (anywhere in the hero) for each direction. Columns: within `centre` (share of the hero's

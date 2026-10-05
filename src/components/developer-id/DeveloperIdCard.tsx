@@ -141,10 +141,10 @@ export default function DeveloperIdCard({ flipOnHover = false }: Props) {
               <i className="dev-id__chip" aria-hidden="true" />
             </header>
             <div className="dev-id__photo dev-id__layer" style={{ '--z': '22px' } as CSSProperties}>
-              <Image src="https://res.cloudinary.com/dkkuwmr42/image/upload/v1791023538/Full%20Stack%20Developer/dominic_zw1v8s_ngyl5d.png" alt="Dominic Olanya" fill sizes="110px" />
+              <Image src="https://res.cloudinary.com/dkkuwmr42/image/upload/v1791023538/Full%20Stack%20Developer/dominic_zw1v8s_ngyl5d.png" alt="DOMINIC WOKORACH OLANYA" fill sizes="110px" />
             </div>
             <div className="dev-id__layer" style={{ '--z': '12px' } as CSSProperties}>
-              <h3 className="dev-id__name">DOMINIC OLANYA</h3>
+              <h3 className="dev-id__name">DOMINIC WOKORACH OLANYA</h3>
               <p className="dev-id__role">Frontend Software Engineer</p>
             </div>
             <dl className="dev-id__details">
@@ -162,7 +162,7 @@ export default function DeveloperIdCard({ flipOnHover = false }: Props) {
               <span>DEVELOPER PROFILE</span>
               <b>DO</b>
             </header>
-            <h3 className="dev-id__back-name">DOMINIC OLANYA</h3>
+            <h3 className="dev-id__back-name">DOMINIC WOKORACH OLANYA</h3>
             <p className="dev-id__back-role">FRONTEND SOFTWARE ENGINEER</p>
             <p className="dev-id__bio">
               I build responsive web applications, interactive digital experiences, and AI-powered platforms.
