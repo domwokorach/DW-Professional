@@ -25,13 +25,22 @@
 @media(max-width:720px){.hero-photon-clip{opacity:.7;-webkit-mask-image:linear-gradient(180deg,transparent 48%,#000 80%);mask-image:linear-gradient(180deg,transparent 48%,#000 80%)}.hero-photon-background{transform:translateY(43%)}}
 
 
-/* Hero poses: all stacked in one box, identical size and bottom-centre alignment. The incoming pose fades in on top
-   while the outgoing one stays fully opaque underneath (.is-behind), so the character never goes see-through. */
-.hero-pose{position:absolute;inset:0;opacity:0;pointer-events:none}
-.hero-pose.is-behind{opacity:1;z-index:1}
-.hero-pose.is-active{opacity:1;z-index:2;transition:opacity var(--pose-fade,150ms) ease-out;will-change:opacity}
+/* Hero character (HeroPortrait). .hero-figure is the body crop's exact box (500:941), sized and placed like the image
+   used to be (contained in the frame, bottom-centre), so the head box can be placed in the crop's own proportions.
+   The body never moves. .hero-head is the head box (x 130, y 0, 260×290 of the 500×941 crop): the head crops stack
+   in it and only their opacity changes (set by the script). Its mask is solid over the whole head area, so the body
+   render's own head never shows round a turned one, and fades out over the collar (70–90% down) and the outer edges,
+   where every crop was fitted to match the body. */
+.hero-person-frame{container-type:size}
+.hero-figure{--w:min(100cqw,calc(100cqh * 500 / 941));position:absolute;bottom:0;left:calc(50% - var(--w) / 2);width:var(--w);height:calc(var(--w) * 941 / 500)}
 .hero-portrait{object-fit:contain;object-position:center bottom}
-@media(prefers-reduced-motion:reduce){.hero-pose.is-active{transition:none}}
+.hero-head{position:absolute;left:26%;top:0;width:52%;height:30.8183%;pointer-events:none;
+  -webkit-mask-image:linear-gradient(#000 70%,rgba(0,0,0,.9) 74%,rgba(0,0,0,.5) 80%,rgba(0,0,0,.1) 86%,transparent 90%),linear-gradient(90deg,transparent,rgba(0,0,0,.5) 5%,#000 10%,#000 90%,rgba(0,0,0,.5) 95%,transparent);
+  -webkit-mask-composite:source-in;
+  mask-image:linear-gradient(#000 70%,rgba(0,0,0,.9) 74%,rgba(0,0,0,.5) 80%,rgba(0,0,0,.1) 86%,transparent 90%),linear-gradient(90deg,transparent,rgba(0,0,0,.5) 5%,#000 10%,#000 90%,rgba(0,0,0,.5) 95%,transparent);
+  mask-composite:intersect}
+.hero-head__look{position:absolute;inset:0;opacity:0;will-change:opacity}
+.hero-head__look img{object-fit:fill}
 /* Live 3D avatar (HeroAvatar): fades in once its model has loaded. */
 .hero-avatar-stage{pointer-events:none;opacity:0;transition:opacity .6s ease}
 .hero-avatar-stage canvas{display:block;width:100%;height:100%}

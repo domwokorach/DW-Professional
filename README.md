@@ -140,7 +140,7 @@ src/
 ├── components/     Sections (hero, skills, projects, experience, learning, contact, layout…)
 │   └── ui/         Shared and adapted third-party components (see below)
 ├── composables/    React hooks (active section, media queries, reveal-on-scroll…)
-├── config/         Site metadata, nav items, media queries, hero poses, legal facts
+├── config/         Site metadata, nav items, media queries, hero looks, legal facts
 ├── data/           Content (skills, projects, experience, achievements, contact) + generated icons
 ├── lib/            Helpers; *.server.ts modules hold Prisma, Resend and S3 (server only)
 ├── styles/         CSS per section, imported in cascade order from app/layout.tsx
