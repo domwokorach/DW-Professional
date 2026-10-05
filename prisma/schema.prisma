@@ -81,8 +81,15 @@ model Comment {
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
   moderatedAt        DateTime?
-  moderatedBy        AdminUser?    @relation(fields: [moderatedById], references: [id], onDelete: SetNull)
+  moderatedBy        AdminUser?    @relation("CommentModeratedBy", fields: [moderatedById], references: [id], onDelete: SetNull)
   moderatedById      String?
+  /// Set only by an admin ("Mark as verified" in /admin/comments), separately from approval: an APPROVED comment is
+  /// published without the verified badge unless this is true. Cleared when the comment stops being APPROVED.
+  /// Never settable through the public form or API.
+  isVerified         Boolean       @default(false)
+  verifiedAt         DateTime?
+  verifiedBy         AdminUser?    @relation("CommentVerifiedBy", fields: [verifiedById], references: [id], onDelete: SetNull)
+  verifiedById       String?
 
   /// The public feed: approved comments, newest first. Also the admin status filters.
   @@index([status, createdAt])
@@ -108,7 +115,8 @@ model AdminUser {
   lastLoginAt       DateTime?
   sessions          AdminSession[]
   auditLogs         AdminAuditLog[]
-  moderatedComments Comment[]
+  moderatedComments Comment[]       @relation("CommentModeratedBy")
+  verifiedComments  Comment[]       @relation("CommentVerifiedBy")
 }
 
 /// A signed-in admin session. The browser holds only the random token (HttpOnly cookie); this stores its SHA-256.
@@ -139,6 +147,8 @@ enum AdminAuditEvent {
   COMMENT_APPROVED
   COMMENT_REJECTED
   COMMENT_DELETED
+  COMMENT_VERIFIED
+  COMMENT_UNVERIFIED
 }
 
 /// Security-relevant admin events. Never holds passwords or tokens.

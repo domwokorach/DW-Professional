@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
+import CommentsCarousel from './CommentsCarousel';
+import { initials } from './format';
 import {
   AVATAR_ACCEPT,
   AVATAR_MAX_BYTES,
@@ -24,9 +26,6 @@ import {
 const EMPTY: CommentFields = { fullName: '', email: '', company: '', comment: '' };
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
-const DATE = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-const initials = (name: string) =>
-  name.split(' ').filter(Boolean).slice(0, 2).map((w) => Array.from(w)[0]?.toUpperCase() ?? '').join('') || '?';
 
 const FIELD_ORDER: CommentFormField[] = ['avatar', 'fullName', 'email', 'company', 'comment', 'consent'];
 const FIELD_ID: Record<CommentFormField, string> = {
@@ -336,33 +335,14 @@ export default function CommentsBoard({ avatarsEnabled }: { avatarsEnabled: bool
       </form>
 
       <div className="cm-feedwrap">
-        {items.length === 0 && feed !== null ? (
+        {feed === null ? (
+          <ul className="cm-feed" aria-busy="true" aria-label="Loading comments">
+            {[0, 1].map((i) => <li key={`sk${i}`} className="cm-card cm-card--skeleton" aria-hidden="true"><span /><span /><span /></li>)}
+          </ul>
+        ) : items.length === 0 ? (
           <p className="cm-empty">{feedFailed ? 'Comments could not be loaded right now.' : 'No comments yet. Be the first to leave one.'}</p>
         ) : (
-          <ul className="cm-feed" aria-busy={feed === null} aria-label={feed === null ? 'Loading comments' : 'Comments, newest first'}>
-            {items.map((c, i) => (
-              <li key={c.id}>
-                <article className="cm-card" style={{ animationDelay: `${Math.min(i, 6) * 45}ms` }}>
-                  <header className="cm-card__head">
-                    <span className="cm-avatar" aria-hidden={c.avatarUrl ? undefined : true}>
-                      {c.avatarUrl ? <img src={c.avatarUrl} alt={`Avatar of ${c.fullName}`} loading="lazy" decoding="async" /> : initials(c.fullName)}
-                    </span>
-                    <div>
-                      <h4 className="cm-name">{c.fullName}</h4>
-                      {c.company && <p className="cm-role">{c.company}</p>}
-                    </div>
-                  </header>
-                  <blockquote className="cm-text">{c.comment}</blockquote>
-                  <footer className="cm-card__foot">
-                    <time dateTime={c.createdAt}>{DATE.format(new Date(c.createdAt))}</time>
-                  </footer>
-                </article>
-              </li>
-            ))}
-            {feed === null && [0, 1].map((i) => (
-              <li key={`sk${i}`} className="cm-card cm-card--skeleton" aria-hidden="true"><span /><span /><span /></li>
-            ))}
-          </ul>
+          <CommentsCarousel items={items} />
         )}
       </div>
     </div>

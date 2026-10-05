@@ -35,6 +35,8 @@ export type PublicComment = {
   avatarUrl: string | null;
   /** ISO timestamp of submission. */
   createdAt: string;
+  /** An admin marked it verified (separate from approval); shows the verified badge on the avatar. */
+  isVerified: boolean;
 };
 export type CommentStatusValue = 'PENDING' | 'APPROVED' | 'REJECTED';
 

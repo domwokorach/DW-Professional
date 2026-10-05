@@ -20,7 +20,7 @@ export async function listApprovedComments(limit = 50): Promise<PublicComment[] 
       where: { status: 'APPROVED' },
       orderBy: { createdAt: 'desc' },
       take: limit,
-      select: { id: true, fullName: true, company: true, comment: true, avatarKey: true, createdAt: true },
+      select: { id: true, fullName: true, company: true, comment: true, avatarKey: true, createdAt: true, isVerified: true },
     });
     return rows.map((r) => ({
       id: r.id,
@@ -29,6 +29,7 @@ export async function listApprovedComments(limit = 50): Promise<PublicComment[] 
       comment: r.comment,
       avatarUrl: r.avatarKey ? avatarPath(r.id) : null,
       createdAt: r.createdAt.toISOString(),
+      isVerified: r.isVerified,
     }));
   } catch (err) {
     logError('Could not list comments', err);
@@ -60,7 +61,8 @@ export type StoredComment = { id: string; createdAt: Date; notificationStatus: '
 /**
  * Saves a (cleaned, validated) comment as PENDING, once per submissionId, so a double click or a retry returns
  * the existing row instead of inserting a duplicate. The same email posting the same text again within a day is
- * also treated as a repeat. Status is always set here: a visitor can never choose it. Null on failure.
+ * also treated as a repeat. Status and verification are always set here: a visitor can never choose them. Null on
+ * failure.
  */
 export async function storeComment(submissionId: string, c: NewComment): Promise<StoredComment | null> {
   const prisma = getPrisma();
@@ -87,6 +89,7 @@ export async function storeComment(submissionId: string, c: NewComment): Promise
         consentGiven: true,
         consentGivenAt: c.consentGivenAt,
         status: 'PENDING',
+        isVerified: false,
       },
       select,
     });
@@ -128,6 +131,9 @@ export type AdminComment = {
   createdAt: string;
   moderatedAt: string | null;
   moderatedBy: string | null;
+  isVerified: boolean;
+  verifiedAt: string | null;
+  verifiedBy: string | null;
 };
 
 export async function adminAvatarKey(id: string): Promise<string | null> {
@@ -146,6 +152,7 @@ export async function listCommentsForAdmin(status: CommentStatusValue, limit = 2
       id: true, fullName: true, email: true, company: true, comment: true, avatarKey: true, device: true,
       ipAddress: true, consentGivenAt: true, status: true, notificationStatus: true, createdAt: true, moderatedAt: true,
       moderatedBy: { select: { email: true } },
+      isVerified: true, verifiedAt: true, verifiedBy: { select: { email: true } },
     },
   });
   return rows.map((r) => ({
@@ -163,6 +170,9 @@ export async function listCommentsForAdmin(status: CommentStatusValue, limit = 2
     createdAt: r.createdAt.toISOString(),
     moderatedAt: r.moderatedAt?.toISOString() ?? null,
     moderatedBy: r.moderatedBy?.email ?? null,
+    isVerified: r.isVerified,
+    verifiedAt: r.verifiedAt?.toISOString() ?? null,
+    verifiedBy: r.verifiedBy?.email ?? null,
   }));
 }
 
@@ -177,7 +187,8 @@ export async function countCommentsByStatus(): Promise<Record<CommentStatusValue
 
 /**
  * Moves a comment to APPROVED or REJECTED. Approve works from PENDING or REJECTED; reject from PENDING or
- * APPROVED (which unpublishes it). Returns 'not_found' / 'unchanged' when there's nothing to do.
+ * APPROVED (which unpublishes it, and clears any verification: re-approving never brings the badge back by
+ * itself). Returns 'not_found' / 'unchanged' when there's nothing to do.
  */
 export async function moderateComment(id: string, to: 'APPROVED' | 'REJECTED', adminUserId: string) {
   const prisma = getPrisma();
@@ -185,7 +196,30 @@ export async function moderateComment(id: string, to: 'APPROVED' | 'REJECTED', a
   const from: CommentStatusValue[] = to === 'APPROVED' ? ['PENDING', 'REJECTED'] : ['PENDING', 'APPROVED'];
   const { count } = await prisma.comment.updateMany({
     where: { id, status: { in: from } },
-    data: { status: to, moderatedAt: new Date(), moderatedById: adminUserId },
+    data: {
+      status: to,
+      moderatedAt: new Date(),
+      moderatedById: adminUserId,
+      ...(to === 'REJECTED' ? { isVerified: false, verifiedAt: null, verifiedById: null } : {}),
+    },
+  });
+  if (count) return 'ok' as const;
+  const exists = await prisma.comment.findUnique({ where: { id }, select: { id: true } });
+  return exists ? ('unchanged' as const) : ('not_found' as const);
+}
+
+/**
+ * Marks an APPROVED comment as verified (or removes that). Only approved comments can be verified, so a pending
+ * one never carries the badge. Returns 'not_found' / 'unchanged' when there's nothing to do.
+ */
+export async function setCommentVerified(id: string, verified: boolean, adminUserId: string) {
+  const prisma = getPrisma();
+  if (!prisma) throw new Error('Database is not configured');
+  const { count } = await prisma.comment.updateMany({
+    where: { id, status: 'APPROVED', isVerified: !verified },
+    data: verified
+      ? { isVerified: true, verifiedAt: new Date(), verifiedById: adminUserId }
+      : { isVerified: false, verifiedAt: null, verifiedById: null },
   });
   if (count) return 'ok' as const;
   const exists = await prisma.comment.findUnique({ where: { id }, select: { id: true } });

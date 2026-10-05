@@ -67,6 +67,12 @@
 .cm-avatar{position:relative}
 .cm-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .cm-avatar--lg{width:56px;height:56px;font-size:16px}
+/* Verified badge: sits on the avatar's top-left edge (outside the clipped circle, so the face stays clear), with a
+   card-coloured ring that separates it from the photo in both themes. Sized relative to the avatar. */
+.cm-avatar-wrap{position:relative;display:inline-flex;flex:none;--cm-badge:18px}
+.cm-avatar-wrap:has(.cm-avatar--lg){--cm-badge:22px}
+.cm-verified{position:absolute;top:calc(var(--cm-badge) * -.22);left:calc(var(--cm-badge) * -.22);z-index:1;width:var(--cm-badge);height:var(--cm-badge);padding:2px;box-sizing:border-box;border-radius:50%;background:var(--white);color:var(--ink);box-shadow:0 0 0 1px var(--line),0 1px 3px rgba(var(--shadow-rgb),.18);pointer-events:auto}
+.cm-verified svg{display:block}
 .cm-name{margin:0;font-size:17px;line-height:1.2;letter-spacing:-.02em;font-weight:700;color:var(--ink);overflow-wrap:anywhere}
 .cm-role{margin:3px 0 0;font-size:13.5px;line-height:1.4;color:var(--text-2);overflow-wrap:anywhere}
 .cm-text{margin:0;font-size:16px;line-height:1.65;color:var(--text-3);white-space:pre-line;overflow-wrap:anywhere}
@@ -77,11 +83,35 @@
 .cm-card--skeleton span:nth-child(1){width:40%}
 .cm-card--skeleton span:nth-child(3){width:70%}
 
+/* Carousel of approved comments. All slides share one grid cell, so the carousel is as tall as the tallest comment
+   (no jump between slides) and every card is the same height. */
+.cm-carousel{display:flex;flex-direction:column;gap:18px;min-width:0}
+.cm-viewport{border-radius:var(--cm-radius);touch-action:pan-y;outline:none}
+.cm-viewport:focus-visible{outline:3px solid var(--ink);outline-offset:4px}
+.cm-slides{list-style:none;margin:0;padding:0;display:grid}
+.cm-slides[data-dir="next"]{--enter:26px;--leave:-26px}
+.cm-slides[data-dir="prev"]{--enter:-26px;--leave:26px}
+.cm-slide{grid-area:1/1;min-width:0;display:flex;visibility:hidden;opacity:0;transform:translateX(var(--enter))}
+.cm-slide.is-active{visibility:visible;opacity:1;transform:none;transition:opacity .5s ease,transform .6s cubic-bezier(.22,1,.36,1)}
+.cm-slide.is-leaving{visibility:visible;opacity:0;transform:translateX(var(--leave));transition:opacity .35s ease,transform .6s cubic-bezier(.22,1,.36,1),visibility 0s .6s}
+.cm-slide .cm-card{width:100%;height:100%;animation:none}
+.cm-slide .cm-text{flex:1}
+.cm-controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px}
+.cm-nav{display:grid;place-items:center;flex:none;width:44px;height:44px;padding:0;border:1px solid var(--line);border-radius:999px;background:var(--glass-strong);color:var(--ink);cursor:pointer;transition:background-color .2s ease,color .2s ease,border-color .2s ease}
+.cm-counter{min-width:56px;text-align:center;font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;color:var(--text-2)}
+.cm-autoplay{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-left:auto;padding:0 18px;border:1px solid var(--ink);border-radius:999px;background:transparent;color:var(--ink);font-size:13px;font-weight:600;cursor:pointer;transition:background-color .2s ease,color .2s ease}
+.cm-nav:focus-visible,.cm-autoplay:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+@media(hover:hover){.cm-nav:hover,.cm-autoplay:hover{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}}
+
 @media(min-width:901px){.cm-form{position:sticky;top:104px}}
 @media(max-width:900px){.cm-layout{grid-template-columns:minmax(0,1fr)}.cm-submit{align-self:stretch}}
 @media(max-width:620px){.cm-row{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:560px){.cm-form{padding:22px 20px}.cm-card{padding:20px}}
 @media(prefers-reduced-motion:reduce){
+  .cm-slide,.cm-slides .cm-slide.is-active,.cm-slides .cm-slide.is-leaving{transform:none}
+  .cm-slide.is-active{transition:opacity .2s ease}
+  .cm-slide.is-leaving{transition:opacity .2s ease,visibility 0s .2s}
+  .cm-nav,.cm-autoplay{transition:none}
   .cm-card{animation:cm-fade .2s ease both;animation-delay:0s!important}
   .cm-submit,.cm-submit:hover:not(:disabled){transition:none;transform:none}
   .cm-field input,.cm-field textarea,.cm-file{transition:none}

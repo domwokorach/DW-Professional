@@ -107,3 +107,13 @@ npm run admin -- revoke-sessions <email>
 - **Self-service password reset** (`/admin/forgot-password`): not implemented; use `npm run admin -- reset-password`.
   If added, reset tokens must be random, hashed in the database, single-use and short-lived, and a successful reset
   must call `revokeAllSessions`.
+
+## The public feed (carousel)
+
+Approved comments show one at a time in a looping carousel (`CommentsCarousel.tsx`): previous/next, swipe, and a
+visible **Pause autoplay / Resume autoplay** button. Autoplay waits a reading time per comment (6 s plus 20 ms per
+character, at most 16 s), loops from the last comment back to the first, and resumes from the current comment. It
+also holds while the pointer is over the comment, while the comment has keyboard focus, while a finger is on it,
+while the carousel is off screen and while the tab is hidden. With "reduce motion" on, autoplay starts off. All
+slides share one grid cell, so the carousel is always as tall as the longest comment and nothing jumps between
+slides. With a single comment there is nothing to cycle, so the controls are not shown.

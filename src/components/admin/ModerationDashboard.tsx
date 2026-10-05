@@ -3,10 +3,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { AdminComment } from '@/lib/comment-store.server';
 import type { CommentStatusValue } from '@/lib/comments';
+import VerifiedBadge from '@/components/comments/VerifiedBadge';
 
 type Counts = Record<CommentStatusValue, number>;
 type Filter = 'pending' | 'approved' | 'rejected';
-type Action = 'approve' | 'reject' | 'delete';
+type Action = 'approve' | 'reject' | 'delete' | 'verify' | 'unverify';
 
 const FILTERS: { key: Filter; status: CommentStatusValue; label: string }[] = [
   { key: 'pending', status: 'PENDING', label: 'Pending' },
@@ -105,6 +106,20 @@ export default function ModerationDashboard({
         return;
       }
       if (!res.ok) throw new Error(String(res.status));
+      if (action === 'verify' || action === 'unverify') {
+        // Verification doesn't change the status, so the comment stays in this list, updated in place.
+        const isVerified = action === 'verify';
+        setComments((list) => list?.map((c) => (c.id === comment.id
+          ? { ...c, isVerified, verifiedAt: isVerified ? new Date().toISOString() : null, verifiedBy: isVerified ? adminEmail : null }
+          : c)) ?? list);
+        setNotice({
+          kind: 'ok',
+          text: isVerified
+            ? `Verified. ${comment.fullName}'s comment now shows the verified badge.`
+            : `Verification removed. ${comment.fullName}'s comment stays public without the badge.`,
+        });
+        return;
+      }
       const from = comment.status;
       setComments((list) => list?.filter((c) => c.id !== comment.id) ?? list);
       setCounts((c) => {
@@ -194,8 +209,11 @@ export default function ModerationDashboard({
                 <li key={c.id}>
                   <article className="adm-card adm-item" aria-labelledby={`adm-c-${c.id}`}>
                     <header className="adm-item__head">
-                      <span className="cm-avatar cm-avatar--lg" aria-hidden="true">
-                        {c.avatarUrl ? <img src={c.avatarUrl} alt="" /> : initials(c.fullName)}
+                      <span className="cm-avatar-wrap">
+                        <span className="cm-avatar cm-avatar--lg" aria-hidden="true">
+                          {c.avatarUrl ? <img src={c.avatarUrl} alt="" /> : initials(c.fullName)}
+                        </span>
+                        {c.isVerified && <VerifiedBadge />}
                       </span>
                       <div className="adm-item__who">
                         <h3 id={`adm-c-${c.id}`} className="cm-name">{c.fullName}</h3>
@@ -214,6 +232,16 @@ export default function ModerationDashboard({
                       <div><dt>Avatar</dt><dd>{c.avatarUrl ? 'Uploaded' : 'None'}</dd></div>
                       <div><dt>Consent</dt><dd>Given {WHEN.format(new Date(c.consentGivenAt))}</dd></div>
                       {c.notificationStatus === 'FAILED' && <div><dt>Email alert</dt><dd>Not delivered</dd></div>}
+                      {c.status === 'APPROVED' && (
+                        <div>
+                          <dt>Verification</dt>
+                          <dd>
+                            {c.isVerified && c.verifiedAt
+                              ? `Verified ${WHEN.format(new Date(c.verifiedAt))}${c.verifiedBy ? ` by ${c.verifiedBy}` : ''}`
+                              : 'Not verified (no badge)'}
+                          </dd>
+                        </div>
+                      )}
                       {c.moderatedAt && (
                         <div><dt>Last moderated</dt><dd>{WHEN.format(new Date(c.moderatedAt))}{c.moderatedBy ? ` by ${c.moderatedBy}` : ''}</dd></div>
                       )}
@@ -223,6 +251,11 @@ export default function ModerationDashboard({
                       {c.status !== 'APPROVED' && (
                         <button type="button" className="adm-btn" onClick={() => act(c, 'approve')} disabled={busy}>
                           {busy ? 'Working…' : 'Approve'}
+                        </button>
+                      )}
+                      {c.status === 'APPROVED' && (
+                        <button type="button" className="adm-btn adm-btn--ghost" onClick={() => act(c, c.isVerified ? 'unverify' : 'verify')} disabled={busy}>
+                          {c.isVerified ? 'Remove verification' : 'Mark as verified'}
                         </button>
                       )}
                       {c.status !== 'REJECTED' && (
