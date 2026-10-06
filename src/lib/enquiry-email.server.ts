@@ -18,6 +18,8 @@ export type EnquiryEmailInput = {
     projectType: string;
     message: string;
   };
+  /** The registered company picked in the Company field, if any. */
+  company?: { companyNumber: string; companyStatus: string | null; companyAddress: string | null };
   /** A file that came with the enquiry. `url` is a temporary download link (S3); without it the file is attached to this email. */
   attachment?: { filename: string; sizeLabel?: string; url?: string; expiresInDays?: number };
   /** Short reference shown in the footer. */
@@ -112,10 +114,13 @@ export function detail(label: string, valueHtml: string, last = false) {
 </tr>`;
 }
 
+/** Public Companies House page (same as companiesHouseUrl in src/lib/companies.ts; inlined to keep this file import-free). */
+const companiesHouseUrl = (n: string) => `https://find-and-update.company-information.service.gov.uk/company/${encodeURIComponent(n)}`;
+
 export const linkStyle = `color:${INK};text-decoration:underline;`;
 
 // ---- Template ------------------------------------------------------------------------------
-export function renderEnquiryEmail({ fields: f, attachment, reference, submittedAt, siteUrl }: EnquiryEmailInput) {
+export function renderEnquiryEmail({ fields: f, company, attachment, reference, submittedAt, siteUrl }: EnquiryEmailInput) {
   const site = host(siteUrl);
   const when_ = when(submittedAt);
   const replySubject = `Re: ${f.projectType} enquiry`;
@@ -127,6 +132,10 @@ export function renderEnquiryEmail({ fields: f, attachment, reference, submitted
     detail('Email', `<a href="${esc(mailto(f.email, replySubject))}" style="${linkStyle}">${esc(f.email)}</a>`),
     ...(f.mobileNumber ? [detail('Phone', `<a href="tel:${esc(phoneDigits)}" style="${linkStyle}">${esc(f.mobileNumber)}</a>`)] : []),
     ...(f.company ? [detail('Company', esc(f.company))] : []),
+    ...(company
+      ? [detail('Company no.', `<a href="${esc(companiesHouseUrl(company.companyNumber))}" style="${linkStyle}">${esc(company.companyNumber)}</a>${company.companyStatus ? ` · ${esc(company.companyStatus)}` : ''}`)]
+      : []),
+    ...(company?.companyAddress ? [detail('Registered office', esc(company.companyAddress))] : []),
     detail('Enquiry type', esc(f.projectType)),
     detail('Submitted', esc(when_), true),
   ].join('');
@@ -255,6 +264,8 @@ ${action}
     `Email:         ${f.email}`,
     ...(f.mobileNumber ? [`Phone:         ${f.mobileNumber}`] : []),
     ...(f.company ? [`Company:       ${f.company}`] : []),
+    ...(company ? [`Company no.:   ${company.companyNumber}${company.companyStatus ? ` (${company.companyStatus})` : ''} ${companiesHouseUrl(company.companyNumber)}`] : []),
+    ...(company?.companyAddress ? [`Registered:    ${company.companyAddress}`] : []),
     `Enquiry type:  ${f.projectType}`,
     `Submitted:     ${when_}`,
     '',

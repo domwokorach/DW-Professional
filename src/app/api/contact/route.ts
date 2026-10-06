@@ -12,7 +12,9 @@ import { getResend } from '@/lib/resend.server';
 import { renderEnquiryEmail } from '@/lib/enquiry-email.server';
 import { deleteUpload, DOWNLOAD_URL_TTL, isUploadKey, presignDownload, verifyUpload } from '@/lib/s3.server';
 import { CONTENT_TYPES, extensionOf, formatBytes } from '@/lib/contact';
-import { setEmailStatus, storeEnquiry, type MediaMeta } from '@/lib/contact-store.server';
+import { setEmailStatus, storeEnquiry, type CompanyMeta, type MediaMeta } from '@/lib/contact-store.server';
+import { normaliseCompanyNumber } from '@/lib/companies';
+import { lookupCompany } from '@/lib/company-lookup.server';
 import { randomUUID } from 'node:crypto';
 
 // Soft per-instance rate limit (instances are reused under Fluid Compute, so this
@@ -106,6 +108,20 @@ export async function POST(request: Request) {
   }
   if (Object.keys(errors).length) return json({ errors }, 400);
 
+  // A company picked from the Company field's suggestions. Only the number is taken from the
+  // browser; status and address are looked up here. Optional: an unknown or unverifiable number
+  // never blocks the enquiry, and a name typed by hand is sent as it is.
+  let company: CompanyMeta | undefined;
+  const companyNumber = fields.company ? normaliseCompanyNumber(text(form, 'companyNumber')) : null;
+  if (companyNumber) {
+    const found = await lookupCompany(companyNumber);
+    company = {
+      companyNumber,
+      companyStatus: typeof found === 'object' && found ? found.company.companyStatus : null,
+      companyAddress: typeof found === 'object' && found ? found.company.address : null,
+    };
+  }
+
   // The form sends one id per submission attempt and reuses it on retry; it keys both the stored
   // row and the email, so retrying never duplicates either.
   const sent = text(form, 'submissionId');
@@ -116,7 +132,7 @@ export async function POST(request: Request) {
     mimeType: CONTENT_TYPES[extensionOf(linked.key) as keyof typeof CONTENT_TYPES],
     size: linked.size,
   };
-  const enquiry = await storeEnquiry(submissionId, fields, media);
+  const enquiry = await storeEnquiry(submissionId, fields, media, company);
   if (enquiry?.emailStatus === 'SENT') return json({ ok: true }, 200);
 
   const resend = getResend();
@@ -129,6 +145,7 @@ export async function POST(request: Request) {
 
   const { html, text: body } = renderEnquiryEmail({
     fields,
+    company,
     attachment: linked
       ? { filename: linked.filename, sizeLabel: formatBytes(linked.size), url: linked.url, expiresInDays: DOWNLOAD_URL_TTL / 86400 }
       : attachment

@@ -27,6 +27,7 @@ import {
   ComboboxTrigger,
   ComboboxValue,
 } from '@/components/ui/motion/combobox';
+import CompanyField, { type CompanySelection } from './CompanyField';
 import FileUpload, { UPLOAD_IDLE, type UploadState } from './FileUpload';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
@@ -98,6 +99,8 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
   // duplicate enquiry or email) and replaced after a successful send.
   const submissionId = useRef<string | null>(null);
   const [fields, setFields] = useState<ContactFields>(EMPTY);
+  // A UK company picked from the Company field's suggestions (optional; a typed name needs none).
+  const [company, setCompany] = useState<CompanySelection | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [upload, setUpload] = useState<UploadState>(UPLOAD_IDLE);
   // After a successful send the form clears `file`; this keeps its name/size on screen beside "Upload complete".
@@ -165,6 +168,7 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
 
     const data = new FormData();
     (Object.keys(fields) as (keyof ContactFields)[]).forEach((key) => data.append(key, fields[key].trim()));
+    if (company && company.companyName === fields.company) data.append('companyNumber', company.companyNumber);
     data.append('website', honeypot);
     submissionId.current ??= crypto.randomUUID();
     data.append('submissionId', submissionId.current);
@@ -204,6 +208,7 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
         submissionId.current = null;
         setStatus('success');
         setFields(EMPTY);
+        setCompany(null);
         projectTypeRef.current = '';
         if (file) {
           setSentFile({ name: file.name, size: file.size });
@@ -234,7 +239,7 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
     }
   }
 
-  const input = (field: 'fullName' | 'email' | 'mobileNumber' | 'company', label: string, props: InputHTMLAttributes<HTMLInputElement>) => (
+  const input = (field: 'fullName' | 'email' | 'mobileNumber', label: string, props: InputHTMLAttributes<HTMLInputElement>) => (
     <div className="contact-field">
       <label className="contact-label" htmlFor={id(field)}>{label}{props.required ? null : <span className="contact-optional"> (optional)</span>}</label>
       <input
@@ -258,7 +263,21 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
         {input('fullName', 'Full Name', { type: 'text', autoComplete: 'name', required: true, maxLength: 100 })}
         {input('email', 'Email', { type: 'email', autoComplete: 'email', inputMode: 'email', required: true, maxLength: 254 })}
         {input('mobileNumber', 'Mobile Number', { type: 'tel', autoComplete: 'tel', inputMode: 'tel', maxLength: 24 })}
-        {input('company', 'Company', { type: 'text', autoComplete: 'organization', maxLength: 120 })}
+        <div className="contact-field">
+          <label className="contact-label" htmlFor={id('company')}>Company<span className="contact-optional"> (optional)</span></label>
+          <CompanyField
+            id={id('company')}
+            value={fields.company}
+            selection={company}
+            onTextChange={(text) => update('company', text)}
+            onSelectionChange={setCompany}
+            onBlur={onBlur('company')}
+            invalid={Boolean(errors.company)}
+            describedBy={describedBy('company')}
+            maxLength={120}
+          />
+          {errorText('company')}
+        </div>
 
         <div className="contact-field contact-field--full">
           {/* Pace UI Motion Combobox (input-inside-popup pattern): the trigger is the form control. */}

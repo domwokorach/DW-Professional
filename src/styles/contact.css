@@ -117,6 +117,30 @@
 .project-type-popup .pace-combobox-empty{padding:14px 12px;font-size:14px;color:var(--contact-muted);text-align:center}
 .project-type-popup .pace-combobox-empty:empty{padding:0} /* stays mounted for announcements; no gap when there are results */
 @media(prefers-reduced-motion:reduce){.pace-combobox-chevron,.project-type-search{transition:none}}
+/* Company (optional): text input with UK company suggestions; the popup reuses the Project Type popup styles */
+.company-input-wrap{position:relative}
+.company-input-wrap[data-filled] .company-input{padding-right:48px}
+.company-clear{position:absolute;top:10px;right:2px;bottom:0;display:flex;align-items:center;justify-content:center;width:44px;padding:0;color:var(--contact-muted);background:none;border:0;border-radius:10px;cursor:pointer;transition:color .18s ease}
+.company-clear:hover{color:var(--contact-dark)}
+.company-clear:focus-visible{outline:2px solid var(--contact-accent);outline-offset:-6px;color:var(--contact-dark)}
+.company-clear svg{width:16px;height:16px}
+.company-popup .pace-combobox-item.company-option{padding-right:12px}
+.company-popup .company-option .pace-combobox-item__label{display:flex;flex-direction:column;gap:3px}
+.company-popup .company-option .pace-combobox-item__indicator{display:none}
+.company-option__name{font-weight:600;line-height:1.3}
+.company-option__meta{display:flex;flex-wrap:wrap;gap:2px 10px;font-size:12.5px;line-height:1.4;color:var(--contact-muted)}
+.company-option__number{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.02em;font-variant-numeric:tabular-nums;color:var(--contact-dark);opacity:.8}
+.company-popup__note{display:flex;flex-direction:column;align-items:center;gap:2px;margin:0;padding:14px 12px;font-size:14px;line-height:1.4;color:var(--contact-dark);text-align:center}
+.company-popup__note span{font-size:13px;color:var(--contact-muted)}
+.company-popup__note:has(.company-spinner){flex-direction:row;justify-content:center;gap:10px;color:var(--contact-muted)}
+.company-spinner{width:14px;height:14px;flex:none;border:2px solid var(--contact-border);border-top-color:var(--contact-accent);border-radius:50%;animation:company-spin .8s linear infinite}
+@keyframes company-spin{to{transform:rotate(360deg)}}
+.company-selected{display:flex;flex-wrap:wrap;gap:4px 12px;margin:8px 0 0;font-size:13px;line-height:1.45;color:var(--contact-muted)}
+.company-selected__number{font-family:var(--font-mono);font-size:12px;letter-spacing:.02em;font-variant-numeric:tabular-nums;color:var(--contact-dark)}
+.company-selected__address{flex-basis:100%;overflow-wrap:anywhere}
+.company-selected__verified{display:inline-flex;align-items:center;gap:6px;color:var(--contact-success)}
+.company-selected__verified:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+@media(prefers-reduced-motion:reduce){.company-clear{transition:none}.company-spinner{animation-duration:2.4s}}
 
 /* Upload */
 .contact-upload{position:relative;margin-top:10px;min-height:156px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:26px 20px;text-align:center;color:var(--contact-dark);background:transparent;border:1px dashed var(--contact-border-strong);border-radius:16px;cursor:pointer;transition:border-color .18s ease,background-color .18s ease}

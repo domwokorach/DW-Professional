@@ -2,34 +2,52 @@
 // tests share it. Columns are matched by header name (ignoring case, spaces and punctuation), which
 // tolerates the stray leading spaces in Companies House headers; a file without CompanyNumber and
 // CompanyName is rejected rather than loaded wrongly.
+import { companySearchKey } from '@/lib/companies';
 
 export type CompanyRow = {
+  /** Kept as text: leading zeros are part of the number ("00445790"). */
   companyNumber: string;
   companyName: string;
   nameSearch: string;
   status: string;
   companyType: string;
-  /** ISO date (yyyy-mm-dd) or empty. */
+  /** ISO dates (yyyy-mm-dd) or empty. */
   incorporationDate: string;
+  dissolutionDate: string;
+  addressLine1: string;
+  addressLine2: string;
   postTown: string;
+  county: string;
+  country: string;
   postcode: string;
   sicText: string;
+  sicText2: string;
+  sicText3: string;
+  sicText4: string;
 };
 
 export type RowResult = { row: CompanyRow } | { skip: 'missing-number' | 'missing-name' | 'bad-number' };
 
 const norm = (h: string) => h.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-/** Normalised header → field. */
+/** Normalised header → field (Companies House "basic company data" names). */
 const FIELDS = {
   companynumber: 'companyNumber',
   companyname: 'companyName',
   companystatus: 'status',
   companycategory: 'companyType',
   incorporationdate: 'incorporationDate',
+  dissolutiondate: 'dissolutionDate',
+  regaddressaddressline1: 'addressLine1',
+  regaddressaddressline2: 'addressLine2',
   regaddressposttown: 'postTown',
+  regaddresscounty: 'county',
+  regaddresscountry: 'country',
   regaddresspostcode: 'postcode',
   siccodesictext1: 'sicText',
+  siccodesictext2: 'sicText2',
+  siccodesictext3: 'sicText3',
+  siccodesictext4: 'sicText4',
 } as const;
 
 type Field = (typeof FIELDS)[keyof typeof FIELDS];
@@ -61,13 +79,12 @@ export function toIsoDate(raw: string): string {
   return date.getUTCFullYear() === +y && date.getUTCMonth() === +m - 1 && date.getUTCDate() === +d ? `${y}-${m}-${d}` : '';
 }
 
-export const searchKey = (name: string) => name.normalize('NFKC').toLowerCase().replace(/\s+/g, ' ').trim();
-
-const cell = (rec: Record<string, string>, header: string | undefined) => (header ? (rec[header] ?? '').trim() : '');
+const cell = (rec: Record<string, string>, header: string | undefined) => (header ? (rec[header] ?? '').trim().replace(/\s+/g, ' ') : '');
 
 export function mapRow(rec: Record<string, string>, map: HeaderMap): RowResult {
+  // Read as text and never converted to a number, so "00445790" keeps its leading zeros.
   const companyNumber = cell(rec, map.companyNumber).toUpperCase();
-  const companyName = cell(rec, map.companyName).replace(/\s+/g, ' ');
+  const companyName = cell(rec, map.companyName);
   if (!companyNumber) return { skip: 'missing-number' };
   if (!companyName) return { skip: 'missing-name' };
   if (!/^[A-Z0-9]{2,10}$/.test(companyNumber)) return { skip: 'bad-number' };
@@ -75,13 +92,21 @@ export function mapRow(rec: Record<string, string>, map: HeaderMap): RowResult {
     row: {
       companyNumber,
       companyName,
-      nameSearch: searchKey(companyName),
+      nameSearch: companySearchKey(companyName),
       status: cell(rec, map.status),
       companyType: cell(rec, map.companyType),
       incorporationDate: toIsoDate(cell(rec, map.incorporationDate)),
+      dissolutionDate: toIsoDate(cell(rec, map.dissolutionDate)),
+      addressLine1: cell(rec, map.addressLine1),
+      addressLine2: cell(rec, map.addressLine2),
       postTown: cell(rec, map.postTown),
-      postcode: cell(rec, map.postcode),
+      county: cell(rec, map.county),
+      country: cell(rec, map.country),
+      postcode: cell(rec, map.postcode).toUpperCase(),
       sicText: cell(rec, map.sicText),
+      sicText2: cell(rec, map.sicText2),
+      sicText3: cell(rec, map.sicText3),
+      sicText4: cell(rec, map.sicText4),
     },
   };
 }

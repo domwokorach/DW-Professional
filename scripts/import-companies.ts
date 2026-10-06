@@ -1,6 +1,6 @@
 // Imports the company CSV into the company database. Run it by hand, never as part of `build` or a
 // deploy:
-//   npm run companies:import                         # stream the CSV from S3 (AWS_S3_BUCKET / AWS_S3_KEY)
+//   npm run companies:import                         # stream the CSV from S3 (AWS_S3_BUCKET + AWS_S3_KEY, or COMPANIES_S3_URI)
 //   npm run companies:import -- --dry-run            # parse and validate only; no database writes
 //   npm run companies:import -- --file ./sample.csv  # a local file instead of S3
 //   npm run companies:import -- --limit 1000         # stop after N rows (to try it out)
@@ -36,7 +36,7 @@ function fail(message: string): never {
 async function openSource(): Promise<{ stream: Readable; label: string }> {
   if (file) return { stream: createReadStream(file), label: file };
   const s3 = getCompaniesS3();
-  if (!s3) fail('S3 is not configured: set AWS_REGION, AWS_S3_BUCKET and AWS_S3_KEY (or use --file).');
+  if (!s3) fail('S3 is not configured: set AWS_REGION and AWS_S3_BUCKET + AWS_S3_KEY (or COMPANIES_S3_URI), or use --file.');
   try {
     const res = await s3.client.send(new GetObjectCommand({ Bucket: s3.bucket, Key: s3.key }));
     if (!res.Body) fail('The S3 object has no body.');
@@ -80,6 +80,11 @@ async function main() {
   stream.on('error', (err) => parser.destroy(err));
   stream.pipe(parser);
 
+  const n = (v: number) => v.toLocaleString('en-GB');
+  const skippedCount = () => stats.missingNumber + stats.missingName + stats.badNumber;
+  const progress = () =>
+    console.log(`Processed: ${n(stats.read)}  ${dryRun ? 'Valid' : 'Imported'}: ${n(stats.imported)}  Skipped: ${n(skippedCount())}  Errors: 0`);
+
   let batch: CompanyRow[] = [];
   let sample: CompanyRow[] = [];
   const flush = async () => {
@@ -102,7 +107,7 @@ async function main() {
         if (sample.length < 3) sample.push(result.row);
         if (batch.length >= batchSize) await flush();
       }
-      if (stats.read % 100_000 === 0) console.log(`  …${stats.read.toLocaleString('en-GB')} rows read`);
+      if (stats.read % 100_000 === 0) progress();
       if (stats.read >= limit) break;
     }
     await flush();
@@ -116,9 +121,11 @@ async function main() {
     await prisma?.$disconnect();
   }
 
-  const skipped = stats.missingNumber + stats.missingName + stats.badNumber;
-  console.log(`\n${dryRun ? 'Valid rows' : 'Upserted'}: ${stats.imported.toLocaleString('en-GB')} of ${stats.read.toLocaleString('en-GB')} read`);
-  console.log(`Skipped: ${skipped} (no number ${stats.missingNumber}, no name ${stats.missingName}, invalid number ${stats.badNumber})`);
+  console.log(`\n${dryRun ? 'Dry run complete (nothing written)' : 'Import complete'}`);
+  console.log(`Processed: ${n(stats.read)}`);
+  console.log(`${dryRun ? 'Valid' : 'Imported'}: ${n(stats.imported)}${dryRun ? '' : ' (inserted or updated by company number)'}`);
+  console.log(`Skipped: ${n(skippedCount())} (no number ${n(stats.missingNumber)}, no name ${n(stats.missingName)}, invalid number ${n(stats.badNumber)})`);
+  console.log('Errors: 0');
   if (dryRun) console.log('First rows:', sample);
 }
 

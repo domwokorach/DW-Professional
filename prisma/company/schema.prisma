@@ -17,22 +17,41 @@ datasource db {
 }
 
 model Company {
-  /// Company number, unique per company: the key imports upsert on.
+  /// Company number, unique per company: the key imports upsert on. Text, never a number: leading
+  /// zeros are significant ("00445790").
   companyNumber     String    @id
   companyName       String
-  /// Lower-cased, whitespace-collapsed name used for prefix search.
+  /// Search form of the name (src/lib/companies.ts companySearchKey): accents and case folded,
+  /// "&" as "and", punctuation as spaces. Exact, prefix and trigram (fuzzy) search all use it.
   nameSearch        String
   /// CompanyStatus, e.g. "Active".
   status            String?
   /// CompanyCategory, e.g. "Private Limited Company".
   companyType       String?
   incorporationDate DateTime? @db.Date
+  dissolutionDate   DateTime? @db.Date
+  /// Registered office address.
+  addressLine1      String?
+  addressLine2      String?
   postTown          String?
+  county            String?
+  country           String?
   postcode          String?
-  /// First SIC code line as supplied (code and description).
+  /// SIC code lines as supplied (code and description).
   sicText           String?
+  sicText2          String?
+  sicText3          String?
+  sicText4          String?
+  /// When the row was last written by an import; `updatedAt` also moves when live Companies House data refreshes it.
+  importedAt        DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
   /// text_pattern_ops lets Postgres use this index for `LIKE 'prefix%'` whatever the database collation.
   @@index([nameSearch(ops: raw("text_pattern_ops"))])
+  /// Trigram (pg_trgm) index for word and fuzzy matches. Created by migration
+  /// 20261006120000_company_search, which installs pg_trgm into this schema and skips the index
+  /// where the extension isn't available (search then falls back to prefix matching).
+  @@index([nameSearch(ops: raw("gin_trgm_ops"))], type: Gin, map: "Company_nameSearch_trgm_idx")
+  @@index([status])
+  @@index([postcode])
 }

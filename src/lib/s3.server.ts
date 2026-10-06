@@ -37,10 +37,24 @@ export function getS3() {
   return { client: c, bucket };
 }
 
-/** The client, bucket and object key of the company dataset CSV, or null when it isn't configured. Separate from attachments. */
-export function getCompaniesS3() {
+/**
+ * Bucket and key of the company dataset CSV: AWS_S3_BUCKET + AWS_S3_KEY, or COMPANIES_S3_URI
+ * ("s3://bucket/key"). The dataset date lives only in that configuration, so a newer Companies House
+ * file needs nothing but an env change.
+ */
+export function companiesS3Location(): { bucket: string; key: string } | null {
   const bucket = process.env.AWS_S3_BUCKET;
   const key = process.env.AWS_S3_KEY;
+  if (bucket && key) return { bucket, key };
+  const uri = /^s3:\/\/([^/]+)\/(.+)$/.exec(process.env.COMPANIES_S3_URI ?? '');
+  return uri ? { bucket: uri[1], key: uri[2] } : null;
+}
+
+/** The client, bucket and object key of the company dataset CSV, or null when it isn't configured. Separate from attachments. */
+export function getCompaniesS3() {
+  const location = companiesS3Location();
+  const bucket = location?.bucket;
+  const key = location?.key;
   const c = s3Client();
   if (!bucket || !key || !c) return null;
   return { client: c, bucket, key };

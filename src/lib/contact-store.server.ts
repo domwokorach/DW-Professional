@@ -5,6 +5,8 @@ import { getPrisma } from '@/lib/prisma.server';
 
 export type StoredEnquiry = { id: string; emailStatus: 'PENDING' | 'SENT' | 'FAILED' };
 export type MediaMeta = { key: string; filename: string; mimeType: string; size: number };
+/** A registered company the visitor picked, with the details the server looked up for it. */
+export type CompanyMeta = { companyNumber: string; companyStatus: string | null; companyAddress: string | null };
 
 const logError = (what: string, err: unknown) =>
   console.error(`[contact-store] ${what}:`, (err as { code?: string }).code ?? (err as Error).name);
@@ -13,7 +15,7 @@ const logError = (what: string, err: unknown) =>
  * Saves an enquiry once per submissionId. A retry of the same submission returns the existing
  * row (and its email status) instead of inserting a duplicate.
  */
-export async function storeEnquiry(submissionId: string, fields: ContactFields, media?: MediaMeta): Promise<StoredEnquiry | null> {
+export async function storeEnquiry(submissionId: string, fields: ContactFields, media?: MediaMeta, company?: CompanyMeta): Promise<StoredEnquiry | null> {
   const prisma = getPrisma();
   if (!prisma) return null;
   try {
@@ -26,6 +28,9 @@ export async function storeEnquiry(submissionId: string, fields: ContactFields, 
         email: fields.email,
         mobileNumber: fields.mobileNumber || null,
         company: fields.company || null,
+        companyNumber: company?.companyNumber ?? null,
+        companyStatus: company?.companyStatus ?? null,
+        companyAddress: company?.companyAddress ?? null,
         projectType: fields.projectType,
         message: fields.message,
         attachment: media ? { create: media } : undefined,
