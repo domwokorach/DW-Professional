@@ -16,8 +16,8 @@ export default function ContactSection() {
       <div className="contact-layout">
         <div className="contact-intro">
           <p className="contact-kicker">LET&apos;S BUILD SOMETHING</p>
-          <h2>From the database to the <em>last pixel</em></h2>
-          <p className="contact-lede">Available for freelance projects, product development, frontend engineering and full-stack opportunities.</p>
+          <h2>Building thoughtful digital experiences from robust systems to <em>polished interfaces.</em></h2>
+          <p className="contact-lede">I create scalable, accessible, and user-focused digital products by combining strong engineering foundations with carefully crafted frontend experiences. From application architecture and data integration to responsive interfaces and interaction details, every part is designed to work seamlessly together.</p>
           <dl className="contact-info">
             {contactInfo.map((item) => (
               <ContactInfoRow key={item.label} label={item.label} icon={item.icon}>
