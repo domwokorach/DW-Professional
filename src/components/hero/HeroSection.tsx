@@ -31,7 +31,7 @@ export default function HeroSection({ heroAvatar }: { heroAvatar?: AvatarAssets 
       <div className="hero-actions">
         <IconButton className="primary" icon={BriefcaseBusinessIcon} onClick={() => scrollToSection('Work')}>Explore work</IconButton>
         <IconButton icon={SendIcon} onClick={() => scrollToSection('Contact')}>Let&apos;s talk</IconButton>
-        <IconButton icon={DownloadIcon} onClick={() => scrollToSection('About')}>Résumé</IconButton>
+        <IconButton icon={DownloadIcon} onClick={() => scrollToSection('About')}>Resume</IconButton>
       </div>
       <button className="scroll-mark" onClick={() => scrollToSection('About')} aria-label="Scroll to about">⌄</button>
     </section>
