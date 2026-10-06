@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 const SECTIONS = [
   { href: '/admin/comments', label: 'Comments' },
-  { href: '/admin/sessions', label: 'Sessions' },
+  { href: '/admin/sessions', label: 'Portfolio Access' },
 ] as const;
 
 /** Links between the admin sections; the current one is marked for assistive technology and styled as selected. */

@@ -21,7 +21,7 @@ export default async function AdminSessionsPage() {
     <main className="adm-dash adm-dash--wide adm-dash--access" id="main">
       <header className="adm-bar">
         <div>
-          <p className="adm-kicker">PORTFOLIO ADMIN</p>
+          <p className="adm-kicker">PORTFOLIO ACCESS</p>
           <h1 className="adm-title">Sessions</h1>
           <p className="adm-subtitle">Candidates who completed the Portfolio Access form.</p>
         </div>

@@ -67,7 +67,7 @@ export default function PortfolioAccessView() {
   // Optional Upload / Camera file (already converted and size-checked in the browser; the server re-checks).
   const [attachment, setAttachment] = useState<Attachment | null>(null);
   // The file the server confirmed it saved with the last submission, for the success message.
-  const [sentFile, setSentFile] = useState<string | null>(null);
+  const [sentFile, setSentFile] = useState<{ name: string; photo: boolean } | null>(null);
   // One id per submission, reused on retry so the server never records or emails it twice.
   const submissionId = useRef<string | null>(null);
   // Synchronous guard: state updates are async, so a fast double click could otherwise post twice.
@@ -155,7 +155,7 @@ export default function PortfolioAccessView() {
         // (pop-up blockers allow new tabs only shortly after one).
         const opened = openResumeTab();
         const saved = (await res.json().catch(() => null)) as { attachment?: { filename: string } | null } | null;
-        setSentFile(saved?.attachment?.filename ?? null);
+        setSentFile(saved?.attachment ? { name: saved.attachment.filename, photo: attachment?.source === 'camera' } : null);
         // Clear what belongs to this submission only (the file and its id); the details stay, so a candidate who
         // comes back to the form doesn't retype them, and sending again updates their session.
         setAttachment(null);
@@ -413,7 +413,9 @@ export default function PortfolioAccessView() {
                 <p className="pa-eyebrow">DOMINIC</p>
                 <h1 id="pa-title" className="pa-title" ref={successTitle} tabIndex={-1}>Thank you!</h1>
                 <p className="pa-text">
-                  {sentFile ? <>Your details and your file <strong className="pa-sent-file">{sentFile}</strong> have been submitted successfully.</> : 'Your details have been submitted successfully.'}
+                  {sentFile
+                    ? <>Your details and your {sentFile.photo ? 'photo' : 'file'} <strong className="pa-sent-file">{sentFile.name}</strong> have been received.</>
+                    : 'Your details have been submitted successfully.'}
                   <br />{resumeMessage}
                 </p>
               </motion.div>

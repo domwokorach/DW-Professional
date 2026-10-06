@@ -14,10 +14,11 @@ const fileUrl = (id: string, inline = false) => `/api/admin/portfolio-access/fil
 
 /**
  * A session's files, newest first: name, type, size, upload time and source, with Preview (PDF and images, shown in
- * the page), Open (in a new tab; PDF and images) and Download. Word documents can't be previewed in a browser, so
+ * the page), View (full size in a new tab; PDF and images) and Download. Files that came with the latest submission
+ * are marked. Word documents can't be previewed in a browser, so
  * they offer Download only.
  */
-export default function SessionFiles({ files, candidate }: { files: AdminFile[]; candidate: string }) {
+export default function SessionFiles({ files, candidate, lastSubmittedAt }: { files: AdminFile[]; candidate: string; lastSubmittedAt: string }) {
   const [open, setOpen] = useState<string | null>(null);
 
   return (
@@ -43,7 +44,11 @@ export default function SessionFiles({ files, candidate }: { files: AdminFile[];
                     <span className="adm-file__icon" aria-hidden="true"><FileTextIcon /></span>
                   )}
                   <div className="adm-file__meta">
-                    <p className="adm-file__name">{f.filename}</p>
+                    <p className="adm-file__name">
+                      {f.filename}
+                      {/* Saved with the same timestamp as its submission, so this marks the latest one's file(s). */}
+                      {f.createdAt === lastSubmittedAt && <span className="adm-tag adm-tag--ok">Latest submission</span>}
+                    </p>
                     <p className="adm-file__info">
                       <span>{attachmentTypeLabel(f.mimeType)}</span>
                       <span>{formatBytes(f.size)}</span>
@@ -65,7 +70,7 @@ export default function SessionFiles({ files, candidate }: { files: AdminFile[];
                     )}
                     {previewable && (
                       <a className="adm-btn adm-btn--ghost adm-btn--sm" href={fileUrl(f.id, true)} target="_blank" rel="noopener">
-                        Open<span className="sr-only"> {f.filename} in a new tab</span>
+                        View<span className="sr-only"> {f.filename} in a new tab</span>
                       </a>
                     )}
                     <a className="adm-btn adm-btn--sm" href={fileUrl(f.id)} download={f.filename}>

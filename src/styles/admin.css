@@ -80,6 +80,10 @@ body:has(.adm-dash--access) .site-footer{display:none}
 .adm-dialog__who .adm-sub{font-weight:400}
 .adm-table time,.adm-table td[data-label="Mobile"] a{white-space:nowrap}
 .adm-table td[data-label="Email"]{min-width:170px}
+.adm-files-link{display:inline-flex;align-items:center;gap:8px}
+.adm-files-link__thumb{width:32px;height:32px;border-radius:6px;object-fit:cover;background:rgba(var(--ink-rgb),.06)}
+.adm-tag--ok{border:1px solid var(--live);color:var(--ink);background:color-mix(in srgb,var(--live) 12%,transparent)}
+.adm-file__name .adm-tag{margin-left:10px}
 .adm-links{display:flex;flex-wrap:wrap;gap:4px 12px}
 .adm-links a{white-space:nowrap}
 .adm-mono{font-family:var(--font-mono);font-size:13px}

@@ -1,6 +1,6 @@
 'use client';
 
-import { CameraIcon, FileTextIcon, UploadIcon, XIcon } from 'lucide-react';
+import { CameraIcon, FileTextIcon, RotateCcwIcon, UploadIcon, XIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { formatBytes } from '@/lib/contact';
 import {
@@ -200,14 +200,14 @@ export default function AttachmentField({ value, onChange, error, onError, disab
     stopCamera();
     setCameraState('closed');
     if (dialog.current?.open) dialog.current.close();
-    cameraButton.current?.focus();
+    (cameraButton.current ?? uploadButton.current)?.focus();
   }
 
   async function takePhoto() {
     const v = video.current;
     if (!v || cameraState !== 'live') return;
     try {
-      const file = await toImage(v, `camera-photo-${new Date().toISOString().slice(0, 10)}`);
+      const file = await toImage(v, `camera-photo-${new Date().toLocaleDateString('en-CA')}` /* local YYYY-MM-DD */);
       closeCamera();
       await accept(file, 'camera');
     } catch {
@@ -271,6 +271,18 @@ export default function AttachmentField({ value, onChange, error, onError, disab
             <span className="pa-attach__name">{value.file.name}</span>
             <span className="pa-attach__size">{formatBytes(value.file.size)} · {value.source === 'camera' ? 'Camera photo' : 'Uploaded'}</span>
           </span>
+          {value.source === 'camera' && (
+            <button
+              type="button"
+              className="pa-attach__remove"
+              onClick={() => void openCamera()}
+              disabled={disabled}
+              aria-label={`Retake photo (replaces ${value.file.name})`}
+            >
+              <RotateCcwIcon aria-hidden="true" />
+              <span>Retake</span>
+            </button>
+          )}
           <button type="button" className="pa-attach__remove" onClick={remove} disabled={disabled} aria-label={`Remove ${value.file.name}`}>
             <XIcon aria-hidden="true" />
             <span>Remove</span>

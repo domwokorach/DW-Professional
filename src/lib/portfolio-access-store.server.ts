@@ -63,8 +63,9 @@ export async function storeAccess(submissionId: string, a: NewAccess, file?: New
   const prisma = getPrisma();
   if (!prisma) return null;
   const emailKey = a.email.toLowerCase();
-  const attachments = file ? { create: { ...file, data: new Uint8Array(file.data) } } : undefined;
   const now = new Date();
+  // createdAt = the submission's time, so a file can be matched to the submission it came with.
+  const attachments = file ? { create: { ...file, data: new Uint8Array(file.data), createdAt: now } } : undefined;
   try {
     return await prisma.$transaction(async (tx) => {
       const repeat = await tx.portfolioAccess.findFirst({

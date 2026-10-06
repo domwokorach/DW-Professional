@@ -99,6 +99,7 @@ body:has(.pa) .site-footer,body:has(.pa) .cookie-consent{display:none}
 .pa-camera__shoot{gap:8px;min-height:48px;cursor:pointer;font:inherit;font-size:15px;font-weight:600}
 .pa-camera__shoot:disabled{opacity:.6;cursor:progress;transform:none}
 @media(max-width:480px){.pa-camera{padding:16px}.pa-camera__frame{aspect-ratio:3/4}.pa-camera__actions{flex-direction:column-reverse}.pa-camera__actions>*{width:100%}}
+@media(max-width:420px){.pa-attach__preview{flex-wrap:wrap}.pa-attach__meta{flex-basis:calc(100% - 68px)}.pa-attach__remove{flex:1;justify-content:center;border-color:var(--line)}}
 @media(prefers-reduced-motion:reduce){.pa-attach__preview,.pa-camera[open]{animation:none}.pa-attach__remove{transition:none}}
 .pa-sent-file{color:var(--ink);font-weight:600;overflow-wrap:anywhere}
 .pa-hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}

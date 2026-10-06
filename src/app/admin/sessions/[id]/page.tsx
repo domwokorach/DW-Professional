@@ -47,7 +47,7 @@ export default async function AdminSessionPage({ params }: { params: Promise<{ i
     <main className="adm-dash adm-dash--wide adm-dash--access" id="main">
       <header className="adm-bar">
         <div>
-          <p className="adm-kicker">PORTFOLIO ADMIN · SESSION</p>
+          <p className="adm-kicker">PORTFOLIO ACCESS · SESSION</p>
           <h1 className="adm-title">{s?.fullName ?? 'Session'}</h1>
           {s && <p className="adm-subtitle">{s.email}</p>}
         </div>
@@ -99,7 +99,7 @@ export default async function AdminSessionPage({ params }: { params: Promise<{ i
             </section>
           </div>
 
-          <SessionFiles files={s.attachments} candidate={s.fullName} />
+          <SessionFiles files={s.attachments} candidate={s.fullName} lastSubmittedAt={s.lastSubmittedAt} />
         </>
       )}
       <AdminAutoRefresh />

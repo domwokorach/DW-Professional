@@ -14,6 +14,8 @@ const telHref = (mobile: string) => `tel:${mobile.trim().startsWith('+') ? '+' :
 const links = (r: AdminAccess): [string, string][] =>
   ([['LinkedIn', r.linkedinUrl], ['Website', r.companyWebsite], ['Portfolio', r.portfolioUrl]] as [string, string | null][])
     .filter((l): l is [string, string] => Boolean(l[1]));
+/** The session's newest image file, for the list thumbnail (attachments are newest first). */
+const latestImage = (r: AdminAccess) => r.attachments.find((f) => f.mimeType.startsWith('image/'));
 const EXPIRED_URL = `/admin/login?expired=1&next=${encodeURIComponent(PAGE)}`;
 
 type Notice = { kind: 'ok' | 'err'; text: string };
@@ -189,7 +191,11 @@ export default function PortfolioAccessTable({
                             </a>
                           ))}
                           {r.attachments.length > 0 && (
-                            <Link href={`${adminSessionPath(r.id)}#files`} aria-label={`${r.fullName}'s files: ${r.attachments.length}. Open the session.`}>
+                            <Link href={`${adminSessionPath(r.id)}#files`} className="adm-files-link" aria-label={`${r.fullName}'s files: ${r.attachments.length}. Open the session.`}>
+                              {latestImage(r) && (
+                                // The newest image (e.g. a camera photo), through the authenticated file route.
+                                <img src={`/api/admin/portfolio-access/files/${encodeURIComponent(latestImage(r)!.id)}?inline=1`} alt="" loading="lazy" className="adm-files-link__thumb" />
+                              )}
                               {r.attachments.length === 1 ? '1 file' : `${r.attachments.length} files`}
                             </Link>
                           )}
