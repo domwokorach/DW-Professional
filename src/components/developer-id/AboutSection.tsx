@@ -1,9 +1,11 @@
+import { Suspense } from 'react';
 import { DownloadIcon } from '@/components/animate-ui/icons/download';
 import { LinkIcon } from '@/components/animate-ui/icons/link';
 import { IconLink } from '@/components/ui';
 import { quickFacts, socialLinks } from '@/data';
 import DeveloperIdCard from './DeveloperIdCard';
 import LondonClock from './LondonClock';
+import WeatherQuickFact, { WeatherQuickFactSkeleton } from './WeatherQuickFact';
 
 export default function AboutSection() {
   return (
@@ -29,6 +31,9 @@ export default function AboutSection() {
               <dt>Time <span className="quick-fact-live" aria-hidden="true">Live</span></dt>
               <dd><LondonClock /></dd>
             </div>
+            <Suspense fallback={<WeatherQuickFactSkeleton />}>
+              <WeatherQuickFact />
+            </Suspense>
             {quickFacts.map(({ label, value }) => (
               <div key={label} className="quick-fact"><dt>{label}</dt><dd>{value}</dd></div>
             ))}

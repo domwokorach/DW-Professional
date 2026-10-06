@@ -92,6 +92,22 @@
 .quick-fact-live:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;animation:quick-fact-live 2.4s ease-in-out infinite}
 @keyframes quick-fact-live{0%,100%{opacity:1}50%{opacity:.35}}
 @media(prefers-reduced-motion:reduce){.quick-fact-live:before{animation:none}}
+.quick-fact--weather{align-items:center}
+.quick-fact--weather dd{display:flex;align-items:center;justify-content:flex-end;gap:10px;min-height:40px}
+.quick-fact-weather-icon{flex:none;display:block;width:40px;height:40px}
+.quick-fact-weather-icon img{display:block;width:100%;height:100%}
+/* Meteocons are drawn for dark backgrounds; on the light theme a hairline outline keeps pale shapes (clouds, mist) visible. */
+.quick-fact-weather-icon img{filter:drop-shadow(0 0 .6px rgba(var(--ink-rgb),.55)) drop-shadow(0 0 .6px rgba(var(--ink-rgb),.35))}
+:root[data-theme="dark"] .quick-fact-weather-icon img{filter:none}
+.quick-fact-weather-text{min-width:0}
+.quick-fact-temp{font-family:var(--font-mono);font-size:15px;font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.quick-fact-condition{font-weight:600}
+.quick-fact-weather-skeleton{display:flex;align-items:center;gap:10px}
+.quick-fact-weather-skeleton i{width:40px;height:40px;border-radius:50%;background:rgba(var(--ink-rgb),.08)}
+.quick-fact-weather-skeleton span{display:grid;justify-items:end;gap:7px}
+.quick-fact-weather-skeleton b{display:block;width:96px;height:13px;border-radius:6px;background:rgba(var(--ink-rgb),.1)}
+.quick-fact-weather-skeleton b+b{width:64px;height:10px}
+@media(max-width:380px){.quick-fact-feels{display:none}}
 
 /* Evervault hover layer (decorative). Behind each face's content, invisible until hovered with a
    mouse; never intercepts the card's click/keyboard flip. */
