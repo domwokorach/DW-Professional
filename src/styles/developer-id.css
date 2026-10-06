@@ -95,7 +95,8 @@
 .quick-fact--weather{align-items:center}
 .quick-fact--weather dd{display:flex;align-items:center;justify-content:flex-end;gap:10px;min-height:40px}
 .quick-fact-weather-icon{flex:none;display:block;width:40px;height:40px}
-.quick-fact-weather-icon img{display:block;width:100%;height:100%}
+/* Drawn at 120% of its 40px box and pulled back by 10% each side, so it stays centred and the box (and row) keep their size. */
+.quick-fact-weather-icon img{display:block;width:120%;height:120%;max-width:none;margin:-10%;object-fit:contain}
 /* Meteocons are drawn for dark backgrounds; on the light theme a hairline outline keeps pale shapes (clouds, mist) visible. */
 .quick-fact-weather-icon img{filter:drop-shadow(0 0 .6px rgba(var(--ink-rgb),.55)) drop-shadow(0 0 .6px rgba(var(--ink-rgb),.35))}
 :root[data-theme="dark"] .quick-fact-weather-icon img{filter:none}
