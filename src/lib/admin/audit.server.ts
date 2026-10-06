@@ -5,7 +5,7 @@ import { clientIp, userAgent } from '@/lib/request.server';
 
 export async function audit(
   event: AdminAuditEvent,
-  opts: { adminUserId?: string | null; commentId?: string; request?: Request } = {},
+  opts: { adminUserId?: string | null; commentId?: string; portfolioAccessId?: string; request?: Request } = {},
 ) {
   try {
     await getPrisma()?.adminAuditLog.create({
@@ -13,6 +13,7 @@ export async function audit(
         event,
         adminUserId: opts.adminUserId ?? null,
         commentId: opts.commentId ?? null,
+        portfolioAccessId: opts.portfolioAccessId ?? null,
         ipAddress: opts.request ? clientIp(opts.request) : null,
         userAgent: opts.request ? userAgent(opts.request) : null,
       },

@@ -111,3 +111,11 @@ export async function listAccessForAdmin(limit = 500): Promise<{ rows: AdminAcce
   ]);
   return { rows: rows.map((r) => ({ ...r, createdAt: r.createdAt.toISOString() })), total };
 }
+
+/** Permanently deletes one submission. 'not_found' when it no longer exists (e.g. already deleted elsewhere). */
+export async function deleteAccess(id: string): Promise<'ok' | 'not_found'> {
+  const prisma = getPrisma();
+  if (!prisma) throw new Error('Database is not configured');
+  const { count } = await prisma.portfolioAccess.deleteMany({ where: { id } });
+  return count ? 'ok' : 'not_found';
+}

@@ -159,20 +159,23 @@ enum AdminAuditEvent {
   COMMENT_UNVERIFIED
   COMMENT_ITALIC_ON
   COMMENT_ITALIC_OFF
+  PORTFOLIO_ACCESS_DELETED
 }
 
 /// Security-relevant admin events. Never holds passwords or tokens.
 model AdminAuditLog {
-  id          String          @id @default(cuid())
+  id                String          @id @default(cuid())
   /// Null for failed sign-ins with an unknown email.
-  adminUser   AdminUser?      @relation(fields: [adminUserId], references: [id], onDelete: SetNull)
-  adminUserId String?
-  event       AdminAuditEvent
+  adminUser         AdminUser?      @relation(fields: [adminUserId], references: [id], onDelete: SetNull)
+  adminUserId       String?
+  event             AdminAuditEvent
   /// The comment acted on (kept after the comment itself is deleted).
-  commentId   String?
-  ipAddress   String?
-  userAgent   String?
-  createdAt   DateTime        @default(now())
+  commentId         String?
+  /// The Portfolio Access submission acted on (kept after the submission itself is deleted).
+  portfolioAccessId String?
+  ipAddress         String?
+  userAgent         String?
+  createdAt         DateTime        @default(now())
 
   @@index([adminUserId, createdAt])
   @@index([event, createdAt])

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { AdminLogoutButton, AdminSections, PortfolioAccessTable } from '@/components/admin';
+import { ThemeToggle } from '@/components/layout';
 import { requireAdminPage } from '@/lib/admin/session.server';
 import { ADMIN_PORTFOLIO_ACCESS_PATH, listAccessForAdmin, type AdminAccess } from '@/lib/portfolio-access-store.server';
 
@@ -17,7 +18,7 @@ export default async function AdminPortfolioAccessPage() {
   }
 
   return (
-    <main className="adm-dash adm-dash--wide" id="main">
+    <main className="adm-dash adm-dash--wide adm-dash--access" id="main">
       <header className="adm-bar">
         <div>
           <p className="adm-kicker">PORTFOLIO ADMIN</p>
@@ -25,6 +26,8 @@ export default async function AdminPortfolioAccessPage() {
         </div>
         <div className="adm-bar__user">
           <span className="adm-who" title={session.admin.email}>Signed in as <strong>{session.admin.email}</strong></span>
+          {/* The site-wide theme switch: same saved choice and system default as the rest of the site. */}
+          <ThemeToggle />
           <AdminLogoutButton csrfToken={session.csrfToken} />
         </div>
       </header>
@@ -33,19 +36,8 @@ export default async function AdminPortfolioAccessPage() {
 
       {data === null ? (
         <p className="adm-empty adm-empty--err">Submissions could not be loaded. <Link href={ADMIN_PORTFOLIO_ACCESS_PATH} className="cm-link">Try again</Link></p>
-      ) : data.rows.length === 0 ? (
-        <p className="adm-empty">No Portfolio Access submissions yet.</p>
       ) : (
-        <section aria-labelledby="adm-pa-title" className="adm-pa">
-          <div className="adm-pa__head">
-            <h2 id="adm-pa-title" className="adm-pa__count">
-              {data.total} {data.total === 1 ? 'submission' : 'submissions'}
-              {data.total > data.rows.length && <span className="adm-muted"> · showing the latest {data.rows.length}</span>}
-            </h2>
-            <Link href={ADMIN_PORTFOLIO_ACCESS_PATH} className="adm-btn adm-btn--ghost" prefetch={false}>Refresh</Link>
-          </div>
-          <PortfolioAccessTable rows={data.rows} />
-        </section>
+        <PortfolioAccessTable initialRows={data.rows} initialTotal={data.total} csrfToken={session.csrfToken} />
       )}
     </main>
   );
