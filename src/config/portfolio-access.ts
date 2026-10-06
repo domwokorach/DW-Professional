@@ -29,3 +29,6 @@ export const CV_FILENAME = 'Dominic_Wokorach_Olanya_CV.docx';
  * is what makes "Download CV" actually save the file, under a clean name, instead of just navigating to it.
  */
 export const CV_DOWNLOAD_URL = CV_URL.replace('/raw/upload/', `/raw/upload/fl_attachment:${CV_FILENAME.replace(/\.docx$/, '')}/`);
+
+/** The CV the Portfolio Access form opens once a submission succeeds (served from /public). */
+export const RESUME_URL = '/Dominic_Wokorach_Olanya_CV.pdf';

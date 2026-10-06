@@ -27,6 +27,33 @@ body:has(.pa) .site-footer,body:has(.pa) .cookie-consent{display:none}
 .pa-meta{margin:0;text-wrap:balance;font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-2)}
 .pa-back{margin-top:2px;padding:10px 14px;border-radius:999px;font-size:13px;color:var(--text-2);text-decoration:none}
 .pa-back:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+/* Access form (shown before the CV opens). Inputs, labels, errors and the Company field reuse the contact form's
+   classes and tokens, so the two forms look and behave the same. */
+/* Keyed to the rendered panel (not the state), so the card keeps its width while the form animates out. */
+.pa-card:has(.pa-panel--form){max-width:540px}
+.pa-head{display:flex;flex-direction:column;align-items:center}
+.pa-panel--form{gap:26px}
+.pa-form{display:flex;flex-direction:column;gap:18px;width:100%;text-align:left}
+.pa-note{margin:0;font-size:13px;line-height:1.5;color:var(--contact-muted)}
+.pa-field .contact-control{margin-top:8px}
+.pa-field .contact-control[readonly]{opacity:.7}
+.pa-error{display:flex;align-items:flex-start;gap:8px}
+/* An icon as well as the colour, so an error never depends on colour alone. */
+.pa-error>span{flex:none;display:inline-grid;place-items:center;width:16px;height:16px;margin-top:1px;border-radius:50%;background:var(--contact-error);color:var(--contact-surface);font-size:11px;font-weight:700;line-height:1}
+.pa-privacy{margin:2px 0 0;font-size:13px;line-height:1.55;color:var(--text-3)}
+.pa-privacy a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.pa-privacy a:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:2px}
+.pa-form-error:empty{display:none}
+.pa-form-error p{margin:0;padding:12px 14px;border:1px solid var(--contact-error);border-left-width:4px;border-radius:12px;font-size:14px;line-height:1.5;color:var(--contact-dark);background:color-mix(in srgb,var(--contact-error) 6%,transparent)}
+.pa-form-error strong{color:var(--contact-error)}
+.pa-form .pa-submit{flex:none}
+.pa-submit{width:100%;gap:10px;font:inherit;font-size:15px;font-weight:600;cursor:pointer}
+.pa-submit[aria-disabled="true"]{opacity:.75;cursor:progress;transform:none}
+.pa-submit__spinner{width:18px;height:18px;color:currentColor}
+.pa-hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
+.pa-title:focus:not(:focus-visible){outline:none}
+.pa-title:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:6px}
 @media(min-width:520px){.pa-card{padding:48px 40px 30px}.pa-actions{flex-direction:row}.pa-btn{flex:1}}
+
 @media(prefers-reduced-motion:reduce){.pa-panel--enter{animation-name:pa-fade;animation-duration:.15s}.pa-btn{transition:none}.pa-btn--primary:hover{transform:none}}
 @keyframes pa-fade{from{opacity:0}to{opacity:1}}

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { AdminComment } from '@/lib/comment-store.server';
 import type { CommentStatusValue } from '@/lib/comments';
 import VerifiedBadge from '@/components/comments/VerifiedBadge';
+import AdminSections from './AdminSections';
 
 type Counts = Record<CommentStatusValue, number>;
 type Filter = 'pending' | 'approved' | 'rejected';
@@ -186,6 +187,8 @@ export default function ModerationDashboard({
           </button>
         </div>
       </header>
+
+      <AdminSections current="/admin/comments" />
 
       <nav className="adm-filters" aria-label="Filter comments by status">
         {FILTERS.map((f) => (

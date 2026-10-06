@@ -13,7 +13,7 @@ export default function PrivacyView() {
       <ul>
         <li>It does not use analytics, advertising or tracking tools.</li>
         <li>It does not set cookies. See the <Link href="/cookies">Cookie</Link> page for the items it stores in your browser (your privacy choice and, if you use the theme button, your light or dark preference).</li>
-        <li>It does not keep a record of visitors. Only enquiries and comments you choose to send are saved, together with the details described below.</li>
+        <li>It does not keep a record of visitors. Only enquiries, comments and Portfolio Access forms you choose to send are saved, together with the details described below.</li>
       </ul>
 
       <h2>When you use the contact form</h2>
@@ -33,6 +33,10 @@ export default function PrivacyView() {
       <p>{legal.owner} is emailed a copy of these details to review your comment. Only {legal.owner}, signed in to a private moderation page, can see your email address, IP address and device details. They are never shown on the site.</p>
       <p>Comments are checked before they are shown. Once a comment is approved, your name, company, avatar, comment and date are visible to everyone who visits this site, so please don&apos;t include anything you wouldn&apos;t want to be public. A comment that is rejected is not shown to anyone.</p>
       <p>To stop repeated automated submissions, the server also limits how many comments can be sent from one IP address. Comments and their details are kept until you ask for yours to be removed or {legal.owner} deletes them; to ask, see &quot;Your rights&quot; below.</p>
+
+      <h2>When you open the CV through Portfolio Access</h2>
+      <p>The QR code on the Developer ID card opens a short Portfolio Access form, which asks for your full name, email address, mobile number and, optionally, your company. When you submit it, the server also records the date and time, a short description of your device and browser (for example &quot;Mobile · iOS · Safari&quot;, and the browser&apos;s user-agent text) and your IP address, as reported by the hosting provider. Nothing else about your device is collected, and no fingerprinting, advertising or analytics tools are used.</p>
+      <p>These details are used only to manage and monitor access to the CV. They are emailed to {legal.owner} through <a href="https://resend.com" target="_blank" rel="noopener noreferrer">Resend</a> and a copy is saved in this site&apos;s database. To stop repeated automated submissions, the server also limits how many forms can be sent from one IP address. They are kept until you ask for yours to be removed or {legal.owner} deletes them; to ask, see &quot;Your rights&quot; below.</p>
 
       <h2>Hosting</h2>
       <p>Like any website, the hosting provider may record standard server logs (such as IP address, browser type and time of request) to keep the site running and secure. Hosting provider: <ToConfirm value={legal.hostingProvider} what="Hosting provider" />.</p>

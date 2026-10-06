@@ -64,3 +64,18 @@ export function isSameOrigin(request: Request): boolean {
     return false;
   }
 }
+
+const IP = /^[0-9a-fA-F:.]{2,45}$/;
+
+/**
+ * The client IP only when it comes from a proxy we trust, or null. On Vercel, x-real-ip and x-forwarded-for are
+ * set by the platform's edge, which overwrites anything the client sent, so they can be relied on. Anywhere else
+ * those headers could be forged by the client, so they're only read when TRUST_PROXY_HEADERS=true says a trusted
+ * proxy sets them (or in local development, where it doesn't matter).
+ */
+export function trustedClientIp(request: Request): string | null {
+  const trusted = process.env.VERCEL === '1' || process.env.TRUST_PROXY_HEADERS === 'true' || process.env.NODE_ENV === 'development';
+  if (!trusted) return null;
+  const ip = request.headers.get('x-real-ip')?.trim() || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '';
+  return IP.test(ip) ? ip : null;
+}

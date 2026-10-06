@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
       { source: '/', destination: '/en-gb', permanent: false },
       // The QR code encodes the localised route; the bare one stays valid as a fallback.
       { source: '/portfolio-access', destination: '/en-gb/portfolio-access', permanent: false },
+      // The Portfolio Access form links to the localised privacy route; the notice itself lives at /privacy.
+      { source: '/en-gb/privacy', destination: '/privacy', permanent: false },
     ];
   },
   images: {
