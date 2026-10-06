@@ -159,12 +159,23 @@ docs/               Setup notes (S3)
 
 The QR code on the back of the Developer ID card is a real, scannable code that opens
 `/en-gb/portfolio-access` (`src/views/portfolio-access/`), not the CV file itself; the bare
-`/portfolio-access` redirects there. That page shows a short
-loading animation, vibrates once where the browser supports it (Android Chromium; iOS has no
-Vibration API), then offers **Open CV** and **Download CV**. The CV URL is defined once in
-`src/config/portfolio-access.ts`; the page never embeds the `.docx`. The QR encodes
-`NEXT_PUBLIC_SITE_URL` + `/en-gb/portfolio-access` (falling back to the live domain in production), so set
-that variable correctly before printing or sharing the card.
+`/portfolio-access` redirects there. That page asks for full name, email, mobile and an optional company
+(with Companies House suggestions). `POST /api/portfolio-access` validates the details, records them with the
+server-side IP address and a short device summary in the `PortfolioAccess` table, emails a notification, and
+only then does the page open `/Dominic_Wokorach_Olanya_CV.pdf` in a new tab (with an **Open Resume** button if
+the browser blocks it). Submissions are listed, newest first, at `/admin/portfolio-access` (admin sign-in
+required), where they can be deleted. The QR encodes `NEXT_PUBLIC_SITE_URL` + `/en-gb/portfolio-access`
+(falling back to the live domain in production), so set that variable correctly before printing or sharing the card.
+
+## Deployment
+
+The site is deployed on **Vercel** only: every push to `master` builds and deploys production. Apply any new
+database migrations with `npm run db:deploy` (see above).
+
+There is **no Render deployment** and no separate socket server. This repository previously held a different
+app whose live chat ran as a Render service (`npm run socket:start`); that code was removed when the
+portfolio replaced it. If a Render service is still connected to this repository, suspend or delete it in the
+Render dashboard: it will fail on every push with `Missing script: "socket:start"`.
 
 ## Privacy, cookies and legal pages
 
