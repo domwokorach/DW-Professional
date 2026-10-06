@@ -10,7 +10,7 @@ export default async function AdminCommentsPage() {
     const [comments, counts] = await Promise.all([listCommentsForAdmin('PENDING'), countCommentsByStatus()]);
     initial = { comments, counts };
   } catch (err) {
-    console.error('[admin-comments] Could not load comments:', (err as Error).name);
+    console.error('[admin-comments] Could not load comments:', (err as Error).name, (err as { code?: string }).code);
   }
   return <ModerationDashboard adminEmail={session.admin.email} csrfToken={session.csrfToken} initial={initial} />;
 }
