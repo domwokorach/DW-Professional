@@ -50,6 +50,23 @@ body:has(.pa) .site-footer,body:has(.pa) .cookie-consent{display:none}
 .pa-submit{width:100%;gap:10px;font:inherit;font-size:15px;font-weight:600;cursor:pointer}
 .pa-submit[aria-disabled="true"]{opacity:.75;cursor:progress;transform:none}
 .pa-submit__spinner{width:18px;height:18px;color:currentColor}
+.pa-profile{display:flex;flex-direction:column;gap:16px;min-width:0;margin:4px 0 0;padding:18px 0 0;border:0;border-top:1px solid var(--line)}
+.pa-profile__title{padding:0;margin-bottom:-6px;font-size:15px;font-weight:700;letter-spacing:-.01em;color:var(--ink)}
+.pa-profile__title .contact-optional{font-size:13px;font-weight:400}
+.pa-import{display:flex;gap:8px;align-items:stretch}
+.pa-import .contact-control{flex:1;min-width:0}
+.pa-import__btn{flex:none;margin-top:8px;min-width:88px;min-height:48px;padding:0 18px;border:1px solid var(--ink);border-radius:12px;background:transparent;color:var(--ink);font:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:background-color .18s ease,color .18s ease}
+.pa-import__btn:hover:not([aria-disabled="true"]){background:var(--ink);color:var(--on-ink)}
+.pa-import__btn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.pa-import__btn[aria-disabled="true"]{opacity:.7;cursor:progress}
+.pa-import__hint{margin-top:6px;font-size:12.5px}
+.pa-import__msg{margin-top:8px;color:var(--text-3)}
+.pa-preview{margin-top:10px;padding:12px 14px;border:1px solid var(--line);border-left:3px solid var(--ink);border-radius:12px;background:rgba(var(--ink-rgb),.03)}
+.pa-preview p{margin:0}
+.pa-preview__name{font-size:14.5px;font-weight:700;color:var(--ink);overflow-wrap:anywhere}
+.pa-preview__desc{margin-top:4px !important;font-size:13.5px;line-height:1.5;color:var(--text-3);overflow-wrap:anywhere}
+.pa-preview__host{margin-top:6px !important;font-family:var(--font-mono);font-size:11.5px;color:var(--text-2)}
+@media(prefers-reduced-motion:reduce){.pa-import__btn{transition:none}}
 .pa-hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
 .pa-title:focus:not(:focus-visible){outline:none}
 .pa-title:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:6px}

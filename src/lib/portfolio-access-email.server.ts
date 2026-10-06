@@ -12,6 +12,9 @@ export type AccessEmailInput = {
   mobile: string;
   company: string;
   companyNumber: string | null;
+  linkedin: string;
+  companyWebsite: string;
+  portfolio: string;
   device: string | null;
   userAgent: string | null;
   ipAddress: string | null;
@@ -34,13 +37,16 @@ export function renderAccessEmail(a: AccessEmailInput) {
   const replyHref = mailto(a.email, 'Following up on my CV');
   const company = a.company ? `${a.company}${a.companyNumber ? ` (Company no. ${a.companyNumber})` : ''}` : '—';
   const ip = a.ipAddress ?? 'Not available';
+  // Validated absolute http(s) URLs (server-side), so they are safe as hrefs once escaped.
+  const links = ([['LinkedIn', a.linkedin], ['Company website', a.companyWebsite], ['Portfolio', a.portfolio]] as const).filter(([, href]) => href);
   const device = a.device ?? 'Unknown';
 
   const candidate = [
     detail('Name', esc(a.fullName)),
     detail('Email', `<a href="${esc(replyHref)}" style="${linkStyle}">${esc(a.email)}</a>`),
     detail('Mobile', `<a href="${esc(telHref(a.mobile))}" style="${linkStyle}">${esc(a.mobile)}</a>`),
-    detail('Company', esc(company), true),
+    detail('Company', esc(company), !links.length),
+    ...links.map(([label, href], i) => detail(label, `<a href="${esc(href)}" style="${linkStyle}">${esc(href)}</a>`, i === links.length - 1)),
   ].join('');
 
   const access = [
@@ -131,6 +137,7 @@ export function renderAccessEmail(a: AccessEmailInput) {
     `Email:       ${a.email}`,
     `Mobile:      ${a.mobile}`,
     `Company:     ${company}`,
+    ...links.map(([label, href]) => `${`${label}:`.padEnd(Math.max(13, label.length + 2))}${href}`),
     '',
     'ACCESS DETAILS',
     `Date/Time:   ${when_}`,

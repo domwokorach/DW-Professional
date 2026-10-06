@@ -10,6 +10,10 @@ const WHEN = new Intl.DateTimeFormat('en-GB', {
 });
 const telHref = (mobile: string) => `tel:${mobile.trim().startsWith('+') ? '+' : ''}${mobile.replace(/\D/g, '')}`;
 const PAGE = '/admin/portfolio-access';
+/** The links a candidate added (validated absolute http(s) URLs on the server), labelled for the table. */
+const links = (r: AdminAccess): [string, string][] =>
+  ([['LinkedIn', r.linkedinUrl], ['Website', r.companyWebsite], ['Portfolio', r.portfolioUrl]] as [string, string | null][])
+    .filter((l): l is [string, string] => Boolean(l[1]));
 const EXPIRED_URL = `/admin/login?expired=1&next=${encodeURIComponent(PAGE)}`;
 
 type Notice = { kind: 'ok' | 'err'; text: string };
@@ -143,6 +147,7 @@ export default function PortfolioAccessTable({
                 <th scope="col">Email</th>
                 <th scope="col">Mobile</th>
                 <th scope="col">Company</th>
+                <th scope="col">Links</th>
                 <th scope="col">IP Address</th>
                 <th scope="col" aria-sort="descending">Submitted At</th>
                 <th scope="col"><span className="sr-only">Actions</span></th>
@@ -164,6 +169,19 @@ export default function PortfolioAccessTable({
                     <span>
                       {r.company || <span className="adm-muted">—</span>}
                       {r.company && r.companyNumber && <span className="adm-sub">Company no. {r.companyNumber}</span>}
+                    </span>
+                  </td>
+                  <td data-label="Links">
+                    <span>
+                      {links(r).length ? (
+                        <span className="adm-links">
+                          {links(r).map(([label, href]) => (
+                            <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={`${r.fullName}'s ${label} (opens in a new tab)`}>
+                              {label}
+                            </a>
+                          ))}
+                        </span>
+                      ) : <span className="adm-muted">—</span>}
                     </span>
                   </td>
                   <td data-label="IP Address" className="adm-mono">

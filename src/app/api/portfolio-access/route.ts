@@ -58,7 +58,10 @@ export async function POST(request: Request) {
   if (typeof body.website === 'string' && body.website) return json({ error: 'invalid_request' }, 400);
 
   const text = (key: string) => (typeof body[key] === 'string' ? (body[key] as string) : '');
-  const raw: AccessFields = { fullName: text('fullName'), email: text('email'), mobile: text('mobile'), company: text('company') };
+  const raw: AccessFields = {
+    fullName: text('fullName'), email: text('email'), mobile: text('mobile'), company: text('company'),
+    linkedin: text('linkedin'), companyWebsite: text('companyWebsite'), portfolio: text('portfolio'),
+  };
   const errors = validateAccess(raw);
   if (Object.keys(errors).length) return json({ errors }, 400);
   const fields = cleanAccess(raw);

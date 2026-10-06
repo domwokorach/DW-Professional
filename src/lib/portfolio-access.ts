@@ -6,12 +6,43 @@ export type AccessFields = {
   email: string;
   mobile: string;
   company: string;
+  /** Optional professional profile links (absolute http(s) URLs once cleaned). */
+  linkedin: string;
+  companyWebsite: string;
+  portfolio: string;
 };
 export type AccessField = keyof AccessFields;
 export type AccessErrors = Partial<Record<AccessField, string>>;
 
-export const ACCESS_FIELDS: AccessField[] = ['fullName', 'email', 'mobile', 'company'];
-export const ACCESS_LIMITS = { fullName: 100, email: 254, mobile: 24, company: 120 } as const;
+export const ACCESS_FIELDS: AccessField[] = ['fullName', 'email', 'mobile', 'company', 'linkedin', 'companyWebsite', 'portfolio'];
+export const ACCESS_LIMITS = {
+  fullName: 100, email: 254, mobile: 24, company: 120, linkedin: 300, companyWebsite: 300, portfolio: 300,
+} as const;
+const URL_FIELDS = new Set<AccessField>(['linkedin', 'companyWebsite', 'portfolio']);
+
+/**
+ * A typed link as an absolute URL, or null if it can't be one. "acme.com" becomes "https://acme.com/"; only http(s),
+ * a host with a dot, and no embedded user:password are accepted.
+ */
+export function normaliseUrl(raw: string): string | null {
+  const value = raw.trim();
+  if (!value || /\s/.test(value)) return null;
+  try {
+    const url = new URL(/^[a-z][a-z0-9+.-]*:/i.test(value) ? value : `https://${value}`);
+    if (url.protocol !== 'https:' && url.protocol !== 'http:') return null;
+    if (url.username || url.password || !/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(url.hostname)) return null;
+    url.hash = '';
+    return url.href.length <= 300 ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
+/** A personal LinkedIn profile: linkedin.com (any subdomain, e.g. uk.) and a /in/ or /pub/ path. */
+export function isLinkedInProfile(href: string): boolean {
+  const url = new URL(href);
+  return /(^|\.)linkedin\.com$/i.test(url.hostname) && /^\/(in|pub)\/[^/]+/i.test(url.pathname);
+}
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 // International-friendly: optional leading +, then digits, spaces, dashes, dots and brackets
@@ -29,7 +60,9 @@ export function validateAccessField(field: AccessField, raw: string): string | u
         ? `Please keep your name under ${ACCESS_LIMITS.fullName} characters.`
         : field === 'email'
           ? 'Please enter a valid email address.'
-          : 'Please enter a valid mobile number, including the country code if outside the UK.';
+          : URL_FIELDS.has(field)
+            ? 'Please use a shorter web address.'
+            : 'Please enter a valid mobile number, including the country code if outside the UK.';
   }
   if (CONTROL.test(value)) return 'Please remove any unusual characters.';
   switch (field) {
@@ -52,6 +85,17 @@ export function validateAccessField(field: AccessField, raw: string): string | u
     }
     case 'company':
       return; // optional, like the contact form's Company field
+    case 'linkedin':
+    case 'companyWebsite':
+    case 'portfolio': {
+      if (!value) return; // optional
+      const href = normaliseUrl(value);
+      if (!href) return 'Please enter a valid web address, like https://example.com.';
+      if (field === 'linkedin' && !isLinkedInProfile(href)) {
+        return 'Please enter your LinkedIn profile link, like https://www.linkedin.com/in/your-name.';
+      }
+      return;
+    }
   }
 }
 
@@ -64,13 +108,20 @@ export function validateAccess(fields: AccessFields): AccessErrors {
   return errors;
 }
 
-/** Trims every field and collapses runs of whitespace (the values are single-line). */
+/** Trims every field and collapses runs of whitespace (the values are single-line); links become absolute URLs. */
 export function cleanAccess(fields: AccessFields): AccessFields {
   const tidy = (s: string) => s.replace(/\s+/g, ' ').trim();
+  const link = (s: string) => normaliseUrl(s) ?? '';
   return {
     fullName: tidy(fields.fullName),
     email: fields.email.trim(),
     mobile: tidy(fields.mobile),
     company: tidy(fields.company),
+    linkedin: link(fields.linkedin),
+    companyWebsite: link(fields.companyWebsite),
+    portfolio: link(fields.portfolio),
   };
 }
+
+/** What /api/portfolio-access/site-preview returns for a company website. Text only: no remote images. */
+export type SitePreview = { url: string; host: string; name: string | null; description: string | null };

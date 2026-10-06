@@ -14,13 +14,16 @@ import {
   type AccessErrors,
   type AccessField,
   type AccessFields,
+  type SitePreview,
 } from '@/lib/portfolio-access';
 
 type Status = 'idle' | 'submitting' | 'error' | 'success';
 /** Whether the CV tab opened by itself after the submission, or the browser blocked it. */
 type ResumeState = 'opening' | 'opened' | 'blocked';
+/** The company website "Import" button: fetches the site's public name and description through the server. */
+type ImportState = { status: 'idle' | 'loading' | 'done' | 'error'; preview?: SitePreview; message?: string };
 
-const EMPTY: AccessFields = { fullName: '', email: '', mobile: '', company: '' };
+const EMPTY: AccessFields = { fullName: '', email: '', mobile: '', company: '', linkedin: '', companyWebsite: '', portfolio: '' };
 const id = (field: AccessField) => `pa-${field}`;
 const PRIVACY_PATH = '/en-gb/privacy';
 
@@ -59,6 +62,7 @@ export default function PortfolioAccessView() {
   const [formError, setFormError] = useState('');
   const [resume, setResume] = useState<ResumeState>('opening');
   const [honeypot, setHoneypot] = useState('');
+  const [siteImport, setSiteImport] = useState<ImportState>({ status: 'idle' });
   // One id per submission, reused on retry so the server never records or emails it twice.
   const submissionId = useRef<string | null>(null);
   // Synchronous guard: state updates are async, so a fast double click could otherwise post twice.
@@ -87,6 +91,8 @@ export default function PortfolioAccessView() {
 
   const update = (field: AccessField, value: string) => {
     setFields((prev) => ({ ...prev, [field]: value }));
+    // A changed address no longer matches the imported preview.
+    if (field === 'companyWebsite' && siteImport.status !== 'loading') setSiteImport({ status: 'idle' });
     setTouched((prev) => ({ ...prev, [field]: true }));
     if (status === 'error') setStatus('idle');
     // Once a field shows an error, re-check it as the visitor fixes it.
@@ -167,9 +173,48 @@ export default function PortfolioAccessView() {
 
   const submitting = status === 'submitting';
 
-  const input = (field: Exclude<AccessField, 'company'>, label: string, props: InputHTMLAttributes<HTMLInputElement>) => (
+  /** Imports the company website's public name and description; fills Company when it's still empty. */
+  async function importSite() {
+    if (siteImport.status === 'loading') return;
+    const error = validateAccessField('companyWebsite', fields.companyWebsite);
+    if (error || !fields.companyWebsite.trim()) {
+      setError('companyWebsite', error ?? 'Please enter the company website first.');
+      focusField('companyWebsite');
+      return;
+    }
+    setSiteImport({ status: 'loading' });
+    try {
+      const res = await fetch('/api/portfolio-access/site-preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: fields.companyWebsite }),
+      });
+      const body = (await res.json().catch(() => null)) as { preview?: SitePreview } | null;
+      if (!res.ok || !body?.preview) {
+        setSiteImport({
+          status: 'error',
+          message: res.status === 429
+            ? 'Too many imports just now. You can still submit the link as it is.'
+            : res.status === 400
+              ? 'That address can’t be imported. Please check it, or submit it as it is.'
+              : 'We couldn’t read that website. The link will still be saved when you submit.',
+        });
+        return;
+      }
+      const preview = body.preview;
+      setSiteImport({ status: 'done', preview });
+      if (preview.name && !fields.company.trim()) {
+        setFields((prev) => ({ ...prev, company: preview.name!.slice(0, ACCESS_LIMITS.company) }));
+        setCompany(null);
+      }
+    } catch {
+      setSiteImport({ status: 'error', message: 'We couldn’t read that website. The link will still be saved when you submit.' });
+    }
+  }
+
+  const input = (field: Exclude<AccessField, 'company'>, label: string, props: InputHTMLAttributes<HTMLInputElement>, optional = false) => (
     <div className="contact-field pa-field">
-      <label className="contact-label" htmlFor={id(field)}>{label}</label>
+      <label className="contact-label" htmlFor={id(field)}>{label}{optional && <span className="contact-optional"> (optional)</span>}</label>
       <input
         id={id(field)}
         name={field}
@@ -177,7 +222,7 @@ export default function PortfolioAccessView() {
         value={fields[field]}
         onChange={(e) => update(field, e.target.value)}
         onBlur={onBlur(field)}
-        required
+        required={!optional}
         aria-invalid={errors[field] ? true : undefined}
         aria-describedby={describedBy(field)}
         maxLength={ACCESS_LIMITS[field]}
@@ -240,6 +285,62 @@ export default function PortfolioAccessView() {
                   {errorText('company')}
                 </div>
 
+                <fieldset className="pa-profile">
+                  <legend className="pa-profile__title">Professional profile <span className="contact-optional">(optional)</span></legend>
+                  <p className="pa-note">Add any that apply: your LinkedIn profile, your company&rsquo;s website, or a portfolio link.</p>
+                  {input('linkedin', 'LinkedIn profile', { type: 'url', inputMode: 'url', autoComplete: 'url', spellCheck: false, autoCapitalize: 'none', placeholder: 'linkedin.com/in/your-name' }, true)}
+
+                  <div className="contact-field pa-field">
+                    <label className="contact-label" htmlFor={id('companyWebsite')}>Company website<span className="contact-optional"> (optional)</span></label>
+                    <div className="pa-import">
+                      <input
+                        id={id('companyWebsite')}
+                        name="companyWebsite"
+                        className="contact-control"
+                        type="url"
+                        inputMode="url"
+                        spellCheck={false}
+                        autoCapitalize="none"
+                        placeholder="company.com"
+                        value={fields.companyWebsite}
+                        onChange={(e) => update('companyWebsite', e.target.value)}
+                        onBlur={onBlur('companyWebsite')}
+                        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); void importSite(); } }}
+                        aria-invalid={errors.companyWebsite ? true : undefined}
+                        aria-describedby={describedBy('companyWebsite', 'pa-import-hint')}
+                        maxLength={ACCESS_LIMITS.companyWebsite}
+                        readOnly={submitting}
+                      />
+                      <button
+                        type="button"
+                        className="pa-import__btn"
+                        onClick={() => void importSite()}
+                        aria-disabled={siteImport.status === 'loading' || undefined}
+                        aria-describedby="pa-import-hint"
+                      >
+                        {siteImport.status === 'loading' ? 'Importing…' : 'Import'}
+                      </button>
+                    </div>
+                    <p className="pa-note pa-import__hint" id="pa-import-hint">Import fills in the company name from the site, if you haven&rsquo;t already.</p>
+                    {errorText('companyWebsite')}
+                    {siteImport.status === 'done' && siteImport.preview && (
+                      <div className="pa-preview" aria-label="Imported company website">
+                        <p className="pa-preview__name">{siteImport.preview.name ?? siteImport.preview.host}</p>
+                        {siteImport.preview.description && <p className="pa-preview__desc">{siteImport.preview.description}</p>}
+                        <p className="pa-preview__host">{siteImport.preview.host}</p>
+                      </div>
+                    )}
+                    {siteImport.status === 'error' && <p className="pa-note pa-import__msg">{siteImport.message}</p>}
+                    <span className="sr-only" role="status" aria-live="polite">
+                      {siteImport.status === 'loading' ? 'Importing company website…'
+                        : siteImport.status === 'done' ? `Imported ${siteImport.preview?.name ?? siteImport.preview?.host}.`
+                        : siteImport.status === 'error' ? siteImport.message : ''}
+                    </span>
+                  </div>
+
+                  {input('portfolio', 'Portfolio or website', { type: 'url', inputMode: 'url', autoComplete: 'url', spellCheck: false, autoCapitalize: 'none', placeholder: 'yourname.dev' }, true)}
+                </fieldset>
+
                 {/* Honeypot: hidden from people and assistive technology; bots that fill it are rejected. */}
                 <div className="pa-hp" aria-hidden="true">
                   <label htmlFor="pa-website">Website</label>
@@ -247,7 +348,8 @@ export default function PortfolioAccessView() {
                 </div>
 
                 <p className="pa-privacy" id="pa-privacy">
-                  Your details, plus basic access information (date and time, device and browser type, and IP address), are used
+                  Your details and any links you add, plus basic access information (date and time, device and browser type, and
+                  IP address), are used
                   only to manage and monitor access to my CV and are sent to me by email. See the{' '}
                   <Link href={PRIVACY_PATH}>Privacy Policy</Link>.
                 </p>

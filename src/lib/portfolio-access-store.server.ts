@@ -52,6 +52,9 @@ export async function storeAccess(submissionId: string, a: NewAccess): Promise<S
         mobile: a.mobile,
         company: a.company || null,
         companyNumber: a.companyNumber,
+        linkedinUrl: a.linkedin || null,
+        companyWebsite: a.companyWebsite || null,
+        portfolioUrl: a.portfolio || null,
         device: a.device,
         userAgent: a.userAgent,
         ipAddress: a.ipAddress,
@@ -88,6 +91,9 @@ export type AdminAccess = {
   mobile: string;
   company: string | null;
   companyNumber: string | null;
+  linkedinUrl: string | null;
+  companyWebsite: string | null;
+  portfolioUrl: string | null;
   ipAddress: string | null;
   device: string | null;
   notificationStatus: 'PENDING' | 'SENT' | 'FAILED';
@@ -103,7 +109,8 @@ export async function listAccessForAdmin(limit = 500): Promise<{ rows: AdminAcce
       orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
       take: limit,
       select: {
-        id: true, fullName: true, email: true, mobile: true, company: true, companyNumber: true, ipAddress: true,
+        id: true, fullName: true, email: true, mobile: true, company: true, companyNumber: true, linkedinUrl: true,
+        companyWebsite: true, portfolioUrl: true, ipAddress: true,
         device: true, notificationStatus: true, createdAt: true,
       },
     }),

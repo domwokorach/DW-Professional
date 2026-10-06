@@ -79,6 +79,9 @@ body:has(.adm-dash--access) .site-footer{display:none}
 .adm-pa__count:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:4px}
 .adm-dialog__who .adm-sub{font-weight:400}
 .adm-table time,.adm-table td[data-label="Mobile"] a{white-space:nowrap}
+.adm-table td[data-label="Email"]{min-width:170px}
+.adm-links{display:flex;flex-wrap:wrap;gap:4px 12px}
+.adm-links a{white-space:nowrap}
 .adm-mono{font-family:var(--font-mono);font-size:13px}
 .adm-muted{color:var(--text-2);font-weight:400}
 .adm-sub{display:block;margin-top:2px;font-size:12.5px;color:var(--text-2)}
