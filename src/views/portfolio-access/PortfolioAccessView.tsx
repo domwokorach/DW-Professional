@@ -6,6 +6,7 @@ import { useRef, useState, type FormEvent, type InputHTMLAttributes } from 'reac
 import { HOME, RESUME_URL } from '@/config';
 import CompanyField, { type CompanySelection } from '@/components/contact/CompanyField';
 import { FadeArc } from '@/components/loading-ui/fade-arc';
+import AttachmentField, { type Attachment } from './AttachmentField';
 import {
   ACCESS_FIELDS,
   ACCESS_LIMITS,
@@ -63,6 +64,10 @@ export default function PortfolioAccessView() {
   const [resume, setResume] = useState<ResumeState>('opening');
   const [honeypot, setHoneypot] = useState('');
   const [siteImport, setSiteImport] = useState<ImportState>({ status: 'idle' });
+  // Optional Upload / Camera file (already converted and size-checked in the browser; the server re-checks).
+  const [attachment, setAttachment] = useState<Attachment | null>(null);
+  // The file the server confirmed it saved with the last submission, for the success message.
+  const [sentFile, setSentFile] = useState<string | null>(null);
   // One id per submission, reused on retry so the server never records or emails it twice.
   const submissionId = useRef<string | null>(null);
   // Synchronous guard: state updates are async, so a fast double click could otherwise post twice.
@@ -134,31 +139,39 @@ export default function PortfolioAccessView() {
     setStatus('submitting');
     setFormError('');
     try {
-      const res = await fetch('/api/portfolio-access', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...fields,
-          companyNumber: company && company.companyName === fields.company ? company.companyNumber : '',
-          website: honeypot,
-          submissionId: submissionId.current,
-        }),
-      });
+      // multipart/form-data, so the optional file travels with the details (the browser sets the boundary).
+      const data = new FormData();
+      (Object.keys(fields) as AccessField[]).forEach((key) => data.append(key, fields[key]));
+      data.append('companyNumber', company && company.companyName === fields.company ? company.companyNumber : '');
+      data.append('website', honeypot);
+      data.append('submissionId', submissionId.current);
+      if (attachment) {
+        data.append('attachment', attachment.file, attachment.file.name);
+        data.append('attachmentSource', attachment.source);
+      }
+      const res = await fetch('/api/portfolio-access', { method: 'POST', body: data });
       if (res.ok) {
         // Open straight away, while the browser still counts the Submit click as the user's action
         // (pop-up blockers allow new tabs only shortly after one).
         const opened = openResumeTab();
+        const saved = (await res.json().catch(() => null)) as { attachment?: { filename: string } | null } | null;
+        setSentFile(saved?.attachment?.filename ?? null);
+        // Clear what belongs to this submission only (the file and its id); the details stay, so a candidate who
+        // comes back to the form doesn't retype them, and sending again updates their session.
+        setAttachment(null);
+        submissionId.current = null;
         setResume(opened ? 'opened' : 'blocked');
         setStatus('success');
         triggerHapticFeedback();
         return;
       }
       const body = (await res.json().catch(() => null)) as { errors?: AccessErrors } | null;
-      if (res.status === 400 && body?.errors && Object.keys(body.errors).length) {
+      if ((res.status === 400 || res.status === 413) && body?.errors && Object.keys(body.errors).length) {
         setErrors(body.errors);
         setStatus('idle');
         const first = ACCESS_FIELDS.find((f) => body.errors?.[f]);
         if (first) focusField(first);
+        else if (body.errors.attachment) formRef.current?.querySelector<HTMLElement>('.pa-attach button')?.focus();
         return;
       }
       setFormError(res.status === 429 ? RATE_LIMITED : res.status >= 500 ? UNAVAILABLE : GENERIC_ERROR);
@@ -341,6 +354,22 @@ export default function PortfolioAccessView() {
                   {input('portfolio', 'Portfolio or website', { type: 'url', inputMode: 'url', autoComplete: 'url', spellCheck: false, autoCapitalize: 'none', placeholder: 'yourname.dev' }, true)}
                 </fieldset>
 
+                <AttachmentField
+                  value={attachment}
+                  onChange={(next) => {
+                    setAttachment(next);
+                    if (status === 'error') setStatus('idle');
+                  }}
+                  error={errors.attachment}
+                  onError={(message) => setErrors((prev) => {
+                    const next = { ...prev };
+                    if (message) next.attachment = message;
+                    else delete next.attachment;
+                    return next;
+                  })}
+                  disabled={submitting}
+                />
+
                 {/* Honeypot: hidden from people and assistive technology; bots that fill it are rejected. */}
                 <div className="pa-hp" aria-hidden="true">
                   <label htmlFor="pa-website">Website</label>
@@ -348,7 +377,7 @@ export default function PortfolioAccessView() {
                 </div>
 
                 <p className="pa-privacy" id="pa-privacy">
-                  Your details and any links you add, plus basic access information (date and time, device and browser type, and
+                  Your details and any links or file you add, plus basic access information (date and time, device and browser type, and
                   IP address), are used
                   only to manage and monitor access to my CV and are sent to me by email. See the{' '}
                   <Link href={PRIVACY_PATH}>Privacy Policy</Link>.
@@ -383,7 +412,10 @@ export default function PortfolioAccessView() {
               <motion.div variants={item} role="status" aria-live="polite">
                 <p className="pa-eyebrow">DOMINIC</p>
                 <h1 id="pa-title" className="pa-title" ref={successTitle} tabIndex={-1}>Thank you!</h1>
-                <p className="pa-text">Your details have been submitted successfully.<br />{resumeMessage}</p>
+                <p className="pa-text">
+                  {sentFile ? <>Your details and your file <strong className="pa-sent-file">{sentFile}</strong> have been submitted successfully.</> : 'Your details have been submitted successfully.'}
+                  <br />{resumeMessage}
+                </p>
               </motion.div>
               <motion.div className="pa-actions" variants={item}>
                 <a

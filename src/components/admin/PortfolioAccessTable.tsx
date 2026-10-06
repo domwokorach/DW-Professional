@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import { ADMIN_SESSIONS_PATH as PAGE, adminSessionPath } from '@/lib/portfolio-access';
 import type { AdminAccess } from '@/lib/portfolio-access-store.server';
 
 // e.g. "06 Oct 2026, 11:45" (UK time).
@@ -9,7 +10,6 @@ const WHEN = new Intl.DateTimeFormat('en-GB', {
   day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/London',
 });
 const telHref = (mobile: string) => `tel:${mobile.trim().startsWith('+') ? '+' : ''}${mobile.replace(/\D/g, '')}`;
-const PAGE = '/admin/portfolio-access';
 /** The links a candidate added (validated absolute http(s) URLs on the server), labelled for the table. */
 const links = (r: AdminAccess): [string, string][] =>
   ([['LinkedIn', r.linkedinUrl], ['Website', r.companyWebsite], ['Portfolio', r.portfolioUrl]] as [string, string | null][])
@@ -19,9 +19,13 @@ const EXPIRED_URL = `/admin/login?expired=1&next=${encodeURIComponent(PAGE)}`;
 type Notice = { kind: 'ok' | 'err'; text: string };
 
 /**
- * Portfolio Access submissions, newest first, each with a Delete action. Deleting asks for confirmation in a modal
- * dialog, then sends an authenticated DELETE (session cookie + CSRF token); the row is removed only once the server
- * confirms. One delete at a time: further clicks are ignored while a request is in flight.
+ * Admin → Sessions: one row per Portfolio Access candidate, most recently submitted first. The name opens the
+ * candidate's session page (all details and files). Each row has a Delete action.
+ *
+ * The list re-syncs whenever the server sends new rows (AdminAutoRefresh), so new submissions appear by themselves.
+ * Deleting asks for confirmation in a modal dialog, then sends an authenticated DELETE (session cookie + CSRF token);
+ * the row is removed only once the server confirms. One delete at a time: further clicks are ignored while a
+ * request is in flight.
  *
  * A real table on wide screens; below 760px each row becomes a card with its column names shown beside the values
  * (data-label), so nothing scrolls sideways on a phone.
@@ -37,6 +41,10 @@ export default function PortfolioAccessTable({
 }) {
   const [rows, setRows] = useState(initialRows);
   const [total, setTotal] = useState(initialTotal);
+  useEffect(() => {
+    setRows(initialRows);
+    setTotal(initialTotal);
+  }, [initialRows, initialTotal]);
   const [confirming, setConfirming] = useState<AdminAccess | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
@@ -99,7 +107,7 @@ export default function PortfolioAccessTable({
       }
       if (res.status === 404) {
         removeRow(row.id);
-        setNotice({ kind: 'ok', text: `${row.fullName}'s submission had already been deleted. It has been removed from the list.` });
+        setNotice({ kind: 'ok', text: `${row.fullName}'s session had already been deleted. It has been removed from the list.` });
         return;
       }
       if (res.status === 403) {
@@ -109,10 +117,10 @@ export default function PortfolioAccessTable({
       }
       if (!res.ok) throw new Error(String(res.status));
       removeRow(row.id);
-      setNotice({ kind: 'ok', text: `Deleted ${row.fullName}'s submission permanently.` });
+      setNotice({ kind: 'ok', text: `Deleted ${row.fullName}'s session and files permanently.` });
     } catch {
       close('trigger');
-      setNotice({ kind: 'err', text: `${row.fullName}'s submission could not be deleted. Please try again.` });
+      setNotice({ kind: 'err', text: `${row.fullName}'s session could not be deleted. Please try again.` });
     } finally {
       inFlight.current = false;
       setDeletingId(null);
@@ -125,7 +133,7 @@ export default function PortfolioAccessTable({
     <section aria-labelledby="adm-pa-title" className="adm-pa">
       <div className="adm-pa__head">
         <h2 id="adm-pa-title" className="adm-pa__count" ref={countHeading} tabIndex={-1}>
-          {total} {total === 1 ? 'submission' : 'submissions'}
+          {total} {total === 1 ? 'session' : 'sessions'}
           {total > rows.length && <span className="adm-muted"> · showing the latest {rows.length}</span>}
         </h2>
         <Link href={PAGE} className="adm-btn adm-btn--ghost" prefetch={false}>Refresh</Link>
@@ -136,11 +144,11 @@ export default function PortfolioAccessTable({
       </div>
 
       {rows.length === 0 ? (
-        <p className="adm-empty">No Portfolio Access submissions yet.</p>
+        <p className="adm-empty">No sessions yet. They appear here when a candidate submits the Portfolio Access form.</p>
       ) : (
         <div className="adm-card adm-table-wrap">
           <table className="adm-table">
-            <caption className="sr-only">Portfolio Access submissions, newest first</caption>
+            <caption className="sr-only">Portfolio Access sessions, most recently submitted first</caption>
             <thead>
               <tr>
                 <th scope="col">Full Name</th>
@@ -149,7 +157,7 @@ export default function PortfolioAccessTable({
                 <th scope="col">Company</th>
                 <th scope="col">Links</th>
                 <th scope="col">IP Address</th>
-                <th scope="col" aria-sort="descending">Submitted At</th>
+                <th scope="col" aria-sort="descending">Last Submitted</th>
                 <th scope="col"><span className="sr-only">Actions</span></th>
               </tr>
             </thead>
@@ -159,7 +167,7 @@ export default function PortfolioAccessTable({
                   {/* One wrapper per cell, so the phone layout's label + value grid keeps multi-part values together. */}
                   <th scope="row" data-label="Full Name">
                     <span>
-                      {r.fullName}
+                      <Link href={adminSessionPath(r.id)} className="adm-name-link">{r.fullName}</Link>
                       {r.notificationStatus === 'FAILED' && <span className="adm-tag adm-tag--warn">Email not sent</span>}
                     </span>
                   </th>
@@ -173,13 +181,18 @@ export default function PortfolioAccessTable({
                   </td>
                   <td data-label="Links">
                     <span>
-                      {links(r).length ? (
+                      {links(r).length || r.attachments.length ? (
                         <span className="adm-links">
                           {links(r).map(([label, href]) => (
                             <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={`${r.fullName}'s ${label} (opens in a new tab)`}>
                               {label}
                             </a>
                           ))}
+                          {r.attachments.length > 0 && (
+                            <Link href={`${adminSessionPath(r.id)}#files`} aria-label={`${r.fullName}'s files: ${r.attachments.length}. Open the session.`}>
+                              {r.attachments.length === 1 ? '1 file' : `${r.attachments.length} files`}
+                            </Link>
+                          )}
                         </span>
                       ) : <span className="adm-muted">—</span>}
                     </span>
@@ -187,14 +200,22 @@ export default function PortfolioAccessTable({
                   <td data-label="IP Address" className="adm-mono">
                     <span>{r.ipAddress ?? <span className="adm-muted">Not available</span>}</span>
                   </td>
-                  <td data-label="Submitted At"><span><time dateTime={r.createdAt}>{WHEN.format(new Date(r.createdAt))}</time></span></td>
+                  <td data-label="Last Submitted">
+                    <span>
+                      <time dateTime={r.lastSubmittedAt}>{WHEN.format(new Date(r.lastSubmittedAt))}</time>
+                      {r.submissionCount > 1 && <span className="adm-sub">{r.submissionCount} submissions</span>}
+                    </span>
+                  </td>
                   <td className="adm-table__actions">
+                    <Link href={adminSessionPath(r.id)} className="adm-btn adm-btn--ghost adm-btn--sm" aria-label={`Open ${r.fullName}'s session`}>
+                      Open
+                    </Link>
                     <button
                       type="button"
                       className="adm-btn adm-btn--danger adm-btn--sm"
                       onClick={(e) => ask(r, e.currentTarget)}
                       disabled={deleting}
-                      aria-label={`Delete ${r.fullName}'s submission`}
+                      aria-label={`Delete ${r.fullName}'s session`}
                     >
                       {deletingId === r.id ? 'Deleting…' : 'Delete'}
                     </button>
@@ -214,8 +235,8 @@ export default function PortfolioAccessTable({
         aria-describedby="adm-pa-dialog-desc"
         onCancel={(e) => { e.preventDefault(); cancel(); }}
       >
-        <h2 id="adm-pa-dialog-title" className="adm-dialog__title">Delete submission</h2>
-        <p id="adm-pa-dialog-desc">This permanently removes the submission from the database. It can&apos;t be undone.</p>
+        <h2 id="adm-pa-dialog-title" className="adm-dialog__title">Delete session</h2>
+        <p id="adm-pa-dialog-desc">This permanently removes the candidate&apos;s session and any files they sent. It can&apos;t be undone.</p>
         {confirming && (
           <p className="adm-dialog__who">
             {confirming.fullName} · {confirming.email}

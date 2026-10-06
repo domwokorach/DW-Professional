@@ -5,6 +5,7 @@ import {
   CARD, CREAM, detail, esc, FONT, host, INK, INK_SOFT, LINE, linkStyle, mailto, MUTED, ON_INK_MUTED, PANEL,
   sectionLabel, when, WRAP,
 } from '@/lib/enquiry-email.server';
+import { formatBytes } from '@/lib/contact';
 
 export type AccessEmailInput = {
   fullName: string;
@@ -21,6 +22,10 @@ export type AccessEmailInput = {
   source: string;
   page: string;
   accessedAt: Date;
+  /** How many times this candidate has submitted (1 for a new session). */
+  submissionCount?: number;
+  /** The optional Upload / Camera file (attached to the email itself). */
+  attachment?: { filename: string; size: number; source: 'upload' | 'camera' };
   /** The portfolio's public URL, for the footer link. */
   siteUrl: string;
 };
@@ -38,6 +43,9 @@ export function renderAccessEmail(a: AccessEmailInput) {
   const company = a.company ? `${a.company}${a.companyNumber ? ` (Company no. ${a.companyNumber})` : ''}` : '—';
   const ip = a.ipAddress ?? 'Not available';
   // Validated absolute http(s) URLs (server-side), so they are safe as hrefs once escaped.
+  const fileLabel = a.attachment
+    ? `${a.attachment.filename} (${formatBytes(a.attachment.size)}, ${a.attachment.source === 'camera' ? 'camera photo' : 'uploaded'}) — attached to this email`
+    : null;
   const links = ([['LinkedIn', a.linkedin], ['Company website', a.companyWebsite], ['Portfolio', a.portfolio]] as const).filter(([, href]) => href);
   const device = a.device ?? 'Unknown';
 
@@ -45,12 +53,14 @@ export function renderAccessEmail(a: AccessEmailInput) {
     detail('Name', esc(a.fullName)),
     detail('Email', `<a href="${esc(replyHref)}" style="${linkStyle}">${esc(a.email)}</a>`),
     detail('Mobile', `<a href="${esc(telHref(a.mobile))}" style="${linkStyle}">${esc(a.mobile)}</a>`),
-    detail('Company', esc(company), !links.length),
-    ...links.map(([label, href], i) => detail(label, `<a href="${esc(href)}" style="${linkStyle}">${esc(href)}</a>`, i === links.length - 1)),
+    detail('Company', esc(company), !links.length && !fileLabel),
+    ...links.map(([label, href], i) => detail(label, `<a href="${esc(href)}" style="${linkStyle}">${esc(href)}</a>`, i === links.length - 1 && !fileLabel)),
+    ...(fileLabel ? [detail('Attachment', esc(fileLabel), true)] : []),
   ].join('');
 
   const access = [
     detail('Date/Time', esc(when_)),
+    ...(a.submissionCount && a.submissionCount > 1 ? [detail('Session', `Returning candidate · submission ${a.submissionCount}`)] : []),
     detail('Device', esc(device)),
     ...(a.userAgent ? [detail('Browser', `<span style="font-size:13px;line-height:20px;color:${MUTED};">${esc(a.userAgent)}</span>`)] : []),
     detail('IP address', esc(ip)),
@@ -138,9 +148,11 @@ export function renderAccessEmail(a: AccessEmailInput) {
     `Mobile:      ${a.mobile}`,
     `Company:     ${company}`,
     ...links.map(([label, href]) => `${`${label}:`.padEnd(Math.max(13, label.length + 2))}${href}`),
+    ...(fileLabel ? [`Attachment:  ${fileLabel}`] : []),
     '',
     'ACCESS DETAILS',
     `Date/Time:   ${when_}`,
+    ...(a.submissionCount && a.submissionCount > 1 ? [`Session:     Returning candidate · submission ${a.submissionCount}`] : []),
     `Device:      ${device}`,
     ...(a.userAgent ? [`Browser:     ${a.userAgent}`] : []),
     `IP address:  ${ip}`,

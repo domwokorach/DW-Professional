@@ -1,6 +1,10 @@
 // Portfolio Access form rules shared by the browser form and the /api/portfolio-access route.
 // The server re-runs every check and is the final authority; client validation is only for fast feedback.
 
+/** Admin → Sessions (/admin/portfolio-access redirects here) and one candidate's session page. */
+export const ADMIN_SESSIONS_PATH = '/admin/sessions';
+export const adminSessionPath = (id: string) => `${ADMIN_SESSIONS_PATH}/${encodeURIComponent(id)}`;
+
 export type AccessFields = {
   fullName: string;
   email: string;
@@ -12,7 +16,8 @@ export type AccessFields = {
   portfolio: string;
 };
 export type AccessField = keyof AccessFields;
-export type AccessErrors = Partial<Record<AccessField, string>>;
+/** Field errors; `attachment` is the optional Upload / Camera file. */
+export type AccessErrors = Partial<Record<AccessField | 'attachment', string>>;
 
 export const ACCESS_FIELDS: AccessField[] = ['fullName', 'email', 'mobile', 'company', 'linkedin', 'companyWebsite', 'portfolio'];
 export const ACCESS_LIMITS = {
@@ -125,3 +130,57 @@ export function cleanAccess(fields: AccessFields): AccessFields {
 
 /** What /api/portfolio-access/site-preview returns for a company website. Text only: no remote images. */
 export type SitePreview = { url: string; host: string; name: string | null; description: string | null };
+
+// ---- Optional attachment (Upload or Camera) ------------------------------------------------------------------
+
+/**
+ * The file travels through the server with the form (Vercel caps request bodies at 4.5 MB), so 4 MB is the limit.
+ * Photos are resized in the browser first (see ATTACHMENT_IMAGE_MAX_SIDE), so camera pictures land well below it.
+ */
+export const ATTACHMENT_MAX_BYTES = 4 * 1024 * 1024;
+/** Longest side a photo is scaled down to before upload. */
+export const ATTACHMENT_IMAGE_MAX_SIDE = 2000;
+/**
+ * What the server stores: PNG and JPG images, PDF, DOC and DOCX. PNGs are kept as PNG; any other image a phone
+ * offers (HEIC, WEBP…) and every camera photo is converted to JPEG in the browser first.
+ */
+export const ATTACHMENT_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.pdf', '.doc', '.docx'] as const;
+export const ATTACHMENT_DOCUMENT_EXTENSIONS = ['.pdf', '.doc', '.docx'] as const;
+/** The picker accepts any image (so phones can offer HEIC photos for conversion) plus the document types. */
+export const ATTACHMENT_ACCEPT = 'image/*,.pdf,.doc,.docx';
+export type AttachmentSource = 'upload' | 'camera';
+
+export const ATTACHMENT_ERRORS = {
+  type: 'Please choose a PDF, DOC or DOCX document, or a PNG or JPG image.',
+  size: `Please choose a file smaller than ${ATTACHMENT_MAX_BYTES / 1024 / 1024} MB.`,
+  empty: 'That file appears to be empty. Please choose another.',
+  image: 'That image couldn’t be read. Please try a JPG or PNG instead.',
+  content: 'That file doesn’t look like the type its name suggests. Please choose another.',
+} as const;
+
+const extension = (name: string) => {
+  const dot = name.lastIndexOf('.');
+  return dot === -1 ? '' : name.slice(dot).toLowerCase();
+};
+/** Human label for a stored file's type, e.g. "PDF document", "Word document (DOCX)". */
+export function attachmentTypeLabel(mimeType: string): string {
+  switch (mimeType) {
+    case 'application/pdf': return 'PDF document';
+    case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': return 'Word document (DOCX)';
+    case 'application/msword': return 'Word document (DOC)';
+    case 'image/png': return 'PNG image';
+    case 'image/jpeg': return 'JPG image';
+    default: return 'File';
+  }
+}
+/** Types the admin can preview in the page (the others open as a download). */
+export const isPreviewable = (mimeType: string) => mimeType === 'application/pdf' || mimeType.startsWith('image/');
+
+export const isAttachmentDocument = (name: string) => (ATTACHMENT_DOCUMENT_EXTENSIONS as readonly string[]).includes(extension(name));
+
+/** Name and size checks for the file that will be sent (after any image conversion). */
+export function attachmentProblem(file: { name: string; size: number }): string | undefined {
+  if (!(ATTACHMENT_EXTENSIONS as readonly string[]).includes(extension(file.name))) return ATTACHMENT_ERRORS.type;
+  if (file.size === 0) return ATTACHMENT_ERRORS.empty;
+  if (file.size > ATTACHMENT_MAX_BYTES) return ATTACHMENT_ERRORS.size;
+}
