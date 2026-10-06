@@ -79,7 +79,7 @@ export default function SiteHeader() {
   return (
     <header className="site-header">
       <button className="brand" onClick={scrollToTop} aria-label="Back to top">
-        <span>DO</span><b>DOMINIC WOKORACH OLANYA</b>
+        <span>DO</span><b>DOMINIC</b>
       </button>
 
       <div className="site-header__end">

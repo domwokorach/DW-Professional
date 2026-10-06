@@ -214,7 +214,7 @@ export default function PortfolioAccessView() {
           {status !== 'success' ? (
             <motion.div key="form" className="pa-panel pa-panel--enter pa-panel--form" variants={panel} initial="hidden" animate="show" exit="exit">
               <header className="pa-head">
-                <p className="pa-eyebrow">Dominic Wokorach Olanya</p>
+                <p className="pa-eyebrow">DOMINIC</p>
                 <h1 id="pa-title" className="pa-title">Portfolio Access</h1>
                 <p className="pa-text">Please share a few details to open my CV.</p>
               </header>
@@ -279,7 +279,7 @@ export default function PortfolioAccessView() {
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>
               </motion.div>
               <motion.div variants={item} role="status" aria-live="polite">
-                <p className="pa-eyebrow">Dominic Wokorach Olanya</p>
+                <p className="pa-eyebrow">DOMINIC</p>
                 <h1 id="pa-title" className="pa-title" ref={successTitle} tabIndex={-1}>Thank you!</h1>
                 <p className="pa-text">Your details have been submitted successfully.<br />{resumeMessage}</p>
               </motion.div>

@@ -79,7 +79,7 @@ export function renderCommentEmail(c: CommentEmailInput) {
 <tr><td class="px" bgcolor="${INK}" style="background-color:${INK};padding:28px 32px 24px;">
   <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
     <td width="36" height="36" align="center" valign="middle" bgcolor="${CREAM}" style="width:36px;height:36px;background-color:${CREAM};border-radius:18px;font-family:${FONT};font-size:12px;line-height:14px;font-weight:700;color:${INK};">DO</td>
-    <td valign="middle" style="padding-left:12px;font-family:${FONT};font-size:15px;line-height:20px;font-weight:700;color:#ffffff;">DOMINIC WOKORACH OLANYA <span style="font-weight:400;color:${ON_INK_MUTED};">&middot; Portfolio</span></td>
+    <td valign="middle" style="padding-left:12px;font-family:${FONT};font-size:15px;line-height:20px;font-weight:700;color:#ffffff;">DOMINIC <span style="font-weight:400;color:${ON_INK_MUTED};">&middot; Portfolio</span></td>
   </tr></table>
   <h1 class="h1" style="margin:22px 0 6px;font-family:${FONT};font-size:28px;line-height:34px;font-weight:700;letter-spacing:-0.5px;color:#ffffff;">New Candidate Comment</h1>
   <p style="margin:0;font-family:${FONT};font-size:16px;line-height:24px;color:${ON_INK_MUTED};${WRAP}">${esc(c.fullName)} left a comment for &ldquo;What people are saying&rdquo;. It is not public until you approve it.</p>

@@ -1,4 +1,4 @@
-# Dominic Olanya — Portfolio
+# DOMINIC — Portfolio
 
 A personal developer portfolio with an editorial cream/navy design: hero, skills, projects,
 experience timeline, achievements ("Proud moments") and a contact form that emails enquiries,

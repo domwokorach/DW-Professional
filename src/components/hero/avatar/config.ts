@@ -1,6 +1,6 @@
 /** Exact spoken script. The voice track must say this verbatim; it is also the screen-reader transcript. */
 export const INTRO_SCRIPT =
-  'Hi, I’m Dominic I’m a Software Engineer and FrontEnd Developer I build responsive web applications interactive websites, and AI-powered platform.';
+  'Hi, I’m DOMINIC I’m a Software Engineer and FrontEnd Developer I build responsive web applications interactive websites, and AI-powered platform.';
 
 /**
  * Asset contract (see README.md in this folder): public URLs, each served from public/ at the same path.

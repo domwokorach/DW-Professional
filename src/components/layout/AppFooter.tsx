@@ -11,7 +11,7 @@ export default function AppFooter() {
     <footer className="site-footer">
       <div className="site-footer__inner">
         <div className="site-footer__brand">
-          <Link href={HOME} className="site-footer__name">DOMINIC WOKORACH OLANYA</Link>
+          <Link href={HOME} className="site-footer__name">DOMINIC</Link>
           <p className="site-footer__role">Software Engineer &amp; Frontend Developer. · London</p>
         </div>
 
@@ -41,7 +41,7 @@ export default function AppFooter() {
       </div>
 
       <div className="site-footer__bottom">
-        <p>© 2026 DOMINIC WOKORACH OLANYA</p>
+        <p>© 2026 DOMINIC</p>
         <div className="site-footer__actions">
           <button type="button" className="footer-link site-footer__textbutton" onClick={resetCookieConsent}>Cookie preferences</button>
           <button type="button" className="site-footer__top" onClick={scrollToTop} aria-label="Back to top">↑</button>

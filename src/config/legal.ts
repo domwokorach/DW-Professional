@@ -4,7 +4,7 @@
  * "to be confirmed" rather than guessing. Fill them in before publishing.
  */
 export const legal = {
-  owner: 'DOMINIC WOKORACH OLANYA',
+  owner: 'DOMINIC',
   location: 'London, United Kingdom',
   lastUpdated: '5 October 2026',
   /** Company that hosts the site and may keep standard server/access logs, e.g. "Vercel Inc.". */

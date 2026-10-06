@@ -59,7 +59,7 @@ function QrBlock({ value }: { value: string }) {
   // Four modules of quiet zone around the code, as the QR spec asks, so cameras lock on reliably.
   const q = 4;
   return (
-    <svg className="dev-id__qr" viewBox={`${-q} ${-q} ${size + q * 2} ${size + q * 2}`} shapeRendering="crispEdges" role="img" aria-label="QR code that opens Dominic's portfolio access page">
+    <svg className="dev-id__qr" viewBox={`${-q} ${-q} ${size + q * 2} ${size + q * 2}`} shapeRendering="crispEdges" role="img" aria-label="QR code that opens DOMINIC's portfolio access page">
       <rect x={-q} y={-q} width={size + q * 2} height={size + q * 2} className="dev-id__qr-bg" />
       {cells.map(([r, c]) => <rect key={`${r}-${c}`} x={c} y={r} width={1} height={1} />)}
     </svg>
@@ -141,10 +141,10 @@ export default function DeveloperIdCard({ flipOnHover = false }: Props) {
               <i className="dev-id__chip" aria-hidden="true" />
             </header>
             <div className="dev-id__photo dev-id__layer" style={{ '--z': '22px' } as CSSProperties}>
-              <Image src="https://res.cloudinary.com/dkkuwmr42/image/upload/v1791023538/Full%20Stack%20Developer/dominic_zw1v8s_ngyl5d.png" alt="DOMINIC WOKORACH OLANYA" fill sizes="110px" />
+              <Image src="https://res.cloudinary.com/dkkuwmr42/image/upload/v1791023538/Full%20Stack%20Developer/dominic_zw1v8s_ngyl5d.png" alt="DOMINIC" fill sizes="110px" />
             </div>
             <div className="dev-id__layer" style={{ '--z': '12px' } as CSSProperties}>
-              <h3 className="dev-id__name">DOMINIC WOKORACH OLANYA</h3>
+              <h3 className="dev-id__name">DOMINIC</h3>
               <p className="dev-id__role">Software Engineer &amp; Frontend Developer.</p>
             </div>
             <dl className="dev-id__details">
@@ -162,7 +162,7 @@ export default function DeveloperIdCard({ flipOnHover = false }: Props) {
               <span>DEVELOPER PROFILE</span>
               <b>DO</b>
             </header>
-            <h3 className="dev-id__back-name">DOMINIC WOKORACH OLANYA</h3>
+            <h3 className="dev-id__back-name">DOMINIC</h3>
             <p className="dev-id__back-role">SOFTWARE ENGINEER &amp; FRONTEND DEVELOPER.</p>
             <p className="dev-id__bio">
               I build responsive web applications, interactive digital experiences, and AI-powered platforms.

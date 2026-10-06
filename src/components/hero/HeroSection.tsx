@@ -16,7 +16,7 @@ export default function HeroSection({ heroAvatar }: { heroAvatar?: AvatarAssets 
       <HeroPhotonBackground />
       <div className="hero-watermark">DOMINIC</div>
       <div className="hero-copy">
-        <div className="kicker"><EncryptedText text="DOMINIC WOKORACH OLANYA" duration={1000} /></div>
+        <div className="kicker"><EncryptedText text="DOMINIC" duration={1000} /></div>
         <h1 id="hero-title">
           <EncryptedText
             text="Software Engineer & Frontend Developer."
