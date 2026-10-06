@@ -12,8 +12,8 @@ export default function AboutSection() {
       <div className="about-grid">
         <article className="about-copy">
           <h2>Hi, I&apos;m <em>Dominic.</em></h2>
-          <p>Software engineer with commercial experience at Sky and Lloyds Banking Group, specialising in React, TypeScript, and accessible digital products.</p>
-          <p>I deliver scalable web applications, improve user experiences, and collaborate with Agile teams, with a passion for creating inclusive solutions for diverse audiences.</p>
+          <p>Software Engineer and Frontend Developer with commercial experience at Sky and Lloyds Banking Group, specialising in React, TypeScript, and accessible digital products.</p>
+          <p>Proven track record of delivering scalable web applications, improving user experiences, and collaborating with Agile teams. Passionate about technology, innovation, and creating inclusive solutions for diverse audiences.</p>
           <div className="button-row">
             <IconLink className="primary" href="/Dominic_Wokorach_Olanya_CV.pdf" download icon={DownloadIcon}>Résumé</IconLink>
             {socialLinks.map(({ label, href }) => <IconLink key={label} href={href} target="_blank" rel="noopener noreferrer" icon={LinkIcon}>{label}</IconLink>)}
