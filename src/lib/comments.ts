@@ -4,7 +4,7 @@
 export const NAME_MIN = 2;
 export const NAME_MAX = 60;
 export const EMAIL_MAX = 254;
-export const COMPANY_MAX = 80;
+export const COMPANY_MAX = 120;
 export const COMMENT_MIN = 10;
 export const COMMENT_MAX = 600;
 

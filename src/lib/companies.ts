@@ -8,6 +8,7 @@ export type CompanySummary = {
   companyName: string;
   /** Display label, e.g. "Active", "In administration". */
   companyStatus: string | null;
+  companyType: string | null;
   /** One-line registered office address. */
   address: string | null;
   /** Town or city, for the short location shown in results. */

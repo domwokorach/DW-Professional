@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import CommentsCarousel from './CommentsCarousel';
+import CompanyField, { type CompanySelection } from '@/components/contact/CompanyField';
 import { initials } from './format';
 import {
   AVATAR_ACCEPT,
@@ -56,6 +57,7 @@ export default function CommentsBoard({ avatarsEnabled }: { avatarsEnabled: bool
   const [feed, setFeed] = useState<PublicComment[] | null>(null); // null while loading
   const [feedFailed, setFeedFailed] = useState(false);
   const [fields, setFields] = useState<CommentFields>(EMPTY);
+  const [companySelection, setCompanySelection] = useState<CompanySelection | null>(null);
   const [consent, setConsent] = useState(false);
   const [avatar, setAvatar] = useState<{ file: File; preview: string } | null>(null);
   const [errors, setErrors] = useState<CommentErrors>({});
@@ -165,11 +167,12 @@ export default function CommentsBoard({ avatarsEnabled }: { avatarsEnabled: bool
       const res = await fetch('/api/comments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...fields, consent, avatarKey, submissionId: submissionId.current, website: honeypot }),
+        body: JSON.stringify({ ...fields, companyNumber: companySelection?.companyName === fields.company ? companySelection.companyNumber : undefined, consent, avatarKey, submissionId: submissionId.current, website: honeypot }),
       });
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; errors?: CommentErrors; error?: string };
       if (res.ok && data.ok) {
         setFields(EMPTY);
+        setCompanySelection(null);
         setConsent(false);
         setAvatar(null);
         if (avatarInput.current) avatarInput.current.value = '';
@@ -276,7 +279,23 @@ export default function CommentsBoard({ avatarsEnabled }: { avatarsEnabled: bool
 
         <div className="cm-field">
           <label htmlFor="cm-company">Company <span className="cm-opt">(optional)</span></label>
-          <input {...field('company')} type="text" autoComplete="organization" maxLength={COMPANY_MAX} />
+          <CompanyField
+            id="cm-company"
+            value={fields.company}
+            selection={companySelection}
+            onTextChange={(value) => {
+              setFields((f) => ({ ...f, company: value }));
+              if (touched.company) setErrors((er) => ({ ...er, company: validateCommentField('company', value) }));
+              clearStatus();
+            }}
+            onSelectionChange={setCompanySelection}
+            onBlur={blur('company')}
+            invalid={Boolean(errors.company)}
+            describedBy={describedBy('company')}
+            maxLength={COMPANY_MAX}
+            disabled={submitting}
+            variant="comment"
+          />
           {fieldError('company')}
         </div>
 

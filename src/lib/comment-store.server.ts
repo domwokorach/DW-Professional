@@ -51,6 +51,15 @@ export async function recentCommentsFromIp(ipAddress: string, sinceMs = 60 * 60 
 }
 
 export type NewComment = CommentFields & {
+  companyDetails: {
+    companyNumber: string;
+    companyStatus: string | null;
+    companyType: string | null;
+    companyLocality: string | null;
+    companyVerified: boolean;
+    companyVerificationSource: string;
+    companyVerifiedAt: Date | null;
+  } | null;
   avatarKey: string | null;
   device: string | null;
   ipAddress: string;
@@ -83,6 +92,13 @@ export async function storeComment(submissionId: string, c: NewComment): Promise
         fullName: c.fullName,
         email: c.email,
         company: c.company || null,
+        companyNumber: c.companyDetails?.companyNumber ?? null,
+        companyStatus: c.companyDetails?.companyStatus ?? null,
+        companyType: c.companyDetails?.companyType ?? null,
+        companyLocality: c.companyDetails?.companyLocality ?? null,
+        companyVerified: c.companyDetails?.companyVerified ?? false,
+        companyVerificationSource: c.companyDetails?.companyVerificationSource ?? null,
+        companyVerifiedAt: c.companyDetails?.companyVerifiedAt ?? null,
         comment: c.comment,
         avatarKey: c.avatarKey,
         device: c.device,
@@ -123,6 +139,13 @@ export type AdminComment = {
   fullName: string;
   email: string;
   company: string | null;
+  companyNumber: string | null;
+  companyStatus: string | null;
+  companyType: string | null;
+  companyLocality: string | null;
+  companyVerified: boolean;
+  companyVerificationSource: string | null;
+  companyVerifiedAt: string | null;
   comment: string;
   avatarUrl: string | null;
   device: string | null;
@@ -152,7 +175,9 @@ export async function listCommentsForAdmin(status: CommentStatusValue, limit = 2
     orderBy: { createdAt: 'desc' },
     take: limit,
     select: {
-      id: true, fullName: true, email: true, company: true, comment: true, avatarKey: true, device: true,
+      id: true, fullName: true, email: true, company: true, companyNumber: true, companyStatus: true,
+      companyType: true, companyLocality: true, companyVerified: true, companyVerificationSource: true,
+      companyVerifiedAt: true, comment: true, avatarKey: true, device: true,
       ipAddress: true, consentGivenAt: true, status: true, notificationStatus: true, createdAt: true, moderatedAt: true,
       moderatedBy: { select: { email: true } },
       isVerified: true, verifiedAt: true, verifiedBy: { select: { email: true } }, isItalic: true,
@@ -163,6 +188,13 @@ export async function listCommentsForAdmin(status: CommentStatusValue, limit = 2
     fullName: r.fullName,
     email: r.email,
     company: r.company,
+    companyNumber: r.companyNumber,
+    companyStatus: r.companyStatus,
+    companyType: r.companyType,
+    companyLocality: r.companyLocality,
+    companyVerified: r.companyVerified,
+    companyVerificationSource: r.companyVerificationSource,
+    companyVerifiedAt: r.companyVerifiedAt?.toISOString() ?? null,
     comment: r.comment,
     avatarUrl: r.avatarKey ? avatarPath(r.id) : null,
     device: r.device,

@@ -8,6 +8,7 @@ const profileSummary = (p: CompanyProfile): CompanySummary => ({
   companyNumber: p.companyNumber,
   companyName: p.companyName,
   companyStatus: formatCompanyStatus(p.status),
+  companyType: p.companyType,
   address: formatAddress([p.addressLine1, p.addressLine2, p.postTown], p.postcode),
   locality: formatAddress([p.postTown]),
 });

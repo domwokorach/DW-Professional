@@ -19,6 +19,15 @@
 .cm-field input:disabled,.cm-field textarea:disabled{opacity:.65;cursor:progress}
 .cm-field [aria-invalid="true"]{border-color:var(--cm-error)}
 .cm-field [aria-invalid="true"]:focus-visible{box-shadow:0 0 0 3px color-mix(in srgb,var(--cm-error) 16%,transparent)}
+.cm-field .company-input-wrap .company-input{margin-top:0;color:var(--ink);border-color:rgba(var(--ink-rgb),.28)}
+.cm-field .company-input-wrap .company-input:hover:not(:disabled){border-color:rgba(var(--ink-rgb),.55)}
+.cm-field .company-input-wrap .company-input:focus-visible{border-color:var(--ink);box-shadow:0 0 0 3px rgba(var(--ink-rgb),.14)}
+.cm-field .company-input-wrap .company-clear{top:0;bottom:0;color:var(--text-2)}
+.cm-field .company-input-wrap .company-clear:hover{color:var(--ink)}
+.company-selected--comment{margin:0;color:var(--text-2)}
+.company-selected--comment .company-selected__label{flex-basis:100%;font-weight:600;color:var(--ink)}
+.company-selected--comment .company-selected__number{color:var(--ink)}
+.company-popup--comment{--contact-surface:var(--white);--contact-dark:var(--ink);--contact-muted:var(--text-2);--contact-border:var(--line);--contact-accent:var(--ink);--contact-accent-soft:rgba(var(--ink-rgb),.08)}
 .cm-error{margin:0;font-size:13.5px;line-height:1.4;color:var(--cm-error)}
 .cm-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .cm-submit{display:inline-flex;align-items:center;justify-content:center;gap:10px;align-self:flex-start;min-height:52px;padding:14px 28px;border:1px solid var(--ink);border-radius:999px;background:var(--ink);color:var(--on-ink);font-size:14px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;transition:opacity .2s ease,transform .2s ease}

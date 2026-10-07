@@ -83,18 +83,20 @@ type CompanyDbRow = {
   companyNumber: string;
   companyName: string;
   status: string | null;
+  companyType: string | null;
   addressLine1: string | null;
   addressLine2: string | null;
   postTown: string | null;
   postcode: string | null;
 };
 
-const SUMMARY_COLUMNS = '"companyNumber","companyName","status","addressLine1","addressLine2","postTown","postcode"';
+const SUMMARY_COLUMNS = '"companyNumber","companyName","status","companyType","addressLine1","addressLine2","postTown","postcode"';
 
 export const toSummary = (r: CompanyDbRow): CompanySummary => ({
   companyNumber: r.companyNumber,
   companyName: r.companyName,
   companyStatus: formatCompanyStatus(r.status),
+  companyType: r.companyType,
   address: formatAddress([r.addressLine1, r.addressLine2, r.postTown], r.postcode),
   locality: formatAddress([r.postTown]),
 });
@@ -193,7 +195,7 @@ export async function searchCompanies(prisma: PrismaClient, query: string, limit
 export async function getCompany(prisma: PrismaClient, companyNumber: string): Promise<CompanySummary | null> {
   const row = await prisma.company.findUnique({
     where: { companyNumber },
-    select: { companyNumber: true, companyName: true, status: true, addressLine1: true, addressLine2: true, postTown: true, postcode: true },
+    select: { companyNumber: true, companyName: true, status: true, companyType: true, addressLine1: true, addressLine2: true, postTown: true, postcode: true },
   });
   return row ? toSummary(row) : null;
 }
@@ -201,7 +203,7 @@ export async function getCompany(prisma: PrismaClient, companyNumber: string): P
 /** Live Companies House details for a company already in the dataset: keeps search results current between imports. */
 export async function refreshCompany(
   prisma: PrismaClient,
-  live: { companyNumber: string; companyName: string; status: string | null; addressLine1: string | null; addressLine2: string | null; postTown: string | null; county: string | null; country: string | null; postcode: string | null },
+  live: { companyNumber: string; companyName: string; status: string | null; companyType: string | null; addressLine1: string | null; addressLine2: string | null; postTown: string | null; county: string | null; country: string | null; postcode: string | null },
 ) {
   await prisma.company.updateMany({
     where: { companyNumber: live.companyNumber },
@@ -209,6 +211,7 @@ export async function refreshCompany(
       companyName: live.companyName,
       nameSearch: companySearchKey(live.companyName),
       status: live.status,
+      companyType: live.companyType,
       addressLine1: live.addressLine1,
       addressLine2: live.addressLine2,
       postTown: live.postTown,

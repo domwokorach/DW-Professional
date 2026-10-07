@@ -235,7 +235,7 @@ export default function ModerationDashboard({
                       </span>
                       <div className="adm-item__who">
                         <h3 id={`adm-c-${c.id}`} className="cm-name">{c.fullName}</h3>
-                        <p className="cm-role">{c.company || 'No company given'}</p>
+                        {c.company && <p className="cm-role">{c.company}</p>}
                       </div>
                       <span className={`adm-status adm-status--${c.status.toLowerCase()}`}>{STATUS_LABEL[c.status]}</span>
                     </header>
@@ -243,6 +243,14 @@ export default function ModerationDashboard({
                     <blockquote className={`cm-text${c.isItalic ? ' cm-text--italic' : ''}`}>{c.comment}</blockquote>
 
                     <dl className="adm-meta">
+                      {c.company && <div>
+                        <dt>Company</dt>
+                        <dd>{c.company}<br />
+                          {c.companyNumber && <>{c.companyNumber}<br /></>}
+                          {c.companyStatus && <>{c.companyStatus}<br /></>}
+                          <span className={c.companyVerified ? 'adm-company-verified' : undefined}>{c.companyVerified ? `✓ Verified${c.companyVerificationSource ? ` · ${c.companyVerificationSource}` : ''}` : 'Unverified'}</span>
+                        </dd>
+                      </div>}
                       <div><dt>Email</dt><dd><a href={`mailto:${encodeURIComponent(c.email).replace('%40', '@')}`}>{c.email}</a></dd></div>
                       <div><dt>Submitted</dt><dd><time dateTime={c.createdAt}>{WHEN.format(new Date(c.createdAt))}</time></dd></div>
                       <div><dt>Device / platform</dt><dd>{c.device ?? 'Unknown'}</dd></div>

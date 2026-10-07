@@ -16,6 +16,7 @@ export type CompanyProfile = {
   companyNumber: string;
   companyName: string;
   status: string | null;
+  companyType: string | null;
   addressLine1: string | null;
   addressLine2: string | null;
   postTown: string | null;
@@ -28,6 +29,7 @@ type ProfileResponse = {
   company_number?: string;
   company_name?: string;
   company_status?: string;
+  type?: string;
   registered_office_address?: {
     premises?: string;
     address_line_1?: string;
@@ -51,6 +53,7 @@ function toProfile(data: ProfileResponse, requested: string): CompanyProfile | n
     companyNumber: str(data.company_number)?.toUpperCase() ?? requested,
     companyName: name,
     status: str(data.company_status),
+    companyType: str(data.type),
     addressLine1: line1,
     addressLine2: str(a.address_line_2),
     postTown: str(a.locality),

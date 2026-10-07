@@ -71,6 +71,14 @@ model Comment {
   fullName           String
   email              String
   company            String?
+  /// Company lookup details are private moderation data; free text leaves these null and verified false.
+  companyNumber      String?
+  companyStatus      String?
+  companyType        String?
+  companyLocality    String?
+  companyVerified    Boolean       @default(false)
+  companyVerificationSource String?
+  companyVerifiedAt  DateTime?
   comment            String
   /// S3 object key of the optional avatar (served through /api/comments/[id]/avatar, never a public bucket URL).
   avatarKey          String?

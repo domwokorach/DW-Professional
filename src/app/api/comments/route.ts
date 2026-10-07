@@ -3,6 +3,8 @@ import { avatarsEnabled, checkAvatar, deleteAvatar, isAvatarKey } from '@/lib/av
 import { renderCommentEmail } from '@/lib/comment-email.server';
 import { commentsEnabled, listApprovedComments, recentCommentsFromIp, setNotificationStatus, storeComment } from '@/lib/comment-store.server';
 import { AVATAR_TOO_LARGE, cleanComment, validateComment, type CommentFields } from '@/lib/comments';
+import { companySearchKey, normaliseCompanyNumber } from '@/lib/companies';
+import { lookupCompany } from '@/lib/company-lookup.server';
 import { getResend } from '@/lib/resend.server';
 import { clientIp, deviceSummary } from '@/lib/request.server';
 
@@ -92,8 +94,26 @@ export async function POST(request: Request) {
   const sent = text('submissionId');
   const submissionId = UUID.test(sent) ? sent : randomUUID();
   const fields = cleanComment(raw);
+  // The browser supplies only a company number. Resolve its details server-side and accept them only
+  // when the submitted name matches the official name; arbitrary client metadata is never trusted.
+  const companyNumber = fields.company && typeof body.companyNumber === 'string'
+    ? normaliseCompanyNumber(body.companyNumber)
+    : null;
+  const companyLookup = companyNumber ? await lookupCompany(companyNumber) : null;
+  const selectedCompany = companyLookup && companyLookup !== 'not_found'
+    && companySearchKey(fields.company) === companySearchKey(companyLookup.company.companyName)
+    ? companyLookup : null;
+  const companyDetails = selectedCompany ? {
+    companyNumber: selectedCompany.company.companyNumber,
+    companyStatus: selectedCompany.company.companyStatus,
+    companyType: selectedCompany.company.companyType,
+    companyLocality: selectedCompany.company.locality,
+    companyVerified: true,
+    companyVerificationSource: selectedCompany.verified ? 'Companies House API' : 'Companies House dataset',
+    companyVerifiedAt: new Date(),
+  } : null;
   const device = deviceSummary(request);
-  const stored = await storeComment(submissionId, { ...fields, avatarKey, device, ipAddress: ip, consentGivenAt: new Date() });
+  const stored = await storeComment(submissionId, { ...fields, companyDetails, avatarKey, device, ipAddress: ip, consentGivenAt: new Date() });
   if (!stored) return json({ error: commentsEnabled() ? 'send_failed' : 'unavailable' }, commentsEnabled() ? 502 : 503);
   // A retry of an already-saved comment: don't notify twice.
   if (stored.repeat && stored.notificationStatus === 'SENT') return json({ ok: true }, 200);

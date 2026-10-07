@@ -28,12 +28,21 @@ type Props = {
   invalid: boolean;
   describedBy?: string;
   maxLength: number;
+  variant?: 'contact' | 'comment';
+  disabled?: boolean;
 };
 
 const details = (c: CompanySummary) => [c.companyStatus, c.locality].filter(Boolean).join(' · ');
 
+function companyNameWithMatch(name: string, query: string) {
+  const term = query.trim();
+  const at = name.toLocaleLowerCase().indexOf(term.toLocaleLowerCase());
+  if (!term || at < 0) return name;
+  return <>{name.slice(0, at)}<mark className="company-option__match">{name.slice(at, at + term.length)}</mark>{name.slice(at + term.length)}</>;
+}
+
 /**
- * The contact form's optional Company field: a text input with UK company suggestions.
+ * Shared optional Company field: a text input with UK company suggestions.
  * Suggestions come from /api/companies/search (the imported Companies House dataset), debounced,
  * with stale responses dropped. Picking one records its company number and asks
  * /api/companies/verify for the live Companies House details. Typing over a pick, or never picking,
@@ -41,7 +50,7 @@ const details = (c: CompanySummary) => [c.companyStatus, c.locality].filter(Bool
  * field simply behaves as a text input.
  * Keyboard and screen-reader behaviour (combobox role, arrows, Enter, Escape, Tab) comes from Base UI.
  */
-export default function CompanyField({ id, value, selection, onTextChange, onSelectionChange, onBlur, invalid, describedBy, maxLength }: Props) {
+export default function CompanyField({ id, value, selection, onTextChange, onSelectionChange, onBlur, invalid, describedBy, maxLength, variant = 'contact', disabled = false }: Props) {
   const [results, setResults] = useState<CompanySummary[]>([]);
   const [state, setState] = useState<SearchState>('idle');
   const [open, setOpen] = useState(false);
@@ -162,7 +171,7 @@ export default function CompanyField({ id, value, selection, onTextChange, onSel
         itemToStringLabel={(c) => c.companyName}
         isItemEqualToValue={(a, b) => a.companyNumber === b.companyNumber}
       >
-        <div className="company-input-wrap" data-filled={value ? '' : undefined}>
+        <div className={`company-input-wrap${variant === 'comment' ? ' company-input-wrap--comment' : ''}`} data-filled={value ? '' : undefined}>
           <ComboboxPrimitive.Input
             ref={inputRef}
             id={id}
@@ -172,11 +181,12 @@ export default function CompanyField({ id, value, selection, onTextChange, onSel
             autoComplete="organization"
             maxLength={maxLength}
             spellCheck={false}
+            disabled={disabled}
             onBlur={onBlur}
             aria-invalid={invalid || undefined}
             aria-describedby={[describedBy, selection && showingSelection ? selectedId : undefined].filter(Boolean).join(' ') || undefined}
           />
-          {value && (
+          {value && !disabled && (
             <button type="button" className="company-clear" onClick={clear} aria-label={selection ? `Remove ${selection.companyName}` : 'Clear company'}>
               <XIcon aria-hidden="true" />
             </button>
@@ -184,7 +194,7 @@ export default function CompanyField({ id, value, selection, onTextChange, onSel
         </div>
 
         <ComboboxContent
-          className="project-type-popup company-popup"
+          className={`project-type-popup company-popup${variant === 'comment' ? ' company-popup--comment' : ''}`}
           aria-label="Company suggestions"
           transition={reduceMotion ? { duration: 0 } : { duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
         >
@@ -200,10 +210,11 @@ export default function CompanyField({ id, value, selection, onTextChange, onSel
           <ComboboxList>
             {(company: CompanySummary) => (
               <ComboboxItem key={company.companyNumber} value={company} className="company-option">
-                <span className="company-option__name">{company.companyName}</span>
+                <span className="company-option__name">{companyNameWithMatch(company.companyName, query)}</span>
                 <span className="company-option__meta">
                   <span className="company-option__number">Company no. {company.companyNumber}</span>
                   {details(company) && <span>{details(company)}</span>}
+                  {company.companyType && <span>{company.companyType}</span>}
                 </span>
               </ComboboxItem>
             )}
@@ -212,7 +223,8 @@ export default function CompanyField({ id, value, selection, onTextChange, onSel
       </Combobox>
 
       {selection && showingSelection && (
-        <p className="company-selected" id={selectedId}>
+        <p className={`company-selected${variant === 'comment' ? ' company-selected--comment' : ''}`} id={selectedId}>
+          {variant === 'comment' && <span className="company-selected__label">✓ Company verified {selection.verified ? 'with Companies House' : 'against the UK company register'}</span>}
           <span className="company-selected__number">Company no. {selection.companyNumber}</span>
           {selection.companyStatus && <span>{selection.companyStatus}</span>}
           {selection.address && <span className="company-selected__address">{selection.address}</span>}

@@ -48,6 +48,7 @@ body:has(.admin-shell) .site-footer,body:has(.admin-shell) .cookie-consent{displ
 .adm-meta dt{font-family:var(--font-mono);font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)}
 .adm-meta dd{margin:4px 0 0;font-size:14px;line-height:1.45;overflow-wrap:anywhere}
 .adm-meta a{color:var(--ink)}
+.adm-company-verified{color:var(--live);font-weight:600}
 .adm-actions{display:flex;flex-wrap:wrap;gap:10px}
 .adm-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 20px;border:1px solid var(--ink);border-radius:999px;background:var(--ink);color:var(--on-ink);font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:opacity .2s ease,transform .2s ease}
 .adm-btn:hover:not(:disabled){transform:translateY(-1px)}
