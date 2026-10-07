@@ -12,6 +12,8 @@ export const PROJECT_TYPES = [
   'Accessibility Improvement',
   'Performance Optimisation',
   'Consulting',
+  'Recruitment',
+  'Hiring Manager',
   'Other',
 ] as const;
 
