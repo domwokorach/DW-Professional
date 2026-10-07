@@ -86,6 +86,8 @@ Open <http://localhost:3000/en-gb>. `/` redirects to the localised home route. O
 | `npm run build` | Generate icons and Prisma clients, lint/type-check through Next.js, and create the production build. |
 | `npm start` | Serve the completed production build. |
 | `npm run typecheck` | Run TypeScript without emitting files. |
+| `npm test` | Run the automated Node/TypeScript test suite. |
+| `npm run package:build` | Generate the reusable design-token package from the canonical CSS source. |
 | `npm run icons` | Rebuild `src/data/stack-icons.ts` from configured Iconify identifiers. |
 | `npm run db:generate` | Generate the portfolio Prisma client. |
 | `npm run db:migrate` | Create or apply portfolio migrations in development. |
@@ -201,6 +203,25 @@ Security controls reduce risk but are not a certification. Review dependencies, 
 - [docs/COMMENTS.md](docs/COMMENTS.md) — comments, moderation and administrator setup.
 - [docs/COMPANIES.md](docs/COMPANIES.md) — company dataset and search setup.
 - [docs/S3_SETUP.md](docs/S3_SETUP.md) — private attachment storage.
+
+## Packages and releases
+
+The current application and release version is **1.0.1**. The deployable Next.js application remains private in npm metadata and is not published as a package.
+
+The repository publishes the focused, reusable `@domwokorach/dw-professional-design-tokens` package to [GitHub Packages](https://github.com/users/domwokorach/packages). It contains the canonical light and dark CSS custom properties generated from `src/styles/base.css`.
+
+Configure npm for the GitHub registry with a token that has `read:packages`; keep the token in your environment and never commit it:
+
+```ini
+@domwokorach:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_TOKEN}
+```
+
+```bash
+npm install @domwokorach/dw-professional-design-tokens@1.0.1
+```
+
+Published versions follow [Semantic Versioning](https://semver.org/): patch releases contain compatible maintenance work, minor releases add compatible functionality, and major releases may contain breaking changes. Git tags, GitHub Releases, the root application version and the design-token package version are kept aligned. Releases and detailed notes are available from the [DW-Professional repository](https://github.com/domwokorach/DW-Professional/releases).
 
 ## Third-party UI components
 

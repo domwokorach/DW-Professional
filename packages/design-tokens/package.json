@@ -1,0 +1,29 @@
+{
+  "name": "@domwokorach/dw-professional-design-tokens",
+  "version": "1.0.1",
+  "description": "Light and dark CSS design tokens used by DOMINIC Portfolio.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "type": "module",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE.md"
+  ],
+  "style": "dist/tokens.css",
+  "exports": {
+    ".": "./dist/tokens.css",
+    "./tokens.css": "./dist/tokens.css"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "prepublishOnly": "npm run build"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/domwokorach/DW-Professional.git",
+    "directory": "packages/design-tokens"
+  }
+}
