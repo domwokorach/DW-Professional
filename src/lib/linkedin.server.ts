@@ -37,7 +37,7 @@ function endpoints() {
     authorize: `${www}/oauth/v2/authorization`,
     token: `${www}/oauth/v2/accessToken`,
     jwks: `${www}/oauth/openid/jwks`,
-    issuer: `${www}/oauth`,
+    issuer: www,
   };
 }
 
@@ -164,8 +164,8 @@ export async function verifyIdToken(idToken: string, nonce: string): Promise<Lin
   const aud = Array.isArray(c.aud) ? c.aud : [c.aud];
   if (c.iss !== endpoints().issuer) throw new LinkedInError('bad issuer');
   if (!aud.includes(clientId())) throw new LinkedInError('bad audience');
-  if (typeof c.exp !== 'number' || c.exp < now - 60) throw new LinkedInError('expired');
-  if (typeof c.iat === 'number' && c.iat > now + 300) throw new LinkedInError('issued in the future');
+  if (typeof c.exp !== 'number' || c.exp <= now) throw new LinkedInError('expired');
+  if (typeof c.iat !== 'number' || c.iat > now + 300) throw new LinkedInError('invalid issued-at');
   if (typeof c.nonce !== 'string' || c.nonce.length !== nonce.length || !timingSafeEqual(Buffer.from(c.nonce), Buffer.from(nonce))) {
     throw new LinkedInError('bad nonce');
   }

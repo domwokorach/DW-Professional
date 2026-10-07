@@ -42,7 +42,7 @@ export default function PrivacyView() {
       <p>Like any website, the hosting provider may record standard server logs (such as IP address, browser type and time of request) to keep the site running and secure. Hosting provider: <ToConfirm value={legal.hostingProvider} what="Hosting provider" />.</p>
 
       <h2>Images and links</h2>
-      <p>Images are stored with Cloudinary but delivered through this site&apos;s own image service, so your browser does not connect to Cloudinary for them. The videos in the Achievements section are streamed directly from Cloudinary, so when they load your browser connects to Cloudinary, which receives your IP address. Links to LinkedIn and GitHub open those sites, which have their own privacy policies.</p>
+      <p>Images are stored with Cloudinary but delivered through this site&apos;s own image service, so your browser does not connect to Cloudinary for them. Links to LinkedIn and GitHub open those sites, which have their own privacy policies.</p>
 
       <h2>Your rights</h2>
       <p>Under UK data protection law you can ask to access, correct or delete personal information you have sent, or object to how it is used. To make a request, email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. You can also complain to the Information Commissioner&apos;s Office (<a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer">ico.org.uk</a>).</p>

@@ -25,14 +25,13 @@ export async function GET(request: Request) {
   };
 
   if (!linkedInEnabled()) return back('unavailable');
-  const error = url.searchParams.get('error');
-  if (error) return back(/cancel/i.test(error) || error === 'access_denied' ? 'cancelled' : 'error');
-
   const saved = unseal<OAuthState>(readCookie(request, STATE_COOKIE));
   const state = url.searchParams.get('state') ?? '';
   if (!saved || state.length !== saved.state.length || !timingSafeEqual(Buffer.from(state), Buffer.from(saved.state))) {
     return back('expired'); // missing, expired, replayed or forged
   }
+  const error = url.searchParams.get('error');
+  if (error) return back(/cancel/i.test(error) || error === 'access_denied' ? 'cancelled' : 'error');
   const code = url.searchParams.get('code');
   if (!code || code.length > 2000) return back('error');
 

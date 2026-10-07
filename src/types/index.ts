@@ -47,34 +47,6 @@ export type Project = {
   url?: string;
 };
 
-/** One "Proud moments" item. All share one frame; the media is an image, a video, or (for items
- *  without footage) a stat tile. */
-type AchievementBase = {
-  /** Display number, e.g. "05 / 05". */
-  number: string;
-  title: string;
-  description: string;
-};
-
-type AchievementMedia = {
-  src: string;
-  /** Image alt text, or the video's accessible name. */
-  alt: string;
-};
-
-export type Achievement = AchievementBase & (
-  /** `position`: CSS object-position, for photos whose subject sits off-centre in the cropped frame. */
-  | ({ mediaType: 'image'; position?: string } & AchievementMedia)
-  /** Videos are letterboxed (object-fit: contain), never cropped. */
-  | ({
-      mediaType: 'video';
-      poster: string;
-      /** Full version with sound, played in the pop-out player (`src` is the muted preview). */
-      fullSrc: string;
-    } & AchievementMedia)
-  | { mediaType: 'stat'; stat: { value: string; badge?: string } }
-);
-
 export type Certification = { number: string; name: string; issuer: string };
 
 export type ContactInfoItem = { label: string; value: string; href?: string; /** Iconify id */ icon: string };
