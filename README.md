@@ -35,7 +35,7 @@ DOMINIC is a production-oriented developer portfolio for Dominic Wokorach Olanya
 
 ```bash
 git clone <repository-url>
-cd video-portfolio-rebuild
+cd DW-Professional
 npm install
 cp .env.example .env
 ```
@@ -153,6 +153,7 @@ Never expose Prisma Studio, administrator scripts, database URLs or long-lived A
 │   ├── types/               Shared domain types
 │   └── views/               Route-level page compositions
 ├── tests/                   Automated tests
+├── COPYRIGHT.md             Ownership and third-party copyright boundaries
 ├── DESIGN.md                Design-system and component conventions
 ├── LICENSE.md               Repository licence and third-party notice
 └── PRIVACY.md               Developer-facing data-handling documentation
@@ -194,6 +195,7 @@ Security controls reduce risk but are not a certification. Review dependencies, 
 ## Additional documentation
 
 - [DESIGN.md](DESIGN.md) — visual language and reusable UI conventions.
+- [COPYRIGHT.md](COPYRIGHT.md) — ownership and third-party copyright boundaries.
 - [PRIVACY.md](PRIVACY.md) — implemented data flows and documentation boundaries.
 - [LICENSE.md](LICENSE.md) — permitted use and third-party ownership.
 - [docs/COMMENTS.md](docs/COMMENTS.md) — comments, moderation and administrator setup.
@@ -206,4 +208,4 @@ The repository includes adapted components from Aceternity UI, Animate UI, Lucid
 
 ## Licence
 
-This project is proprietary and all rights are reserved unless the copyright holder grants written permission. See [LICENSE.md](LICENSE.md). Third-party packages and assets remain subject to their own licences and terms.
+This project is proprietary and all rights are reserved unless the copyright holder grants written permission. See [LICENSE.md](LICENSE.md) and [COPYRIGHT.md](COPYRIGHT.md). Third-party packages and assets remain subject to their own licences and terms.

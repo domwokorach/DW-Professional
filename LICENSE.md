@@ -2,6 +2,8 @@
 
 Copyright © 2026 Dominic Wokorach Olanya. All rights reserved.
 
+Ownership boundaries and third-party exclusions are documented in [COPYRIGHT.md](COPYRIGHT.md).
+
 ## Licence type
 
 This repository and its original source code, design, written content and portfolio presentation are proprietary. They are not offered under an open-source licence.

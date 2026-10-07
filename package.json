@@ -1,7 +1,33 @@
 {
-  "name": "video-portfolio-rebuild",
+  "name": "dw-professional",
   "version": "1.0.0",
   "private": true,
+  "description": "Professional portfolio website for Dominic — Software Engineer & Frontend Developer.",
+  "keywords": [
+    "portfolio",
+    "software-engineer",
+    "frontend-developer",
+    "full-stack",
+    "nextjs",
+    "typescript",
+    "react"
+  ],
+  "homepage": "https://github.com/domwokorach/DW-Professional#readme",
+  "bugs": {
+    "url": "https://github.com/domwokorach/DW-Professional/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/domwokorach/DW-Professional.git"
+  },
+  "license": "ISC",
+  "author": "Dominic W",
+  "type": "module",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
