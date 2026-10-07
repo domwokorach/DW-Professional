@@ -199,40 +199,47 @@ model AdminLoginAttempt {
 /// IP and device, a higher submission count) and adds any new file. Device and IP address are disclosed on the form
 /// and captured on the server (never from the browser). Private: listed only at /admin/sessions.
 model PortfolioAccess {
-  id                 String                @id @default(cuid())
+  id                  String                @id @default(cuid())
   /// The first submission's id (sent by the form, reused on retry).
-  submissionId       String                @unique
+  submissionId        String                @unique
   /// The latest submission's id, so a retry of an update is recognised as a repeat too.
-  lastSubmissionId   String?
-  fullName           String
-  email              String
+  lastSubmissionId    String?
+  fullName            String
+  email               String
   /// Lower-cased email: the key that makes a repeat submission update this session.
-  emailKey           String
-  mobile             String
-  company            String?
+  emailKey            String
+  mobile              String
+  company             String?
   /// Set when the visitor picked a registered UK company in the Company field.
-  companyNumber      String?
+  companyNumber       String?
   /// Optional professional profile links the visitor added (absolute http(s) URLs, validated on the server).
-  linkedinUrl        String?
-  companyWebsite     String?
-  portfolioUrl       String?
+  linkedinUrl         String?
+  companyWebsite      String?
+  portfolioUrl        String?
+  /// "Continue with LinkedIn" (OpenID Connect): only what LinkedIn returned for the member who signed in. The profile
+  /// URL is never derived from these; linkedinUrl above is only ever what the candidate typed.
+  linkedinMemberId    String?
+  linkedinName        String?
+  linkedinEmail       String?
+  linkedinAvatarUrl   String?
+  linkedinConnectedAt DateTime?
   /// Device / platform summary derived from the request headers, e.g. "Mobile · iOS · Safari" (latest submission).
-  device             String?
-  userAgent          String?
+  device              String?
+  userAgent           String?
   /// From the hosting platform's trusted headers (latest submission); null when it can't be determined reliably.
-  ipAddress          String?
+  ipAddress           String?
   /// Where the visit came from, e.g. "Portfolio Access QR Code".
-  source             String
-  page               String
+  source              String
+  page                String
   /// Whether the latest notification email went out (retries resend only while not SENT).
-  notificationStatus EmailStatus           @default(PENDING)
+  notificationStatus  EmailStatus           @default(PENDING)
   /// How many times this candidate has submitted the form.
-  submissionCount    Int                   @default(1)
+  submissionCount     Int                   @default(1)
   /// First submission.
-  createdAt          DateTime              @default(now())
-  lastSubmittedAt    DateTime              @default(now())
+  createdAt           DateTime              @default(now())
+  lastSubmittedAt     DateTime              @default(now())
   /// Files the candidate uploaded or photographed, across all their submissions. Deleted with the session.
-  attachments        PortfolioAccessFile[]
+  attachments         PortfolioAccessFile[]
 
   @@index([createdAt])
   @@index([lastSubmittedAt])

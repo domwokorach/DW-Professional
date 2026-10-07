@@ -3,8 +3,8 @@
 import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useReducedMotion } from 'motion/react';
-import { AnimatedTestimonials, type AnimatedTestimonialItem } from '@/components/ui';
-import { achievements } from '@/data';
+import { AnimatedTestimonials, type AnimatedTestimonialItem } from '@/components/ui/animated-testimonials';
+import { achievements } from '@/data/achievements';
 import type { Achievement } from '@/types';
 
 type VideoAchievement = Extract<Achievement, { mediaType: 'video' }>;

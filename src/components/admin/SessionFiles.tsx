@@ -39,7 +39,7 @@ export default function SessionFiles({ files, candidate, lastSubmittedAt }: { fi
                 <div className="adm-file__row">
                   {image ? (
                     // Served by the authenticated route; lazy, so a long list doesn't load every image at once.
-                    <img className="adm-file__thumb" src={fileUrl(f.id, true)} alt="" loading="lazy" />
+                    <img className="adm-file__thumb" src={fileUrl(f.id, true)} alt="" loading="lazy" onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }} />
                   ) : (
                     <span className="adm-file__icon" aria-hidden="true"><FileTextIcon /></span>
                   )}

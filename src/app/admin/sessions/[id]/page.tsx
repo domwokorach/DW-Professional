@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { AdminAutoRefresh, AdminLogoutButton, AdminSections, SessionFiles } from '@/components/admin';
+import { AdminAutoRefresh, AdminLogoutButton, AdminSections, LinkedInAvatar, SessionFiles } from '@/components/admin';
 import { ThemeToggle } from '@/components/layout';
 import { requireAdminPage } from '@/lib/admin/session.server';
 import {
@@ -76,7 +76,16 @@ export default async function AdminSessionPage({ params }: { params: Promise<{ i
                   {s.company ?? <Muted>—</Muted>}
                   {s.company && s.companyNumber && <span className="adm-sub">Company no. {s.companyNumber}</span>}
                 </Row>
-                <Row label="LinkedIn">{s.linkedinUrl ? <External href={s.linkedinUrl} /> : <Muted>—</Muted>}</Row>
+                <Row label="LinkedIn profile">
+                  {s.linkedinUrl ? (
+                    <>
+                      <External href={s.linkedinUrl} />
+                      <a className="adm-btn adm-btn--ghost adm-btn--sm adm-li-view" href={s.linkedinUrl} target="_blank" rel="noopener noreferrer">
+                        View LinkedIn profile <span aria-hidden="true">↗</span><span className="sr-only"> (opens in a new tab)</span>
+                      </a>
+                    </>
+                  ) : <Muted>—</Muted>}
+                </Row>
                 <Row label="Company website">{s.companyWebsite ? <External href={s.companyWebsite} /> : <Muted>—</Muted>}</Row>
                 <Row label="Portfolio">{s.portfolioUrl ? <External href={s.portfolioUrl} /> : <Muted>—</Muted>}</Row>
               </dl>
@@ -98,6 +107,26 @@ export default async function AdminSessionPage({ params }: { params: Promise<{ i
               </dl>
             </section>
           </div>
+
+          <section className="adm-card adm-panel" aria-labelledby="adm-s-linkedin">
+            <h2 id="adm-s-linkedin" className="adm-panel__title">LinkedIn sign-in</h2>
+            {s.linkedinMemberId ? (
+              <div className="adm-li">
+                <LinkedInAvatar src={s.linkedinAvatarUrl} name={s.linkedinName} />
+                <dl className="adm-dl adm-li__dl">
+                  <Row label="Status"><span className="adm-pill">LinkedIn connected</span></Row>
+                  <Row label="Name">{s.linkedinName ?? <Muted>Not shared</Muted>}</Row>
+                  <Row label="Email">{s.linkedinEmail ? <a href={`mailto:${s.linkedinEmail}`}>{s.linkedinEmail}</a> : <Muted>Not shared</Muted>}</Row>
+                  <Row label="Connected">
+                    {s.linkedinConnectedAt ? <time dateTime={s.linkedinConnectedAt}>{WHEN.format(new Date(s.linkedinConnectedAt))}</time> : <Muted>—</Muted>}
+                  </Row>
+                  <Row label="Member ID"><span className="adm-mono">{s.linkedinMemberId}</span></Row>
+                </dl>
+              </div>
+            ) : (
+              <p className="adm-li__none"><span className="adm-pill adm-pill--muted">Not connected</span> The candidate didn&apos;t sign in with LinkedIn.</p>
+            )}
+          </section>
 
           <SessionFiles files={s.attachments} candidate={s.fullName} lastSubmittedAt={s.lastSubmittedAt} />
         </>

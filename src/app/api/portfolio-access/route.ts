@@ -13,6 +13,7 @@ import {
 import { createRateLimit } from '@/lib/rate-limit.server';
 import { deviceSummary, isSameOrigin, trustedClientIp, userAgent } from '@/lib/request.server';
 import { getResend } from '@/lib/resend.server';
+import { clearCookie, IDENTITY_COOKIE, readIdentity } from '@/lib/linkedin.server';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,7 +35,8 @@ const requestLimited = createRateLimit({ windowMs: 10 * 60 * 1000, max: 30 });
 const submissionLimited = createRateLimit({ windowMs: 10 * 60 * 1000, max: 6 });
 
 // Errors are deliberately generic codes: no internal, database or email-service details reach the browser.
-const json = (body: unknown, status: number) => Response.json(body, { status, headers: { 'Cache-Control': 'no-store' } });
+const json = (body: unknown, status: number, headers?: Record<string, string>) =>
+  Response.json(body, { status, headers: { 'Cache-Control': 'no-store', ...headers } });
 
 /**
  * Records a Portfolio Access submission, then emails the notification. Success is returned only once the record is
@@ -124,6 +126,9 @@ export async function POST(request: Request) {
   const companyNumber = fields.company ? normaliseCompanyNumber(text('companyNumber')) : null;
   const device = deviceSummary(request);
   const ua = userAgent(request);
+  const linkedin = readIdentity(request);
+  // Once saved with the session, the connection cookie isn't needed any more.
+  const done = linkedin ? { 'Set-Cookie': clearCookie(IDENTITY_COOKIE, '/api') } : undefined;
 
   // The record must be saved before anything else: without it the submission has not succeeded, so the page shows
   // a retry message and never opens the CV. The error details stay in the server log.
@@ -135,15 +140,21 @@ export async function POST(request: Request) {
     ipAddress: ip,
     source: SOURCE,
     page: PORTFOLIO_ACCESS_URL,
+    // The candidate's verified "Continue with LinkedIn" identity (signed HttpOnly cookie), if they connected one.
+    linkedinIdentity: linkedin,
   }, attachment);
   if (!stored) return json({ error: 'unavailable' }, 503);
   // The admin pages render per request; this also drops any cached copy so the session shows its update at once.
   revalidatePath(ADMIN_PORTFOLIO_ACCESS_PATH);
   revalidatePath(adminSessionPath(stored.id));
   // What the success screen confirms: the file that was saved with this submission, if any.
-  const ok = { ok: true, attachment: attachment ? { filename: attachment.filename, size: attachment.size } : null };
+  const ok = {
+    ok: true,
+    attachment: attachment ? { filename: attachment.filename, size: attachment.size } : null,
+    linkedinConnected: Boolean(linkedin),
+  };
   // A retry of a submission whose email already went out: don't notify twice.
-  if (stored.repeat && stored.notificationStatus === 'SENT') return json(ok, 200);
+  if (stored.repeat && stored.notificationStatus === 'SENT') return json(ok, 200, done);
 
   // The record is saved, so the submission has succeeded whatever happens to the email: a failed notification is
   // logged and marked FAILED on the record (visible in the admin list), never reported to the candidate.
@@ -157,10 +168,11 @@ export async function POST(request: Request) {
     page: PORTFOLIO_ACCESS_URL,
     accessedAt: stored.submittedAt,
     submissionCount: stored.submissionCount,
+    linkedinConnection: linkedin ? { name: linkedin.name, email: linkedin.email } : null,
     siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://www.dominicwokorach.me',
     attachment: attachment && { filename: attachment.filename, size: attachment.size, source: attachment.source },
   }, attachment);
-  return json(ok, 200);
+  return json(ok, 200, done);
 }
 
 async function notify(submissionId: string, stored: StoredAccess, input: AccessEmailInput, file?: NewAttachment) {

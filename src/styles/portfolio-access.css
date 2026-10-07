@@ -1,9 +1,14 @@
 /* Portfolio Access: the page the Developer ID QR code opens */
-.pa{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:max(24px,env(safe-area-inset-top)) 20px max(24px,env(safe-area-inset-bottom))}
+/* One column that may be narrower than its content (minmax(0,1fr)), so a long file name or address never widens the
+   page; safe-area padding keeps the card clear of notches, rounded corners and the home indicator. */
+.pa{min-height:100vh;min-height:100dvh;display:grid;grid-template-columns:minmax(0,1fr);place-items:center;
+  padding:max(24px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+/* Dual-screen / foldable devices with a vertical fold: keep the card on one side, clear of the hinge. */
+@media(horizontal-viewport-segments:2){.pa{grid-template-columns:minmax(0,env(viewport-segment-width 0 0,50%)) 1fr;justify-items:center}}
 /* A focused, full-screen page: no site footer under it. */
 body:has(.pa) .site-footer,body:has(.pa) .cookie-consent{display:none}
 /* (The cookie banner would cover the buttons on a phone; this page sets no cookies and the banner shows on the portfolio itself.) */
-.pa-card{width:100%;max-width:440px;display:flex;flex-direction:column;align-items:center;gap:22px;padding:44px 28px 28px;border:1px solid var(--line);border-radius:28px;background:rgba(var(--surface-rgb),.78);box-shadow:0 28px 70px -30px rgba(var(--shadow-rgb),.4);text-align:center;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.pa-card{width:100%;max-width:440px;min-width:0;display:flex;flex-direction:column;align-items:center;gap:22px;padding:clamp(32px,8vw,44px) clamp(18px,5vw,28px) clamp(22px,6vw,28px);border:1px solid var(--line);border-radius:28px;background:rgba(var(--surface-rgb),.78);box-shadow:0 28px 70px -30px rgba(var(--shadow-rgb),.4);text-align:center;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 .pa-panel{display:flex;flex-direction:column;align-items:center;gap:22px;width:100%}
 .pa-panel--enter{animation:pa-enter .35s ease-out both}
 @keyframes pa-enter{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
@@ -86,11 +91,11 @@ body:has(.pa) .site-footer,body:has(.pa) .cookie-consent{display:none}
 .pa-attach__remove:hover{background:rgba(var(--ink-rgb),.07);color:var(--ink)}
 .pa-attach__remove:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 /* In-page camera (desktop) */
-.pa-camera{width:min(calc(100% - 32px),640px);max-height:calc(100dvh - 32px);padding:20px;border:1px solid var(--line);border-radius:22px;background:var(--white);color:var(--ink);box-shadow:0 28px 70px -24px rgba(var(--shadow-rgb),.5)}
+.pa-camera{width:min(calc(100% - 32px),640px);max-height:calc(100dvh - 32px);overflow-y:auto;overscroll-behavior:contain;padding:20px;border:1px solid var(--line);border-radius:22px;background:var(--white);color:var(--ink);box-shadow:0 28px 70px -24px rgba(var(--shadow-rgb),.5)}
 .pa-camera[open]{animation:pa-enter .25s ease-out both}
 .pa-camera::backdrop{background:rgba(var(--shadow-rgb),.55);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 .pa-camera__title{margin:0 0 14px;font-size:20px;letter-spacing:-.03em}
-.pa-camera__frame{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:14px;background:#000}
+.pa-camera__frame{position:relative;aspect-ratio:16/9;max-height:56dvh;overflow:hidden;border-radius:14px;background:#000}
 .pa-camera__video{display:block;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)} /* mirrored like a mirror; the photo itself isn't */
 .pa-camera__status{position:absolute;inset:0;display:grid;place-items:center;margin:0;padding:20px;color:#fff;font-size:14px;text-align:center}
 .pa-camera__actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
@@ -102,6 +107,25 @@ body:has(.pa) .site-footer,body:has(.pa) .cookie-consent{display:none}
 @media(max-width:420px){.pa-attach__preview{flex-wrap:wrap}.pa-attach__meta{flex-basis:calc(100% - 68px)}.pa-attach__remove{flex:1;justify-content:center;border-color:var(--line)}}
 @media(prefers-reduced-motion:reduce){.pa-attach__preview,.pa-camera[open]{animation:none}.pa-attach__remove{transition:none}}
 .pa-sent-file{color:var(--ink);font-weight:600;overflow-wrap:anywhere}
+/* LinkedIn: "Continue with LinkedIn" under the profile field, and the connected state */
+.pa-li{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.pa-li__btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:0}
+.pa-li__logo{width:18px;height:18px;flex:none;fill:currentColor}
+.pa-li__hint{font-size:12.5px}
+.pa-li__connected{display:flex;align-items:center;flex-wrap:wrap;gap:10px 12px;padding:10px;border:1px solid var(--contact-border-strong);border-radius:12px;animation:pa-enter .25s ease-out both}
+.pa-li__avatar{flex:none;width:44px;height:44px;border-radius:50%;object-fit:cover;background:rgba(var(--ink-rgb),.08)}
+.pa-li__avatar--initials{display:grid;place-items:center;font-size:14px;font-weight:700;color:var(--ink)}
+.pa-li__who{display:flex;flex-direction:column;gap:1px;flex:1 1 140px;min-width:0}
+.pa-li__status{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;letter-spacing:.02em;color:var(--live)}
+.pa-li__status svg{width:14px;height:14px;stroke-width:3}
+.pa-li__name{font-size:14.5px;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
+.pa-li__email{font-size:12.5px;color:var(--text-2);overflow-wrap:anywhere}
+.pa-li__disconnect{border-color:var(--line)}
+.pa-li__msg{margin:0;font-size:13px;line-height:1.5;color:var(--text-3)}
+.pa-li__msg:empty{display:none}
+.pa-li__msg--warn{color:var(--contact-error)}
+@media(max-width:420px){.pa-li__disconnect{flex:1 1 100%;justify-content:center}}
+@media(prefers-reduced-motion:reduce){.pa-li__connected{animation:none}}
 .pa-hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
 .pa-title:focus:not(:focus-visible){outline:none}
 .pa-title:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:6px}

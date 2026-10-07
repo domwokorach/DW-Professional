@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { AppFooter } from '@/components/layout';
+import AppFooter from '@/components/layout/AppFooter';
 import { CookieConsent } from '@/components/privacy';
 import { site } from '@/config';
 import { THEME_INIT_SCRIPT } from '@/lib/theme';

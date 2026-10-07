@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type PointerEvent } from 'react';
 import { useMotionValue, useMotionValueEvent, useReducedMotion, useTransform, type MotionValue } from 'motion/react';
-import { CardPattern, generateRandomString } from '@/components/ui';
+import { CardPattern, generateRandomString } from '@/components/ui/evervault-card';
 
 const CHARS = 1500;
 const REFRESH_MS = 70; // throttle the character shuffle instead of re-rendering on every move

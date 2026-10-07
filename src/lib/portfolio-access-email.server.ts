@@ -22,6 +22,8 @@ export type AccessEmailInput = {
   source: string;
   page: string;
   accessedAt: Date;
+  /** "Continue with LinkedIn" connection, when the candidate connected one. */
+  linkedinConnection?: { name: string | null; email: string | null } | null;
   /** How many times this candidate has submitted (1 for a new session). */
   submissionCount?: number;
   /** The optional Upload / Camera file (attached to the email itself). */
@@ -32,6 +34,9 @@ export type AccessEmailInput = {
 
 /** A dialable tel: href: only a leading + and digits survive, so nothing else can be injected into the link. */
 const telHref = (mobile: string) => `tel:${mobile.trim().startsWith('+') ? '+' : ''}${mobile.replace(/\D/g, '')}`;
+
+const connectionLabel = (c: { name: string | null; email: string | null }) =>
+  `Connected${c.name ? ` as ${c.name}` : ''}${c.email ? ` (${c.email})` : ''}`;
 
 export const accessEmailSubject = (fullName: string) =>
   `New Portfolio CV Access — ${fullName}`.replace(/[\r\n]+/g, ' ').slice(0, 150);
@@ -53,9 +58,10 @@ export function renderAccessEmail(a: AccessEmailInput) {
     detail('Name', esc(a.fullName)),
     detail('Email', `<a href="${esc(replyHref)}" style="${linkStyle}">${esc(a.email)}</a>`),
     detail('Mobile', `<a href="${esc(telHref(a.mobile))}" style="${linkStyle}">${esc(a.mobile)}</a>`),
-    detail('Company', esc(company), !links.length && !fileLabel),
-    ...links.map(([label, href], i) => detail(label, `<a href="${esc(href)}" style="${linkStyle}">${esc(href)}</a>`, i === links.length - 1 && !fileLabel)),
-    ...(fileLabel ? [detail('Attachment', esc(fileLabel), true)] : []),
+    detail('Company', esc(company), !links.length && !fileLabel && !a.linkedinConnection),
+    ...links.map(([label, href], i) => detail(label, `<a href="${esc(href)}" style="${linkStyle}">${esc(href)}</a>`, i === links.length - 1 && !fileLabel && !a.linkedinConnection)),
+    ...(fileLabel ? [detail('Attachment', esc(fileLabel), !a.linkedinConnection)] : []),
+    ...(a.linkedinConnection ? [detail('LinkedIn sign-in', esc(connectionLabel(a.linkedinConnection)), true)] : []),
   ].join('');
 
   const access = [
@@ -149,6 +155,7 @@ export function renderAccessEmail(a: AccessEmailInput) {
     `Company:     ${company}`,
     ...links.map(([label, href]) => `${`${label}:`.padEnd(Math.max(13, label.length + 2))}${href}`),
     ...(fileLabel ? [`Attachment:  ${fileLabel}`] : []),
+    ...(a.linkedinConnection ? [`LinkedIn sign-in: ${connectionLabel(a.linkedinConnection)}`] : []),
     '',
     'ACCESS DETAILS',
     `Date/Time:   ${when_}`,

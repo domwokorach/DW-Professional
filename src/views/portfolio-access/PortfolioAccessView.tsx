@@ -2,11 +2,12 @@
 
 import Link from 'next/link';
 import { AnimatePresence, motion, useReducedMotion, type Variants } from 'motion/react';
-import { useRef, useState, type FormEvent, type InputHTMLAttributes } from 'react';
+import { useEffect, useRef, useState, type FormEvent, type InputHTMLAttributes } from 'react';
 import { HOME, RESUME_URL } from '@/config';
 import CompanyField, { type CompanySelection } from '@/components/contact/CompanyField';
 import { FadeArc } from '@/components/loading-ui/fade-arc';
 import AttachmentField, { type Attachment } from './AttachmentField';
+import LinkedInConnect, { type LinkedInStatus } from './LinkedInConnect';
 import {
   ACCESS_FIELDS,
   ACCESS_LIMITS,
@@ -27,6 +28,11 @@ type ImportState = { status: 'idle' | 'loading' | 'done' | 'error'; preview?: Si
 const EMPTY: AccessFields = { fullName: '', email: '', mobile: '', company: '', linkedin: '', companyWebsite: '', portfolio: '' };
 const id = (field: AccessField) => `pa-${field}`;
 const PRIVACY_PATH = '/en-gb/privacy';
+/** The form draft kept across the LinkedIn sign-in round trip: this tab's sessionStorage only, never the URL. */
+const DRAFT_KEY = 'portfolio-access-draft';
+const DRAFT_MAX_AGE_MS = 60 * 60 * 1000;
+const LINKEDIN_STATUSES: LinkedInStatus[] = ['connected', 'cancelled', 'error', 'expired', 'unavailable'];
+type Draft = { fields: AccessFields; company: CompanySelection | null; submissionId: string | null; savedAt: number };
 
 const GENERIC_ERROR = "We couldn't complete your request. Please check your details and try again.";
 const UNAVAILABLE = "We couldn't save your details just now. Please try again in a moment.";
@@ -68,6 +74,7 @@ export default function PortfolioAccessView() {
   const [attachment, setAttachment] = useState<Attachment | null>(null);
   // The file the server confirmed it saved with the last submission, for the success message.
   const [sentFile, setSentFile] = useState<{ name: string; photo: boolean } | null>(null);
+  const [sentLinkedIn, setSentLinkedIn] = useState(false);
   // One id per submission, reused on retry so the server never records or emails it twice.
   const submissionId = useRef<string | null>(null);
   // Synchronous guard: state updates are async, so a fast double click could otherwise post twice.
@@ -76,6 +83,44 @@ export default function PortfolioAccessView() {
   const successTitle = useRef<HTMLHeadingElement>(null);
   const resumeButton = useRef<HTMLAnchorElement>(null);
   const reduce = useReducedMotion();
+  const [linkedinStatus, setLinkedinStatus] = useState<LinkedInStatus | null>(null);
+
+  // Back from LinkedIn: restore the draft saved before leaving (same tab, under an hour old), note the result, and
+  // take ?linkedin= out of the address so a reload or the back button doesn't repeat the message.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const result = params.get('linkedin') as LinkedInStatus | null;
+    try {
+      const raw = sessionStorage.getItem(DRAFT_KEY);
+      sessionStorage.removeItem(DRAFT_KEY);
+      const draft = raw ? (JSON.parse(raw) as Draft) : null;
+      if (draft && Date.now() - draft.savedAt < DRAFT_MAX_AGE_MS && draft.fields) {
+        setFields({ ...EMPTY, ...draft.fields });
+        setCompany(draft.company ?? null);
+        if (draft.submissionId) submissionId.current = draft.submissionId;
+      }
+    } catch {
+      // Storage blocked or unreadable: the form simply starts empty.
+    }
+    if (result && LINKEDIN_STATUSES.includes(result)) {
+      setLinkedinStatus(result);
+      params.delete('linkedin');
+      const query = params.toString();
+      window.history.replaceState(window.history.state, '', `${window.location.pathname}${query ? `?${query}` : ''}`);
+    }
+  }, []);
+
+  /** Keeps what's been typed (not files), then goes to LinkedIn. The submission id is kept too, so no duplicate. */
+  const connectLinkedIn = () => {
+    try {
+      submissionId.current ??= crypto.randomUUID();
+      const draft: Draft = { fields, company, submissionId: submissionId.current, savedAt: Date.now() };
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    } catch {
+      // Without storage the details can't be kept; LinkedIn still works, the candidate re-enters them.
+    }
+    window.location.assign('/api/auth/linkedin/start');
+  };
 
   // When the confirmation mounts (after the form's exit animation), move focus to it, or to Open Resume when the
   // new tab was blocked, so keyboard and screen-reader users land on what matters next. Once per submission.
@@ -154,7 +199,8 @@ export default function PortfolioAccessView() {
         // Open straight away, while the browser still counts the Submit click as the user's action
         // (pop-up blockers allow new tabs only shortly after one).
         const opened = openResumeTab();
-        const saved = (await res.json().catch(() => null)) as { attachment?: { filename: string } | null } | null;
+        const saved = (await res.json().catch(() => null)) as { attachment?: { filename: string } | null; linkedinConnected?: boolean } | null;
+        setSentLinkedIn(Boolean(saved?.linkedinConnected));
         setSentFile(saved?.attachment ? { name: saved.attachment.filename, photo: attachment?.source === 'camera' } : null);
         // Clear what belongs to this submission only (the file and its id); the details stay, so a candidate who
         // comes back to the form doesn't retype them, and sending again updates their session.
@@ -301,7 +347,10 @@ export default function PortfolioAccessView() {
                 <fieldset className="pa-profile">
                   <legend className="pa-profile__title">Professional profile <span className="contact-optional">(optional)</span></legend>
                   <p className="pa-note">Add any that apply: your LinkedIn profile, your company&rsquo;s website, or a portfolio link.</p>
-                  {input('linkedin', 'LinkedIn profile', { type: 'url', inputMode: 'url', autoComplete: 'url', spellCheck: false, autoCapitalize: 'none', placeholder: 'linkedin.com/in/your-name' }, true)}
+                  <div className="pa-li-field">
+                    {input('linkedin', 'LinkedIn profile', { type: 'url', inputMode: 'url', autoComplete: 'url', spellCheck: false, autoCapitalize: 'none', placeholder: 'linkedin.com/in/your-name' }, true)}
+                    <LinkedInConnect status={linkedinStatus} onConnect={connectLinkedIn} attachmentPending={Boolean(attachment)} disabled={submitting} />
+                  </div>
 
                   <div className="contact-field pa-field">
                     <label className="contact-label" htmlFor={id('companyWebsite')}>Company website<span className="contact-optional"> (optional)</span></label>
@@ -416,6 +465,7 @@ export default function PortfolioAccessView() {
                   {sentFile
                     ? <>Your details and your {sentFile.photo ? 'photo' : 'file'} <strong className="pa-sent-file">{sentFile.name}</strong> have been received.</>
                     : 'Your details have been submitted successfully.'}
+                  {sentLinkedIn && <> Your LinkedIn account is linked to your request.</>}
                   <br />{resumeMessage}
                 </p>
               </motion.div>

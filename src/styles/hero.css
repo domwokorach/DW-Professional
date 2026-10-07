@@ -56,3 +56,5 @@
 :root[data-theme="dark"] .hero-photon-background{filter:none}
 :root[data-theme="dark"] .hero-portrait-wrap{mix-blend-mode:normal;filter:none;background:#ece8d9;border-radius:28px;overflow:hidden}
 :root[data-theme="dark"] .hero-poses{mix-blend-mode:multiply;filter:brightness(1.012)} /* lifts the render's 254 background to pure white, so no seam shows on the panel */
+/* Touch: a 44px hit area around the 36px scroll mark, without changing how it looks. */
+@media(pointer:coarse){.scroll-mark:before{content:"";position:absolute;inset:-4px;border-radius:50%}}

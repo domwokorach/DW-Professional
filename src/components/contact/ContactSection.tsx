@@ -1,5 +1,6 @@
 import { LinkIcon } from '@/components/animate-ui/icons/link';
 import { IconLink } from '@/components/ui';
+import TechIcon from '@/components/ui/TechIcon';
 import { contactInfo } from '@/data';
 import ContactInfoRow from './ContactInfoRow';
 import LazyContactForm from './LazyContactForm';
@@ -20,7 +21,7 @@ export default function ContactSection() {
           <p className="contact-lede">I create scalable, accessible, and user-focused digital products by combining strong engineering foundations with carefully crafted frontend experiences. From application architecture and data integration to responsive interfaces and interaction details, every part is designed to work seamlessly together.</p>
           <dl className="contact-info">
             {contactInfo.map((item) => (
-              <ContactInfoRow key={item.label} label={item.label} icon={item.icon}>
+              <ContactInfoRow key={item.label} label={item.label} icon={<TechIcon icon={item.icon} fallback={item.label} className="contact-info__icon" />}>
                 {item.href ? <a href={item.href}>{item.value}</a> : item.value}
               </ContactInfoRow>
             ))}

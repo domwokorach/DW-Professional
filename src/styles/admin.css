@@ -1,13 +1,17 @@
 /* Private admin area (/admin/*). Loaded only by app/admin/layout.tsx. Uses the portfolio tokens and reuses the
    comment form controls (.cm-field, .cm-submit, .cm-status__err) and card pieces (.cm-avatar, .cm-name, .cm-text). */
-.admin-shell{--cm-radius:18px;--cm-error:#B42318;min-height:100vh;background:var(--cream);color:var(--ink);padding:clamp(24px,5vw,64px) 16px}
+.admin-shell{--cm-radius:18px;--cm-error:#B42318;--adm-pad-y:clamp(20px,5vw,64px);--adm-pad-x:clamp(16px,4vw,40px);min-height:100vh;min-height:100dvh;background:var(--cream);color:var(--ink);overflow-x:clip;
+  padding:max(var(--adm-pad-y),env(safe-area-inset-top)) max(var(--adm-pad-x),env(safe-area-inset-right)) max(var(--adm-pad-y),env(safe-area-inset-bottom)) max(var(--adm-pad-x),env(safe-area-inset-left))}
+/* A focused tool: the public site's footer and cookie banner don't belong under it (admin sets no optional cookies). */
+body:has(.admin-shell) .site-footer,body:has(.admin-shell) .cookie-consent{display:none}
 :root[data-theme="dark"] .admin-shell{--cm-error:#f87171}
 .adm-kicker{margin:0 0 6px;font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.18em;color:var(--text-2)}
 .adm-title{margin:0;font-size:clamp(26px,3vw,36px);line-height:1.1;letter-spacing:-.04em;font-weight:700}
 .adm-card{background:var(--white);border:1px solid var(--line);border-radius:var(--cm-radius);box-shadow:0 1px 0 rgba(var(--shadow-rgb),.04)}
 
 /* Login */
-.adm-login{display:grid;place-items:center;align-content:center;min-height:calc(100vh - 2 * clamp(24px,5vw,64px))}
+.adm-login{display:grid;place-items:center;align-content:center;min-height:calc(100vh - 2 * var(--adm-pad-y));min-height:calc(100dvh - 2 * var(--adm-pad-y))}
+@media(max-height:560px){.adm-login{align-content:start}}
 .adm-help{margin:16px 0 0;text-align:center;font-size:13px;line-height:1.5;color:var(--text-2)}
 .adm-login__card{width:min(100%,420px);display:flex;flex-direction:column;gap:20px;padding:32px 28px}
 .adm-submit{align-self:stretch}
@@ -15,10 +19,12 @@
 .adm-notice--err{border-color:var(--cm-error);color:var(--cm-error);background:color-mix(in srgb,var(--cm-error) 7%,transparent)}
 
 /* Dashboard */
-.adm-dash{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+.adm-dash{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:clamp(18px,3vw,24px)}
+.adm-dash>*,.adm-pa>*,.adm-files>*{min-width:0}
 .adm-bar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px;padding-bottom:20px;border-bottom:1px solid var(--line)}
 .adm-bar__user{display:flex;flex-wrap:wrap;align-items:center;gap:12px;min-width:0}
 .adm-who{font-size:13.5px;color:var(--text-2);overflow-wrap:anywhere}
+@media(max-width:560px){.adm-bar{align-items:flex-start}.adm-bar__user{width:100%;justify-content:space-between}.adm-who{flex:1 1 100%;font-size:13px}}
 .adm-who strong{color:var(--ink);font-weight:600}
 .adm-filters{display:flex;flex-wrap:wrap;gap:8px}
 .adm-filter{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:8px 16px;border:1px solid rgba(var(--ink-rgb),.28);border-radius:999px;background:transparent;color:var(--ink);font-family:var(--font-mono);font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background-color .18s ease,color .18s ease,border-color .18s ease}
@@ -56,6 +62,7 @@
 .adm-section:hover{background:rgba(var(--ink-rgb),.06)}
 .adm-section[aria-current="page"]{background:var(--ink);color:var(--on-ink)}
 .adm-section:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+@media(max-width:480px){.adm-sections{display:grid;grid-template-columns:1fr 1fr;width:100%}.adm-section{justify-content:center;padding:8px 10px;text-align:center;font-size:13.5px}}
 
 /* Portfolio Access submissions */
 /* A focused admin page: no site footer under it (as on the public Portfolio Access page). */
@@ -84,6 +91,7 @@ body:has(.adm-dash--access) .site-footer{display:none}
 .adm-files-link__thumb{width:32px;height:32px;border-radius:6px;object-fit:cover;background:rgba(var(--ink-rgb),.06)}
 .adm-tag--ok{border:1px solid var(--live);color:var(--ink);background:color-mix(in srgb,var(--live) 12%,transparent)}
 .adm-file__name .adm-tag{margin-left:10px}
+.adm-table a:not(.adm-btn),.adm-dl a,.adm-meta a{padding-block:5px}
 .adm-links{display:flex;flex-wrap:wrap;gap:4px 12px}
 .adm-links a{white-space:nowrap}
 .adm-mono{font-family:var(--font-mono);font-size:13px}
@@ -91,12 +99,13 @@ body:has(.adm-dash--access) .site-footer{display:none}
 .adm-sub{display:block;margin-top:2px;font-size:12.5px;color:var(--text-2)}
 .adm-tag{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;vertical-align:1px}
 .adm-tag--warn{border:1px solid var(--cm-error);color:var(--cm-error)}
-/* Narrow screens: each row becomes a card, with the column names beside the values. */
-@media(max-width:760px){
+/* Below 1080px each row becomes a card, with the column names beside the values: two cards per row where there's
+   room (tablets, unfolded foldables), one on phones and cover screens. The full table needs about 1000px. */
+@media(max-width:1079px){
   .adm-table-wrap{overflow:visible;background:none;border:0;box-shadow:none}
   .adm-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .adm-table,.adm-table tbody,.adm-table tr,.adm-table th,.adm-table td{display:block}
-  .adm-table tbody{display:flex;flex-direction:column;gap:12px}
+  .adm-table tbody{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:12px;align-items:start}
   .adm-table tr{padding:6px 18px;border:1px solid var(--line);border-radius:var(--cm-radius);background:var(--white)}
   .adm-table tbody tr:last-child>*{border-bottom:1px solid var(--line)}
   .adm-table tbody tr>:last-child{border-bottom:0}
@@ -104,9 +113,10 @@ body:has(.adm-dash--access) .site-footer{display:none}
   .adm-table tbody th{font-size:15px}
   .adm-table [data-label]::before{content:attr(data-label);font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-2);padding-top:3px}
   .adm-table tbody tr:hover{background:var(--white)}
-  .adm-table td.adm-table__actions{display:block;width:auto;padding:12px 0 8px;text-align:left}
-  .adm-table__actions .adm-btn{width:100%;min-height:44px}
+  .adm-table td.adm-table__actions{display:flex;flex-wrap:wrap;gap:8px;width:auto;padding:12px 0 8px;text-align:left}
+  .adm-table td.adm-table__actions .adm-btn{flex:1 1 120px;min-height:44px;margin:0}
 }
+@media(max-width:360px){.adm-table th,.adm-table td{grid-template-columns:1fr;gap:2px}}
 
 /* Sessions: list extras and the session page */
 .adm-subtitle{margin:6px 0 0;font-size:14.5px;color:var(--text-2);overflow-wrap:anywhere}
@@ -130,6 +140,14 @@ a.adm-btn{text-decoration:none}
 .adm-ua{font-family:var(--font-mono);font-size:12px;color:var(--text-2)}
 .adm-pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12.5px;font-weight:600;background:color-mix(in srgb,var(--live) 14%,transparent);border:1px solid var(--live)}
 .adm-pill--warn{background:color-mix(in srgb,var(--cm-error) 8%,transparent);border-color:var(--cm-error);color:var(--cm-error)}
+.adm-li{display:flex;gap:18px;align-items:flex-start}
+.adm-li__avatar{flex:none;width:64px;height:64px;border-radius:50%;object-fit:cover;background:rgba(var(--ink-rgb),.08)}
+.adm-li__avatar--none{display:grid;place-items:center;font-weight:700;color:var(--text-2)}
+.adm-li__dl{flex:1;min-width:0}
+.adm-li__none{margin:0;font-size:14.5px;color:var(--text-2)}
+.adm-pill--muted{background:rgba(var(--ink-rgb),.06);border-color:var(--line);color:var(--text-2);margin-right:8px}
+.adm-dl a.adm-li-view{display:flex;width:fit-content;margin-top:8px;padding-block:6px;text-decoration:none}
+@media(max-width:560px){.adm-li{flex-direction:column}}
 .adm-files{display:flex;flex-direction:column;gap:12px;scroll-margin-top:24px}
 .adm-files>.adm-panel__title{margin:0}
 .adm-file-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
@@ -144,8 +162,8 @@ a.adm-btn{text-decoration:none}
 .adm-file__info{display:flex;flex-wrap:wrap;gap:2px 14px;margin:4px 0 0;font-size:13px;color:var(--text-2)}
 .adm-file__actions{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
 .adm-file__preview{margin-top:14px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:rgba(var(--ink-rgb),.04)}
-.adm-file__preview img{display:block;max-width:100%;max-height:70vh;margin:0 auto}
-.adm-file__preview iframe{display:block;width:100%;height:min(75vh,900px);border:0;background:#fff}
+.adm-file__preview img{display:block;max-width:100%;max-height:70vh;max-height:70dvh;margin:0 auto}
+.adm-file__preview iframe{display:block;width:100%;height:min(75vh,900px);height:min(75dvh,900px);border:0;background:#fff}
 @media(max-width:760px){
   .adm-file__row{flex-wrap:wrap}
   .adm-file__actions{width:100%;justify-content:stretch}
@@ -155,8 +173,11 @@ a.adm-btn{text-decoration:none}
   .adm-table__actions .adm-btn+.adm-btn{margin-left:0;margin-top:8px}
 }
 
+/* Dual-screen / foldable devices with a vertical fold: keep the sign-in card on one side of the hinge. */
+@media(horizontal-viewport-segments:2){.adm-login{grid-template-columns:minmax(0,env(viewport-segment-width 0 0,50%)) 1fr;justify-items:center}}
+
 /* Delete confirmation */
-.adm-dialog{width:min(calc(100% - 32px),440px);padding:28px;border:1px solid var(--line);border-radius:var(--cm-radius);background:var(--white);color:var(--ink);box-shadow:0 24px 60px -20px rgba(var(--shadow-rgb),.45)}
+.adm-dialog{width:min(calc(100% - 32px),440px);max-height:calc(100dvh - 32px);overflow-y:auto;overscroll-behavior:contain;padding:28px;border:1px solid var(--line);border-radius:var(--cm-radius);background:var(--white);color:var(--ink);box-shadow:0 24px 60px -20px rgba(var(--shadow-rgb),.45)}
 .adm-dialog::backdrop{background:rgba(var(--shadow-rgb),.45)}
 .adm-dialog__title{margin:0 0 10px;font-size:22px;letter-spacing:-.03em}
 .adm-dialog p{margin:0 0 12px;font-size:15px;line-height:1.55}
@@ -173,3 +194,5 @@ a.adm-btn{text-decoration:none}
   .adm-item{animation:none}
   .adm-btn,.adm-btn:hover:not(:disabled),.adm-filter,.adm-section{transition:none;transform:none}
 }
+/* Touch: 44px tap targets for the compact pills and buttons. */
+@media(pointer:coarse){.adm-filter,.adm-section,.adm-btn--sm{min-height:44px}}

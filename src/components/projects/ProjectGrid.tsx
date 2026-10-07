@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { projects } from '@/data';
+import { projects } from '@/data/projects';
 import { useStaggerReveal } from '@/composables';
 import ProjectCard from './ProjectCard';
 

@@ -19,7 +19,9 @@
   --footer-bg:#0d0c1e;--footer-fg:#F3F1EA;
   color-scheme:dark}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+/* text-size-adjust stops iOS/Samsung Internet inflating text in landscape. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+@media(prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 body{margin:0;background:var(--cream);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
 .orbs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
 .orb{position:absolute;filter:blur(90px);opacity:var(--orb-opacity);pointer-events:none}
@@ -34,6 +36,8 @@ button,a{font:inherit;color:inherit}
 .cta-icon--lucide{display:inline-flex;align-items:center;justify-content:center;line-height:0}
 .cta-icon--lucide svg{overflow:visible}
 button{cursor:pointer}
+/* Taps on controls act at once: no double-tap-to-zoom on them (pinch zoom still works everywhere). */
+a,button,input,select,textarea,label,summary,[role="button"]{touch-action:manipulation}
 .kicker,.mini-title{font-family:var(--font-mono);font-size:11px;letter-spacing:.24em}
 .hero h1,.section-heading h2,.about h2{font-size:clamp(58px,7.4vw,118px);line-height:.82;letter-spacing:-.065em;margin:16px 0 22px}
 .hero-actions button,.button-row button,.button-row a{border:1px solid var(--line);background:var(--glass);padding:13px 18px;border-radius:999px;text-decoration:none}

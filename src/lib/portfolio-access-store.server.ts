@@ -4,6 +4,7 @@
 //
 // One session per email address (case-insensitive): a repeat submission updates the candidate's session (latest
 // details, IP and device, submission count) and adds any new file, instead of creating another record.
+import type { LinkedInIdentity } from '@/lib/linkedin.server';
 import type { AccessFields } from '@/lib/portfolio-access';
 import { getPrisma } from '@/lib/prisma.server';
 
@@ -20,6 +21,8 @@ export type NewAccess = AccessFields & {
   ipAddress: string | null;
   source: string;
   page: string;
+  /** Verified "Continue with LinkedIn" identity, when the candidate connected one. */
+  linkedinIdentity?: LinkedInIdentity | null;
 };
 
 /** The optional Upload / Camera file, already checked by the route (type from its signature, at most 4 MB). */
@@ -64,6 +67,17 @@ export async function storeAccess(submissionId: string, a: NewAccess, file?: New
   if (!prisma) return null;
   const emailKey = a.email.toLowerCase();
   const now = new Date();
+  // Only what LinkedIn actually returned; a later submission without a connection keeps the earlier one.
+  const li = a.linkedinIdentity;
+  const linkedin = li
+    ? {
+        linkedinMemberId: li.memberId,
+        linkedinName: li.name ?? ([li.givenName, li.familyName].filter(Boolean).join(' ') || null),
+        linkedinEmail: li.email,
+        linkedinAvatarUrl: li.picture,
+        linkedinConnectedAt: new Date(li.connectedAt),
+      }
+    : {};
   // createdAt = the submission's time, so a file can be matched to the submission it came with.
   const attachments = file ? { create: { ...file, data: new Uint8Array(file.data), createdAt: now } } : undefined;
   try {
@@ -91,6 +105,7 @@ export async function storeAccess(submissionId: string, a: NewAccess, file?: New
             ...(a.linkedin ? { linkedinUrl: a.linkedin } : {}),
             ...(a.companyWebsite ? { companyWebsite: a.companyWebsite } : {}),
             ...(a.portfolio ? { portfolioUrl: a.portfolio } : {}),
+            ...linkedin,
             device: a.device,
             userAgent: a.userAgent,
             ipAddress: a.ipAddress,
@@ -119,6 +134,7 @@ export async function storeAccess(submissionId: string, a: NewAccess, file?: New
           linkedinUrl: a.linkedin || null,
           companyWebsite: a.companyWebsite || null,
           portfolioUrl: a.portfolio || null,
+          ...linkedin,
           device: a.device,
           userAgent: a.userAgent,
           ipAddress: a.ipAddress,
@@ -179,17 +195,28 @@ export type AdminAccess = {
   submissionCount: number;
   createdAt: string;
   lastSubmittedAt: string;
+  /** Set when the candidate connected LinkedIn (details on the session page). */
+  linkedinMemberId: string | null;
   /** Metadata only, newest first: files are served by /api/admin/portfolio-access/files/[id]. */
   attachments: AdminFile[];
 };
 
-export type AdminSession = AdminAccess & { userAgent: string | null; source: string; page: string };
+export type AdminSession = AdminAccess & {
+  userAgent: string | null;
+  source: string;
+  page: string;
+  linkedinMemberId: string | null;
+  linkedinName: string | null;
+  linkedinEmail: string | null;
+  linkedinAvatarUrl: string | null;
+  linkedinConnectedAt: string | null;
+};
 
 const fileSelect = { id: true, filename: true, mimeType: true, size: true, source: true, createdAt: true } as const;
 const adminSelect = {
   id: true, fullName: true, email: true, mobile: true, company: true, companyNumber: true, linkedinUrl: true,
   companyWebsite: true, portfolioUrl: true, ipAddress: true, device: true, notificationStatus: true,
-  submissionCount: true, createdAt: true, lastSubmittedAt: true,
+  submissionCount: true, createdAt: true, lastSubmittedAt: true, linkedinMemberId: true,
   attachments: { select: fileSelect, orderBy: { createdAt: 'desc' } },
 } as const;
 
@@ -222,9 +249,12 @@ export async function getAccessForAdmin(id: string): Promise<AdminSession | null
   if (!prisma) throw new Error('Database is not configured');
   const row = await prisma.portfolioAccess.findUnique({
     where: { id },
-    select: { ...adminSelect, userAgent: true, source: true, page: true },
+    select: {
+      ...adminSelect, userAgent: true, source: true, page: true,
+      linkedinMemberId: true, linkedinName: true, linkedinEmail: true, linkedinAvatarUrl: true, linkedinConnectedAt: true,
+    },
   });
-  return row ? serialise(row) : null;
+  return row ? { ...serialise(row), linkedinConnectedAt: row.linkedinConnectedAt?.toISOString() ?? null } : null;
 }
 
 /** Permanently deletes one session and its files. 'not_found' when it no longer exists (e.g. already deleted). */

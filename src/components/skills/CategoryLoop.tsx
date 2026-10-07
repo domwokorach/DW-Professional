@@ -1,13 +1,17 @@
 'use client';
 
-import { LogoLoop, TechIcon, type LogoItem } from '@/components/ui';
+import type { ReactNode } from 'react';
+import LogoLoop, { type LogoItem } from '@/components/ui/LogoLoop';
 import { media } from '@/config';
 import { useMediaQuery } from '@/composables';
 import type { CoreTech } from '@/types';
 
-const item = (t: CoreTech) => (
+/** A loop entry: the name and its icon, already rendered on the server (so the icon set never ships to the browser). */
+export type CategoryItem = { name: CoreTech['name']; icon: ReactNode };
+
+const item = (t: CategoryItem) => (
   <span className="core-tech__item">
-    <TechIcon icon={t.icon} fallback={t.name} className="core-tech__icon" color={t.color} colorDark={t.colorDark} />
+    {t.icon}
     <span className="core-tech__name">{t.name}</span>
   </span>
 );
@@ -17,7 +21,7 @@ const item = (t: CoreTech) => (
  * LogoLoop exposes only the first copy of the list to assistive tech, so each name is read once.
  * Under reduced motion the same items render as a static wrapped list instead.
  */
-export default function CategoryLoop({ items, label, direction }: { items: CoreTech[]; label: string; direction: 'left' | 'right' }) {
+export default function CategoryLoop({ items, label, direction }: { items: CategoryItem[]; label: string; direction: 'left' | 'right' }) {
   const reduced = useMediaQuery(media.reducedMotion);
 
   if (reduced) {

@@ -5,6 +5,7 @@ import type { AdminComment } from '@/lib/comment-store.server';
 import type { CommentStatusValue } from '@/lib/comments';
 import VerifiedBadge from '@/components/comments/VerifiedBadge';
 import AdminSections from './AdminSections';
+import { ThemeToggle } from '@/components/layout';
 
 type Counts = Record<CommentStatusValue, number>;
 type Filter = 'pending' | 'approved' | 'rejected';
@@ -182,6 +183,8 @@ export default function ModerationDashboard({
         </div>
         <div className="adm-bar__user">
           <span className="adm-who" title={adminEmail}>Signed in as <strong>{adminEmail}</strong></span>
+          {/* Same site-wide theme switch as the Portfolio Access admin pages. */}
+          <ThemeToggle />
           <button type="button" className="adm-btn adm-btn--ghost" onClick={logout} disabled={loggingOut}>
             {loggingOut ? 'Logging out…' : 'Log out'}
           </button>

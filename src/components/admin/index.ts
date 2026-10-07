@@ -5,3 +5,4 @@ export { default as AdminSections } from './AdminSections';
 export { default as PortfolioAccessTable } from './PortfolioAccessTable';
 export { default as AdminAutoRefresh } from './AdminAutoRefresh';
 export { default as SessionFiles } from './SessionFiles';
+export { default as LinkedInAvatar } from './LinkedInAvatar';

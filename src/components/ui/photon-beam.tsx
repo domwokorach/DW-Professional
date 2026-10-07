@@ -64,6 +64,8 @@ interface PhotonBeamProps {
   trailLength?: number
   bloomStrength?: number
   bloomRadius?: number
+  /** Caps the device pixel ratio the beam (and its bloom passes) render at. */
+  maxPixelRatio?: number
 }
 
 const CONSTANTS = {
@@ -98,8 +100,8 @@ export default function PhotonBeam(props: PhotonBeamProps = {}) {
     const init = (): void => {
       if (cancelled) return
 
-      const width = container.clientWidth
-      const height = container.clientHeight
+      let width = container.clientWidth
+      let height = container.clientHeight
       if (width === 0 || height === 0) {
         frameId = requestAnimationFrame(init)
         return
@@ -144,9 +146,10 @@ export default function PhotonBeam(props: PhotonBeamProps = {}) {
       camera.position.set(0, 0, 90)
       camera.lookAt(0, 0, 0)
 
-      renderer = new THREE.WebGLRenderer({ antialias: true })
+      // Decorative, so it asks for the integrated GPU on dual-GPU laptops rather than waking the discrete one.
+      renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "low-power" })
       renderer.setSize(width, height)
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, props.maxPixelRatio ?? 2))
       container.appendChild(renderer.domElement)
 
       const contentGroup = new THREE.Group()
@@ -173,7 +176,8 @@ export default function PhotonBeam(props: PhotonBeamProps = {}) {
       function getPathPoint(
         t: number,
         lineIndex: number,
-        time: number
+        time: number,
+        out: THREE.Vector3 = new THREE.Vector3()
       ): THREE.Vector3 {
         const totalLen = params.curveLength + params.straightLength
         const currentX = -params.curveLength + t * totalLen
@@ -198,7 +202,7 @@ export default function PhotonBeam(props: PhotonBeamProps = {}) {
           y += wave
         }
 
-        return new THREE.Vector3(currentX, y, z)
+        return out.set(currentX, y, z)
       }
 
       // --- OBJECTS MANAGEMENT ---
@@ -298,6 +302,8 @@ export default function PhotonBeam(props: PhotonBeamProps = {}) {
 
       // --- ANIMATION LOOP ---
       const clock = new THREE.Clock()
+      // Reused for every line vertex, so a frame allocates nothing for the lines (signals keep their own trail points).
+      const scratch = new THREE.Vector3()
 
       function animate(): void {
         if (cancelled) return
@@ -314,7 +320,7 @@ export default function PhotonBeam(props: PhotonBeamProps = {}) {
           const lineId = line.userData.id
           for (let j = 0; j < CONSTANTS.segmentCount; j++) {
             const t = j / (CONSTANTS.segmentCount - 1)
-            const vec = getPathPoint(t, lineId, time)
+            const vec = getPathPoint(t, lineId, time, scratch)
             positions[j * 3] = vec.x
             positions[j * 3 + 1] = vec.y
             positions[j * 3 + 2] = vec.z
@@ -381,7 +387,11 @@ export default function PhotonBeam(props: PhotonBeamProps = {}) {
         if (!container || cancelled || !renderer || !composer) return
         const w = container.clientWidth
         const h = container.clientHeight
-        if (w === 0 || h === 0) return
+        // Mobile browsers fire resize as the address bar shows and hides; only reallocate the render targets when the
+        // canvas size actually changed.
+        if (w === 0 || h === 0 || (w === width && h === height)) return
+        width = w
+        height = h
 
         camera.aspect = w / h
         camera.updateProjectionMatrix()

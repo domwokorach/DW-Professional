@@ -1,11 +1,11 @@
 'use client';
 
-import { EncryptedText } from '@/components/animations';
+import EncryptedText from '@/components/animations/EncryptedText';
 import { BriefcaseBusinessIcon } from '@/components/ui/briefcase-business';
 import { DownloadIcon } from '@/components/ui/download';
 import { SendIcon } from '@/components/ui/send';
-import { IconButton } from '@/components/ui';
-import { scrollToSection } from '@/lib';
+import IconButton from '@/components/ui/IconButton';
+import { scrollToSection } from '@/lib/scroll';
 import HeroPhotonBackground from './HeroPhotonBackground';
 import HeroPortrait from './HeroPortrait';
 import type { AvatarAssets } from './avatar/config';

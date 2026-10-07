@@ -79,3 +79,5 @@ section[tabindex="-1"]:focus{outline:none}
   /* Phones: everything in the footer is centred. */
   .site-footer__inner{text-align:center}.site-footer__group ul{justify-items:center}}
 @media(prefers-reduced-motion:reduce){.footer-link,.footer-link:after,.site-footer__top{transition:none}}
+/* Touch: 44px tap targets (the back-to-top circle keeps its 40px look and gains an invisible ring). */
+@media(pointer:coarse){.footer-link{min-height:44px}.site-footer__top{position:relative}.site-footer__top:before{content:"";position:absolute;inset:-3px;border-radius:50%}}

@@ -1,10 +1,10 @@
-'use client';
-
 import Link from 'next/link';
-import { TechIcon } from '@/components/ui';
+import TechIcon from '@/components/ui/TechIcon';
 import { HOME, legalLinks } from '@/config';
 import { socialLinks } from '@/data';
-import { resetCookieConsent, scrollToTop } from '@/lib';
+import FooterActions from './FooterActions';
+
+/** Server-rendered (so its icons never ship as JavaScript); only the two buttons in FooterActions run on the client. */
 
 export default function AppFooter() {
   return (
@@ -42,10 +42,7 @@ export default function AppFooter() {
 
       <div className="site-footer__bottom">
         <p>© 2026 DOMINIC</p>
-        <div className="site-footer__actions">
-          <button type="button" className="footer-link site-footer__textbutton" onClick={resetCookieConsent}>Cookie preferences</button>
-          <button type="button" className="site-footer__top" onClick={scrollToTop} aria-label="Back to top">↑</button>
-        </div>
+        <FooterActions />
       </div>
     </footer>
   );

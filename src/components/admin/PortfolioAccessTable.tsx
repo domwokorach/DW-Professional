@@ -170,6 +170,7 @@ export default function PortfolioAccessTable({
                   <th scope="row" data-label="Full Name">
                     <span>
                       <Link href={adminSessionPath(r.id)} className="adm-name-link">{r.fullName}</Link>
+                      {r.linkedinMemberId && <span className="adm-tag adm-tag--ok" title="Connected with LinkedIn">LinkedIn</span>}
                       {r.notificationStatus === 'FAILED' && <span className="adm-tag adm-tag--warn">Email not sent</span>}
                     </span>
                   </th>
@@ -194,7 +195,7 @@ export default function PortfolioAccessTable({
                             <Link href={`${adminSessionPath(r.id)}#files`} className="adm-files-link" aria-label={`${r.fullName}'s files: ${r.attachments.length}. Open the session.`}>
                               {latestImage(r) && (
                                 // The newest image (e.g. a camera photo), through the authenticated file route.
-                                <img src={`/api/admin/portfolio-access/files/${encodeURIComponent(latestImage(r)!.id)}?inline=1`} alt="" loading="lazy" className="adm-files-link__thumb" />
+                                <img src={`/api/admin/portfolio-access/files/${encodeURIComponent(latestImage(r)!.id)}?inline=1`} alt="" loading="lazy" className="adm-files-link__thumb" onError={(e) => { e.currentTarget.hidden = true; }} />
                               )}
                               {r.attachments.length === 1 ? '1 file' : `${r.attachments.length} files`}
                             </Link>
