@@ -1,7 +1,7 @@
 'use client';
 
 import type { ComponentProps, ForwardRefExoticComponent, RefAttributes } from 'react';
-import { useIconHandle, type IconHandle } from '@/composables/useIconHandle';
+import { useIconHandle, type IconHandle } from '@/hooks/use-icon-handle';
 
 type LucideAnimatedIcon = ForwardRefExoticComponent<
   { size?: number; className?: string; 'aria-hidden'?: boolean | 'true' } & RefAttributes<IconHandle>

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { media, navItems, type NavItem } from '@/config';
-import { useActiveSection, useMediaQuery } from '@/composables';
+import { useActiveSection, useMediaQuery } from '@/hooks';
 import { scrollToSection, scrollToTop } from '@/lib/scroll';
 import { RubberSegment } from '@/components/ui/rubber-segment';
 import ThemeToggle from './ThemeToggle';

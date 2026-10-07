@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import { projects } from '@/data/projects';
-import { useStaggerReveal } from '@/composables';
+import { useStaggerReveal } from '@/hooks';
 import ProjectCard from './ProjectCard';
 
 export default function ProjectGrid() {

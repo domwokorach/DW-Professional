@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import { animate } from 'motion/mini';
-import { useRevealOnce } from '@/composables';
+import { useRevealOnce } from '@/hooks';
 
 type Props = {
   prefix: string;

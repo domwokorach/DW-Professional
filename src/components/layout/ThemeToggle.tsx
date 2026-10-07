@@ -4,7 +4,7 @@ import { useReducedMotion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { MoonIcon } from '@/components/animate-ui/icons/moon';
 import { SunIcon } from '@/components/animate-ui/icons/sun';
-import { useIconTrigger } from '@/composables/useIconTrigger';
+import { useIconTrigger } from '@/hooks/use-icon-trigger';
 import { THEME_KEY, type Theme } from '@/lib/theme';
 
 const readSaved = (): Theme | null => {

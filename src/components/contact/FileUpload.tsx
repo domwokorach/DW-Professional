@@ -2,7 +2,7 @@
 
 import { useRef, useState, type DragEvent } from 'react';
 import { DownloadIcon } from '@/components/animate-ui/icons/download';
-import { useIconTrigger } from '@/composables/useIconTrigger';
+import { useIconTrigger } from '@/hooks/use-icon-trigger';
 import { ACCEPT_ATTR, formatBytes, validateFile } from '@/lib/contact';
 import { Progress, ProgressIndicator, ProgressLabel, ProgressTrack, ProgressValue } from '@/components/ui/motion/progress';
 

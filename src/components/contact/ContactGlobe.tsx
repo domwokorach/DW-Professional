@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 
 // cobe (and react-spring, which the globe uses) load only when the globe nears the viewport.
 const Cobe = dynamic(() => import('@/components/ui/cobe-globe').then((m) => m.Cobe), { ssr: false });
-import { useMediaQuery } from '@/composables';
+import { useMediaQuery } from '@/hooks';
 import { media } from '@/config';
 
 /*

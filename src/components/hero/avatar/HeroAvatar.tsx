@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { useMediaQuery } from '@/composables';
+import { useMediaQuery } from '@/hooks';
 import { media } from '@/config';
 import { INTRO_SCRIPT, type AvatarAssets } from './config';
 import { useLipSync } from './hooks/useLipSync';

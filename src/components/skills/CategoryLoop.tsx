@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import LogoLoop, { type LogoItem } from '@/components/ui/LogoLoop';
 import { media } from '@/config';
-import { useMediaQuery } from '@/composables';
+import { useMediaQuery } from '@/hooks';
 import type { CoreTech } from '@/types';
 
 /** A loop entry: the name and its icon, already rendered on the server (so the icon set never ships to the browser). */

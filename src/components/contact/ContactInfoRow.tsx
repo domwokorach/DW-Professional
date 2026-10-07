@@ -4,7 +4,7 @@ import type { ComponentType, ReactNode, Ref } from 'react';
 import { AtSignIcon } from '@/components/ui/at-sign';
 import { BriefcaseBusinessIcon } from '@/components/ui/briefcase-business';
 import { MapPinIcon } from '@/components/ui/map-pin';
-import { useIconHandle, type IconHandle } from '@/composables/useIconHandle';
+import { useIconHandle, type IconHandle } from '@/hooks/use-icon-handle';
 
 type AnimatedIcon = ComponentType<{ ref?: Ref<IconHandle>; size?: number; className?: string; 'aria-hidden'?: boolean | 'true' }>;
 

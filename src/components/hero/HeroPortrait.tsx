@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
-import { useMediaQuery } from '@/composables';
+import { useMediaQuery } from '@/hooks';
 import { HERO_BODY, HERO_HEADS, HERO_LOOK_FADE, HERO_LOOK_ZONES, heroAlt, media, type HeroLook } from '@/config';
 // Loaded only when a valid avatar model exists: its lip-sync code pulls in three.js, which
 // would otherwise land in every visitor's initial bundle.

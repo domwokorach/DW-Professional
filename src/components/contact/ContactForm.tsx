@@ -2,7 +2,8 @@
 
 import { useRef, useState, type ChangeEvent, type FormEvent, type InputHTMLAttributes } from 'react';
 import { SendHorizontalIcon } from '@/components/animate-ui/icons/send-horizontal';
-import { useIconTrigger } from '@/composables/useIconTrigger';
+import SpinnerButton3 from '@/components/ui/spinner-button-3';
+import { useIconTrigger } from '@/hooks/use-icon-trigger';
 import {
   MAX_FILE_BYTES,
   MAX_UPLOAD_BYTES,
@@ -30,7 +31,7 @@ import {
 import CompanyField, { type CompanySelection } from './CompanyField';
 import FileUpload, { UPLOAD_IDLE, type UploadState } from './FileUpload';
 
-type Status = 'idle' | 'submitting' | 'success' | 'error';
+type Status = 'idle' | 'submitting' | 'error';
 
 const EMPTY: ContactFields = { fullName: '', email: '', mobileNumber: '', company: '', projectType: '', message: '' };
 const ORDER: ContactField[] = ['fullName', 'email', 'mobileNumber', 'company', 'projectType', 'file', 'message'];
@@ -88,16 +89,20 @@ async function uploadToS3(file: File, onProgress: (percent: number | null) => vo
 
 const BUTTON_LABEL: Record<Status, string> = {
   idle: 'Send message',
-  submitting: 'Sending…',
-  success: 'Message sent ✓',
+  submitting: 'Send message',
   error: 'Try again',
 };
+
+const MINIMUM_LOADING_MS = 5000;
+const waitForMinimumLoading = (startedAt: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, Math.max(0, MINIMUM_LOADING_MS - (Date.now() - startedAt))));
 
 export default function ContactForm({ directUploads }: { directUploads: boolean }) {
   const maxFileBytes = directUploads ? MAX_UPLOAD_BYTES : MAX_FILE_BYTES;
   // Identifies this submission to the server; kept across retries (so a retry can't create a
   // duplicate enquiry or email) and replaced after a successful send.
   const submissionId = useRef<string | null>(null);
+  const submittingRef = useRef(false);
   const [fields, setFields] = useState<ContactFields>(EMPTY);
   // A UK company picked from the Company field's suggestions (optional; a typed name needs none).
   const [company, setCompany] = useState<CompanySelection | null>(null);
@@ -108,6 +113,7 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
   const [errors, setErrors] = useState<ContactErrors>({});
   const [touched, setTouched] = useState<Partial<Record<ContactField, boolean>>>({});
   const [status, setStatus] = useState<Status>('idle');
+  const [successOpen, setSuccessOpen] = useState(false);
   const [honeypot, setHoneypot] = useState('');
   const sendIcon = useIconTrigger();
   const formRef = useRef<HTMLFormElement>(null);
@@ -127,7 +133,7 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
     if (field === 'projectType') projectTypeRef.current = value;
     setFields((prev) => ({ ...prev, [field]: value }));
     setTouched((prev) => ({ ...prev, [field]: true }));
-    if (status === 'success' || status === 'error') setStatus('idle');
+    if (status === 'error') setStatus('idle');
     if (upload.status === 'success') {
       setUpload(UPLOAD_IDLE);
       setSentFile(null);
@@ -150,7 +156,7 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
-    if (status === 'submitting') return;
+    if (submittingRef.current) return;
 
     const found: ContactErrors = validateFields(fields);
     if (file) {
@@ -173,7 +179,10 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
     submissionId.current ??= crypto.randomUUID();
     data.append('submissionId', submissionId.current);
 
+    const startedAt = Date.now();
+    submittingRef.current = true;
     setStatus('submitting');
+    setSuccessOpen(false);
     setSentFile(null);
     setUpload(file ? { status: 'uploading', percent: 0 } : UPLOAD_IDLE);
 
@@ -183,6 +192,8 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
       const result = await uploadToS3(file, (percent) => setUpload({ status: 'uploading', percent }));
       if (result === 'fallback') {
         if (file.size > MAX_FILE_BYTES) {
+          await waitForMinimumLoading(startedAt);
+          submittingRef.current = false;
           setStatus('idle');
           setUpload({ status: 'selected', percent: 0 });
           setErrors((prev) => ({ ...prev, file: fileTooLarge(MAX_FILE_BYTES) }));
@@ -190,6 +201,8 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
           return;
         }
       } else if ('error' in result) {
+        await waitForMinimumLoading(startedAt);
+        submittingRef.current = false;
         setStatus('error');
         setUpload((prev) => ({ status: 'error', percent: prev.percent }));
         setErrors((prev) => ({ ...prev, file: result.error }));
@@ -205,8 +218,11 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
     try {
       const res = await postForm('/api/contact', data, file && attachFile ? (percent) => setUpload({ status: 'uploading', percent }) : undefined);
       if (res.ok) {
+        await waitForMinimumLoading(startedAt);
+        submittingRef.current = false;
         submissionId.current = null;
-        setStatus('success');
+        setStatus('idle');
+        setSuccessOpen(true);
         setFields(EMPTY);
         setCompany(null);
         projectTypeRef.current = '';
@@ -221,6 +237,8 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
       }
       const body = res.body;
       if (body?.errors) {
+        await waitForMinimumLoading(startedAt);
+        submittingRef.current = false;
         setErrors(body.errors as ContactErrors);
         setStatus('idle');
         // Validation (including a server-side file rejection) is shown by the field errors, not as an upload failure.
@@ -230,10 +248,14 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
         return;
       }
       if (process.env.NODE_ENV !== 'production') console.warn('[contact] Request failed with status', res.status, body);
+      await waitForMinimumLoading(startedAt);
+      submittingRef.current = false;
       setStatus('error');
       if (file) setUpload((prev) => ({ status: 'error', percent: prev.percent }));
     } catch (err) {
       if (process.env.NODE_ENV !== 'production') console.warn('[contact] Request failed', err);
+      await waitForMinimumLoading(startedAt);
+      submittingRef.current = false;
       setStatus('error');
       if (file) setUpload((prev) => ({ status: 'error', percent: prev.percent }));
     }
@@ -329,7 +351,7 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
             setError('file', error);
             setSentFile(null);
             setUpload(next ? { status: 'selected', percent: 0 } : UPLOAD_IDLE);
-            if (status === 'success' || status === 'error') setStatus('idle');
+            if (status === 'error') setStatus('idle');
           }}
         />
 
@@ -363,18 +385,26 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
 
       <div className="contact-footer">
         <div className="contact-status" aria-live="polite">
-          {status === 'success' && (
-            <p className="contact-status__ok"><strong>Message sent successfully.</strong> Thanks for getting in touch — I&apos;ll respond as soon as possible.</p>
-          )}
           {status === 'error' && (
             <p className="contact-status__err"><strong>Unable to send your message right now.</strong> Please try again.</p>
           )}
         </div>
-        <button type="submit" className={`contact-submit is-${status}`} disabled={status === 'submitting'} {...sendIcon.bind}>
+        <SpinnerButton3 type="submit" className={`contact-submit is-${status}`} loading={status === 'submitting'} disabled={status === 'submitting'} loadingLabel="Sending..." {...sendIcon.bind}>
           {BUTTON_LABEL[status]}
-          {status === 'idle' && <SendHorizontalIcon className="contact-submit__arrow" animate={sendIcon.active} size={18} aria-hidden="true" />}
-        </button>
+          <SendHorizontalIcon className="contact-submit__arrow" animate={sendIcon.active} size={18} aria-hidden="true" />
+        </SpinnerButton3>
       </div>
+
+      {successOpen && (
+        <aside className="contact-success-alert" aria-label="Message sent">
+          <span className="contact-success-alert__icon" aria-hidden="true">✓</span>
+          <div role="status" aria-live="polite" aria-atomic="true">
+            <strong>Thank you!</strong>
+            <p>Dominic will reply to your email within 3–5 working days.</p>
+          </div>
+          <button type="button" className="contact-success-alert__close" onClick={() => setSuccessOpen(false)} aria-label="Dismiss success message">×</button>
+        </aside>
+      )}
     </form>
   );
 }

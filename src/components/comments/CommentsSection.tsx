@@ -1,6 +1,8 @@
 import { TextType } from '@/components/animations';
+import { testimonials } from '@/data/testimonials';
 import { avatarsEnabled } from '@/lib/avatar-store.server';
 import CommentsBoard from './CommentsBoard';
+import TestimonialsMarquee from './TestimonialsMarquee';
 
 /** "What people are saying": an Add Comment form and the feed of approved comments (candidate side only). */
 export default function CommentsSection() {
@@ -11,6 +13,7 @@ export default function CommentsSection() {
         <TextType id="comments-heading" prefix="What people are" emphasis="saying." duration={0.9} />
         <p>Worked with me or seen my work? Leave a comment. New comments are reviewed before they appear here.</p>
       </div>
+      <TestimonialsMarquee items={testimonials} />
       <CommentsBoard avatarsEnabled={avatarsEnabled()} />
     </section>
   );

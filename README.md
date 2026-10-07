@@ -1,207 +1,209 @@
 # DOMINIC — Portfolio
 
-A personal developer portfolio with an editorial cream/navy design: hero, skills, projects,
-experience timeline, achievements ("Proud moments") and a contact form that emails enquiries,
-saves them to PostgreSQL and (optionally) stores attachments in Amazon S3.
+DOMINIC is a production-oriented developer portfolio for Dominic Wokorach Olanya. It presents professional experience, projects, technical skills, certifications and achievements through an editorial cream-and-navy interface. It also includes moderated testimonials, contact enquiries, protected portfolio-access workflows and private administration tools.
 
-## Tech stack
+## Main features
 
-- **Next.js 15** (App Router) · **React 19** · **TypeScript**
-- Plain CSS per section (no Tailwind), **motion** for animation, a little **three.js** (hero light trails, loaded on demand)
-- **Prisma ORM 7** + **PostgreSQL** (`@prisma/adapter-pg`) — contact enquiries
-- **Resend** — contact form email
-- **AWS S3** (SDK v3, presigned uploads) — contact attachments, optional
-- Media served from **Cloudinary**; icons from Simple Icons / Tabler / logos, built offline
+- Responsive portfolio sections for the hero, developer profile, skills, projects, career timeline, achievements, testimonials and contact details.
+- Light and dark themes with a saved visitor preference.
+- Accessible motion with `prefers-reduced-motion` fallbacks.
+- Contact enquiries delivered through Resend, optionally stored in PostgreSQL and optionally uploaded to private Amazon S3 storage.
+- Moderated visitor comments with optional avatars, verified and italic presentation states, and a private admin workflow.
+- QR-driven Portfolio Access flow with optional LinkedIn OpenID Connect import, file attachments and private administration pages.
+- Companies House-backed company suggestions using a separate imported company database.
+- Server-rendered legal, privacy, cookie and accessibility pages.
 
-## Getting started
+## Technology stack
 
-Requires Node.js 20.19+ and npm.
+- Next.js 15 App Router, React 19 and TypeScript.
+- Plain CSS organised by section; no Tailwind runtime.
+- Motion, React Spring and React Three Fiber for focused interaction and visual effects.
+- Prisma ORM 7 with PostgreSQL.
+- Resend for transactional email.
+- Amazon S3 for optional private file storage.
+- Cloudinary for versioned media sources.
+- Argon2id password hashing and server-managed administrator sessions.
+
+## Prerequisites
+
+- Node.js 20.19 or newer.
+- npm.
+- PostgreSQL only when persistence, comments, admin tools or Portfolio Access records are required.
+- Optional service accounts for Resend, Amazon S3, LinkedIn, Companies House and OpenWeather.
+
+## Installation
 
 ```bash
 git clone <repository-url>
 cd video-portfolio-rebuild
-npm install            # also generates the Prisma Client (postinstall)
-cp .env.example .env   # then fill in your own values (see below)
+npm install
+cp .env.example .env
+```
+
+`npm install` generates both Prisma clients through the `postinstall` script. Replace values in `.env` with credentials from your own services. Never commit `.env`, `.env.local` or copied production settings.
+
+## Environment configuration
+
+The application renders without environment variables, but integrations remain unavailable until configured. `.env.example` is the authoritative template.
+
+| Group | Variables | Purpose |
+|---|---|---|
+| Site | `NEXT_PUBLIC_SITE_URL` | Canonical production origin and QR/redirect URLs. |
+| Email | `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CONTACT_FROM_EMAIL` | Email provider credentials plus the contact recipient and verified sender. |
+| Portfolio database | `DATABASE_URL`, `PORTFOLIO_DATABASE_URL`, `DATABASE_SCHEMA` | Enquiries, comments, administrators and Portfolio Access records. |
+| Notifications | `COMMENTS_NOTIFY_EMAIL`, `PORTFOLIO_ACCESS_NOTIFY_EMAIL` | Optional notification recipients. |
+| Contact storage | `AWS_REGION`, `AWS_S3_BUCKET_NAME` | Private S3 attachment uploads. |
+| Local AWS credentials | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | Local development only; prefer workload identity in production. |
+| Company data | `COMPANY_DATABASE_URL`, `COMPANY_DATABASE_SCHEMA`, `AWS_S3_BUCKET`, `AWS_S3_KEY`, `COMPANIES_S3_URI`, `AWS_S3_ENDPOINT`, `COMPANIES_HOUSE_API_KEY` | Company dataset import, search and verification. |
+| LinkedIn | `LINKEDIN_CLIENT_ID`, `LINKEDIN_CLIENT_SECRET`, `LINKEDIN_REDIRECT_URI` | Optional Portfolio Access OpenID Connect flow. |
+| Weather | `OPENWEATHER` | Optional London weather quick fact. |
+| Proxy trust | `TRUST_PROXY_HEADERS` | Opt in only when a trusted non-Vercel proxy overwrites forwarded IP headers. |
+
+Use placeholders in shared examples:
+
+```ini
+DATABASE_URL="your-database-url"
+AWS_ACCESS_KEY_ID="your-access-key"
+AWS_SECRET_ACCESS_KEY="your-secret-key"
+RESEND_API_KEY="your-resend-api-key"
+```
+
+All secrets are server-only. Do not add `NEXT_PUBLIC_` to a secret variable.
+
+## Local development
+
+```bash
 npm run dev
 ```
 
-Open http://localhost:3000/en-gb (`/` redirects there).
+Open <http://localhost:3000/en-gb>. `/` redirects to the localised home route. Optional integrations fail closed or show their documented unavailable state when not configured.
 
-The site runs without any environment variables: the pages work, and the contact form shows its
-error state (the API returns 503) until email is configured. **Provide your own values** — no
-credentials are included in this repository.
+## Available scripts
 
-## Scripts
-
-| Command | What it does |
+| Command | Purpose |
 |---|---|
-| `npm run dev` | Development server on port 3000 |
-| `npm run build` | Production build (first regenerates icons and Prisma Client) |
-| `npm start` | Serve the production build |
-| `npm run typecheck` | TypeScript check |
-| `npm run icons` | Rebuild `src/data/stack-icons.ts` from the icon ids used in `src/data/` |
-| `npm run db:generate` | Generate Prisma Client |
-| `npm run db:migrate` | Create/apply migrations in development (`prisma migrate dev`) |
-| `npm run db:deploy` | Apply committed migrations in production (`prisma migrate deploy`) |
-| `npm run db:studio` | Browse the database locally (never expose in production) |
-| `npm run db:seed` | Create the first admin from `ADMIN_EMAIL` / `ADMIN_PASSWORD` (same as `npx prisma db seed`; see [Admin sign-in](#admin-sign-in-adminlogin)) |
-| `npm run admin -- <command>` | Create and manage admin accounts for comment moderation at `/admin/comments` (see [`docs/COMMENTS.md`](docs/COMMENTS.md)) |
+| `npm run dev` | Start the Next.js development server. |
+| `npm run build` | Generate icons and Prisma clients, lint/type-check through Next.js, and create the production build. |
+| `npm start` | Serve the completed production build. |
+| `npm run typecheck` | Run TypeScript without emitting files. |
+| `npm run icons` | Rebuild `src/data/stack-icons.ts` from configured Iconify identifiers. |
+| `npm run db:generate` | Generate the portfolio Prisma client. |
+| `npm run db:migrate` | Create or apply portfolio migrations in development. |
+| `npm run db:deploy` | Apply committed portfolio migrations in deployment environments. |
+| `npm run db:studio` | Open Prisma Studio for the portfolio database. |
+| `npm run db:seed` | Create or intentionally reset the first administrator from temporary environment values. |
+| `npm run companies:generate` | Generate the separate company-data Prisma client. |
+| `npm run companies:migrate:dev` | Create or apply company-data migrations in development. |
+| `npm run companies:migrate` | Apply committed company-data migrations. |
+| `npm run companies:import` | Import the configured Companies House dataset. |
+| `npm run admin -- <command>` | Manage administrator accounts and sessions from the terminal. |
 
-## Environment variables
+There is no standalone `lint` script. `next build` performs the repository's configured linting and type validation; `npm run typecheck` is available for a faster TypeScript-only check.
 
-All are **server-side only** — never prefix them with `NEXT_PUBLIC_`. See `.env.example`.
+## Database setup and migrations
 
-| Variable | Needed for | Notes |
-|---|---|---|
-| `NEXT_PUBLIC_SITE_URL` | Metadata (recommended in production) | Public origin, e.g. `https://www.dominicwokorach.me` |
-| `RESEND_API_KEY` | Contact email | Resend API key |
-| `CONTACT_TO_EMAIL` | Contact email | Where enquiries are delivered |
-| `CONTACT_FROM_EMAIL` | Contact email (optional) | Sender on a domain verified in Resend. Defaults to Resend's onboarding sender, which only delivers to your own Resend account address |
-| `DATABASE_URL` | Saving enquiries (optional) | PostgreSQL connection string |
-| `PORTFOLIO_DATABASE_URL` | Saving enquiries (optional) | Takes precedence over `DATABASE_URL`; use it when `DATABASE_URL` belongs to another app |
-| `DATABASE_SCHEMA` | Saving enquiries (optional) | Postgres schema for this app's tables, default `portfolio` |
-| `COMMENTS_NOTIFY_EMAIL` | Comments (optional) | Where new-comment moderation emails go, default `dominic.wokorach-o@outlook.com`. Comments need the migrations applied (`npm run db:deploy`): [`docs/COMMENTS.md`](docs/COMMENTS.md) |
-| `AWS_REGION` | S3 attachments (optional) | e.g. `eu-west-2` |
-| `AWS_S3_BUCKET_NAME` | S3 attachments (optional) | Private bucket. Without it, files ≤ 4 MB are attached to the email instead |
-| `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` | S3 attachments, local only | In production prefer an IAM role / OIDC |
-
-## Database setup (Prisma)
-
-The schema is `prisma/schema.prisma`; migrations are committed in `prisma/migrations/`.
-`prisma.config.ts` reads `DATABASE_URL` and pins every Prisma command to the `DATABASE_SCHEMA`
-schema (default `portfolio`), so this app only ever creates or changes tables in its own schema,
-even on a shared database.
+The main schema is [prisma/schema.prisma](prisma/schema.prisma). `prisma.config.ts` uses `PORTFOLIO_DATABASE_URL` when supplied, otherwise `DATABASE_URL`, and scopes tables to `DATABASE_SCHEMA` (`portfolio` by default).
 
 ```bash
-# development: apply migrations (and create new ones after editing the schema)
-npm run db:migrate
-# production / CI: apply the committed migrations only
-npm run db:deploy
+npm run db:generate
+npm run db:migrate       # local development
+npm run db:deploy        # CI/production
 ```
 
-Storage is best-effort: if the database is unavailable, enquiries are still emailed and the
-error is only logged. Each submission carries an id, so retries never create duplicate rows or
-duplicate emails.
+The separate company-search schema is [prisma/company/schema.prisma](prisma/company/schema.prisma) and always uses `COMPANY_DATABASE_URL`. See [docs/COMPANIES.md](docs/COMPANIES.md).
 
-## Admin sign-in (`/admin/login`)
+To create an administrator, temporarily set `ADMIN_EMAIL` and `ADMIN_PASSWORD`, apply migrations and run `npm run db:seed`. Remove the plaintext password from the environment after creation. See [docs/COMMENTS.md](docs/COMMENTS.md) for moderation details.
 
-There is **no default admin and no built-in password.** The sign-in page only works once you have created an
-administrator, and you choose its email and password yourself.
+## Production build
 
-**Local setup**
-
-1. Add your own credentials to `.env` (it is not committed; never prefix these with `NEXT_PUBLIC_`):
-
-   ```bash
-   ADMIN_EMAIL="you@yourdomain.com"
-   ADMIN_PASSWORD="a-strong-password-of-12-or-more-characters"
-   ```
-
-2. Make sure the database has the admin tables: `npm run db:migrate` (development) or `npm run db:deploy`.
-3. Create the administrator: `npx prisma db seed` (or `npm run db:seed`).
-4. Start the site (`npm run dev`) and open <http://localhost:3000/admin/login>.
-5. Sign in with the email and password from step 1. You land on `/admin/comments`.
-
-What the seed does: reads the two variables, refuses placeholder or weak values (the password needs 12+
-characters), hashes the password with **Argon2id**, and creates the admin only if that email doesn't exist yet. The
-plaintext password is never stored, logged or sent anywhere, so running the seed again never creates a duplicate:
-it just says the admin already exists. Missing variables stop it with a clear message, and nothing is created
-silently.
-
-**Changing a password.** Either run the seed again with `ADMIN_RESET_PASSWORD=true` (it replaces that admin's
-password and signs them out everywhere), or use `npm run admin -- reset-password <email>`, which asks for the new
-one at a hidden prompt. `npm run admin -- list` shows who exists; the same command can deactivate an admin or sign
-them out.
-
-**Production.** Don't keep a plaintext password in the deployment environment. Apply migrations (`npm run
-db:deploy`), run the seed **once** from a trusted machine with the production database URL and `ADMIN_*` set only
-for that command, then delete `ADMIN_PASSWORD` from every `.env` and hosting setting. From then on the only copy of
-the password is its hash in the database, and you manage it with `npm run admin -- ...`. Sign-in is rate limited,
-every attempt is audit-logged, and sessions are server-side with an HttpOnly cookie.
-
-## Contact form
-
-`POST /api/contact` re-validates every field (shared rules in `src/lib/contact.ts`), rejects a
-hidden honeypot field, rate-limits bursts per IP, saves the enquiry (Prisma) and emails it
-(Resend). Attachments: with S3 configured, the browser gets a 5-minute presigned URL from
-`POST /api/upload` and uploads straight to the private bucket (≤ 10 MB); the contact route then
-re-checks the stored object (key pattern, size, leading bytes) and emails a 7-day download link.
-Bucket setup (CORS, least-privilege IAM, lifecycle): [`docs/S3_SETUP.md`](docs/S3_SETUP.md).
-
-Prisma, Resend and the AWS SDK are only imported by server modules (`src/lib/*.server.ts` and
-`src/app/api/`), so none of them, and no credentials, reach the browser bundle.
-
-## Project structure
-
-```
-src/
-├── app/            Next.js routes: layout, home page, legal pages, api/contact, api/upload
-├── views/          Page compositions (HomeView; legal pages)
-├── components/     Sections (hero, skills, projects, experience, learning, contact, layout…)
-│   └── ui/         Shared and adapted third-party components (see below)
-├── composables/    React hooks (active section, media queries, reveal-on-scroll…)
-├── config/         Site metadata, nav items, media queries, hero looks, legal facts
-├── data/           Content (skills, projects, experience, achievements, contact) + generated icons
-├── lib/            Helpers; *.server.ts modules hold Prisma, Resend and S3 (server only)
-├── styles/         CSS per section, imported in cascade order from app/layout.tsx
-└── types/          Shared TypeScript types
-prisma/             schema.prisma and migrations
-docs/               Setup notes (S3)
+```bash
+npm run typecheck
+npm run build
+npm start
 ```
 
-## Common changes
-
-- **Content** lives in `src/data/` (skills, projects, experience, achievements, contact details).
-- **Technology icons**: set an Iconify id on the item in `src/data/core-tech.ts` (`simple-icons:…`, `logos:…` or `tabler:…`, plus an optional brand `color`), then run `npm run icons`. The script fails on unknown ids and writes only the icons in use; don't edit `stack-icons.ts` by hand.
-- **Styles**: one file per section in `src/styles/`; import order in `src/app/layout.tsx` matters.
-
-## Portfolio Access (QR code → CV)
-
-The QR code on the back of the Developer ID card is a real, scannable code that opens
-`/en-gb/portfolio-access` (`src/views/portfolio-access/`), not the CV file itself; the bare
-`/portfolio-access` redirects there. That page asks for full name, email, mobile and an optional company
-(with Companies House suggestions). `POST /api/portfolio-access` validates the details, records them with the
-server-side IP address and a short device summary in the `PortfolioAccess` table, emails a notification, and
-only then does the page open `/Dominic_Wokorach_Olanya_CV.pdf` in a new tab (with an **Open Resume** button if
-the browser blocks it). Submissions are listed, newest first, at `/admin/portfolio-access` (admin sign-in
-required), where they can be deleted. The QR encodes `NEXT_PUBLIC_SITE_URL` + `/en-gb/portfolio-access`
-(falling back to the live domain in production), so set that variable correctly before printing or sharing the card.
+The build regenerates derived icons and both Prisma clients before compiling. Generated clients and build outputs are ignored by Git.
 
 ## Deployment
 
-The site is deployed on **Vercel** only: every push to `master` builds and deploys production. Apply any new
-database migrations with `npm run db:deploy` (see above).
+The current production target is Vercel. Configure server-side variables in the deployment environment, set `NEXT_PUBLIC_SITE_URL`, and run `npm run db:deploy` against the intended database before promoting schema-dependent features.
 
-There is **no Render deployment** and no separate socket server. This repository previously held a different
-app whose live chat ran as a Render service (`npm run socket:start`); that code was removed when the
-portfolio replaced it. If a Render service is still connected to this repository, suspend or delete it in the
-Render dashboard: it will fail on every push with `Missing script: "socket:start"`.
+Never expose Prisma Studio, administrator scripts, database URLs or long-lived AWS credentials publicly. Prefer Vercel Marketplace integrations or workload identity where supported.
 
-## Privacy, cookies and legal pages
+## Project structure
 
-The site sets **no cookies** and loads **no analytics or tracking**; the only browser storage is
-the cookie-consent choice and, once the visitor presses the theme button, their light/dark
-preference (`portfolio-theme`), both in localStorage and both listed on the Cookie page. If you add an optional script, load it through
-`whenConsented()` from `src/lib/consent.ts` and list it on the Cookie page.
+```text
+/
+├── docs/                    Operational guides for comments, company data and S3
+├── prisma/                  Main and company schemas plus committed migrations
+├── public/                  Static CV, hero imagery, audio and decoder assets
+├── scripts/                 Admin, import, media and generated-icon tooling
+├── src/
+│   ├── app/                 App Router pages, layouts and API route handlers
+│   ├── components/
+│   │   ├── ui/              Shared primitives and adapted third-party components
+│   │   ├── layout/          Site-wide header, footer, theme and background
+│   │   └── <feature>/       Feature sections such as contact, comments and hero
+│   ├── config/              Site, legal, media and feature configuration
+│   ├── data/                Static portfolio content and generated icon data
+│   ├── hooks/               Shared React hooks
+│   ├── lib/                 Validation, services and server-only integrations
+│   │   └── admin/           Authentication, moderation and audit services
+│   ├── styles/              Global tokens and section-scoped CSS
+│   ├── types/               Shared domain types
+│   └── views/               Route-level page compositions
+├── tests/                   Automated tests
+├── DESIGN.md                Design-system and component conventions
+├── LICENSE.md               Repository licence and third-party notice
+└── PRIVACY.md               Developer-facing data-handling documentation
+```
 
-The legal pages describe what the code does. Before publishing, set the two operational facts in
-`src/config/legal.ts` (they show as "to be confirmed" until then): `hostingProvider` and
-`enquiryRetention`.
+Feature components remain grouped by domain instead of being moved into a new `sections` folder solely for naming. Server integrations use the `*.server.ts` suffix where applicable. Shared React hooks live only in `src/hooks`.
 
-## Third-party components
+## Accessibility
 
-Copied/adapted rather than installed with a CLI (the shadcn CLI would add Tailwind and its global
-reset). Each file notes its source and changes at the top.
+- Semantic headings, landmarks, lists, forms, `<blockquote>` and `<time>` elements are used where appropriate.
+- Keyboard focus states remain visible and interactive controls meet practical touch-target sizes.
+- Validation errors are associated with fields and status changes use ARIA live regions.
+- Motion-heavy experiences honour `prefers-reduced-motion` and remain usable without animation.
+- Responsive layouts avoid page-level horizontal scrolling and preserve readable text sizes.
+- Light and dark themes use shared contrast-aware tokens.
 
-| File | Source |
-|---|---|
-| `components/ui/LogoLoop.tsx/.css` | React Bits LogoLoop |
-| `components/ui/timeline.tsx` | Aceternity UI Timeline |
-| `components/ui/animated-testimonials.tsx` | Aceternity UI Animated Testimonials (React original of Inspira UI's) |
-| `components/ui/rubber-segment.tsx` | Vue Bits RubberSegment, ported to React |
-| `components/animate-ui/` (`icons/`, `primitives/`) | Animate UI icons (`npx shadcn@latest add @animate-ui/icons-download icons-link icons-send-horizontal icons-moon icons-sun`) used by the CTA links; driven by `components/ui/IconLink.tsx`, `layout/ThemeToggle.tsx` and `composables/useIconTrigger.ts`. The shadcn CLI mangles `viewBox` attributes here, so after re-running it, compare the files with the registry |
-| `components/ui/hyper-text.tsx` | Magic UI Hyper Text (`npx shadcn@latest add @magicui/hyper-text`), the ID card's flip hint (`developer-id/FlipCaption.tsx`). Don't trust the CLI's copy: it strips the space in `letter === " "`, so compare with the registry after re-running it |
-| `components/ui/{at-sign,map-pin,briefcase-business,send,download}.tsx` | Lucide Animated icons (`npx shadcn@latest add https://lucide-animated.com/r/<name>.json`) on the hero buttons and the Contact details rows (`contact/ContactInfoRow.tsx`); driven by `components/ui/IconButton.tsx` and `composables/useIconHandle.ts`. The shadcn CLI mangles `viewBox` in these too: compare with the registry after re-running it |
-| `components/ui/confetti.tsx` | Magic UI Confetti (`npx shadcn@latest add @magicui/confetti`), on the "Always learning." heading via `animations/ConfettiOnInteract.tsx`. `ConfettiButton` is removed: the CLI would also add a shadcn `Button` and `radix-ui` for it |
-| `components/ui/pulse-heart.tsx` + `.css` | Vue Bits PulseHeart, ported to React with plain CSS (the Vue installer can't be used here): the like heart on each comment card. The count roller and the star/thumb icons are left out |
-| `components/loading-ui/fade-arc.tsx` | Loading UI Fade Arc (`npx shadcn@latest add @loading-ui/fade-arc`), the Portfolio Access loader |
+See [DESIGN.md](DESIGN.md) and the live `/accessibility` page for implementation details.
+
+## Security
+
+- Public API routes validate data again on the server and apply rate limits to submission endpoints.
+- Submission identifiers provide idempotency for retries and duplicate clicks.
+- Administrator passwords are hashed with Argon2id; sessions use random tokens stored as hashes and HttpOnly cookies.
+- Uploaded files are type/size checked. S3 objects remain private and use short-lived signed URLs.
+- Secrets are read only in server code and ignored environment files.
+- Public comment output excludes private moderation data.
+
+Security controls reduce risk but are not a certification. Review dependencies, access policies and retention settings before each production release.
+
+## Development and contribution notes
+
+- Keep edits feature-scoped and preserve the established data/config/component separation.
+- Put reusable interaction primitives in `src/components/ui`; keep feature-specific UI beside its section.
+- Put shared hooks in `src/hooks`, static content in `src/data`, operational configuration in `src/config`, and server integrations in `src/lib` with a `.server.ts` suffix.
+- Use existing CSS tokens instead of adding near-duplicate colours, radii or shadows. See [DESIGN.md](DESIGN.md).
+- Run `npm run typecheck` and `npm run build` before submitting changes.
+- Update privacy and setup documentation whenever a change affects data collection, storage, third parties or environment variables.
+
+## Additional documentation
+
+- [DESIGN.md](DESIGN.md) — visual language and reusable UI conventions.
+- [PRIVACY.md](PRIVACY.md) — implemented data flows and documentation boundaries.
+- [LICENSE.md](LICENSE.md) — permitted use and third-party ownership.
+- [docs/COMMENTS.md](docs/COMMENTS.md) — comments, moderation and administrator setup.
+- [docs/COMPANIES.md](docs/COMPANIES.md) — company dataset and search setup.
+- [docs/S3_SETUP.md](docs/S3_SETUP.md) — private attachment storage.
+
+## Third-party UI components
+
+The repository includes adapted components from Aceternity UI, Animate UI, Lucide Animated, Magic UI, React Bits, Loading UI and Vue Bits. Source notes are kept in the relevant files. Shadcn is configured through `components.json`; do not run `shadcn init` over the existing setup. See [DESIGN.md](DESIGN.md#shadcnui-and-shadcn-blocks) before importing or updating registry components.
+
+## Licence
+
+This project is proprietary and all rights are reserved unless the copyright holder grants written permission. See [LICENSE.md](LICENSE.md). Third-party packages and assets remain subject to their own licences and terms.

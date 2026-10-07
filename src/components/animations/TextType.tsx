@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { useRevealOnce } from '@/composables';
+import { useRevealOnce } from '@/hooks';
 
 type Props = {
   prefix: string;

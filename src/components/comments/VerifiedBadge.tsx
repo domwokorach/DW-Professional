@@ -15,9 +15,9 @@ const VerifiedBadgeIcon = () => (
  * which clips to a circle). Shown only for comments an admin marked verified, never just for being submitted
  * or approved. Labelled for assistive tech, so the meaning never rests on the icon alone.
  */
-export default function VerifiedBadge() {
+export default function VerifiedBadge({ label = 'Verified comment', solid = false }: { label?: string; solid?: boolean }) {
   return (
-    <span className="cm-verified" role="img" aria-label="Verified comment" title="Verified comment">
+    <span className={`cm-verified${solid ? ' cm-verified--solid' : ''}`} role="img" aria-label={label} title={label}>
       <VerifiedBadgeIcon />
     </span>
   );

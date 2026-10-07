@@ -1,7 +1,7 @@
 'use client';
 
 import type { ComponentProps, ComponentType } from 'react';
-import { useIconTrigger } from '@/composables/useIconTrigger';
+import { useIconTrigger } from '@/hooks/use-icon-trigger';
 
 /** The part of an Animate UI icon this component relies on (all of them accept more). */
 type AnimatedIcon = ComponentType<{ animate?: boolean; size?: number; className?: string; 'aria-hidden'?: boolean | 'true' }>;
