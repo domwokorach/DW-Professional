@@ -52,7 +52,7 @@ function openResumeTab(): boolean {
   try {
     const tab = window.open(RESUME_URL, '_blank');
     if (!tab) return false;
-    tab.opener = null; // same-origin PDF, but the new tab never needs a handle back to this page
+    tab.opener = null; // The external document never needs a handle back to this page.
     return true;
   } catch {
     return false;
@@ -475,13 +475,13 @@ export default function PortfolioAccessView() {
                   className={`pa-btn ${resume === 'blocked' ? 'pa-btn--primary' : 'pa-btn--secondary'}`}
                   href={RESUME_URL}
                   target="_blank"
-                  rel="noopener"
+                  rel="noopener noreferrer"
                   onClick={() => { triggerHapticFeedback(40); setResume('opened'); }}
                 >
-                  Open Resume<span className="sr-only"> (PDF, opens in a new tab)</span>
+                  Open Resume<span className="sr-only"> (opens in a new tab)</span>
                 </a>
               </motion.div>
-              <motion.p className="pa-meta" variants={item}>PDF document</motion.p>
+              <motion.p className="pa-meta" variants={item}>Google Drive document</motion.p>
             </motion.div>
           )}
         </AnimatePresence>

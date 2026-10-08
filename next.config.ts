@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next';
+import { RESUME_URL } from './src/config/portfolio-access';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -11,6 +12,12 @@ const nextConfig: NextConfig = {
       { source: '/portfolio-access', destination: '/en-gb/portfolio-access', permanent: false },
       // The Portfolio Access form links to the localised privacy route; the notice itself lives at /privacy.
       { source: '/en-gb/privacy', destination: '/privacy', permanent: false },
+      // Keep previously shared résumé links working after moving the document to Google Drive.
+      {
+        source: '/Dominic_Wokorach_Olanya_CV.pdf',
+        destination: RESUME_URL,
+        permanent: true,
+      },
     ];
   },
   images: {

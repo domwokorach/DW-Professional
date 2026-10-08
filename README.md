@@ -136,9 +136,12 @@ Never expose Prisma Studio, administrator scripts, database URLs or long-lived A
 
 ```text
 /
+├── .github/workflows/       Release-driven package publishing automation
 ├── docs/                    Operational guides for comments, company data and S3
+├── packages/
+│   └── design-tokens/       Reusable generated light/dark CSS token package
 ├── prisma/                  Main and company schemas plus committed migrations
-├── public/                  Static CV, hero imagery, audio and decoder assets
+├── public/                  Hero imagery, audio and decoder assets
 ├── scripts/                 Admin, import, media and generated-icon tooling
 ├── src/
 │   ├── app/                 App Router pages, layouts and API route handlers

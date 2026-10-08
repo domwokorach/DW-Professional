@@ -40,7 +40,7 @@ button{cursor:pointer}
 a,button,input,select,textarea,label,summary,[role="button"]{touch-action:manipulation}
 .kicker,.mini-title{font-family:var(--font-mono);font-size:11px;letter-spacing:.24em}
 .hero h1,.section-heading h2,.about h2{font-size:clamp(58px,7.4vw,118px);line-height:.82;letter-spacing:-.065em;margin:16px 0 22px}
-.hero-actions button,.button-row button,.button-row a{border:1px solid var(--line);background:var(--glass);padding:13px 18px;border-radius:999px;text-decoration:none}
+.hero-actions .cta-icon-link,.button-row button,.button-row a{border:1px solid var(--line);background:var(--glass);padding:13px 18px;border-radius:999px;text-decoration:none}
 .primary{background:var(--ink)!important;color:var(--on-ink)!important;border-color:var(--ink)!important}
 .section{padding:110px 7vw;position:relative;border-top:1px solid rgba(var(--ink-rgb),.06)}
 .section-tag{display:flex;align-items:center;gap:14px;font-family:var(--font-mono);font-size:11px;letter-spacing:.22em;margin-bottom:54px}
