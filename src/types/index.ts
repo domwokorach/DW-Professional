@@ -18,6 +18,34 @@ export type Period = {
   iso: string;
 };
 
+export type ExperienceImage = {
+  src: string;
+  fallbackSrc: string;
+  originalSrc: string;
+  alt: string;
+  width: number;
+  height: number;
+};
+
+export type ExperienceProject = {
+  name: string;
+  description: string;
+  /** External project or demonstration, opened in a new tab. */
+  url?: string;
+  /** Optional explicit accessible name for the external action. */
+  actionLabel?: string;
+  /** Optional inline demonstration. MP4 is primary; `fallbackSrc` retains the original asset. */
+  video?: {
+    src: string;
+    fallbackSrc: string;
+    poster?: string;
+    width: number;
+    height: number;
+  };
+  /** Optional card image with an enlarged, accessible preview. */
+  image?: ExperienceImage;
+};
+
 export type Experience = {
   role: string;
   company?: string;
@@ -30,7 +58,9 @@ export type Experience = {
   bullets: string[];
   /** Heading for `projects`, e.g. "Freelance projects"; the count is added automatically. */
   projectsLabel?: string;
-  projects?: { name: string; description: string }[];
+  projects?: ExperienceProject[];
+  /** Optional image gallery displayed with this role's project group. */
+  projectGallery?: ExperienceImage[];
 };
 
 export type Project = {
