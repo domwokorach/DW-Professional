@@ -30,6 +30,8 @@ export type ExperienceImage = {
 export type ExperienceProject = {
   name: string;
   description: string;
+  /** Non-interactive public-facing notice for work that cannot be linked or demonstrated. */
+  visibility?: 'confidential' | 'professional-development';
   /** External project or demonstration, opened in a new tab. */
   url?: string;
   /** Optional explicit accessible name for the external action. */
@@ -66,13 +68,15 @@ export type Experience = {
 export type Project = {
   id: string;
   title: string;
-  headline: string;
+  headline?: string;
   /** One string per paragraph. */
   description: string[];
   /** Primary label shown beside the number; one of `focus`. */
   category: string;
   focus: string[];
   tech: string[];
+  /** Non-interactive public-facing notice for work that cannot be linked or demonstrated. */
+  confidential?: boolean;
   /** Live project, opened in a new tab. */
   url?: string;
 };

@@ -21,6 +21,9 @@
 .pc-focus__sep{opacity:.6}
 .pc-tags{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
 .pc-tags li{padding:4px 9px;border:1px solid var(--line);border-radius:6px;background:var(--cream2);font-family:var(--font-mono);font-size:11.5px;line-height:1.4;color:var(--ink)}
+.project-status{box-sizing:border-box;display:flex;align-items:center;gap:7px;width:max-content;max-width:100%;margin:16px 0 0;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--cream2);font-family:var(--font-mono);font-size:11px;font-weight:600;line-height:1.4;letter-spacing:.04em;color:var(--text-2);cursor:default}
+.project-status span{min-width:0;overflow-wrap:anywhere}
+.project-status svg{flex:0 0 auto}
 /* The link is the card's single interactive element; its ::after stretches over the card so the
    whole card is clickable while keyboard and screen-reader users get one well-named link. */
 .pc-link{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-top:16px;padding:0 16px;border:1px solid var(--ink);border-radius:999px;font-size:13px;font-weight:600;color:var(--ink);text-decoration:none;transition:background-color .2s ease,color .2s ease}

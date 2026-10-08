@@ -3,6 +3,7 @@ import { Timeline, type TimelineEntry } from '@/components/ui';
 import IconLink from '@/components/ui/IconLink';
 import { experiences } from '@/data';
 import type { Experience } from '@/types';
+import { LockKeyhole } from 'lucide-react';
 import ProjectImagePreview from './ProjectImagePreview';
 import WorkLearningGallery from './WorkLearningGallery';
 
@@ -18,6 +19,12 @@ function Projects({ id, label, projects, gallery }: { id: string; label: string;
             <span className="xp-projects__index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
             <h5>{proj.name}</h5>
             <p>{proj.description}</p>
+            {proj.visibility && (
+              <p className={`project-status xp-projects__status project-status--${proj.visibility}`}>
+                {proj.visibility === 'confidential' && <LockKeyhole aria-hidden="true" size={14} strokeWidth={1.8} />}
+                <span>{proj.visibility === 'confidential' ? 'Internal Project · Confidential' : 'Professional Development'}</span>
+              </p>
+            )}
             {proj.video && (
               <div className="xp-projects__media">
                 <video

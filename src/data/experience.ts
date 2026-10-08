@@ -123,11 +123,10 @@ export const experiences: Experience[] = [
       {
         name: 'Innovation Community',
         description: 'Conference facilitation, graph-based visual work, web construction and innovation collaboration.',
-        url: 'https://organisation-overview.vercel.app/',
-        actionLabel: 'View Innovation Community project (opens in a new tab)',
+        visibility: 'confidential',
       },
-      { name: 'Innovation X', description: 'Team values, KPIs, internal innovation and search/frontend experience.' },
-      { name: 'Applied Technology and Strategy Team', description: 'Prototype showcases, emerging technology and applied innovation.' },
+      { name: 'Innovation X', description: 'Team values, KPIs, internal innovation and search/frontend experience.', visibility: 'confidential' },
+      { name: 'Applied Technology and Strategy Team', description: 'Prototype showcases, emerging technology and applied innovation.', visibility: 'confidential' },
       {
         name: 'Banner Design for Early Careers',
         description: 'LBG campaign/banner design supporting student, apprenticeship and early-career engagement.',
@@ -156,11 +155,11 @@ export const experiences: Experience[] = [
     ],
     projectsLabel: 'Work projects',
     projects: [
-      { name: 'Data Analytics, Data Science & Machine Learning', description: 'Python foundations supporting backend, data-analysis, data-science and machine-learning understanding.' },
-      { name: 'Innovation X Team', description: 'Neo4j-backed internal search, API/JSON workflows, CSS3/Sass interface improvements and toolbar UI icons.' },
-      { name: 'Programming Languages & Technical Development', description: 'Continuous technical learning supporting progression toward advanced frontend and software-engineering responsibilities.' },
-      { name: 'UI/UX — Piggy Bank Web Application', description: "Prototype for parent-managed children's finances, financial education and stakeholder presentation.", url: 'https://piggy-bank-wine.vercel.app/' },
-      { name: 'Internal AI Chatbot Prototype', description: 'Conversational interface concept helping colleagues find authorised internal HR, payroll, annual-leave and workplace information more efficiently.' },
+      { name: 'Data Analytics, Data Science & Machine Learning', description: 'Python foundations supporting backend, data-analysis, data-science and machine-learning understanding.', visibility: 'confidential' },
+      { name: 'Innovation X Team', description: 'Neo4j-backed internal search, API/JSON workflows, CSS3/Sass interface improvements and toolbar UI icons.', visibility: 'confidential' },
+      { name: 'Programming Languages & Technical Development', description: 'Continuous technical learning supporting progression toward advanced frontend and software-engineering responsibilities.', visibility: 'professional-development' },
+      { name: 'UI/UX — Piggy Bank Web Application', description: "Prototype for parent-managed children's finances, financial education and stakeholder presentation.", visibility: 'confidential' },
+      { name: 'Internal AI Chatbot Prototype', description: 'Conversational interface concept helping colleagues find authorised internal HR, payroll, annual-leave and workplace information more efficiently.', visibility: 'confidential' },
     ],
   },
   {
@@ -176,8 +175,8 @@ export const experiences: Experience[] = [
     ],
     projectsLabel: 'Work projects',
     projects: [
-      { name: 'UI Delivery and Transformation', description: 'Frontend testing, Jenkins/Git workflows, debugging, defect investigation and release validation for digital banking changes.' },
-      { name: 'HTML Email', description: 'Internal HTML email template development and communication support across Lloyds Banking Group.' },
+      { name: 'UI Delivery and Transformation', description: 'Frontend testing, Jenkins/Git workflows, debugging, defect investigation and release validation for digital banking changes.', visibility: 'confidential' },
+      { name: 'HTML Email', description: 'Internal HTML email template development and communication support across Lloyds Banking Group.', visibility: 'confidential' },
     ],
   },
   {

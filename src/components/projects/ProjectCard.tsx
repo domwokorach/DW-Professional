@@ -1,6 +1,7 @@
 import { LinkIcon } from '@/components/animate-ui/icons/link';
 import { IconLink } from '@/components/ui';
 import type { Project } from '@/types';
+import { LockKeyhole } from 'lucide-react';
 
 export default function ProjectCard({ project: p, index }: { project: Project; index: number }) {
   const n = String(index + 1).padStart(2, '0');
@@ -15,7 +16,7 @@ export default function ProjectCard({ project: p, index }: { project: Project; i
         {p.url && <span className="pc-live"><span className="pc-live__dot" aria-hidden="true" />Live</span>}
       </p>
       <h3 id={titleId}>{p.title}</h3>
-      <p className="pc-headline">{p.headline}</p>
+      {p.headline && <p className="pc-headline">{p.headline}</p>}
       <div className="pc-desc">
         {p.description.map((para) => <p key={para}>{para}</p>)}
       </div>
@@ -31,6 +32,12 @@ export default function ProjectCard({ project: p, index }: { project: Project; i
         <ul className="pc-tags">
           {p.tech.map((t) => <li key={t}>{t}</li>)}
         </ul>
+        {p.confidential && (
+          <p className="project-status project-status--confidential">
+            <LockKeyhole aria-hidden="true" size={14} strokeWidth={1.8} />
+            <span>Internal Project · Confidential</span>
+          </p>
+        )}
         {p.url && (
           <IconLink
             className="pc-link"

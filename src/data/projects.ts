@@ -49,14 +49,14 @@ export const projects: Project[] = [
   },
   {
     id: 'ai-search-assistant',
-    title: 'Internal AI Search Assistant',
-    headline: 'Exploring a conversational way for colleagues to find internal information more easily.',
+    title: 'Internal AI Chatbot Prototype',
     description: [
-      'A proof-of-concept conversational search experience designed to help colleagues discover internal knowledge and workplace information more easily, exploring natural-language search instead of manual intranet navigation.',
+      'Conversational interface concept helping colleagues find authorised internal HR, payroll, annual-leave and workplace information more efficiently.',
     ],
-    category: 'AI Search',
+    category: 'Internal Project',
     focus: ['AI Search', 'Chatbot UX', 'Accessibility', 'Internal Tools'],
-    tech: ['Next.js', 'OpenAI Responses API'],
+    tech: ['Conversational UI', 'Information Retrieval', 'Accessible UX'],
+    confidential: true,
   },
   {
     id: 'ui-delivery',
