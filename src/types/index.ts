@@ -81,7 +81,21 @@ export type Project = {
   url?: string;
 };
 
-export type Certification = { number: string; name: string; issuer: string };
+export type Certification = {
+  id: string;
+  number: string;
+  name: string;
+  issuer: string;
+  technology: string;
+  category: 'Frontend' | 'Backend' | 'Databases' | 'Algorithms' | 'Software Engineering';
+  level: 'Basic' | 'Intermediate' | 'Not specified';
+  /** ISO calendar date confirmed by the credential provider. */
+  issuedAt?: string;
+  /** Public AWS-hosted certificate PDF. */
+  url: string;
+  /** Optional pre-rendered first-page image. */
+  thumbnailUrl?: string;
+};
 
 export type ContactInfoItem = { label: string; value: string; href?: string; /** Iconify id */ icon: string };
 

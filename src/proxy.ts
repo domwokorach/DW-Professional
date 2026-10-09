@@ -6,7 +6,7 @@ import { LOGIN_PATH, SESSION_COOKIE } from '@/lib/admin/constants';
  * session cookie away from admin pages and adds no-cache / no-index / no-framing headers. It does NOT decide
  * who is signed in: every admin page and API validates the session against the database itself.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const production = process.env.NODE_ENV === 'production';
 

@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import { DownloadIcon } from '@/components/animate-ui/icons/download';
 import { LinkIcon } from '@/components/animate-ui/icons/link';
 import { IconLink } from '@/components/ui';
+import RolexClock from '@/components/rolex-clock/RolexClock';
 import { RESUME_URL } from '@/config';
 import { quickFacts, socialLinks } from '@/data';
 import DeveloperIdCard from './DeveloperIdCard';
@@ -27,6 +28,7 @@ export default function AboutSection() {
 
         <aside className="quick-facts">
           <div className="mini-title">QUICK FACTS</div>
+          <RolexClock />
           <dl>
             <div className="quick-fact quick-fact--time">
               <dt>Time <span className="quick-fact-live" aria-hidden="true">Live</span></dt>
