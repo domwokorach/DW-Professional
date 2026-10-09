@@ -1,5 +1,4 @@
 export { achievements } from './achievements';
-export { certifications } from './certifications';
 export { CONTACT_EMAIL, contactInfo } from './contact';
 export { coreTechGroups } from './core-tech';
 export { experiences } from './experience';

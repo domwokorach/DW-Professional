@@ -1,4 +1,5 @@
-import { AchievementsSection, CertificationsSection } from '@/components/learning';
+import { Suspense } from 'react';
+import { AchievementsSection, CertificationsSection, CertificationsSectionSkeleton } from '@/components/learning';
 import { BackgroundOrbs, SiteHeader } from '@/components/layout';
 import { CommentsSection } from '@/components/comments';
 import { ContactSection } from '@/components/contact';
@@ -18,7 +19,7 @@ export default function HomeView({ heroAvatar }: { heroAvatar?: AvatarAssets }) 
       <AboutSection />
       <SkillsSection />
       <ProjectsSection />
-      <CertificationsSection />
+      <Suspense fallback={<CertificationsSectionSkeleton />}><CertificationsSection /></Suspense>
       <ExperienceSection />
       <AchievementsSection />
       <CommentsSection />

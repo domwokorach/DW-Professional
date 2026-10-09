@@ -85,16 +85,18 @@ export type Certification = {
   id: string;
   number: string;
   name: string;
-  issuer: string;
-  technology: string;
-  category: 'Frontend' | 'Backend' | 'Databases' | 'Algorithms' | 'Software Engineering';
-  level: 'Basic' | 'Intermediate' | 'Not specified';
-  /** ISO calendar date confirmed by the credential provider. */
+  objectKey: string;
+  fileType: 'pdf' | 'image';
+  issuer?: string;
+  technology?: string;
+  category?: string;
+  level?: string;
+  /** ISO calendar date read from S3 object metadata. */
   issuedAt?: string;
-  /** Public AWS-hosted certificate PDF. */
+  /** Short-lived server-generated URL for the S3 object. */
   url: string;
-  /** Optional pre-rendered first-page image. */
-  thumbnailUrl?: string;
+  /** Optional verification URL read from S3 object metadata. */
+  credentialUrl?: string;
 };
 
 export type ContactInfoItem = { label: string; value: string; href?: string; /** Iconify id */ icon: string };

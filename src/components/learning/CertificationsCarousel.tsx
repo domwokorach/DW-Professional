@@ -9,8 +9,8 @@ import { bringCardToFront, showNextCard, showPreviousCard } from './carouselStac
 
 type PreviewState = 'loading' | 'ready' | 'error';
 
-export function CertificatePreview({ certificate }: { certificate: Certification }) {
-  const [state, setState] = useState<PreviewState>(certificate.thumbnailUrl ? 'loading' : 'error');
+export function CertificatePreview({ certificate, active = true }: { certificate: Certification; active?: boolean }) {
+  const [state, setState] = useState<PreviewState>('loading');
 
   return (
     <div className="cert-card__preview">
@@ -22,12 +22,21 @@ export function CertificatePreview({ certificate }: { certificate: Certification
           <small>{state === 'loading' ? 'Loading certificate preview' : 'Certificate preview unavailable'}</small>
         </div>
       ) : null}
-      {certificate.thumbnailUrl ? (
+      {certificate.fileType === 'image' ? (
         <img
-          src={certificate.thumbnailUrl}
-          alt={`First page of ${certificate.name} certificate`}
+          src={certificate.url}
+          alt={`${certificate.name} certificate`}
           loading="lazy"
           decoding="async"
+          onLoad={() => setState('ready')}
+          onError={() => setState('error')}
+        />
+      ) : active ? (
+        <iframe
+          src={`${certificate.url}#page=1&view=FitH&toolbar=0&navpanes=0`}
+          title={`${certificate.name} certificate preview`}
+          loading="lazy"
+          tabIndex={-1}
           onLoad={() => setState('ready')}
           onError={() => setState('error')}
         />
@@ -48,14 +57,15 @@ function CertificateCard({ certificate }: { certificate: Certification }) {
 
   return (
     <article className="cert-card" aria-hidden={!isActive} onClick={bringToFront}>
-      <CertificatePreview certificate={certificate} />
+      <CertificatePreview certificate={certificate} active={isActive} />
       <div className="cert-card__body">
         <span className="cert-card__number" aria-hidden="true">{certificate.number}</span>
         <div className="cert-card__content">
-          <div className="cert-card__eyebrow"><span>{certificate.category}</span><span>{certificate.level}</span></div>
+          {certificate.category || certificate.level ? <div className="cert-card__eyebrow">{certificate.category ? <span>{certificate.category}</span> : null}{certificate.level ? <span>{certificate.level}</span> : null}</div> : null}
           <h3>{certificate.name}</h3>
-          <p className="cert-card__issuer">{certificate.issuer} · {certificate.technology}</p>
-          <a className="cert-card__link" href={certificate.url} target="_blank" rel="noopener noreferrer" tabIndex={isActive ? 0 : -1} onPointerDown={(event) => event.stopPropagation()} onClick={(event) => event.stopPropagation()}>
+          <p className="cert-card__issuer">{certificate.issuer ?? 'Issuer not specified'}{certificate.technology ? ` · ${certificate.technology}` : ''}</p>
+          {certificate.issuedAt ? <p className="cert-card__date">Issued <time dateTime={certificate.issuedAt}>{certificate.issuedAt}</time></p> : null}
+          <a className="cert-card__link" href={certificate.credentialUrl ?? certificate.url} target="_blank" rel="noopener noreferrer" tabIndex={isActive ? 0 : -1} onPointerDown={(event) => event.stopPropagation()} onClick={(event) => event.stopPropagation()}>
             View Certificate <ExternalLink size={14} aria-hidden="true" />
             <span className="sr-only">: {certificate.name} (opens in a new tab)</span>
           </a>
@@ -120,9 +130,11 @@ function CarouselExperience({ certifications }: { certifications: Certification[
   );
 }
 
-export default function CertificationsCarousel({ certifications }: { certifications: Certification[] }) {
+export default function CertificationsCarousel({ certifications, error }: { certifications: Certification[]; error?: string }) {
   const cards = useMemo<CardWithId[]>(() => [...certifications].reverse().map((certificate) => ({ id: certificate.id, card: <CertificateCard certificate={certificate} /> })), [certifications]);
   const reduceMotion = useReducedMotion();
+
+  if (!certifications.length) return <div className="cert-carousel cert-carousel--empty" role="status"><ImageOff aria-hidden="true" size={24}/><h3>No certificates available</h3><p>{error ?? 'New certifications will appear here automatically.'}</p></div>;
 
   return (
     <SwipeableCards.Root cards={cards} loop swipeStyle="sendToBack" sendToBackMargin={18} swipeDirections={reduceMotion ? [] : ['left', 'right']} className="cert-carousel">
