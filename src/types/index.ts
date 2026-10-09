@@ -36,10 +36,10 @@ export type ExperienceProject = {
   url?: string;
   /** Optional explicit accessible name for the external action. */
   actionLabel?: string;
-  /** Optional inline demonstration. MP4 is primary; `fallbackSrc` retains the original asset. */
+  /** Optional inline demonstration. MP4 is primary; a fallback asset may also be supplied. */
   video?: {
     src: string;
-    fallbackSrc: string;
+    fallbackSrc?: string;
     poster?: string;
     width: number;
     height: number;

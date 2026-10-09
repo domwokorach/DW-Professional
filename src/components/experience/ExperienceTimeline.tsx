@@ -28,7 +28,10 @@ function Projects({ id, label, projects, gallery }: { id: string; label: string;
             {proj.video && (
               <div className="xp-projects__media">
                 <video
+                  autoPlay
                   controls
+                  loop
+                  muted
                   playsInline
                   preload="metadata"
                   poster={proj.video.poster}
@@ -37,9 +40,9 @@ function Projects({ id, label, projects, gallery }: { id: string; label: string;
                   aria-label={`${proj.name} project demonstration video`}
                 >
                   <source src={proj.video.src} type="video/mp4" />
-                  <source src={proj.video.fallbackSrc} type="video/quicktime" />
+                  {proj.video.fallbackSrc && <source src={proj.video.fallbackSrc} type="video/quicktime" />}
                   Your browser does not support inline video.{' '}
-                  <a href={proj.video.fallbackSrc} target="_blank" rel="noopener noreferrer">
+                  <a href={proj.video.fallbackSrc ?? proj.video.src} target="_blank" rel="noopener noreferrer">
                     Open the demonstration video
                   </a>.
                 </video>
