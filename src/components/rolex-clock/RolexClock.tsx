@@ -26,10 +26,11 @@ export default function RolexClock() {
           <text ref={clock.dateRef} x="916" y="660" textAnchor="middle" textLength="112" lengthAdjust="spacingAndGlyphs" />
         </svg>
         <div className={`${styles.live} ${styles.hands}`}>
+          {/* The shadow sits on a non-rotating wrapper so it keeps one light direction while the hand turns inside it. */}
           {/* eslint-disable @next/next/no-img-element */}
-          <img ref={clock.hourRef} className={styles.hand} style={HOUR} src={`${ASSETS}/hour-hand.webp`} alt="" decoding="async" draggable={false} />
-          <img ref={clock.minuteRef} className={styles.hand} style={MINUTE} src={`${ASSETS}/minute-hand.webp`} alt="" decoding="async" draggable={false} />
-          <img ref={clock.secondRef} className={`${styles.hand} ${styles.second}`} style={SECOND} src={`${ASSETS}/second-hand.webp`} alt="" decoding="async" draggable={false} />
+          <div className={`${styles.layer} ${styles.shadowHour}`}><img ref={clock.hourRef} className={styles.hand} style={HOUR} src={`${ASSETS}/hour-hand.webp`} alt="" decoding="async" draggable={false} /></div>
+          <div className={`${styles.layer} ${styles.shadowMinute}`}><img ref={clock.minuteRef} className={styles.hand} style={MINUTE} src={`${ASSETS}/minute-hand.webp`} alt="" decoding="async" draggable={false} /></div>
+          <div className={`${styles.layer} ${styles.shadowSecond}`}><img ref={clock.secondRef} className={`${styles.hand} ${styles.second}`} style={SECOND} src={`${ASSETS}/second-hand.webp`} alt="" decoding="async" draggable={false} /></div>
           {/* eslint-enable @next/next/no-img-element */}
         </div>
       </div>

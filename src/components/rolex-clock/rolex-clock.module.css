@@ -1,11 +1,14 @@
 .figure{position:relative;width:min(72%,238px);aspect-ratio:1;margin:24px auto 38px;isolation:isolate}
 .figure::before{content:"";position:absolute;z-index:-1;left:13%;right:13%;bottom:-1.5%;height:15%;border-radius:50%;background:radial-gradient(ellipse at center,rgba(43,29,7,.24) 0%,rgba(43,29,7,.11) 45%,rgba(43,29,7,0) 76%);filter:blur(7px);transform:translateY(10%);pointer-events:none}
-.watch{position:relative;width:100%;height:100%;transform:translateZ(0)}
+.watch{position:relative;width:100%;height:100%;transform:translateZ(0);container-type:inline-size}
 .dial{display:block;width:100%;height:100%;user-select:none;-webkit-user-drag:none}
 .live{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .18s ease;pointer-events:none}
 .ready .live{opacity:1}
 .date text{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:88px;font-weight:500;fill:#0a0a0a}
-.hands{filter:drop-shadow(1px 2px 1.5px rgba(0,8,40,.5))}
+.layer{position:absolute;inset:0}
+.shadowHour{filter:drop-shadow(1px 1.5px 1px rgba(0,6,34,.45));filter:drop-shadow(.4cqw .65cqw .4cqw rgba(0,6,34,.45))}
+.shadowMinute{filter:drop-shadow(1.5px 2.5px 1.8px rgba(0,6,34,.42));filter:drop-shadow(.6cqw 1cqw .75cqw rgba(0,6,34,.42))}
+.shadowSecond{filter:drop-shadow(2px 3.5px 2.5px rgba(0,6,34,.36));filter:drop-shadow(.85cqw 1.45cqw 1.05cqw rgba(0,6,34,.36))}
 .hand{position:absolute;display:block;will-change:transform;user-select:none;-webkit-user-drag:none}
 .second{transition:transform .22s cubic-bezier(.3,1.7,.5,1)}
 .caption{position:absolute;left:0;right:0;top:100%;margin-top:14px;text-align:center}
