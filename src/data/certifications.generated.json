@@ -1,0 +1,142 @@
+[
+  {
+    "id": "e8e4fcf1067e9143",
+    "name": "Angular (Intermediate)",
+    "objectKey": "angular_intermediate certificate.pdf",
+    "url": "/certifications/angular_intermediate.webp",
+    "issuer": "HackerRank",
+    "technology": "Angular",
+    "category": "Frontend",
+    "level": "Intermediate",
+    "issuedAt": "2025-10-08"
+  },
+  {
+    "id": "952fbc82c716f19e",
+    "name": "C# (Basic)",
+    "objectKey": "c_sharp_basic certificate.pdf",
+    "url": "/certifications/c_sharp_basic.webp",
+    "issuer": "HackerRank",
+    "technology": "C#",
+    "category": "Backend",
+    "level": "Basic",
+    "issuedAt": "2025-10-07"
+  },
+  {
+    "id": "42d8bb69e0e8bec6",
+    "name": "Frontend Developer (React)",
+    "objectKey": "frontend_developer_react certificate.pdf",
+    "url": "/certifications/frontend_developer_react.webp",
+    "issuer": "HackerRank",
+    "technology": "React",
+    "category": "Frontend",
+    "issuedAt": "2025-10-07"
+  },
+  {
+    "id": "28663c235ac3a68e",
+    "name": "Go (Basic)",
+    "objectKey": "golang_basic certificate.pdf",
+    "url": "/certifications/golang_basic.webp",
+    "issuer": "HackerRank",
+    "technology": "Go",
+    "category": "Backend",
+    "level": "Basic",
+    "issuedAt": "2025-10-15"
+  },
+  {
+    "id": "1ce2a2b7fc4cf572",
+    "name": "Java (Basic)",
+    "objectKey": "java_basic certificate.pdf",
+    "url": "/certifications/java_basic.webp",
+    "issuer": "HackerRank",
+    "technology": "Java",
+    "category": "Backend",
+    "level": "Basic",
+    "issuedAt": "2025-11-02"
+  },
+  {
+    "id": "ea871c65a076c2da",
+    "name": "JavaScript (Intermediate)",
+    "objectKey": "javascript_intermediate certificate.pdf",
+    "url": "/certifications/javascript_intermediate.webp",
+    "issuer": "HackerRank",
+    "technology": "JavaScript",
+    "category": "Frontend",
+    "level": "Intermediate",
+    "issuedAt": "2025-09-11"
+  },
+  {
+    "id": "bc7e29e2f4927d65",
+    "name": "Node (Basic)",
+    "objectKey": "nodejs_basic certificate.pdf",
+    "url": "/certifications/nodejs_basic.webp",
+    "issuer": "HackerRank",
+    "technology": "Node.js",
+    "category": "Backend",
+    "level": "Basic",
+    "issuedAt": "2025-09-30"
+  },
+  {
+    "id": "762b2ac4d7baa7b8",
+    "name": "Problem Solving (Basic)",
+    "objectKey": "problem_solving_basic certificate.pdf",
+    "url": "/certifications/problem_solving_basic.webp",
+    "issuer": "HackerRank",
+    "technology": "Algorithms",
+    "category": "Algorithms",
+    "level": "Basic",
+    "issuedAt": "2025-09-06"
+  },
+  {
+    "id": "19f800329c42924c",
+    "name": "React (Basic)",
+    "objectKey": "react_basic certificate.pdf",
+    "url": "/certifications/react_basic.webp",
+    "issuer": "HackerRank",
+    "technology": "React",
+    "category": "Frontend",
+    "level": "Basic",
+    "issuedAt": "2025-09-11"
+  },
+  {
+    "id": "d6222272bc8d4633",
+    "name": "REST API (Intermediate)",
+    "objectKey": "rest_api_intermediate certificate.pdf",
+    "url": "/certifications/rest_api_intermediate.webp",
+    "issuer": "HackerRank",
+    "technology": "REST API",
+    "category": "Backend",
+    "level": "Intermediate",
+    "issuedAt": "2025-10-08"
+  },
+  {
+    "id": "ce472f32b5e42108",
+    "name": "Software Engineer",
+    "objectKey": "software_engineer certificate.pdf",
+    "url": "/certifications/software_engineer.webp",
+    "issuer": "HackerRank",
+    "technology": "Software Engineering",
+    "category": "Software Engineering",
+    "issuedAt": "2025-10-11"
+  },
+  {
+    "id": "c27494885a8cdc24",
+    "name": "Software Engineer Intern",
+    "objectKey": "software_engineer_intern certificate.pdf",
+    "url": "/certifications/software_engineer_intern.webp",
+    "issuer": "HackerRank",
+    "technology": "Software Engineering",
+    "category": "Software Engineering",
+    "issuedAt": "2025-09-30"
+  },
+  {
+    "id": "472304c704a2ee2d",
+    "name": "SQL (Basic)",
+    "objectKey": "sql_basic certificate.pdf",
+    "url": "/certifications/sql_basic.webp",
+    "issuer": "HackerRank",
+    "technology": "SQL",
+    "category": "Databases",
+    "level": "Basic",
+    "issuedAt": "2025-10-03"
+  }
+]

@@ -17,3 +17,18 @@
 @media(max-width:980px){.achievement-accordion{flex-direction:column;gap:6px;max-width:680px;height:1060px}.achievement-accordion__panel.is-active{flex-grow:5}.achievement-accordion__caption{right:16px;bottom:16px;left:16px}}
 @media(max-width:480px){.achievement-accordion{height:1000px;gap:5px}.achievement-accordion__panel{border-radius:14px}}
 @media(prefers-reduced-motion:reduce){.achievement-accordion__panel,.achievement-accordion__panel img,.achievement-accordion__shade,.achievement-accordion__caption{transition:none}.achievement-accordion__panel img,.achievement-accordion__panel.is-active img{transform:none}.achievement-accordion__caption{transform:none}}
+
+/* Cinematic background video */
+.achievements-section{overflow:hidden;isolation:isolate;background:#14132a;color:#fffdf7}
+.achievements-section>.section-tag,.achievements-section>.section-heading,.achievements-section>.achievement-accordion{position:relative;z-index:1}
+.achievements-section .section-tag i{background:#fffdf7}
+.achievements-section .section-heading h2{text-shadow:0 2px 28px rgba(10,9,24,.55)}
+.achievements-section .section-heading h2 em{color:#f3d9a4}
+.achievements-video{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:#14132a}
+.achievements-video video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;transform:translateZ(0);backface-visibility:hidden}
+.achievements-video__shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,19,42,.78) 0%,rgba(20,19,42,.52) 40%,rgba(20,19,42,.72) 100%),radial-gradient(120% 80% at 50% 50%,transparent 40%,rgba(10,9,24,.45) 100%)}
+.achievements-video__toggle{position:absolute;right:max(16px,3vw);bottom:24px;z-index:3;display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 16px;border:1px solid rgba(255,253,247,.35);border-radius:999px;background:rgba(20,19,42,.55);color:#fffdf7;font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 10px 24px rgba(10,9,24,.35);transition:background .3s ease,border-color .3s ease}
+.achievements-video__toggle:hover{background:rgba(20,19,42,.8);border-color:rgba(255,253,247,.6)}
+.achievements-video__toggle:focus-visible{outline:3px solid #fffdf7;outline-offset:3px}
+.achievements-section{padding-bottom:clamp(110px,12vw,140px)}
+@media(prefers-reduced-motion:reduce){.achievements-video__toggle{transition:none}}

@@ -45,6 +45,7 @@
     "postinstall": "prisma generate && npm run companies:generate",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
+    "import:certifications": "tsx scripts/import-certifications.mts",
     "package:build": "npm run build --workspace @domwokorach/dw-professional-design-tokens",
     "companies:generate": "prisma generate --config prisma.company.config.ts",
     "companies:migrate": "prisma migrate deploy --config prisma.company.config.ts",

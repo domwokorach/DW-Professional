@@ -111,10 +111,10 @@ export const experiences: Experience[] = [
       {
         name: 'Web Accessibility on Banking',
         description: 'Accessible digital banking interfaces and inclusive frontend experiences.',
-        url: 'https://res.cloudinary.com/dkkuwmr42/video/upload/v1791557665/Full%20Stack%20Developer/lbg-dw_fnk7y7.mp4',
+        url: 'https://res.cloudinary.com/dkkuwmr42/video/upload/v1791742187/lbg-dw_1_zmh5gs.mp4',
         video: {
-          src: 'https://res.cloudinary.com/dkkuwmr42/video/upload/v1791557665/Full%20Stack%20Developer/lbg-dw_fnk7y7.mp4',
-          poster: 'https://res.cloudinary.com/dkkuwmr42/video/upload/so_0,f_jpg,q_auto/v1791557665/Full%20Stack%20Developer/lbg-dw_fnk7y7.jpg',
+          src: 'https://res.cloudinary.com/dkkuwmr42/video/upload/v1791742187/lbg-dw_1_zmh5gs.mp4',
+          poster: 'https://res.cloudinary.com/dkkuwmr42/video/upload/so_0,f_jpg,q_auto/v1791742187/lbg-dw_1_zmh5gs.jpg',
           width: 1280,
           height: 676,
         },

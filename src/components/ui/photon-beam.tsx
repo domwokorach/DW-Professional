@@ -301,7 +301,7 @@ export default function PhotonBeam(props: PhotonBeamProps = {}) {
       rebuildLines()
 
       // --- ANIMATION LOOP ---
-      const clock = new THREE.Clock()
+      const timer = new THREE.Timer()
       // Reused for every line vertex, so a frame allocates nothing for the lines (signals keep their own trail points).
       const scratch = new THREE.Vector3()
 
@@ -311,7 +311,7 @@ export default function PhotonBeam(props: PhotonBeamProps = {}) {
         looping = true
         frameId = requestAnimationFrame(animate)
 
-        const time = clock.getElapsedTime()
+        const time = timer.getElapsed()
 
         // Update Lines
         backgroundLines.forEach((line) => {

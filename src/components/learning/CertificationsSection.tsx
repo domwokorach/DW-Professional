@@ -13,7 +13,7 @@ export default async function CertificationsSection() {
     <section className="section certifications">
       <div className="section-tag"><span>04</span><i/>CERTIFICATIONS</div>
       <div className="cert-grid">
-        <div className="section-heading cert-intro"><ConfettiOnInteract><TrueFocus prefix="Always" emphasis="learning." breakBeforeEmphasis /></ConfettiOnInteract><p>{count ? `${count} certification${count === 1 ? '' : 's'} imported securely from AWS S3.` : 'Professional certifications across frontend, backend, databases, software engineering, and algorithms.'}</p></div>
+        <div className="section-heading cert-intro"><ConfettiOnInteract><TrueFocus prefix="Always" emphasis="learning." breakBeforeEmphasis /></ConfettiOnInteract><p>{count ? `${count} certification${count === 1 ? '' : 's'} earned across frontend, backend, databases, software engineering and algorithms.` : 'Professional certifications across frontend, backend, databases, software engineering, and algorithms.'}</p></div>
         <CertificationsCarousel certifications={certifications} error={error} />
       </div>
     </section>

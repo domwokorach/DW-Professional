@@ -17,7 +17,7 @@ export function CertificatePreview({ certificate, active = true }: { certificate
       {state !== 'ready' ? (
         <div className={`cert-card__preview-fallback${state === 'loading' ? ' is-loading' : ''}`} data-testid="certificate-fallback">
           {state === 'error' ? <ImageOff size={20} aria-hidden="true" /> : <span className="cert-card__skeleton" aria-hidden="true" />}
-          <span>{certificate.number} / 13</span>
+          <span>{certificate.number}</span>
           <strong>{certificate.technology}</strong>
           <small>{state === 'loading' ? 'Loading certificate preview' : 'Certificate preview unavailable'}</small>
         </div>
