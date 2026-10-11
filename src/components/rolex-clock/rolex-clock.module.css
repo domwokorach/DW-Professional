@@ -10,7 +10,7 @@
 .shadowMinute{filter:drop-shadow(1.5px 2.5px 1.8px rgba(0,6,34,.42));filter:drop-shadow(.6cqw 1cqw .75cqw rgba(0,6,34,.42))}
 .shadowSecond{filter:drop-shadow(2px 3.5px 2.5px rgba(0,6,34,.36));filter:drop-shadow(.85cqw 1.45cqw 1.05cqw rgba(0,6,34,.36))}
 .hand{position:absolute;display:block;will-change:transform;user-select:none;-webkit-user-drag:none}
-.second{transition:transform .22s cubic-bezier(.3,1.7,.5,1)}
+.second{transition:transform .6s cubic-bezier(.28,1.45,.42,1)}
 .caption{position:absolute;left:0;right:0;top:100%;margin-top:14px;text-align:center}
 .month{display:block;min-height:1.2em;font-family:var(--font-mono,ui-monospace,monospace);font-size:9px;font-weight:600;letter-spacing:.3em;text-indent:.3em;line-height:1.2;text-transform:uppercase;color:var(--muted,#817e77)}
 @media(max-width:1050px){.figure{width:min(49vw,260px);margin-top:26px;margin-bottom:42px}}
