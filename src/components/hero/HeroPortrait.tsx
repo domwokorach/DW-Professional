@@ -9,6 +9,8 @@ import { HERO_BODY, HERO_HEADS, HERO_LOOK_FADE, HERO_LOOK_ZONES, heroAlt, media,
 // would otherwise land in every visitor's initial bundle.
 const HeroAvatar = dynamic(() => import('./avatar/HeroAvatar'), { ssr: false });
 import type { AvatarAssets } from './avatar/config';
+import HeroRig from './HeroRig';
+import { HERO_RIG_DIR, isHeroRigManifest, type HeroRigManifest } from '@/config/hero-rig';
 
 const HERO_SIZES = '(max-width: 720px) 60vw, (max-width: 1050px) 45vw, 30vw';
 /** The head box is 52% of the body's width. */
@@ -53,7 +55,32 @@ export default function HeroPortrait({ avatar }: { avatar?: AvatarAssets }) {
   const [avatarActive, setAvatarActive] = useState(false);
   const reducedMotion = useMediaQuery(media.reducedMotion);
   const finePointer = useMediaQuery(media.finePointer);
-  const tracking = finePointer && !reducedMotion && !avatarActive;
+  const [rig, setRig] = useState<HeroRigManifest | null>(null);
+  const [header, setHeader] = useState<HTMLElement | null>(null);
+  const tracking = finePointer && !reducedMotion && !avatarActive && !rig;
+
+  // Layered rig (public/hero-rig): used only when its manifest is valid and every layer has loaded and decoded;
+  // otherwise the crossfaded head crops above stay in place unchanged.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`${HERO_RIG_DIR}/manifest.json`, { cache: 'no-cache' });
+        if (!res.ok) return;
+        const manifest: unknown = await res.json();
+        if (!isHeroRigManifest(manifest)) return;
+        await Promise.all(Object.values(manifest.layers).map(async (file) => {
+          const img = new window.Image();
+          img.src = `${HERO_RIG_DIR}/${file}`;
+          await img.decode();
+        }));
+        if (cancelled) return;
+        setHeader(document.querySelector<HTMLElement>('.site-header'));
+        setRig(manifest);
+      } catch { /* no rig assets: keep the existing portrait */ }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   // Only the body is needed to paint the hero. The heads are only ever shown to a mouse (never on touch or under
   // reduced motion), so they load once the page has loaded, without competing with the hero image.
@@ -172,6 +199,7 @@ export default function HeroPortrait({ avatar }: { avatar?: AvatarAssets }) {
   return (
     <div ref={wrapRef} className={`hero-portrait-wrap${avatarActive ? ' has-avatar' : ''}`}>
       <div className="hero-person-frame hero-poses">
+        {rig ? <HeroRig manifest={rig} trackArea={header} tracking={finePointer} still={reducedMotion} /> : (
         <div className="hero-figure">
           <Image src={HERO_BODY} alt={heroAlt} fill sizes={HERO_SIZES} priority className="hero-portrait" />
           {heads && (
@@ -184,6 +212,7 @@ export default function HeroPortrait({ avatar }: { avatar?: AvatarAssets }) {
             </div>
           )}
         </div>
+        )}
       </div>
       {avatar && <HeroAvatar assets={avatar} onActiveChange={setAvatarActive} />}
     </div>

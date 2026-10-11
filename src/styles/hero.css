@@ -58,3 +58,10 @@
 :root[data-theme="dark"] .hero-poses{mix-blend-mode:multiply;filter:brightness(1.012)} /* lifts the render's 254 background to pure white, so no seam shows on the panel */
 /* Touch: a 44px hit area around the 36px scroll mark, without changing how it looks. */
 @media(pointer:coarse){.scroll-mark:before{content:"";position:absolute;inset:-4px;border-radius:50%}}
+
+/* Layered hero rig (HeroRig): the canvas box is sized like .hero-figure, every layer fills it. */
+.hero-rig{--w:min(100cqw,calc(100cqh * var(--rig-ratio)));position:absolute;bottom:0;left:calc(50% - var(--w) / 2);width:var(--w);aspect-ratio:var(--rig-ratio);pointer-events:none}
+.hero-rig__layer{position:absolute;inset:0}
+.hero-rig__layer img{object-fit:fill}
+.hero-rig__head{will-change:transform}
+.hero-rig__lids{opacity:0;will-change:opacity}
