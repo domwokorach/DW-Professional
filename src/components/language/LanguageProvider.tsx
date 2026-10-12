@@ -48,12 +48,13 @@ export function useLanguage(): LanguageContextValue {
   return value;
 }
 
-const NOTICES: Record<string, string> = {
-  not_configured: 'Translation is not set up yet, so the page is shown in English.',
-  budget_exceeded: 'Translation is busy right now, so the page is shown in English.',
-  rate_limited: 'Translation is busy right now, so the page is shown in English.',
+const REASONS: Record<string, string> = {
+  not_configured: 'Translation is not set up yet',
+  budget_exceeded: 'Translation is busy right now',
+  rate_limited: 'Translation is busy right now',
 };
-const FALLBACK_NOTICE = 'Translation is unavailable right now, so the page is shown in English.';
+const FALLBACK_REASON = 'Translation is unavailable right now';
+const failureNotice = (code: string, stays: LanguageOption) => `${REASONS[code] ?? FALLBACK_REASON}, so the page stays in ${stays.english}.`;
 
 async function fetchTranslations(target: string, texts: string[]): Promise<string[]> {
   const response = await fetch('/api/translate', {
@@ -94,6 +95,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const requested = useRef(false);
   const currentRef = useRef(current);
   currentRef.current = current;
+  // The last language that was actually applied to the page. The flag, <html lang> and the saved choice follow this,
+  // so a failed translation never leaves them claiming a language the page is not in.
+  const appliedRef = useRef<LanguageOption>(DEFAULT_LANGUAGE);
+  const reverting = useRef(false);
 
   // Restore the saved choice, then wait for the page to finish loading before touching the DOM.
   useEffect(() => {
@@ -156,11 +161,22 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       if (active.id === DEFAULT_LANGUAGE.id) return; // nothing to do yet: the page is already the English source
       translator.current = new DomTranslator(fetchTranslations, {
         onBusy: (busy) => setStatus((s) => (busy ? 'loading' : s === 'loading' ? 'idle' : s)),
-        onError: (code) => { setStatus('error'); setNotice(NOTICES[code] ?? FALLBACK_NOTICE); },
+        onError: (code) => {
+          const stays = appliedRef.current;
+          reverting.current = true;
+          setStatus('error');
+          setNotice(failureNotice(code, stays));
+          setCurrent(stays);
+          try {
+            if (stays.id === DEFAULT_LANGUAGE.id) window.localStorage.removeItem(LANGUAGE_KEY);
+            else window.localStorage.setItem(LANGUAGE_KEY, JSON.stringify(stays));
+          } catch { /* storage blocked */ }
+        },
       });
     }
-    setNotice(null);
-    setStatus('idle');
+    if (reverting.current) reverting.current = false; // keep the failure notice that triggered this revert
+    else { setNotice(null); setStatus('idle'); }
+    if (!current.target) appliedRef.current = current; // English variants need no request
     if (enabled) translator.current.setMode(modeFor(current)); else translator.current.stop();
   }, [current, ready, enabled]);
 
@@ -176,8 +192,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const before = previousStatus.current;
     previousStatus.current = status;
-    if (status === 'error') setAnnouncement(notice ?? FALLBACK_NOTICE);
-    else if (before === 'loading' && status === 'idle' && userChanged.current && currentRef.current.target) {
+    if (status === 'error') setAnnouncement(notice ?? failureNotice('', DEFAULT_LANGUAGE));
+    else if (before === 'loading' && status === 'idle' && currentRef.current.target) {
+      appliedRef.current = currentRef.current;
+    }
+    if (status !== 'error' && before === 'loading' && status === 'idle' && userChanged.current && currentRef.current.target) {
       setAnnouncement(`The page is now translated to ${currentRef.current.english}.`);
     }
   }, [status, notice]);

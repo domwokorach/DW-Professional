@@ -319,3 +319,35 @@ test('a successful list is cached, and a fresh cache is shown without another re
   assert.ok(!again.textContent!.includes('Zulu'), 'the cached live list is used, not the catalogue');
   void dialog;
 });
+
+test('a failed translation reverts the flag, <html lang> and saved choice to what the page actually shows', async () => {
+  cleanup(); localStorage.clear(); failTranslate = true;
+  app();
+  const dialog = await openPopup();
+  await waitFor(() => assert.ok(dialog.textContent!.includes('Swahili')));
+  pick(dialog, 'French');
+  await waitFor(() => assert.match(screen.getAllByText(/Translation is not set up yet/)[0].textContent!, /stays in English \(UK\)/));
+  assert.ok(trigger().querySelector('.fi-gb'), 'flag is still the language the page is in');
+  assert.ok(!trigger().querySelector('.fi-fr'));
+  assert.equal(document.documentElement.lang, 'en-GB');
+  assert.equal(localStorage.getItem('portfolio-language'), null, 'the failed language is not remembered');
+  assert.equal(screen.getByRole('heading', { level: 1 }).textContent, 'Software Engineer');
+  failTranslate = false;
+});
+
+test('a failure after a successful language falls back to that language, not to English', async () => {
+  cleanup(); localStorage.clear(); failTranslate = false;
+  app();
+  let dialog = await openPopup();
+  await waitFor(() => assert.ok(dialog.textContent!.includes('Swahili')));
+  pick(dialog, 'French');
+  await waitFor(() => assert.equal(screen.getByRole('heading', { level: 1 }).textContent, '[fr] Software Engineer'));
+  failTranslate = true;
+  dialog = await openPopup();
+  pick(dialog, 'Thai');
+  await waitFor(() => assert.match(document.body.textContent!, /stays in French/));
+  assert.ok(trigger().querySelector('.fi-fr'));
+  assert.equal(JSON.parse(localStorage.getItem('portfolio-language')!).id, 'fr');
+  assert.equal(document.documentElement.lang, 'fr');
+  failTranslate = false;
+});
