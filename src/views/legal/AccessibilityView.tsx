@@ -4,6 +4,10 @@ import { HOME } from '@/config';
 
 const FEATURES = [
   {
+    title: 'Language selector',
+    text: 'A language selector on the right of the page (a small button on phones) translates the site into many languages by machine translation. It can be used with a keyboard, every language is named in text as well as shown with a flag, changes are announced to screen readers, and right-to-left languages switch the page direction. Machine translation can contain mistakes.',
+  },
+  {
     title: 'Keyboard navigation',
     text: 'Key interactive elements — navigation, the Developer ID card, the project gallery, the experience timeline, the contact form, the file upload and the privacy pop-up — can be reached and operated with a keyboard (Tab, Shift + Tab, Enter and Space; the project gallery also supports the arrow keys).',
   },

@@ -12,7 +12,7 @@ export default function PrivacyView() {
       <h2>What this site does not do</h2>
       <ul>
         <li>It does not use analytics, advertising or tracking tools.</li>
-        <li>It does not set cookies. See the <Link href="/cookies">Cookie</Link> page for the items it stores in your browser (your privacy choice and, if you use the theme button, your light or dark preference).</li>
+        <li>It does not set cookies. See the <Link href="/cookies">Cookie</Link> page for the items it stores in your browser (your privacy choice and, if you use the theme button or language selector, your light or dark preference and chosen language).</li>
         <li>It does not keep a record of visitors. Only enquiries, comments and Portfolio Access forms you choose to send are saved, together with the details described below.</li>
       </ul>
 
@@ -40,6 +40,9 @@ export default function PrivacyView() {
 
       <h2>Hosting</h2>
       <p>Like any website, the hosting provider may record standard server logs (such as IP address, browser type and time of request) to keep the site running and secure. Hosting provider: <ToConfirm value={legal.hostingProvider} what="Hosting provider" />.</p>
+
+      <h2>When you translate the page</h2>
+      <p>Choosing a language other than English (UK) in the language selector sends the site&apos;s public text (headings, descriptions, labels and published comments shown on the page) from this site&apos;s server to Google Cloud Translation, which returns the translation. Nothing you type into a form, nothing from the admin area and no personal details are sent for translation. Google processes the text under its Cloud Translation terms. Translations are produced by machine and may contain mistakes; the English text is the original.</p>
 
       <h2>Images and links</h2>
       <p>Images are stored with Cloudinary but delivered through this site&apos;s own image service, so your browser does not connect to Cloudinary for them. Links to LinkedIn and GitHub open those sites, which have their own privacy policies.</p>
