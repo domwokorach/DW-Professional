@@ -30,7 +30,7 @@ Private administrator records include an email address, Argon2id password hash, 
 
 ### Browser storage
 
-The site currently stores up to two local-storage values: `portfolio-cookie-consent`, recording the visitor's accept/reject choice, and `portfolio-theme`, set only after the visitor chooses a light or dark theme.
+The site currently stores up to four kinds of local-storage value: `portfolio-cookie-consent`, recording the visitor's accept/reject choice; `portfolio-language` and `portfolio-translations:*`, set only after the visitor chooses a language other than English (UK) and holding that choice and a cache of translated page text; and `portfolio-theme`, set only after the visitor chooses a light or dark theme.
 
 The application currently sets no analytics or advertising cookies and loads no analytics or tracking tools.
 
@@ -71,7 +71,7 @@ These are implementation controls, not a security certification or guarantee.
 
 ## Third-party services
 
-Depending on configuration, data may be processed by Vercel, Resend, PostgreSQL infrastructure, Amazon Web Services S3, LinkedIn, Companies House, Cloudinary and OpenWeather. OpenWeather requests are made by the server and do not include form submissions.
+Depending on configuration, data may be processed by Vercel, Resend, PostgreSQL infrastructure, Amazon Web Services S3, LinkedIn, Companies House, Cloudinary, OpenWeather and Google Cloud Translation. OpenWeather requests are made by the server and do not include form submissions. When a visitor picks a language other than English (UK), the site's public page text is sent from the server to Google Cloud Translation (never form entries, admin content or visitor details); see `docs/TRANSLATION.md`.
 
 Provider processing locations and retention practices depend on the owner's selected accounts, regions and contracts; this document does not assert them.
 
