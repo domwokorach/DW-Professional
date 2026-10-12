@@ -40,3 +40,16 @@ works there. Admin → Sessions shows number, status, address and the source lab
 - `npm test` runs (serially) unit tests (validation, device detection, hashing, email, no public link, no server imports in client code).
 - `tests/resume-flow.test.ts`, `tests/resume-company.test.ts` and `tests/companies-db.test.ts` run the real route handlers against Postgres and needs a throwaway database: `TEST_DATABASE_URL=postgres://… npm test` (migrations applied). It is skipped otherwise. Never point it at production: it deletes all `ResumeAccess` rows.
 - Local development without a mailbox: `RESUME_DEV_MAIL_FILE=/tmp/mail.jsonl npm run dev` writes the emails to that file (development mode only).
+
+## Local development database
+
+`npm run dev` reads `.env`, which points at the hosted database (the same one production uses). That database only gets the résumé
+tables when the migrations are applied to it, so until then the form fails with `[resume] Could not save request: "P2021"`
+(table missing) and the visitor sees "Résumé requests are temporarily unavailable". To develop without touching the hosted database:
+
+1. `scripts/dev-db.sh start` (Homebrew PostgreSQL in `~/.local/share/dw-professional/pg`, port 54330, database `dw_local`; `stop` / `status` also work).
+2. `.env.development.local` (gitignored; read by `next dev` only, never by build, start or the Prisma CLI) points `DATABASE_URL` and `COMPANY_DATABASE_URL` at it.
+3. Apply the migrations to it: `DATABASE_URL=postgres://dw_dev@127.0.0.1:54330/dw_local npx prisma migrate deploy` and the same URL as `COMPANY_DATABASE_URL` with `npm run companies:migrate`.
+4. Restart `npm run dev` (the Prisma client is cached per process, so a running server will not notice the change).
+
+Delete `.env.development.local` to go back to the hosted databases.

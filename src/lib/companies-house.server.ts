@@ -16,6 +16,8 @@ const CACHE_MAX = 500;
 const UPSTREAM_BUDGET = 400;
 const UPSTREAM_WINDOW_MS = 5 * 60 * 1000;
 const SEARCH_TTL_MS = 10 * 60 * 1000;
+/** After Companies House rejects the key (401/403), stop calling it for this long instead of failing on every keystroke. */
+const REJECTED_PAUSE_MS = 10 * 60 * 1000;
 
 export const companiesHouseEnabled = () => Boolean(process.env.COMPANIES_HOUSE_API_KEY);
 
@@ -71,6 +73,15 @@ function toProfile(data: ProfileResponse, requested: string): CompanyProfile | n
   };
 }
 
+let rejectedUntil = 0;
+/** True while live calls are paused because Companies House rejected this site's key. */
+export const credentialsRejected = (now = Date.now()) => now < rejectedUntil;
+function noteRejected(status: number) {
+  if (status !== 401 && status !== 403) return;
+  if (!credentialsRejected()) console.error(`[companies-house] API key rejected (${status}): check COMPANIES_HOUSE_API_KEY. Live calls paused for 10 minutes; saved records are used meanwhile.`);
+  rejectedUntil = Date.now() + REJECTED_PAUSE_MS;
+}
+
 const spent: number[] = [];
 /** True (and counts the call) while this instance is inside its upstream budget. Exported for tests. */
 export function takeUpstreamSlot(now = Date.now()): boolean {
@@ -97,6 +108,7 @@ export async function getCompanyProfile(companyNumber: string): Promise<Result> 
 
   const hit = cache.get(companyNumber);
   if (hit && Date.now() - hit.at < CACHE_TTL_MS) return hit.result;
+  if (credentialsRejected()) return 'unavailable';
 
   if (!takeUpstreamSlot()) return 'unavailable';
   let res: Response;
@@ -116,7 +128,8 @@ export async function getCompanyProfile(companyNumber: string): Promise<Result> 
     result = 'not_found';
   } else if (!res.ok) {
     // Status only: 401 means the key is wrong, 429 the rate limit. Never the body or the key.
-    console.warn('[companies-house] Responded', res.status);
+    if (res.status === 401 || res.status === 403) noteRejected(res.status);
+    else console.warn('[companies-house] Responded', res.status);
     return 'unavailable';
   } else {
     const profile = toProfile((await res.json().catch(() => ({}))) as ProfileResponse, companyNumber);
@@ -190,6 +203,7 @@ export async function searchCompaniesLive(query: string, queryKey: string, limit
   if (hit && Date.now() - hit.at < SEARCH_TTL_MS) return hit.result;
   const pending = inFlight.get(cacheKey);
   if (pending) return pending;
+  if (credentialsRejected()) return 'unavailable';
   if (!takeUpstreamSlot()) return 'unavailable';
 
   const run = (async (): Promise<LiveSearchResult> => {
@@ -197,7 +211,8 @@ export async function searchCompaniesLive(query: string, queryKey: string, limit
       const url = `${API_BASE}/search/companies?q=${encodeURIComponent(query)}&items_per_page=${limit}`;
       const res = await fetch(url, { headers: authHeaders(key), signal: AbortSignal.timeout(TIMEOUT_MS), cache: 'no-store' });
       if (!res.ok) {
-        console.warn('[companies-house] Search responded', res.status);
+        if (res.status === 401 || res.status === 403) noteRejected(res.status);
+        else console.warn('[companies-house] Search responded', res.status);
         return 'unavailable';
       }
       const result = { hits: toLiveHits((await res.json().catch(() => ({}))) as SearchResponse) };
@@ -220,5 +235,6 @@ export function resetCompaniesHouseCaches() {
   cache.clear();
   searchCache.clear();
   inFlight.clear();
+  rejectedUntil = 0;
   resetUpstreamBudget();
 }

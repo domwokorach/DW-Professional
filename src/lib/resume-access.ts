@@ -47,6 +47,15 @@ export function cleanResume(raw: ResumeFields) {
   return { fullName: one(raw.fullName), email, emailKey: email.toLowerCase(), company: one(raw.company) };
 }
 
+/** What the dialog tells the visitor when POST /api/resume/request fails (status 0 = the request never reached the server). */
+export function requestFailureMessage(status: number): string {
+  if (status === 0) return 'We could not reach the server. Check your connection and try again.';
+  if (status === 429) return 'Too many requests from this connection. Please wait a few minutes and try again.';
+  if (status === 502) return 'We could not send the verification email. Please check the address and try again.';
+  if (status === 503) return 'Résumé requests are temporarily unavailable. Nothing was sent; please try again in a few minutes.';
+  return 'Something went wrong. Please try again in a moment.';
+}
+
 export const PIN_PATTERN = /^\d{6}$/;
 export const isPin = (value: unknown): value is string => typeof value === 'string' && PIN_PATTERN.test(value);
 

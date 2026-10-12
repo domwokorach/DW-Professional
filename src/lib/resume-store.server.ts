@@ -11,8 +11,15 @@ import { getPrisma } from '@/lib/prisma.server';
 import type { DeviceInfo } from '@/lib/device';
 import type { ResumeCompany } from '@/lib/resume-company.server';
 
-const logError = (what: string, err: unknown) =>
-  console.error(`[resume] ${what}:`, (err as { code?: string }).code ?? (err as Error).name);
+/** Static, secret-free hints for the Prisma errors seen when migrations have not been applied to this database. */
+const SCHEMA_HINTS: Record<string, string> = {
+  P2021: 'a résumé table is missing in this database: apply the migrations (npm run db:deploy) to the database in DATABASE_URL',
+  P2022: 'a résumé column is missing in this database: apply the migrations (npm run db:deploy) to the database in DATABASE_URL',
+};
+const logError = (what: string, err: unknown) => {
+  const code = (err as { code?: string }).code ?? (err as Error).name;
+  console.error(`[resume] ${what}:`, code, SCHEMA_HINTS[code] ?? '');
+};
 
 export type RequestMeta = DeviceInfo & { ipAddress: string | null; userAgent: string | null };
 

@@ -14,7 +14,7 @@ import { Combobox, ComboboxContent, ComboboxItem, ComboboxList, ComboboxPrimitiv
 /** A picked company. `verified` = confirmed with the live Companies House API; `verifiedAt` = when (ISO). */
 export type CompanySelection = CompanySummary & { verified?: boolean; verifiedAt?: string };
 
-type SearchState = 'idle' | 'loading' | 'results' | 'empty' | 'error';
+type SearchState = 'idle' | 'loading' | 'results' | 'empty' | 'error' | 'limited';
 
 const DEBOUNCE_MS = 300;
 
@@ -96,6 +96,11 @@ export default function CompanyField({ id, value, selection, onTextChange, onSel
           setState('empty');
           return;
         }
+        if (res.status === 429) {
+          setResults([]);
+          setState('limited');
+          return;
+        }
         if (!res.ok) throw new Error(String(res.status));
         const body = (await res.json()) as CompanySearchResponse;
         if (controller.signal.aborted) return;
@@ -155,9 +160,11 @@ export default function CompanyField({ id, value, selection, onTextChange, onSel
         ? `${results.length} ${results.length === 1 ? 'company' : 'companies'} found. Use the up and down arrow keys to choose one.`
         : state === 'empty'
           ? 'No matching UK companies found.'
-          : state === 'error'
-            ? 'Company suggestions are unavailable right now.'
-            : '';
+          : state === 'limited'
+            ? 'Too many searches. Please wait a minute and try again, or type your company name.'
+            : state === 'error'
+              ? 'Company suggestions are temporarily unavailable.'
+              : '';
 
   return (
     <MotionConfig reducedMotion="user">
@@ -216,10 +223,13 @@ export default function CompanyField({ id, value, selection, onTextChange, onSel
             <p className="company-popup__note" aria-hidden="true"><span className="company-spinner" />Searching UK companies…</p>
           )}
           {state === 'empty' && (
-            <p className="company-popup__note">No matching UK companies found<span>You can keep the name you typed, for example for a non-UK organisation.</span></p>
+            <p className="company-popup__note">No companies found<span>You can keep the name you typed, for example for a non-UK organisation.</span></p>
           )}
           {state === 'error' && (
-            <p className="company-popup__note">Suggestions are unavailable right now<span>You can still type your company name.</span></p>
+            <p className="company-popup__note">Suggestions are temporarily unavailable<span>You can still type your company name.</span></p>
+          )}
+          {state === 'limited' && (
+            <p className="company-popup__note">Too many searches just now<span>Please wait a minute and try again, or type your company name.</span></p>
           )}
           {state === 'results' && !liveAvailable && (
             <p className="company-popup__note company-popup__note--info" role="note">Live Companies House search is unavailable<span>Showing saved company records, which may be out of date.</span></p>

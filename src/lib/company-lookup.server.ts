@@ -14,7 +14,11 @@ const profileSummary = (p: CompanyProfile): CompanySummary => ({
   source: 'live',
 });
 
-const errorCode = (err: unknown) => (err as { code?: string }).code ?? (err as Error).name;
+/** Error code plus, for a missing table/column, how to fix it (static text only: no connection details or messages). */
+const errorCode = (err: unknown) => {
+  const code = (err as { code?: string }).code ?? (err as Error).name;
+  return code === 'P2021' || code === 'P2022' ? `${code} (apply the company migrations: npm run companies:migrate)` : code;
+};
 
 /**
  * `{ company, verified: true }` from Companies House, `{ company, verified: false }` from the local

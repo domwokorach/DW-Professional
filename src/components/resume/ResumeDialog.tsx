@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import {
-  PIN_PATTERN, RESUME_LIMITS, RESEND_COOLDOWN_MS, validateResume, validateResumeField, type ResumeErrors, type ResumeField,
+  PIN_PATTERN, RESUME_LIMITS, RESEND_COOLDOWN_MS, requestFailureMessage, validateResume, validateResumeField, type ResumeErrors, type ResumeField,
 } from '@/lib/resume-access';
 import CompanyField, { type CompanySelection } from '@/components/contact/CompanyField';
 import VerifiedPanel from './VerifiedPanel';
@@ -101,12 +101,8 @@ export default function ResumeDialog({ open, onClose }: { open: boolean; onClose
       setNow(Date.now()); setPin(''); setPinError(''); setNotice(''); setStep('verify');
     } else if (status === 422 && data.errors) {
       setErrors(data.errors as ResumeErrors);
-    } else if (status === 429) {
-      setFormError('Too many requests from this connection. Please wait a few minutes and try again.');
-    } else if (status === 502) {
-      setFormError('We could not send the verification email. Please check the address and try again.');
     } else {
-      setFormError('Something went wrong. Please try again in a moment.');
+      setFormError(requestFailureMessage(status));
     }
   }
 
