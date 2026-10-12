@@ -16,6 +16,15 @@ export class TranslationError extends Error {
   }
 }
 
+/** Static, secret-free guidance for the gRPC status codes seen in practice (nothing from the upstream message is used). */
+const HINTS: Record<number, string> = {
+  3: 'invalid argument: check target language code and request shape',
+  7: 'permission denied: grant the service account "Cloud Translation API User" (roles/cloudtranslate.user) and enable Cloud Translation API + billing on the project',
+  8: 'quota exhausted: check Cloud Translation quotas',
+  14: 'network/service unavailable: retry later',
+  16: 'unauthenticated: check GOOGLE_CLOUD_CLIENT_EMAIL / GOOGLE_CLOUD_PRIVATE_KEY (rotated key, newlines intact)',
+};
+
 /** The subset of TranslationServiceClient this module uses (so tests can supply a fake). */
 export type TranslateApi = {
   getSupportedLanguages(request: { parent: string; displayLanguageCode: string }): Promise<[{ languages?: { languageCode?: string | null; displayName?: string | null; supportTarget?: boolean | null }[] | null }, ...unknown[]]>;
@@ -119,7 +128,7 @@ export function createTranslator(options: TranslatorOptions = {}) {
     if (error instanceof TranslationError) throw error;
     // Log the error class and gRPC status code only: messages can echo request details.
     const code = (error as { code?: unknown } | null)?.code;
-    console.error('[translate] upstream failure', error instanceof Error ? error.name : 'unknown', typeof code === 'number' ? code : '');
+    console.error('[translate] upstream failure', error instanceof Error ? error.name : 'unknown', typeof code === 'number' ? code : '', HINTS[code as number] ?? '');
     throw new TranslationError('upstream');
   };
 
