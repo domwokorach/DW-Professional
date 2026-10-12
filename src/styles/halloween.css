@@ -1,0 +1,51 @@
+/* Halloween decoration layer (see components/halloween). Sits below the fixed site header (z-index 50). */
+.hw-layer{--hw-web:rgba(120,116,134,.5);--hw-web-hi:rgba(124,92,190,.55);--hw-bat:#0b0b0f;--hw-bat-wing:#1d1d24;--hw-bat-edge:transparent}
+:root[data-theme="dark"] .hw-layer{--hw-web:rgba(205,203,222,.42);--hw-web-hi:rgba(168,132,236,.55);--hw-bat-edge:rgba(236,232,217,.16)}
+.hw-layer,.hw-webs,.hw-bats{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:40}
+.hw-layer{z-index:40}
+.hw-webs,.hw-bats{z-index:auto}
+
+.hw-web{position:absolute;top:0;width:clamp(120px,17vw,250px);aspect-ratio:1;opacity:.85}
+.hw-web svg{display:block;width:100%;height:100%;overflow:visible}
+.hw-web-left{left:0}
+.hw-web-right{right:0;transform:scaleX(-1)}
+.hw-web-radial,.hw-web-ring{fill:none;stroke:var(--hw-web);stroke-linecap:round}
+.hw-web-radial{stroke-width:.8}
+.hw-web-ring{stroke-width:.55}
+.hw-web-ring-hi{stroke:var(--hw-web-hi)}
+.hw-web-sway{transform-origin:0 0;animation:hw-sway 7s ease-in-out infinite alternate}
+.hw-web-right .hw-web-sway{animation-duration:9s;animation-delay:-3s}
+@keyframes hw-sway{from{transform:rotate(-1.6deg) skewX(.8deg)}to{transform:rotate(1.8deg) skewX(-.8deg)}}
+
+.hw-bat{position:absolute;top:0;left:0;width:84px;margin:-18px 0 0 -42px;will-change:transform;transform:translate3d(-30vw,0,0);filter:drop-shadow(0 6px 5px rgba(0,0,0,.22))}
+.hw-bat svg{display:block;width:100%;height:auto;overflow:visible}
+.hw-bat-wing{fill:var(--hw-bat-wing);stroke:var(--hw-bat-edge);stroke-width:.4;transform-origin:52px 24px;animation:hw-flap var(--hw-flap,2.4s) ease-in-out infinite}
+.hw-bat-body{fill:var(--hw-bat);stroke:var(--hw-bat-edge);stroke-width:.4}
+/* Three quick beats, then a held glide for the rest of the cycle. */
+@keyframes hw-flap{
+  0%,36%{animation-timing-function:ease-in-out}
+  0%{transform:rotate(-30deg) scaleY(1)}
+  6%{transform:rotate(24deg) scaleY(.82)}
+  12%{transform:rotate(-30deg) scaleY(1)}
+  18%{transform:rotate(24deg) scaleY(.82)}
+  24%{transform:rotate(-30deg) scaleY(1)}
+  30%{transform:rotate(24deg) scaleY(.82)}
+  36%{transform:rotate(-8deg) scaleY(.95)}
+  100%{transform:rotate(-8deg) scaleY(.95)}
+}
+
+/* Tablet: smaller webs, fewer bats. Mobile: compact webs, two bats. */
+@media (max-width:1024px){
+  .hw-web{width:clamp(100px,18vw,160px)}
+  .hw-bat{width:68px;margin-left:-34px}
+  .hw-bat:nth-of-type(n+4){display:none}
+}
+@media (max-width:640px){
+  .hw-web{width:96px;opacity:.75}
+  .hw-bat{width:52px;margin-left:-26px}
+  .hw-bat:nth-of-type(n+3){display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .hw-bats{display:none}
+  .hw-web-sway{animation:none}
+}
