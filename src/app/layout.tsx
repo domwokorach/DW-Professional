@@ -21,6 +21,7 @@ import '@/styles/legal.css';
 import '@/styles/privacy.css';
 import '@/styles/portfolio-access.css';
 import '@/styles/halloween.css';
+import '@/styles/resume.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),

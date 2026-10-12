@@ -59,6 +59,8 @@ export interface ComboboxContentProps
         ComboboxPrimitive.Popup.Props,
         Pick<ComboboxPrimitive.Positioner.Props, "side" | "align" | "sideOffset" | "alignOffset" | "anchor"> {
     transition?: Transition;
+    /** Where the popup is mounted (default: document.body). Inside a modal <dialog> it must be the dialog itself, or the popup is inert and hidden behind it. */
+    container?: ComboboxPrimitive.Portal.Props["container"];
 }
 
 function ComboboxContent({
@@ -69,6 +71,7 @@ function ComboboxContent({
     alignOffset = 0,
     anchor,
     transition = { type: "spring", stiffness: 380, damping: 26, mass: 0.8 },
+    container,
     children,
     ...props
 }: ComboboxContentProps) {
@@ -103,7 +106,7 @@ function ComboboxContent({
     };
 
     return (
-        <ComboboxPrimitive.Portal keepMounted>
+        <ComboboxPrimitive.Portal keepMounted container={container}>
             <ComboboxPrimitive.Positioner
                 side={side}
                 sideOffset={sideOffset}

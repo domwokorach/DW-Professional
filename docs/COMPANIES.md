@@ -1,6 +1,6 @@
 # Company data (optional)
 
-Powers the contact form's **Company (optional)** field: as a visitor types, it suggests registered
+Powers the **Company** field of the contact form, the comments form and the **Get my résumé** dialog: as a visitor types, it suggests registered
 UK companies; picking one records the company number, and the server checks it with Companies
 House. The field always accepts a name typed by hand, and if nothing here is configured it is a plain
 text input.
@@ -13,6 +13,17 @@ contact form ──▶ /api/contact stores companyNumber + status + registered a
 ```
 
 The CSV is only an import source: searches never read it.
+
+**Live search (added with the résumé form).** `GET /api/companies/search` now asks the official Companies House
+`/search/companies` endpoint (server-side, with `COMPANIES_HOUSE_API_KEY`) **and** the indexed database in parallel,
+merges them (a company in both appears once, with the live details; exact and strong matches first, active before
+dissolved) and labels every result `live` (Companies House · Live) or `cached` (Company database · Cached). A registration
+number is looked up as a profile instead. If Companies House is unavailable (no key, rate limit, outage, timeout) the saved
+records answer with `liveAvailable: false` and the field says so; with neither source the API answers 503. Calls are
+bounded: 4 s timeout, answers cached 10 minutes, identical concurrent searches share one call, and at most 400 upstream
+requests per 5 minutes per instance (the official limit is 600). A visitor's pick is verified with the live profile, which is
+then saved to the database with `verifiedAt` (inserting it if missing); **CSV imports never overwrite a row that has
+`verifiedAt`** (migration `20261013100000_company_verified_at`, run `npm run companies:migrate`).
 
 ## Switches
 

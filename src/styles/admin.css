@@ -197,3 +197,26 @@ a.adm-btn{text-decoration:none}
 }
 /* Touch: 44px tap targets for the compact pills and buttons. */
 @media(pointer:coarse){.adm-filter,.adm-section,.adm-btn--sm{min-height:44px}}
+
+/* Résumé requests (components/admin/ResumeRequestsTable) */
+.rq{display:flex;flex-direction:column;gap:16px;margin-top:40px}
+.rq-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px}
+.rq-title{margin:0;font-size:clamp(22px,4vw,30px);letter-spacing:-.03em}
+.rq-count{margin:0;font-family:var(--font-mono);font-size:12px;color:var(--text-2)}
+.rq-controls{display:flex;flex-wrap:wrap;gap:12px}
+.rq-control{display:flex;flex-direction:column;gap:6px;min-width:140px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-2)}
+.rq-control--grow{flex:1 1 240px}
+.rq-control input,.rq-control select{min-height:42px;padding:8px 12px;border:1px solid var(--line);border-radius:12px;background:var(--glass);color:var(--ink);font:inherit;font-size:14px;letter-spacing:0;text-transform:none}
+.rq-control input:focus-visible,.rq-control select:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.rq-sub{display:block;margin-top:2px;font-size:12.5px;font-weight:400;color:var(--text-2)}
+.rq-dash{color:var(--text-2)}
+.rq-table time{white-space:nowrap}
+.rq-status{display:inline-block;padding:3px 10px;border:1px solid var(--line);border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.rq-status[data-status="downloaded"],.rq-status[data-status="verified"]{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.rq-status[data-status="expired"],.rq-status[data-status="delivery-failed"]{border-color:#c0392b;color:#b3261e}
+:root[data-theme="dark"] .rq-status[data-status="expired"],:root[data-theme="dark"] .rq-status[data-status="delivery-failed"]{border-color:#ff8a7a;color:#ff8a7a}
+.rq-table tbody th{min-width:230px}
+.rq-table tbody th a{overflow-wrap:anywhere;word-break:normal}
+.rq-sub--addr{margin-top:0}
+.rq-source{display:block;margin-top:4px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--text-2)}
+.rq-source[data-source="companies_house"]{color:var(--live)}

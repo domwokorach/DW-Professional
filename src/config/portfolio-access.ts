@@ -17,7 +17,3 @@ const origin = (
   (process.env.NODE_ENV === 'production' ? 'https://www.dominicwokorach.me' : 'http://localhost:3000')
 ).replace(/\/+$/, '');
 export const PORTFOLIO_ACCESS_URL = `${origin}${PORTFOLIO_ACCESS_PATH}`;
-
-/** Single source of truth for every résumé action on the site. */
-export const RESUME_URL =
-  'https://drive.google.com/file/d/1_LfbPH9lIH8a0WyvUZhfO4as6f1x_4cq/view?usp=drive_link';
