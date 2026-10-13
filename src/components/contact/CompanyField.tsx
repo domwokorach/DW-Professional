@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { XIcon } from 'lucide-react';
+import { SearchIcon, XIcon } from 'lucide-react';
 import { MotionConfig, useReducedMotion } from 'motion/react';
 import {
   COMPANY_SEARCH_MIN,
@@ -11,9 +11,10 @@ import {
 } from '@/lib/companies';
 import { Combobox, ComboboxContent, ComboboxItem, ComboboxList, ComboboxPrimitive } from '@/components/ui/motion/combobox';
 
-export type CompanySelection = CompanySummary & { verified?: boolean };
+/** A picked company. `verified` = confirmed with the live Companies House API; `verifiedAt` = when (ISO). */
+export type CompanySelection = CompanySummary & { verified?: boolean; verifiedAt?: string };
 
-type SearchState = 'idle' | 'loading' | 'results' | 'empty' | 'error';
+type SearchState = 'idle' | 'loading' | 'results' | 'empty' | 'error' | 'limited';
 
 const DEBOUNCE_MS = 300;
 
@@ -28,11 +29,15 @@ type Props = {
   invalid: boolean;
   describedBy?: string;
   maxLength: number;
-  variant?: 'contact' | 'comment';
+  variant?: 'contact' | 'comment' | 'resume';
   disabled?: boolean;
+  /** Mount the suggestions inside this element (needed inside a modal <dialog>). */
+  popupContainer?: HTMLElement | null;
 };
 
-const details = (c: CompanySummary) => [c.companyStatus, c.locality].filter(Boolean).join(' · ');
+const SOURCE_LABEL = { live: 'Companies House · Live', cached: 'Company database · Cached' } as const;
+const statusTone = (s: string | null) => (!s ? 'unknown' : /^active$/i.test(s) ? 'active' : /dissolved|removed|closed|liquidation|receivership|administration|strike/i.test(s) ? 'inactive' : 'other');
+const whenVerified = (iso?: string) => (iso ? new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/London' }).format(new Date(iso)) : null);
 
 function companyNameWithMatch(name: string, query: string) {
   const term = query.trim();
@@ -50,12 +55,14 @@ function companyNameWithMatch(name: string, query: string) {
  * field simply behaves as a text input.
  * Keyboard and screen-reader behaviour (combobox role, arrows, Enter, Escape, Tab) comes from Base UI.
  */
-export default function CompanyField({ id, value, selection, onTextChange, onSelectionChange, onBlur, invalid, describedBy, maxLength, variant = 'contact', disabled = false }: Props) {
+export default function CompanyField({ id, value, selection, onTextChange, onSelectionChange, onBlur, invalid, describedBy, maxLength, variant = 'contact', disabled = false, popupContainer }: Props) {
   const [results, setResults] = useState<CompanySummary[]>([]);
   const [state, setState] = useState<SearchState>('idle');
   const [open, setOpen] = useState(false);
   // 404 from the search API: the feature isn't configured here, so stop offering suggestions.
   const [unavailable, setUnavailable] = useState(false);
+  // False when the last answer had no live Companies House results (saved records only): said honestly in the list.
+  const [liveAvailable, setLiveAvailable] = useState(true);
   const reduceMotion = useReducedMotion();
   const inputRef = useRef<HTMLInputElement>(null);
   const selectionRef = useRef(selection);
@@ -89,10 +96,16 @@ export default function CompanyField({ id, value, selection, onTextChange, onSel
           setState('empty');
           return;
         }
+        if (res.status === 429) {
+          setResults([]);
+          setState('limited');
+          return;
+        }
         if (!res.ok) throw new Error(String(res.status));
         const body = (await res.json()) as CompanySearchResponse;
         if (controller.signal.aborted) return;
         setResults(body.companies);
+        setLiveAvailable(body.liveAvailable !== false);
         setState(body.companies.length ? 'results' : 'empty');
       } catch {
         if (controller.signal.aborted) return;
@@ -113,7 +126,7 @@ export default function CompanyField({ id, value, selection, onTextChange, onSel
       const body = (await res.json()) as CompanyVerifyResponse;
       const current = selectionRef.current;
       if (current?.companyNumber !== company.companyNumber) return; // changed since
-      onSelectionChange({ ...body.company, verified: body.verified });
+      onSelectionChange({ ...body.company, verified: body.verified, verifiedAt: body.verifiedAt });
       // The company was renamed since the dataset was made: show the current name.
       if (body.company.companyName !== current.companyName) onTextChange(body.company.companyName);
     } catch {
@@ -147,9 +160,11 @@ export default function CompanyField({ id, value, selection, onTextChange, onSel
         ? `${results.length} ${results.length === 1 ? 'company' : 'companies'} found. Use the up and down arrow keys to choose one.`
         : state === 'empty'
           ? 'No matching UK companies found.'
-          : state === 'error'
-            ? 'Company suggestions are unavailable right now.'
-            : '';
+          : state === 'limited'
+            ? 'Too many searches. Please wait a minute and try again, or type your company name.'
+            : state === 'error'
+              ? 'Company suggestions are temporarily unavailable.'
+              : '';
 
   return (
     <MotionConfig reducedMotion="user">
@@ -171,7 +186,12 @@ export default function CompanyField({ id, value, selection, onTextChange, onSel
         itemToStringLabel={(c) => c.companyName}
         isItemEqualToValue={(a, b) => a.companyNumber === b.companyNumber}
       >
-        <div className={`company-input-wrap${variant === 'comment' ? ' company-input-wrap--comment' : ''}`} data-filled={value ? '' : undefined}>
+        <div className={`company-input-wrap${variant === 'comment' ? ' company-input-wrap--comment' : ''}${variant === 'resume' ? ' company-input-wrap--resume' : ''}`} data-filled={value ? '' : undefined}>
+          {variant === 'resume' && (
+            <span className="company-input-icon" aria-hidden="true">
+              {state === 'loading' && popupOpen ? <span className="company-spinner" /> : <SearchIcon />}
+            </span>
+          )}
           <ComboboxPrimitive.Input
             ref={inputRef}
             id={id}
@@ -194,7 +214,8 @@ export default function CompanyField({ id, value, selection, onTextChange, onSel
         </div>
 
         <ComboboxContent
-          className={`project-type-popup company-popup${variant === 'comment' ? ' company-popup--comment' : ''}`}
+          className={`project-type-popup company-popup${variant === 'comment' ? ' company-popup--comment' : ''}${variant === 'resume' ? ' company-popup--resume' : ''}`}
+          container={popupContainer}
           aria-label="Company suggestions"
           transition={reduceMotion ? { duration: 0 } : { duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
         >
@@ -202,10 +223,16 @@ export default function CompanyField({ id, value, selection, onTextChange, onSel
             <p className="company-popup__note" aria-hidden="true"><span className="company-spinner" />Searching UK companies…</p>
           )}
           {state === 'empty' && (
-            <p className="company-popup__note">No matching UK companies found<span>You can keep the name you typed.</span></p>
+            <p className="company-popup__note">No companies found<span>You can keep the name you typed, for example for a non-UK organisation.</span></p>
           )}
           {state === 'error' && (
-            <p className="company-popup__note">Suggestions are unavailable right now<span>You can still type your company name.</span></p>
+            <p className="company-popup__note">Suggestions are temporarily unavailable<span>You can still type your company name.</span></p>
+          )}
+          {state === 'limited' && (
+            <p className="company-popup__note">Too many searches just now<span>Please wait a minute and try again, or type your company name.</span></p>
+          )}
+          {state === 'results' && !liveAvailable && (
+            <p className="company-popup__note company-popup__note--info" role="note">Live Companies House search is unavailable<span>Showing saved company records, which may be out of date.</span></p>
           )}
           <ComboboxList>
             {(company: CompanySummary) => (
@@ -213,9 +240,11 @@ export default function CompanyField({ id, value, selection, onTextChange, onSel
                 <span className="company-option__name">{companyNameWithMatch(company.companyName, query)}</span>
                 <span className="company-option__meta">
                   <span className="company-option__number">Company no. {company.companyNumber}</span>
-                  {details(company) && <span>{details(company)}</span>}
+                  {company.companyStatus && <span className="company-option__status" data-tone={statusTone(company.companyStatus)}>{company.companyStatus}</span>}
+                  {company.locality && <span>{company.locality}</span>}
                   {company.companyType && <span>{company.companyType}</span>}
                 </span>
+                {company.source && <span className="company-option__source" data-source={company.source}>{SOURCE_LABEL[company.source]}</span>}
               </ComboboxItem>
             )}
           </ComboboxList>
@@ -228,7 +257,9 @@ export default function CompanyField({ id, value, selection, onTextChange, onSel
           <span className="company-selected__number">Company no. {selection.companyNumber}</span>
           {selection.companyStatus && <span>{selection.companyStatus}</span>}
           {selection.address && <span className="company-selected__address">{selection.address}</span>}
-          {selection.verified && <span className="company-selected__verified">Verified with Companies House</span>}
+          {selection.verified
+            ? <span className="company-selected__verified">Verified with Companies House{whenVerified(selection.verifiedAt) ? ` · ${whenVerified(selection.verifiedAt)}` : ''}</span>
+            : variant === 'resume' && <span className="company-selected__cached">From the company database; not checked live</span>}
         </p>
       )}
       <span className="sr-only" role="status" aria-live="polite">{announcement}</span>

@@ -13,13 +13,24 @@ export type CompanySummary = {
   address: string | null;
   /** Town or city, for the short location shown in results. */
   locality: string | null;
+  /** Where this entry came from: Companies House just now, or the saved company database (imported or cached). */
+  source?: CompanySource;
 };
 
-export type CompanySearchResponse = { companies: CompanySummary[] };
+/** 'live' = fetched from Companies House for this request; 'cached' = from the company database (may be historical). */
+export type CompanySource = 'live' | 'cached';
+
+export type CompanySearchResponse = {
+  companies: CompanySummary[];
+  /** False when live Companies House search could not be used (no key, rate limit, outage), so results are saved records only. */
+  liveAvailable?: boolean;
+};
 export type CompanyVerifyResponse = {
   company: CompanySummary;
   /** True when the details came from Companies House just now; false when they are from the imported dataset. */
   verified: boolean;
+  /** ISO time of the live Companies House check, when verified. */
+  verifiedAt?: string;
 };
 
 export const COMPANY_SEARCH_MIN = 2;

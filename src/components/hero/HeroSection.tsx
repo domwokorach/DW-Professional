@@ -5,8 +5,7 @@ import { DownloadIcon } from '@/components/animate-ui/icons/download';
 import { BriefcaseBusinessIcon } from '@/components/ui/briefcase-business';
 import { SendIcon } from '@/components/ui/send';
 import IconButton from '@/components/ui/IconButton';
-import IconLink from '@/components/ui/IconLink';
-import { RESUME_URL } from '@/config';
+import { ResumeButton } from '@/components/resume';
 import { scrollToSection } from '@/lib/scroll';
 import HeroPhotonBackground from './HeroPhotonBackground';
 import HeroPortrait from './HeroPortrait';
@@ -33,7 +32,7 @@ export default function HeroSection({ heroAvatar }: { heroAvatar?: AvatarAssets 
       <div className="hero-actions">
         <IconButton className="primary" icon={BriefcaseBusinessIcon} onClick={() => scrollToSection('Work')}>Explore work</IconButton>
         <IconButton icon={SendIcon} onClick={() => scrollToSection('Contact')}>Let&apos;s talk</IconButton>
-        <IconLink href={RESUME_URL} target="_blank" rel="noopener noreferrer" icon={DownloadIcon}>Resume</IconLink>
+        <ResumeButton icon={DownloadIcon}>Resume</ResumeButton>
       </div>
       <button className="scroll-mark" onClick={() => scrollToSection('About')} aria-label="Scroll to about">⌄</button>
     </section>

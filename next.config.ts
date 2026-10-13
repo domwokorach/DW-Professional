@@ -1,6 +1,4 @@
 import type { NextConfig } from 'next';
-import { RESUME_URL } from './src/config/portfolio-access';
-
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   // The portfolio lives at /en-gb. Temporary (307) for now; switch to permanent once the domain
@@ -15,8 +13,10 @@ const nextConfig: NextConfig = {
       // Keep previously shared résumé links working after moving the document to Google Drive.
       {
         source: '/Dominic_Wokorach_Olanya_CV.pdf',
-        destination: RESUME_URL,
-        permanent: true,
+        // The résumé is only released after email verification (the Resume button), so this old direct
+        // address now leads to the portfolio instead of a public file. Temporary: browsers cache permanent redirects.
+        destination: '/en-gb',
+        permanent: false,
       },
     ];
   },

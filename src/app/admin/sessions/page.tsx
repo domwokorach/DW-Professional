@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import { AdminAutoRefresh, AdminLogoutButton, AdminSections, PortfolioAccessTable } from '@/components/admin';
+import { AdminAutoRefresh, AdminLogoutButton, AdminSections, PortfolioAccessTable, ResumeRequestsTable } from '@/components/admin';
 import { ThemeToggle } from '@/components/layout';
 import { requireAdminPage } from '@/lib/admin/session.server';
 import { ADMIN_PORTFOLIO_ACCESS_PATH, listAccessForAdmin, type AdminAccess } from '@/lib/portfolio-access-store.server';
+import { listResumeForAdmin, type AdminResume } from '@/lib/resume-store.server';
 
 // Rendered per request (see also the admin layout); AdminAutoRefresh re-renders it while open, so new submissions appear.
 export const dynamic = 'force-dynamic';
@@ -15,6 +16,12 @@ export default async function AdminSessionsPage() {
     data = await listAccessForAdmin();
   } catch (err) {
     console.error('[admin-sessions] Could not load sessions:', (err as Error).name, (err as { code?: string }).code);
+  }
+  let resume: { rows: AdminResume[]; total: number } | null = null;
+  try {
+    resume = await listResumeForAdmin();
+  } catch (err) {
+    console.error('[admin-sessions] Could not load résumé requests:', (err as Error).name, (err as { code?: string }).code);
   }
 
   return (
@@ -39,6 +46,11 @@ export default async function AdminSessionsPage() {
         <p className="adm-empty adm-empty--err">Sessions could not be loaded. <Link href={ADMIN_PORTFOLIO_ACCESS_PATH} className="cm-link">Try again</Link></p>
       ) : (
         <PortfolioAccessTable initialRows={data.rows} initialTotal={data.total} csrfToken={session.csrfToken} />
+      )}
+      {resume === null ? (
+        <p className="adm-empty adm-empty--err">Résumé requests could not be loaded. <Link href={ADMIN_PORTFOLIO_ACCESS_PATH} className="cm-link">Try again</Link></p>
+      ) : (
+        <ResumeRequestsTable initialRows={resume.rows} initialTotal={resume.total} />
       )}
       <AdminAutoRefresh />
     </main>

@@ -45,6 +45,8 @@ model Company {
   /// When the row was last written by an import; `updatedAt` also moves when live Companies House data refreshes it.
   importedAt        DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
+  /// Set when the row was confirmed against the live Companies House API. CSV imports never overwrite such a row.
+  verifiedAt        DateTime?
 
   /// text_pattern_ops lets Postgres use this index for `LIKE 'prefix%'` whatever the database collation.
   @@index([nameSearch(ops: raw("text_pattern_ops"))])

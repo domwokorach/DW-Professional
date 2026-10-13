@@ -41,6 +41,7 @@ export function getCompanyPrisma(): PrismaClient | null {
  * parallel arrays) instead of a query per row, which is what makes multi-million-row imports
  * practical. Values are bound parameters; only the validated schema name is interpolated. Duplicate
  * numbers inside one batch are collapsed first (Postgres rejects a batch that touches the same row twice).
+ * Rows confirmed against live Companies House (verifiedAt set) are newer than any CSV, so they are never overwritten.
  */
 export async function upsertCompanies(prisma: PrismaClient, rows: CompanyRow[]) {
   const unique = [...new Map(rows.map((r) => [r.companyNumber, r])).values()];
@@ -62,7 +63,8 @@ export async function upsertCompanies(prisma: PrismaClient, rows: CompanyRow[]) 
      SELECT ${select.join(',')}, now(), now()
      FROM unnest(${cols.map((_, i) => `$${i + 1}::text[]`).join(',')}) AS t(${cols.map((_, i) => `v${i}`).join(',')})
      ON CONFLICT ("companyNumber") DO UPDATE SET
-       ${quoted.slice(1).map((c) => `${c} = EXCLUDED.${c}`).join(', ')}, "importedAt" = now(), "updatedAt" = now()`,
+       ${quoted.slice(1).map((c) => `${c} = EXCLUDED.${c}`).join(', ')}, "importedAt" = now(), "updatedAt" = now()
+     WHERE "Company"."verifiedAt" IS NULL`,
     ...cols.map((c) => unique.map((r) => r[c])),
   );
   return unique.length;
@@ -93,6 +95,7 @@ type CompanyDbRow = {
 const SUMMARY_COLUMNS = '"companyNumber","companyName","status","companyType","addressLine1","addressLine2","postTown","postcode"';
 
 export const toSummary = (r: CompanyDbRow): CompanySummary => ({
+  source: 'cached',
   companyNumber: r.companyNumber,
   companyName: r.companyName,
   companyStatus: formatCompanyStatus(r.status),
@@ -218,6 +221,28 @@ export async function refreshCompany(
       county: live.county,
       country: live.country,
       postcode: live.postcode,
+      verifiedAt: new Date(),
     },
   });
+}
+
+/**
+ * Saves a company profile fetched live from Companies House (a visitor picked it), inserting it when the dataset does
+ * not have it yet and refreshing it when it does. Marked verifiedAt, so a later CSV import cannot overwrite it.
+ */
+export async function saveVerifiedCompany(prisma: PrismaClient, live: Parameters<typeof refreshCompany>[1]) {
+  const data = {
+    companyName: live.companyName,
+    nameSearch: companySearchKey(live.companyName),
+    status: live.status,
+    companyType: live.companyType,
+    addressLine1: live.addressLine1,
+    addressLine2: live.addressLine2,
+    postTown: live.postTown,
+    county: live.county,
+    country: live.country,
+    postcode: live.postcode,
+    verifiedAt: new Date(),
+  };
+  await prisma.company.upsert({ where: { companyNumber: live.companyNumber }, create: { companyNumber: live.companyNumber, ...data }, update: data });
 }

@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { AnimatePresence, motion, useReducedMotion, type Variants } from 'motion/react';
 import { useEffect, useRef, useState, type FormEvent, type InputHTMLAttributes } from 'react';
-import { HOME, RESUME_URL } from '@/config';
+import { HOME } from '@/config';
+import { ResumeButton } from '@/components/resume';
 import CompanyField, { type CompanySelection } from '@/components/contact/CompanyField';
 import { FadeArc } from '@/components/loading-ui/fade-arc';
 import AttachmentField, { type Attachment } from './AttachmentField';
@@ -20,8 +21,6 @@ import {
 } from '@/lib/portfolio-access';
 
 type Status = 'idle' | 'submitting' | 'error' | 'success';
-/** Whether the CV tab opened by itself after the submission, or the browser blocked it. */
-type ResumeState = 'opening' | 'opened' | 'blocked';
 /** The company website "Import" button: fetches the site's public name and description through the server. */
 type ImportState = { status: 'idle' | 'loading' | 'done' | 'error'; preview?: SitePreview; message?: string };
 
@@ -47,18 +46,6 @@ const triggerHapticFeedback = (pattern: number | number[] = [80, 40, 80]) => {
   }
 };
 
-/** Opens the CV in a new tab. False when the browser blocked it (window.open returns null). */
-function openResumeTab(): boolean {
-  try {
-    const tab = window.open(RESUME_URL, '_blank');
-    if (!tab) return false;
-    tab.opener = null; // The external document never needs a handle back to this page.
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 export default function PortfolioAccessView() {
   const [fields, setFields] = useState<AccessFields>(EMPTY);
   // A UK company picked from the Company field's suggestions (optional; a typed name needs none).
@@ -67,7 +54,6 @@ export default function PortfolioAccessView() {
   const [touched, setTouched] = useState<Partial<Record<AccessField, boolean>>>({});
   const [status, setStatus] = useState<Status>('idle');
   const [formError, setFormError] = useState('');
-  const [resume, setResume] = useState<ResumeState>('opening');
   const [honeypot, setHoneypot] = useState('');
   const [siteImport, setSiteImport] = useState<ImportState>({ status: 'idle' });
   // Optional Upload / Camera file (already converted and size-checked in the browser; the server re-checks).
@@ -81,7 +67,6 @@ export default function PortfolioAccessView() {
   const inFlight = useRef(false);
   const formRef = useRef<HTMLFormElement>(null);
   const successTitle = useRef<HTMLHeadingElement>(null);
-  const resumeButton = useRef<HTMLAnchorElement>(null);
   const reduce = useReducedMotion();
   const [linkedinStatus, setLinkedinStatus] = useState<LinkedInStatus | null>(null);
 
@@ -122,13 +107,13 @@ export default function PortfolioAccessView() {
     window.location.assign('/api/auth/linkedin/start');
   };
 
-  // When the confirmation mounts (after the form's exit animation), move focus to it, or to Open Resume when the
-  // new tab was blocked, so keyboard and screen-reader users land on what matters next. Once per submission.
+  // When the confirmation mounts (after the form's exit animation), move focus to it so keyboard and
+  // screen-reader users land on what matters next. Once per submission.
   const focusedSuccess = useRef(false);
   const onSuccessMount = (el: HTMLDivElement | null) => {
     if (!el || focusedSuccess.current) return;
     focusedSuccess.current = true;
-    (resume === 'blocked' ? resumeButton.current : successTitle.current)?.focus();
+    successTitle.current?.focus();
   };
 
   const setError = (field: AccessField, message?: string) =>
@@ -196,9 +181,6 @@ export default function PortfolioAccessView() {
       }
       const res = await fetch('/api/portfolio-access', { method: 'POST', body: data });
       if (res.ok) {
-        // Open straight away, while the browser still counts the Submit click as the user's action
-        // (pop-up blockers allow new tabs only shortly after one).
-        const opened = openResumeTab();
         const saved = (await res.json().catch(() => null)) as { attachment?: { filename: string } | null; linkedinConnected?: boolean } | null;
         setSentLinkedIn(Boolean(saved?.linkedinConnected));
         setSentFile(saved?.attachment ? { name: saved.attachment.filename, photo: attachment?.source === 'camera' } : null);
@@ -206,7 +188,6 @@ export default function PortfolioAccessView() {
         // comes back to the form doesn't retype them, and sending again updates their session.
         setAttachment(null);
         submissionId.current = null;
-        setResume(opened ? 'opened' : 'blocked');
         setStatus('success');
         triggerHapticFeedback();
         return;
@@ -301,13 +282,6 @@ export default function PortfolioAccessView() {
     hidden: { opacity: 0, y: reduce ? 0 : 6 },
     show: { opacity: 1, y: 0, transition: { duration: reduce ? 0.15 : 0.3, ease: 'easeOut' } },
   };
-
-  const resumeMessage =
-    resume === 'blocked'
-      ? 'Your browser blocked the new tab. Use the button below to open the resume.'
-      : resume === 'opened'
-        ? 'Your resume has opened in a new tab.'
-        : 'Your resume is opening now.';
 
   return (
     <main className="pa">
@@ -466,22 +440,12 @@ export default function PortfolioAccessView() {
                     ? <>Your details and your {sentFile.photo ? 'photo' : 'file'} <strong className="pa-sent-file">{sentFile.name}</strong> have been received.</>
                     : 'Your details have been submitted successfully.'}
                   {sentLinkedIn && <> Your LinkedIn account is linked to your request.</>}
-                  <br />{resumeMessage}
+                  <br />Verify your email to receive a copy of my résumé.
                 </p>
               </motion.div>
               <motion.div className="pa-actions" variants={item}>
-                <a
-                  ref={resumeButton}
-                  className={`pa-btn ${resume === 'blocked' ? 'pa-btn--primary' : 'pa-btn--secondary'}`}
-                  href={RESUME_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => { triggerHapticFeedback(40); setResume('opened'); }}
-                >
-                  Open Resume<span className="sr-only"> (opens in a new tab)</span>
-                </a>
+                <ResumeButton className="pa-btn pa-btn--primary">Get my résumé</ResumeButton>
               </motion.div>
-              <motion.p className="pa-meta" variants={item}>Google Drive document</motion.p>
             </motion.div>
           )}
         </AnimatePresence>
