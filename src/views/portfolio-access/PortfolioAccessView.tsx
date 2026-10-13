@@ -440,7 +440,7 @@ export default function PortfolioAccessView() {
                     ? <>Your details and your {sentFile.photo ? 'photo' : 'file'} <strong className="pa-sent-file">{sentFile.name}</strong> have been received.</>
                     : 'Your details have been submitted successfully.'}
                   {sentLinkedIn && <> Your LinkedIn account is linked to your request.</>}
-                  <br />Verify your email to receive a copy of my résumé.
+                  <br />View or download my résumé.
                 </p>
               </motion.div>
               <motion.div className="pa-actions" variants={item}>
