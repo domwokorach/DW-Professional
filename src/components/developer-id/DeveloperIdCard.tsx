@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { encode } from 'uqr';
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
-import { PORTFOLIO_ACCESS_URL } from '@/config';
+import { PORTFOLIO_ACCESS_URL, QUICK_DOWNLOAD_URL } from '@/config';
 import DeveloperIdEvervault, { useEvervaultPointer } from './DeveloperIdEvervault';
 import FloatingCard from './FloatingCard';
 import FlipCaption from './FlipCaption';
@@ -48,18 +48,18 @@ function Barcode({ value }: { value: string }) {
 
 // A real, scannable QR code (not a decorative pattern): it opens the Portfolio Access page, which
 // hands the visitor the CV. Deterministic, so server and client render the same SVG.
-function QrBlock({ value }: { value: string }) {
+function QrBlock({ value, label = 'QR code that opens DOMINIC\'s portfolio access page', className = 'dev-id__qr', ecc = 'L' }: { value: string; label?: string; className?: string; ecc?: 'L' | 'M' }) {
   const { size, cells } = useMemo(() => {
-    const { size, data } = encode(value, { ecc: 'L', boostEcc: false });
+    const { size, data } = encode(value, { ecc, boostEcc: false });
     const out: [number, number][] = [];
     data.forEach((row, r) => row.forEach((on, c) => { if (on) out.push([r, c]); }));
     return { size, cells: out };
-  }, [value]);
+  }, [value, ecc]);
 
   // Four modules of quiet zone around the code, as the QR spec asks, so cameras lock on reliably.
   const q = 4;
   return (
-    <svg className="dev-id__qr" viewBox={`${-q} ${-q} ${size + q * 2} ${size + q * 2}`} shapeRendering="crispEdges" role="img" aria-label="QR code that opens DOMINIC's portfolio access page">
+    <svg className={className} viewBox={`${-q} ${-q} ${size + q * 2} ${size + q * 2}`} shapeRendering="crispEdges" role="img" aria-label={label}>
       <rect x={-q} y={-q} width={size + q * 2} height={size + q * 2} className="dev-id__qr-bg" />
       {cells.map(([r, c]) => <rect key={`${r}-${c}`} x={c} y={r} width={1} height={1} />)}
     </svg>
@@ -152,7 +152,14 @@ export default function DeveloperIdCard({ flipOnHover = false }: Props) {
               <div><dt>DEPT.</dt><dd>Engineering</dd></div>
               <div><dt>VALID TILL</dt><dd>2027</dd></div>
             </dl>
-            <Barcode value="DO-0001-2027" />
+            <div className="dev-id__scan">
+              <Barcode value="DO-0001-2027" />
+              {/* Public recruiter shortcut: scanning downloads the résumé PDF straight away. */}
+              <div className="dev-id__qr-quick">
+                <QrBlock value={QUICK_DOWNLOAD_URL} className="dev-id__qr dev-id__qr--front" ecc="M" label="QR code that downloads DOMINIC's résumé as a PDF" />
+                <span>SCAN · CV</span>
+              </div>
+            </div>
           </div>
 
           {/* Back */}

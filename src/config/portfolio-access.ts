@@ -17,3 +17,10 @@ const origin = (
   (process.env.NODE_ENV === 'production' ? 'https://www.dominicwokorach.me' : 'http://localhost:3000')
 ).replace(/\/+$/, '');
 export const PORTFOLIO_ACCESS_URL = `${origin}${PORTFOLIO_ACCESS_PATH}`;
+
+/**
+ * Public recruiter shortcut printed on the front of the Developer ID card: scanning it downloads the résumé PDF
+ * straight away. Same origin rules as above (production, or NEXT_PUBLIC_SITE_URL for a real-device test).
+ */
+export const QUICK_DOWNLOAD_PATH = '/api/resume/quick-download';
+export const QUICK_DOWNLOAD_URL = `${origin}${QUICK_DOWNLOAD_PATH}`;
