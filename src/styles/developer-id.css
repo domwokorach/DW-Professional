@@ -53,6 +53,11 @@
 .dev-id__dot{width:6px;height:6px;border-radius:50%;background:#9fe0a8;box-shadow:0 0 0 3px rgba(159,224,168,.18)}
 .dev-id__qr{width:88px;height:88px;flex:none;fill:#25233f;border-radius:6px}
 .dev-id__qr .dev-id__qr-bg{fill:#f7f3e7}
+/* Front QR sits at the bottom of the card, centred with equal side spacing and a fixed gap to the edge. */
+.dev-id__scan{width:100%;display:flex;justify-content:center;margin-top:auto;padding:0 16px 16px}
+.dev-id__qr-quick{display:flex;flex-direction:column;align-items:center;gap:6px}
+.dev-id__qr-quick .dev-id__qr{display:block;max-width:100%;height:auto;margin-inline:auto}
+.dev-id__qr-quick span{font-family:var(--font-mono);font-size:7.5px;font-weight:700;letter-spacing:.2em;text-align:center;opacity:.6}
 .dev-id__hint{font-family:var(--font-mono);font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;opacity:.4;text-align:center;margin:12px 0 0}
 .dev-id-caption{font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:22px 0 0}
 @media(prefers-reduced-motion:reduce){.dev-id__inner,.dev-id{transition-duration:1ms}}
