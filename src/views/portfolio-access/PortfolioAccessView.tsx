@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { AnimatePresence, motion, useReducedMotion, type Variants } from 'motion/react';
 import { useEffect, useRef, useState, type FormEvent, type InputHTMLAttributes } from 'react';
 import { HOME, RESUME_URL } from '@/config';
+import ResumeDownloadButton from '@/components/resume/ResumeDownloadButton';
 import CompanyField, { type CompanySelection } from '@/components/contact/CompanyField';
 import { FadeArc } from '@/components/loading-ui/fade-arc';
 import AttachmentField, { type Attachment } from './AttachmentField';
@@ -480,8 +481,9 @@ export default function PortfolioAccessView() {
                 >
                   Open Resume<span className="sr-only"> (opens in a new tab)</span>
                 </a>
+                <ResumeDownloadButton className="pa-btn pa-btn--secondary" onDownload={() => triggerHapticFeedback(40)} />
               </motion.div>
-              <motion.p className="pa-meta" variants={item}>Google Drive document</motion.p>
+              <motion.p className="pa-meta" variants={item}>PDF document</motion.p>
             </motion.div>
           )}
         </AnimatePresence>
