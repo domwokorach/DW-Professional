@@ -12,40 +12,6 @@ const HERO_TEXT_SETTLED_MS = 1500;
 
 const SKILLS = ['React', 'Next.js', 'Vue', 'TypeScript', 'Node.js', 'Python', 'AI', 'Data'];
 
-// Small seeded PRNG so the barcode and QR pattern render identically on server and client.
-function seeded(seed: string) {
-  let h = 2166136261;
-  for (const c of seed) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
-  return () => {
-    h = Math.imul(h ^ (h >>> 15), 2246822507);
-    h = Math.imul(h ^ (h >>> 13), 3266489909);
-    return ((h ^= h >>> 16) >>> 0) / 4294967296;
-  };
-}
-
-function Barcode({ value }: { value: string }) {
-  const { bars, width } = useMemo(() => {
-    const rand = seeded(value);
-    const out: { x: number; w: number }[] = [];
-    // Guard bars, a run of variable-width data bars, guard bars.
-    let x = 0;
-    const push = (w: number, gap: number) => { out.push({ x, w }); x += w + gap; };
-    push(1, 1); push(1, 1);
-    for (let i = 0; i < 46; i++) push(1 + Math.floor(rand() * 3), 1 + Math.floor(rand() * 2));
-    push(1, 1); push(1, 0);
-    return { bars: out, width: x };
-  }, [value]);
-
-  return (
-    <div className="dev-id__barcode">
-      <svg viewBox={`0 0 ${width} 10`} preserveAspectRatio="none" aria-hidden="true">
-        {bars.map((b, i) => <rect key={i} x={b.x} y={0} width={b.w} height={10} />)}
-      </svg>
-      <span>*{value.replace(/-/g, '')}*</span>
-    </div>
-  );
-}
-
 // A real, scannable QR code (not a decorative pattern): it opens the Portfolio Access page, which
 // hands the visitor the CV. Deterministic, so server and client render the same SVG.
 function QrBlock({ value, label = 'QR code that opens DOMINIC\'s portfolio access page', className = 'dev-id__qr', ecc = 'L' }: { value: string; label?: string; className?: string; ecc?: 'L' | 'M' }) {
@@ -153,7 +119,6 @@ export default function DeveloperIdCard({ flipOnHover = false }: Props) {
               <div><dt>VALID TILL</dt><dd>2027</dd></div>
             </dl>
             <div className="dev-id__scan">
-              <Barcode value="DO-0001-2027" />
               {/* Public recruiter shortcut: scanning downloads the résumé PDF straight away. */}
               <div className="dev-id__qr-quick">
                 <QrBlock value={QUICK_DOWNLOAD_URL} className="dev-id__qr dev-id__qr--front" ecc="M" label="QR code that downloads DOMINIC's résumé as a PDF" />
