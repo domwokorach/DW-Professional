@@ -176,7 +176,7 @@ describe('résumé verification flow', { skip }, () => {
     const file = await get(grant);
     assert.equal(file.status, 200);
     assert.equal(file.headers.get('content-type'), 'application/pdf');
-    assert.match(file.headers.get('content-disposition')!, /attachment; filename="Dominic-Wokorach-Olanya-Resume.pdf"/);
+    assert.match(file.headers.get('content-disposition')!, /attachment; filename="Dominic-Wokorach-Resume.pdf"/);
     assert.match(file.headers.get('cache-control')!, /no-store/);
     const bytes = Buffer.from(await file.arrayBuffer());
     assert.equal(bytes.subarray(0, 5).toString('latin1'), '%PDF-');

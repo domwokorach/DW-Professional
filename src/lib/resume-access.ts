@@ -73,4 +73,4 @@ export function displayStatus(status: ResumeStatusValue, expiresAt: Date | strin
 }
 
 /** Name the browser saves the résumé under (also sent in Content-Disposition). */
-export const RESUME_DOWNLOAD_FILENAME = 'Dominic-Wokorach-Olanya-Resume.pdf';
+export const RESUME_DOWNLOAD_FILENAME = 'Dominic-Wokorach-Resume.pdf';
