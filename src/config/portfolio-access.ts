@@ -20,4 +20,4 @@ export const PORTFOLIO_ACCESS_URL = `${origin}${PORTFOLIO_ACCESS_PATH}`;
 
 /** Single source of truth for every résumé action on the site. */
 export const RESUME_URL =
-  'https://drive.google.com/file/d/1ZNBJZ5OcnAUCvzmB7Nv_rF3SUF-f6c2F/view?usp=sharing';
+  'https://drive.google.com/file/d/1TM7yPYyup9jR5qoEhAeecsMAhK9sT14b/view?usp=sharing';
