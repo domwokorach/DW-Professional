@@ -483,7 +483,7 @@ export default function PortfolioAccessView() {
                 </a>
                 <ResumeDownloadButton className="pa-btn pa-btn--secondary" onDownload={() => triggerHapticFeedback(40)} />
               </motion.div>
-              <motion.p className="pa-meta" variants={item}>Google Drive document</motion.p>
+              <motion.p className="pa-meta" variants={item}>PDF document</motion.p>
             </motion.div>
           )}
         </AnimatePresence>
