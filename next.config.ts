@@ -1,10 +1,23 @@
 import type { NextConfig } from 'next';
-import { RESUME_URL } from './src/config/portfolio-access';
+import { RESUME_FILENAME, RESUME_URL } from './src/config/portfolio-access';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   // The portfolio lives at /en-gb. Temporary (307) for now; switch to permanent once the domain
   // setup is final, since browsers cache permanent redirects indefinitely.
+  // Serve the static résumé as a real PDF attachment with a stable filename.
+  async headers() {
+    return [
+      {
+        source: RESUME_URL,
+        headers: [
+          { key: 'Content-Type', value: 'application/pdf' },
+          { key: 'Content-Disposition', value: `attachment; filename="${RESUME_FILENAME}"` },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+        ],
+      },
+    ];
+  },
   async redirects() {
     return [
       { source: '/', destination: '/en-gb', permanent: false },

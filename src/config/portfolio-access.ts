@@ -20,4 +20,4 @@ export const PORTFOLIO_ACCESS_URL = `${origin}${PORTFOLIO_ACCESS_PATH}`;
 
 /** Single source of truth for every résumé action on the site. */
 export const RESUME_URL = '/resume.pdf';
-export const RESUME_FILENAME = 'Dominic_Wokorach_Resume.pdf';
+export const RESUME_FILENAME = 'Dominic_Wokorach_Olanya_Resume.pdf';
