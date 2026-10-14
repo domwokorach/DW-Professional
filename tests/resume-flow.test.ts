@@ -176,9 +176,11 @@ describe('résumé verification flow', { skip }, () => {
     const file = await get(grant);
     assert.equal(file.status, 200);
     assert.equal(file.headers.get('content-type'), 'application/pdf');
-    assert.match(file.headers.get('content-disposition')!, /attachment; filename="Test Resume.pdf"/);
+    assert.match(file.headers.get('content-disposition')!, /attachment; filename="Dominic-Wokorach-Olanya-Resume.pdf"/);
     assert.match(file.headers.get('cache-control')!, /no-store/);
-    assert.deepEqual(Buffer.from(await file.arrayBuffer()), PDF);
+    const bytes = Buffer.from(await file.arrayBuffer());
+    assert.equal(bytes.subarray(0, 5).toString('latin1'), '%PDF-');
+    assert.deepEqual(bytes, PDF);
     assert.equal((await get(grant)).status, 200, 'the fallback button can download again within the grant lifetime');
 
     row = await prisma.resumeAccess.findUniqueOrThrow({ where: { id: body.id } });
@@ -192,6 +194,28 @@ describe('résumé verification flow', { skip }, () => {
     const admin = (await store.listResumeForAdmin()).rows[0];
     assert.deepEqual([admin.fullName, admin.company, admin.status, admin.downloadCount, admin.source], ['Jane Smith', 'Acme Recruitment', 'DOWNLOADED', 2, 'Resume Download']);
     assert.ok(admin.verifiedAt && admin.lastDownloadedAt && admin.createdAt && admin.lastActivityAt);
+  });
+
+  test('storage failures return a JSON error, never a successful file download', async () => {
+    const { body } = await start();
+    const res = await routes.verify.POST(call('/api/resume/verify', { id: body.id, pin: pinOf(inbox[0]) }));
+    const grant = cookieOf(res)!;
+    try {
+      await store.storeResumeFile('Broken.pdf', Buffer.from('{"not":"a pdf"}'));
+      const notPdf = await get(grant);
+      assert.equal(notPdf.status, 503);
+      assert.match(notPdf.headers.get('content-type')!, /application\/json/);
+      assert.deepEqual(await notPdf.json(), { error: 'storage_error' });
+
+      await prisma.resumeFile.deleteMany();
+      const missing = await get(grant);
+      assert.equal(missing.status, 503);
+      assert.match(missing.headers.get('content-type')!, /application\/json/);
+      assert.match(missing.headers.get('cache-control')!, /no-store/);
+    } finally {
+      await store.storeResumeFile('Test Resume.pdf', PDF);
+    }
+    assert.equal((await get(grant)).status, 200, 'works again once a valid PDF is stored');
   });
 
   test('the same PIN cannot be used twice, and an expired grant stops working', async () => {

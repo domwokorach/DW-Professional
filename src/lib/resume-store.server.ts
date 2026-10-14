@@ -223,11 +223,11 @@ export type DownloadFile = { filename: string; data: Buffer; size: number; sha25
 
 /**
  * The protected PDF, only for a valid, unexpired download grant. Each served download is counted and timestamped.
- * Returns null for a missing/expired grant or when no résumé has been imported.
+ * Returns null for a missing/expired grant, 'none' when no résumé has been imported, 'error' when storage fails.
  */
-export async function authoriseDownload(grant: string): Promise<DownloadFile | 'none' | null> {
+export async function authoriseDownload(grant: string): Promise<DownloadFile | 'none' | 'error' | null> {
   const prisma = getPrisma();
-  if (!prisma) return null;
+  if (!prisma) return 'error';
   try {
     const row = await prisma.resumeAccess.findUnique({ where: { grantHash: hashGrant(grant) }, select: { id: true, grantExpiresAt: true } });
     if (!row?.grantExpiresAt || row.grantExpiresAt.getTime() <= Date.now()) return null;
@@ -246,7 +246,7 @@ export async function authoriseDownload(grant: string): Promise<DownloadFile | '
     return { filename: file.filename, data: Buffer.from(file.data), size: file.size, sha256: file.sha256 };
   } catch (err) {
     logError('Could not authorise download', err);
-    return null;
+    return 'error';
   }
 }
 

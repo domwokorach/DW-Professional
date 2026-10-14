@@ -71,3 +71,6 @@ export function displayStatus(status: ResumeStatusValue, expiresAt: Date | strin
   if (expiresAt && new Date(expiresAt).getTime() <= now) return 'Expired';
   return status === 'EMAIL_SENT' ? 'Email Sent' : 'Pending Verification';
 }
+
+/** Name the browser saves the résumé under (also sent in Content-Disposition). */
+export const RESUME_DOWNLOAD_FILENAME = 'Dominic-Wokorach-Olanya-Resume.pdf';
