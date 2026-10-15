@@ -220,3 +220,17 @@ a.adm-btn{text-decoration:none}
 .rq-sub--addr{margin-top:0}
 .rq-source{display:block;margin-top:4px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--text-2)}
 .rq-source[data-source="companies_house"]{color:var(--live)}
+
+/* Résumé requests, full-table view (1080px and up): columns keep a readable width and the wrapper scrolls sideways
+   when the window is narrower than the table. The Actions column stays pinned so Delete is never clipped. */
+@media(min-width:1080px){
+  .rq-table{min-width:1180px}
+  .rq-table td[data-label="Access"]{min-width:150px}
+  .rq-table td[data-label="Source"]{min-width:110px}
+  .rq-table th:last-child,.rq-table td.adm-table__actions{position:sticky;right:0;background:var(--cream);box-shadow:-1px 0 0 var(--line)}
+}
+
+/* Dual-screen (Surface Duo spanned): keep the dialog on the left screen, clear of the hinge. */
+@media(horizontal-viewport-segments:2){
+  .adm-dialog{--seg:env(viewport-segment-width 0 0,100vw);width:min(calc(var(--seg) - 32px),440px);margin-left:calc((var(--seg) - min(calc(var(--seg) - 32px),440px))/2);margin-right:auto}
+}
