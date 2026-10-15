@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState, type FormEvent } from 'react';
+import GlassCrackOverlay from './GlassCrackOverlay';
 
 /**
  * Admin sign-in form (email + password). It posts to /api/admin/login, which validates the credentials on the
@@ -13,6 +14,9 @@ export default function AdminLoginForm({ next, expired }: { next: string; expire
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const busy = useRef(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  // Set only when the server rejects the credentials; changing `id` replays the glass effect from the form's centre.
+  const [crack, setCrack] = useState<{ id: number; x: number; y: number } | null>(null);
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -40,6 +44,12 @@ export default function AdminLoginForm({ next, expired }: { next: string; expire
         return;
       }
       setPassword('');
+      // Glass effect only for a confirmed credential rejection (401), never for rate limits, outages or network errors,
+      // and not for visitors who prefer reduced motion (they get the red field + error message instead).
+      if (res.status === 401 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const r = formRef.current?.getBoundingClientRect();
+        if (r) setCrack((c) => ({ id: (c?.id ?? 0) + 1, x: r.left + r.width / 2, y: r.top + r.height / 2 }));
+      }
       // Only a rejected sign-in is "invalid"; a server failure says so instead of blaming the credentials.
       setError(data.message || (res.status === 401 ? 'Invalid email or password.' : 'Sign-in is not available right now. Please try again shortly.'));
       document.getElementById('adm-password')?.focus();
@@ -52,7 +62,7 @@ export default function AdminLoginForm({ next, expired }: { next: string; expire
   };
 
   return (
-    <form className="adm-card adm-login__card" onSubmit={onSubmit} noValidate aria-labelledby="adm-login-title" aria-busy={submitting}>
+    <form ref={formRef} className="adm-card adm-login__card" onSubmit={onSubmit} noValidate aria-labelledby="adm-login-title" aria-busy={submitting}>
       <p className="adm-kicker">PORTFOLIO ADMIN</p>
       <h1 id="adm-login-title" className="adm-title">Sign in</h1>
 
@@ -100,6 +110,7 @@ export default function AdminLoginForm({ next, expired }: { next: string; expire
         {submitting && <span className="cm-spinner" aria-hidden="true" />}
         {submitting ? 'Signing in…' : 'Sign in'}
       </button>
+      {crack && <GlassCrackOverlay key={crack.id} x={crack.x} y={crack.y} onDone={() => setCrack(null)} />}
     </form>
   );
 }
