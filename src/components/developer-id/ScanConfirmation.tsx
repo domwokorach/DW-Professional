@@ -38,7 +38,7 @@ export default function ScanConfirmation() {
           <svg viewBox="0 0 24 24"><path d="M5.5 12.5l4.2 4.2L18.5 7.8" /></svg>
         </span>
         <h2 id="scan-pop-title">Scan Successful</h2>
-        <p id="scan-pop-text">QR code opened. You can now contact Dominic Wokorach Olanya.</p>
+        <p id="scan-pop-text">QR code opened. You can now contact Dominic Wokorach.</p>
         <a
           ref={action}
           className="scan-pop__action"
