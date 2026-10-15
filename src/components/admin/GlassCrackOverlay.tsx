@@ -232,7 +232,8 @@ export default function GlassCrackOverlay({ x, y, onDone }: Props) {
     const facet = dark ? [210, 222, 255] : [255, 255, 255];
 
     const draw = (now: number) => {
-      const t = now - start;
+      // The first rAF timestamp can precede `start`; a negative t would give the rings a negative radius.
+      const t = Math.max(0, now - start);
       if (t >= TOTAL) { finish(); return; }
 
       // A brief tremor of the glass itself (never the page): a decaying jitter of the drawing.
