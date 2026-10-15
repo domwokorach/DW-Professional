@@ -144,8 +144,8 @@ export default function DeveloperIdCard({ flipOnHover = false, standalone = fals
     const el = entranceRef.current;
     if (!el) return;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    // No animation will run, so animationend never fires: release the server-rendered 'enter' state (it blocks pointer events).
-    if (standalone) { if (reduced) setEntrance('idle'); return; }
+    // Standalone: the drop-in already runs from the server HTML (reduced motion is handled in CSS), so nothing to start.
+    if (standalone) return;
     if (reduced || !('IntersectionObserver' in window)) return;
     setEntrance('pending');
     let timer = 0;

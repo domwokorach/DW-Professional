@@ -88,7 +88,7 @@
 .dev-id-entrance{display:grid;justify-items:center;width:100%;transform-origin:50% 0%}
 .dev-id-entrance.is-pending{opacity:0}
 .dev-id-entrance.is-enter{animation:developer-id-drop-shake 1.35s cubic-bezier(.22,1,.36,1) both;will-change:transform,opacity;pointer-events:none}
-@media(prefers-reduced-motion:reduce){.dev-id-entrance.is-pending,.dev-id-entrance.is-enter{animation:none;opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.dev-id-entrance.is-pending,.dev-id-entrance.is-enter{animation:none;opacity:1;transform:none;pointer-events:auto;will-change:auto}}
 
 /* Quick Facts: meta labels, heavier values, live London clock */
 .quick-facts dt{flex:none;font-family:var(--font-mono);font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
@@ -168,3 +168,8 @@
 @keyframes scan-pop-tick{to{stroke-dashoffset:0}}
 @media(prefers-reduced-motion:reduce){.scan-pop{animation:none}.scan-pop__tick path{animation:none;stroke-dashoffset:0}.scan-pop__action{transition:none}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.scan-pop{background:rgba(var(--surface-rgb),.96)}}
+/* Phones: the cookie notice is pinned to the bottom, so the scan confirmation sits near the top instead and never sits under it. */
+@media(max-width:720px){
+  .scan-pop-wrap{z-index:51;place-items:start center;padding-top:calc(env(safe-area-inset-top) + 76px)} /* 51: above the cookie notice (z 50) on very short screens, where the two would otherwise meet */
+  .scan-pop{max-height:calc(100dvh - env(safe-area-inset-top) - 92px);overflow-y:auto}
+}

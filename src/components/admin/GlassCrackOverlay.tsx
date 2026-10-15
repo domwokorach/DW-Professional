@@ -200,7 +200,7 @@ function trace(ctx: CanvasRenderingContext2D, c: Crack, d: number) {
 export default function GlassCrackOverlay({ x, y, onDone }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const done = useRef(onDone);
-  done.current = onDone;
+  useEffect(() => { done.current = onDone; });
 
   useEffect(() => {
     const canvas = canvasRef.current;
