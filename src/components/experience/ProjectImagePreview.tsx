@@ -7,6 +7,10 @@ import type { ExperienceProject } from '@/types';
 
 type ProjectImage = NonNullable<ExperienceProject['image']>;
 
+// Cloudinary resizes on the fly, so phones don't download the 4032px original for a card-sized preview.
+const sized = (src: string, width: number) =>
+  src.replace('/image/upload/f_auto,q_auto/', `/image/upload/f_auto,q_auto,w_${width}/`);
+
 export default function ProjectImagePreview({ name, image }: { name: string; image: ProjectImage }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
@@ -32,6 +36,7 @@ export default function ProjectImagePreview({ name, image }: { name: string; ima
   };
 
   const useFallback = (element: HTMLImageElement) => {
+    element.removeAttribute('srcset');
     if (element.src !== image.fallbackSrc) element.src = image.fallbackSrc;
   };
 
@@ -39,7 +44,9 @@ export default function ProjectImagePreview({ name, image }: { name: string; ima
     <div className="xp-projects__image-feature">
       <div className="xp-projects__image-frame">
         <img
-          src={image.src}
+          src={sized(image.src, 960)}
+          srcSet={`${sized(image.src, 480)} 480w, ${sized(image.src, 960)} 960w, ${sized(image.src, 1440)} 1440w`}
+          sizes="(max-width: 720px) 100vw, 640px"
           alt={image.alt}
           width={image.width}
           height={image.height}
@@ -75,10 +82,12 @@ export default function ProjectImagePreview({ name, image }: { name: string; ima
             </button>
           </div>
           <img
-            src={image.src}
+            src={sized(image.src, 2400)}
             alt={image.alt}
             width={image.width}
             height={image.height}
+            loading="lazy"
+            decoding="async"
             onError={(event) => useFallback(event.currentTarget)}
           />
           <a href={image.originalSrc} target="_blank" rel="noopener noreferrer" className="xp-lightbox__fallback">

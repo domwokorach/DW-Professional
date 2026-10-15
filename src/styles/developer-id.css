@@ -140,3 +140,12 @@
 }
 @media(max-width:720px){.dev-id-shadow{bottom:-4px;width:76%;height:24px;filter:blur(18px)}}
 @media(prefers-reduced-motion:reduce){.dev-id-shadow,.dev-id-elevation{transition:none}.dev-id-surface:hover .dev-id-elevation{transform:none}}
+/* Standalone /en-gb/developer-id page */
+.dev-id-page{display:grid;justify-items:center;align-items:center;min-height:calc(100svh - 100px);padding:24px max(20px,env(safe-area-inset-right)) calc(72px + env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));overflow-x:clip}
+/* Definite width: the page grid would otherwise shrink-wrap the card, collapsing its 290px surface and pushing the QR/barcode out of the bottom. */
+.dev-id-page .dev-id-wrap{margin:0;width:290px;max-width:100%}
+/* Very narrow screens (foldable cover displays, 280–329px): the card keeps its 290px design size and
+   scales as a whole, so nothing inside it is cropped or reflowed. */
+@media(max-width:329px){.dev-id-page .dev-id-wrap{zoom:.95}}
+@media(max-width:299px){.dev-id-page .dev-id-wrap{zoom:.85}}
+@media(max-width:279px){.dev-id-page .dev-id-wrap{zoom:.78}}

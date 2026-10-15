@@ -20,6 +20,12 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // Unfingerprinted static files in /public: cached for a day, then served stale while revalidating, so a redeploy
+  // reaches visitors within a day without the browser re-downloading unchanged files on every visit.
+  async headers() {
+    const cache = [{ key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' }];
+    return ['/images/:path*', '/hero-poses/:path*', '/draco/:path*', '/certifications/:path*'].map((source) => ({ source, headers: cache }));
+  },
   images: {
     // AVIF where supported (usually smaller than WebP), WebP otherwise.
     formats: ['image/avif', 'image/webp'],

@@ -69,7 +69,7 @@ function QrBlock({ value }: { value: string }) {
 // Permanent destination for the front-of-card QR code. Every mask pattern encodes exactly this string.
 const MAIL_QR_VALUE = 'mailto:dominic.wokorach-o@outlook.com';
 const MAIL_QR_MASKS = [0, 1, 2, 3, 4, 5, 6, 7];
-const MAIL_QR_CYCLE_MS = 3000;
+const MAIL_QR_CYCLE_MS = 2000;
 const MAIL_QR_FADE_MS = 300;
 
 // One SVG path per QR mask pattern (ECC level H). The mask only changes how the same data is laid out,
@@ -95,7 +95,7 @@ function MailQrSvg({ index, className }: { index: number; className?: string }) 
 }
 
 // Front-of-card QR: opens an email to the address above. A gentle light sweep repeats every 2s (CSS);
-// the pattern itself switches to the next mask every 3s with a short crossfade.
+// the pattern itself switches to the next mask every 2s with a short crossfade.
 function MailQr() {
   const [index, setIndex] = useState(0);
   const [prev, setPrev] = useState<number | null>(null);
@@ -125,21 +125,27 @@ function MailQr() {
 type Props = {
   /** Also flip on mouse hover (fine pointers only). Click/tap/keyboard always work. */
   flipOnHover?: boolean;
+  /** The card is the main content of the page (above the fold): load the portrait eagerly and drop the card in immediately, without waiting for the homepage hero text. */
+  standalone?: boolean;
 };
 
-export default function DeveloperIdCard({ flipOnHover = false }: Props) {
+export default function DeveloperIdCard({ flipOnHover = false, standalone = false }: Props) {
   const [flipped, setFlipped] = useState(false);
   // Counts flips so the caption's text animation replays each time the card turns.
   const [flips, setFlips] = useState(0);
   const evervault = useEvervaultPointer();
   // idle → pending (hidden, waiting to be seen) → enter (dropping) → idle
-  const [entrance, setEntrance] = useState<'idle' | 'pending' | 'enter'>('idle');
+  // The standalone page drops the card in straight from the server HTML (pure CSS, no wait for JavaScript, no hide-then-show flicker).
+  const [entrance, setEntrance] = useState<'idle' | 'pending' | 'enter'>(standalone ? 'enter' : 'idle');
   const entranceRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const el = entranceRef.current;
-    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    if (!('IntersectionObserver' in window)) return;
+    if (!el) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // No animation will run, so animationend never fires: release the server-rendered 'enter' state (it blocks pointer events).
+    if (standalone) { if (reduced) setEntrance('idle'); return; }
+    if (reduced || !('IntersectionObserver' in window)) return;
     setEntrance('pending');
     let timer = 0;
     const io = new IntersectionObserver(([entry]) => {
@@ -151,7 +157,7 @@ export default function DeveloperIdCard({ flipOnHover = false }: Props) {
     }, { threshold: 0.35 });
     io.observe(el);
     return () => { io.disconnect(); clearTimeout(timer); };
-  }, []);
+  }, [standalone]);
 
   const toggle = () => { setFlipped((f) => !f); setFlips((n) => n + 1); };
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
@@ -197,7 +203,7 @@ export default function DeveloperIdCard({ flipOnHover = false }: Props) {
               <i className="dev-id__chip" aria-hidden="true" />
             </header>
             <div className="dev-id__photo dev-id__layer" style={{ '--z': '22px' } as CSSProperties}>
-              <Image src="/developer-id-portrait.webp" alt="DOMINIC" fill sizes="110px" unoptimized />
+              <Image src="/developer-id-portrait.webp" alt="DOMINIC" fill sizes="110px" quality={85} priority={standalone} />
             </div>
             <div className="dev-id__layer" style={{ '--z': '12px' } as CSSProperties}>
               <h3 className="dev-id__name">DOMINIC</h3>

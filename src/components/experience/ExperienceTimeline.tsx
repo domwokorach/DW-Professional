@@ -4,6 +4,7 @@ import IconLink from '@/components/ui/IconLink';
 import { experiences } from '@/data';
 import type { Experience } from '@/types';
 import { LockKeyhole } from 'lucide-react';
+import ProjectVideo from './ProjectVideo';
 import ProjectImagePreview from './ProjectImagePreview';
 import WorkLearningGallery from './WorkLearningGallery';
 
@@ -27,25 +28,7 @@ function Projects({ id, label, projects, gallery }: { id: string; label: string;
             )}
             {proj.video && (
               <div className="xp-projects__media">
-                <video
-                  autoPlay
-                  controls
-                  loop
-                  muted
-                  playsInline
-                  preload="metadata"
-                  poster={proj.video.poster}
-                  width={proj.video.width}
-                  height={proj.video.height}
-                  aria-label={`${proj.name} project demonstration video`}
-                >
-                  <source src={proj.video.src} type="video/mp4" />
-                  {proj.video.fallbackSrc && <source src={proj.video.fallbackSrc} type="video/quicktime" />}
-                  Your browser does not support inline video.{' '}
-                  <a href={proj.video.fallbackSrc ?? proj.video.src} target="_blank" rel="noopener noreferrer">
-                    Open the demonstration video
-                  </a>.
-                </video>
+                <ProjectVideo name={proj.name} video={proj.video} />
               </div>
             )}
             {proj.image && <ProjectImagePreview name={proj.name} image={proj.image} />}
