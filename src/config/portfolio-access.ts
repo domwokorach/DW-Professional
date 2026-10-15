@@ -17,3 +17,13 @@ const origin = (
   (process.env.NODE_ENV === 'production' ? 'https://www.dominicwokorach.me' : 'http://localhost:3000')
 ).replace(/\/+$/, '');
 export const PORTFOLIO_ACCESS_URL = `${origin}${PORTFOLIO_ACCESS_PATH}`;
+
+/** Contact address behind the scan page's "Email Dominic" button. */
+export const CONTACT_EMAIL = 'dominic.wokorach-o@outlook.com';
+
+/**
+ * Where the front-of-card QR code leads: a no-login confirmation page with an "Email Dominic" button. Absolute,
+ * for the same reason as PORTFOLIO_ACCESS_URL (see above, including the note about testing on a phone).
+ */
+export const DEVELOPER_ID_SCAN_PATH = `${HOME}/developer-id/scan`;
+export const DEVELOPER_ID_SCAN_URL = `${origin}${DEVELOPER_ID_SCAN_PATH}`;
