@@ -250,6 +250,24 @@ export async function authoriseDownload(grant: string): Promise<DownloadFile | '
   }
 }
 
+/**
+ * The current résumé PDF with no grant check, for the explicitly public recruiter route (the QR code on the Developer ID
+ * card). Nothing is counted or recorded. 'none' when no résumé has been imported, 'error' when storage fails.
+ */
+export async function readCurrentResume(): Promise<{ data: Buffer; size: number } | 'none' | 'error'> {
+  const prisma = getPrisma();
+  if (!prisma) return 'error';
+  try {
+    const file = await prisma.resumeFile.findUnique({ where: { id: 'current' }, select: { data: true } });
+    if (!file) return 'none';
+    const data = Buffer.from(file.data);
+    return { data, size: data.length };
+  } catch (err) {
+    logError('Could not read the résumé file', err);
+    return 'error';
+  }
+}
+
 /** Replaces the protected résumé (used by `npm run resume:import`). */
 export async function storeResumeFile(filename: string, data: Buffer): Promise<{ size: number; sha256: string }> {
   const prisma = getPrisma();
