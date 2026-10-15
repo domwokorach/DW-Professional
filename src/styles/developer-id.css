@@ -88,7 +88,7 @@
 .dev-id-entrance{display:grid;justify-items:center;width:100%;transform-origin:50% 0%}
 .dev-id-entrance.is-pending{opacity:0}
 .dev-id-entrance.is-enter{animation:developer-id-drop-shake 1.35s cubic-bezier(.22,1,.36,1) both;will-change:transform,opacity;pointer-events:none}
-@media(prefers-reduced-motion:reduce){.dev-id-entrance.is-pending,.dev-id-entrance.is-enter{animation:none;opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.dev-id-entrance.is-pending,.dev-id-entrance.is-enter{animation:none;opacity:1;transform:none;pointer-events:auto;will-change:auto}}
 
 /* Quick Facts: meta labels, heavier values, live London clock */
 .quick-facts dt{flex:none;font-family:var(--font-mono);font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
@@ -149,3 +149,27 @@
 @media(max-width:329px){.dev-id-page .dev-id-wrap{zoom:.95}}
 @media(max-width:299px){.dev-id-page .dev-id-wrap{zoom:.85}}
 @media(max-width:279px){.dev-id-page .dev-id-wrap{zoom:.78}}
+
+/* Scan confirmation (QR landing page): glass notice over the card. */
+.scan-pop-wrap{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:20px max(20px,env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));pointer-events:none}
+.scan-pop{position:relative;pointer-events:auto;width:min(100%,360px);padding:30px 26px 26px;border:1px solid var(--line);border-radius:22px;text-align:center;background:rgba(var(--surface-rgb),.62);-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);box-shadow:0 18px 50px rgba(var(--shadow-rgb),.22),inset 0 1px 0 rgba(255,255,255,.35);animation:scan-pop-in .45s cubic-bezier(.22,1,.36,1) both}
+.scan-pop h2{margin:16px 0 8px;font-size:22px;letter-spacing:.01em}
+.scan-pop p{margin:0 0 22px;font-size:14.5px;line-height:1.55;color:var(--text-3)}
+.scan-pop__tick{display:grid;place-items:center;width:52px;height:52px;margin:0 auto;border-radius:50%;background:rgba(47,122,76,.14);border:1px solid rgba(47,122,76,.4);color:var(--live)}
+.scan-pop__tick svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.scan-pop__tick path{stroke-dasharray:24;stroke-dashoffset:24;animation:scan-pop-tick .45s .25s ease-out forwards}
+.scan-pop__action{display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:999px;background:var(--ink);color:var(--on-ink);font-weight:700;font-size:14px;letter-spacing:.04em;text-decoration:none;transition:transform .15s ease,opacity .15s ease}
+.scan-pop__action:active{transform:scale(.97);opacity:.9}
+.scan-pop__action:focus-visible,.scan-pop__close:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.scan-pop__close{position:absolute;top:10px;right:10px;display:grid;place-items:center;width:40px;height:40px;border:0;border-radius:50%;background:transparent;color:var(--ink);cursor:pointer}
+.scan-pop__close:hover{background:rgba(var(--ink-rgb),.08)}
+.scan-pop__close svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+@keyframes scan-pop-in{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes scan-pop-tick{to{stroke-dashoffset:0}}
+@media(prefers-reduced-motion:reduce){.scan-pop{animation:none}.scan-pop__tick path{animation:none;stroke-dashoffset:0}.scan-pop__action{transition:none}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.scan-pop{background:rgba(var(--surface-rgb),.96)}}
+/* Phones: the cookie notice is pinned to the bottom, so the scan confirmation sits near the top instead and never sits under it. */
+@media(max-width:720px){
+  .scan-pop-wrap{z-index:51;place-items:start center;padding-top:calc(env(safe-area-inset-top) + 76px)} /* 51: above the cookie notice (z 50) on very short screens, where the two would otherwise meet */
+  .scan-pop{max-height:calc(100dvh - env(safe-area-inset-top) - 92px);overflow-y:auto}
+}

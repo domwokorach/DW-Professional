@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { encode } from 'uqr';
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
-import { PORTFOLIO_ACCESS_URL } from '@/config';
+import { DEVELOPER_ID_SCAN_URL, PORTFOLIO_ACCESS_URL } from '@/config';
 import DeveloperIdEvervault, { useEvervaultPointer } from './DeveloperIdEvervault';
 import FloatingCard from './FloatingCard';
 import FlipCaption from './FlipCaption';
@@ -66,17 +66,18 @@ function QrBlock({ value }: { value: string }) {
   );
 }
 
-// Permanent destination for the front-of-card QR code. Every mask pattern encodes exactly this string.
-const MAIL_QR_VALUE = 'mailto:dominic.wokorach-o@outlook.com';
+// Destination of the front-of-card QR code: the scan-confirmation page (which offers the "Email Dominic" button).
+// Every mask pattern encodes exactly this string.
+const MAIL_QR_VALUE = DEVELOPER_ID_SCAN_URL;
 const MAIL_QR_MASKS = [0, 1, 2, 3, 4, 5, 6, 7];
 const MAIL_QR_CYCLE_MS = 2000;
 const MAIL_QR_FADE_MS = 300;
 
-// One SVG path per QR mask pattern (ECC level H). The mask only changes how the same data is laid out,
+// One SVG path per QR mask pattern (ECC level Q: keeps the same module density as before for the longer URL). The mask only changes how the same data is laid out,
 // so every pattern decodes to MAIL_QR_VALUE. Deterministic, so the server HTML is already a working QR.
 function buildMailQrs() {
   return MAIL_QR_MASKS.map((maskPattern) => {
-    const { size, data } = encode(MAIL_QR_VALUE, { ecc: 'H', boostEcc: false, maskPattern });
+    const { size, data } = encode(MAIL_QR_VALUE, { ecc: 'Q', boostEcc: false, maskPattern });
     let d = '';
     data.forEach((row, r) => row.forEach((on, c) => { if (on) d += `M${c} ${r}h1v1h-1z`; }));
     return { size, d };
@@ -94,7 +95,7 @@ function MailQrSvg({ index, className }: { index: number; className?: string }) 
   );
 }
 
-// Front-of-card QR: opens an email to the address above. A gentle light sweep repeats every 2s (CSS);
+// Front-of-card QR: opens the scan-confirmation page, whose button starts an email to Dominic. A gentle light sweep repeats every 2s (CSS);
 // the pattern itself switches to the next mask every 2s with a short crossfade.
 function MailQr() {
   const [index, setIndex] = useState(0);
@@ -115,7 +116,7 @@ function MailQr() {
   }, []);
 
   return (
-    <div className="dev-id__mailqr" role="img" aria-label="QR code that starts an email to dominic.wokorach-o@outlook.com">
+    <div className="dev-id__mailqr" role="img" aria-label="QR code that opens a page with a button to email Dominic">
       {prev !== null && <MailQrSvg key={`p${prev}`} index={prev} />}
       <MailQrSvg key={`c${index}`} index={index} className={prev !== null ? 'is-in' : undefined} />
     </div>
@@ -143,8 +144,8 @@ export default function DeveloperIdCard({ flipOnHover = false, standalone = fals
     const el = entranceRef.current;
     if (!el) return;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    // No animation will run, so animationend never fires: release the server-rendered 'enter' state (it blocks pointer events).
-    if (standalone) { if (reduced) setEntrance('idle'); return; }
+    // Standalone: the drop-in already runs from the server HTML (reduced motion is handled in CSS), so nothing to start.
+    if (standalone) return;
     if (reduced || !('IntersectionObserver' in window)) return;
     setEntrance('pending');
     let timer = 0;

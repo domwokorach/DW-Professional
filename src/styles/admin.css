@@ -234,3 +234,8 @@ a.adm-btn{text-decoration:none}
 @media(horizontal-viewport-segments:2){
   .adm-dialog{--seg:env(viewport-segment-width 0 0,100vw);width:min(calc(var(--seg) - 32px),440px);margin-left:calc((var(--seg) - min(calc(var(--seg) - 32px),440px))/2);margin-right:auto}
 }
+
+/* Wrong password: subtle red field border, and the full-viewport glass-crack canvas (decorative, click-through). */
+.adm-login__card #adm-password[aria-invalid="true"]{border-color:var(--cm-error)}
+.adm-glass{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;z-index:2147483000;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.adm-glass{display:none}}
