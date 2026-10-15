@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { DISPLAY_STATUSES, displayStatus, type DisplayStatus } from '@/lib/resume-access';
 import type { AdminResume } from '@/lib/resume-store.server';
 
@@ -18,9 +18,67 @@ const SORTS: { key: SortKey; label: string }[] = [
  * Admin → Sessions → Résumé requests. Each request appears by itself (no approval step); the list re-syncs when the
  * server sends new rows (AdminAutoRefresh). Filtering, searching and sorting happen in the browser on the loaded rows.
  */
-export default function ResumeRequestsTable({ initialRows, initialTotal }: { initialRows: AdminResume[]; initialTotal: number }) {
+export default function ResumeRequestsTable({ initialRows, initialTotal, csrfToken }: { initialRows: AdminResume[]; initialTotal: number; csrfToken: string }) {
   const [rows, setRows] = useState(initialRows);
-  useEffect(() => setRows(initialRows), [initialRows]);
+  const [total, setTotal] = useState(initialTotal);
+  useEffect(() => { setRows(initialRows); setTotal(initialTotal); }, [initialRows, initialTotal]);
+  const [confirming, setConfirming] = useState<AdminResume | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [notice, setNotice] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const trigger = useRef<HTMLButtonElement | null>(null);
+  const countRef = useRef<HTMLParagraphElement>(null);
+  const inFlight = useRef(false); // synchronous guard against double submits
+  const focusAfterClose = useRef<'trigger' | 'count'>('trigger');
+
+  useEffect(() => {
+    const d = dialog.current;
+    if (!d) return;
+    if (confirming && !d.open) d.showModal();
+    if (!confirming && d.open) {
+      d.close();
+      (focusAfterClose.current === 'count' ? countRef.current : trigger.current)?.focus();
+    }
+  }, [confirming]);
+
+  const ask = (row: AdminResume, button: HTMLButtonElement) => {
+    if (inFlight.current) return;
+    trigger.current = button;
+    setNotice(null);
+    setConfirming(row);
+  };
+  const close = (focus: 'trigger' | 'count') => { focusAfterClose.current = focus; setConfirming(null); };
+  const cancel = () => { if (!inFlight.current) close('trigger'); };
+  const removeRow = (id: string) => {
+    setRows((list) => list.filter((r) => r.id !== id));
+    setTotal((n) => Math.max(0, n - 1));
+    close('count');
+  };
+
+  const confirmDelete = async () => {
+    const row = confirming;
+    if (!row || inFlight.current) return;
+    inFlight.current = true;
+    setDeletingId(row.id);
+    try {
+      const res = await fetch(`/api/admin/resume/${encodeURIComponent(row.id)}`, {
+        method: 'DELETE', headers: { 'x-csrf-token': csrfToken }, credentials: 'same-origin',
+      });
+      if (res.status === 401) { window.location.assign(`/admin/login?expired=1&next=${encodeURIComponent('/admin/sessions')}`); return; }
+      if (res.status === 404) { removeRow(row.id); setNotice({ kind: 'ok', text: 'That résumé request had already been deleted. It has been removed from the list.' }); return; }
+      if (res.status === 403) { close('trigger'); setNotice({ kind: 'err', text: 'This request could not be verified. Please reload the page and try again.' }); return; }
+      if (!res.ok) throw new Error(String(res.status));
+      removeRow(row.id);
+      setNotice({ kind: 'ok', text: 'Résumé request deleted successfully.' });
+    } catch {
+      close('trigger');
+      setNotice({ kind: 'err', text: 'The résumé request could not be deleted. Please try again.' });
+    } finally {
+      inFlight.current = false;
+      setDeletingId(null);
+    }
+  };
+  const deleting = deletingId !== null;
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState<DisplayStatus | 'All'>('All');
   const [from, setFrom] = useState('');
@@ -67,7 +125,11 @@ export default function ResumeRequestsTable({ initialRows, initialTotal }: { ini
           <h2 className="rq-title" id="rq-heading">Résumé requests</h2>
           <p className="adm-subtitle">Visitors who verified their email to download the résumé. No approval needed; this is the activity record.</p>
         </div>
-        <p className="rq-count" role="status">{view.length} of {initialTotal} shown</p>
+        <p className="rq-count" role="status" ref={countRef} tabIndex={-1}>{view.length} of {total} shown</p>
+      </div>
+
+      <div className="adm-notice-wrap" aria-live="polite">
+        {notice && <p className={notice.kind === 'ok' ? 'adm-notice' : 'adm-notice adm-notice--err'} role={notice.kind === 'err' ? 'alert' : undefined}>{notice.text}</p>}
       </div>
 
       <div className="rq-controls">
@@ -98,7 +160,7 @@ export default function ResumeRequestsTable({ initialRows, initialTotal }: { ini
             <thead>
               <tr>
                 <th scope="col">Candidate</th><th scope="col">Status</th><th scope="col">Requested</th><th scope="col">Verified</th>
-                <th scope="col">Downloaded</th><th scope="col">Access</th><th scope="col">Last activity</th><th scope="col">Source</th>
+                <th scope="col">Downloaded</th><th scope="col">Access</th><th scope="col">Last activity</th><th scope="col">Source</th><th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -130,12 +192,49 @@ export default function ResumeRequestsTable({ initialRows, initialTotal }: { ini
                   </td>
                   <td data-label="Last activity">{fmt(r.lastActivityAt)}</td>
                   <td data-label="Source">{r.source}</td>
+                  <td data-label="Actions" className="adm-table__actions">
+                    <button
+                      type="button"
+                      className="adm-btn adm-btn--danger adm-btn--sm"
+                      onClick={(e) => ask(r, e.currentTarget)}
+                      disabled={deleting}
+                      aria-label={`Delete résumé request from ${r.fullName}`}
+                    >
+                      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: 6, verticalAlign: '-2px' }}>
+                        <path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6" />
+                      </svg>
+                      {deletingId === r.id ? 'Deleting…' : 'Delete'}
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       )}
+
+      <dialog
+        ref={dialog}
+        className="adm-dialog"
+        aria-labelledby="rq-dialog-title"
+        aria-describedby="rq-dialog-desc"
+        onCancel={(e) => { e.preventDefault(); cancel(); }}
+      >
+        <h2 id="rq-dialog-title" className="adm-dialog__title">Delete Résumé Request?</h2>
+        <p id="rq-dialog-desc">Are you sure you want to delete this résumé request? This action cannot be undone.</p>
+        {confirming && (
+          <p className="adm-dialog__who">
+            {confirming.fullName} · {confirming.company}
+            <span className="adm-sub">{WHEN.format(new Date(confirming.createdAt))}</span>
+          </p>
+        )}
+        <div className="adm-actions">
+          <button type="button" className="adm-btn adm-btn--ghost" onClick={cancel} disabled={deleting} autoFocus>Cancel</button>
+          <button type="button" className="adm-btn adm-btn--danger" onClick={confirmDelete} disabled={deleting} aria-busy={deleting || undefined}>
+            {deleting ? 'Deleting…' : 'Delete Request'}
+          </button>
+        </div>
+      </dialog>
     </section>
   );
 }

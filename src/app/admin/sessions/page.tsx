@@ -50,7 +50,7 @@ export default async function AdminSessionsPage() {
       {resume === null ? (
         <p className="adm-empty adm-empty--err">Résumé requests could not be loaded. <Link href={ADMIN_PORTFOLIO_ACCESS_PATH} className="cm-link">Try again</Link></p>
       ) : (
-        <ResumeRequestsTable initialRows={resume.rows} initialTotal={resume.total} />
+        <ResumeRequestsTable initialRows={resume.rows} initialTotal={resume.total} csrfToken={session.csrfToken} />
       )}
       <AdminAutoRefresh />
     </main>

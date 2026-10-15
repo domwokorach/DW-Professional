@@ -302,3 +302,11 @@ export async function purgeOldResumeRecords(days = RETENTION_DAYS): Promise<numb
   const { count } = await prisma.resumeAccess.deleteMany({ where: { lastActivityAt: { lt: new Date(Date.now() - days * 24 * HOUR) } } });
   return count;
 }
+
+/** Deletes one request and its events (cascade). The stored résumé PDF (ResumeFile) is never touched. */
+export async function deleteResumeRequest(id: string): Promise<'ok' | 'not_found'> {
+  const prisma = getPrisma();
+  if (!prisma) throw new Error('No database configured');
+  const { count } = await prisma.resumeAccess.deleteMany({ where: { id } });
+  return count ? 'ok' : 'not_found';
+}
