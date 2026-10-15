@@ -327,7 +327,7 @@ export default function PortfolioAccessView() {
                   </div>
 
                   <div className="contact-field pa-field">
-                    <label className="contact-label" htmlFor={id('companyWebsite')}>Company website<span className="contact-optional"> (optional)</span></label>
+                    <label className="contact-label" htmlFor={id('companyWebsite')}>Company Careers Website<span className="contact-optional"> (optional)</span></label>
                     <div className="pa-import">
                       <input
                         id={id('companyWebsite')}
@@ -337,7 +337,7 @@ export default function PortfolioAccessView() {
                         inputMode="url"
                         spellCheck={false}
                         autoCapitalize="none"
-                        placeholder="company.com"
+                        placeholder="https://company.com/careers"
                         value={fields.companyWebsite}
                         onChange={(e) => update('companyWebsite', e.target.value)}
                         onBlur={onBlur('companyWebsite')}
@@ -357,7 +357,7 @@ export default function PortfolioAccessView() {
                         {siteImport.status === 'loading' ? 'Importing…' : 'Import'}
                       </button>
                     </div>
-                    <p className="pa-note pa-import__hint" id="pa-import-hint">Import fills in the company name from the site, if you haven&rsquo;t already.</p>
+                    <p className="pa-note pa-import__hint" id="pa-import-hint">Enter your company&rsquo;s careers or recruitment website URL, if available. Import fills in the company name from the site, if you haven&rsquo;t already.</p>
                     {errorText('companyWebsite')}
                     {siteImport.status === 'done' && siteImport.preview && (
                       <div className="pa-preview" aria-label="Imported company website">
