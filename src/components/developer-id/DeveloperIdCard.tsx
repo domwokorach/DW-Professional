@@ -66,6 +66,62 @@ function QrBlock({ value }: { value: string }) {
   );
 }
 
+// Permanent destination for the front-of-card QR code. Every mask pattern encodes exactly this string.
+const MAIL_QR_VALUE = 'mailto:dominic.wokorach-o@outlook.com';
+const MAIL_QR_MASKS = [0, 1, 2, 3, 4, 5, 6, 7];
+const MAIL_QR_CYCLE_MS = 3000;
+const MAIL_QR_FADE_MS = 300;
+
+// One SVG path per QR mask pattern (ECC level H). The mask only changes how the same data is laid out,
+// so every pattern decodes to MAIL_QR_VALUE. Deterministic, so the server HTML is already a working QR.
+function buildMailQrs() {
+  return MAIL_QR_MASKS.map((maskPattern) => {
+    const { size, data } = encode(MAIL_QR_VALUE, { ecc: 'H', boostEcc: false, maskPattern });
+    let d = '';
+    data.forEach((row, r) => row.forEach((on, c) => { if (on) d += `M${c} ${r}h1v1h-1z`; }));
+    return { size, d };
+  });
+}
+const MAIL_QRS = buildMailQrs();
+
+function MailQrSvg({ index, className }: { index: number; className?: string }) {
+  const { size, d } = MAIL_QRS[index];
+  const q = 1; // the cream card around the code supplies the rest of the quiet zone
+  return (
+    <svg className={className} viewBox={`${-q} ${-q} ${size + q * 2} ${size + q * 2}`} shapeRendering="crispEdges" aria-hidden="true">
+      <path d={d} />
+    </svg>
+  );
+}
+
+// Front-of-card QR: opens an email to the address above. A gentle light sweep repeats every 2s (CSS);
+// the pattern itself switches to the next mask every 3s with a short crossfade.
+function MailQr() {
+  const [index, setIndex] = useState(0);
+  const [prev, setPrev] = useState<number | null>(null);
+  const current = useRef(0);
+
+  useEffect(() => {
+    let fade = 0;
+    const id = window.setInterval(() => {
+      if (document.hidden) return;
+      setPrev(current.current);
+      current.current = (current.current + 1) % MAIL_QRS.length;
+      setIndex(current.current);
+      clearTimeout(fade);
+      fade = window.setTimeout(() => setPrev(null), MAIL_QR_FADE_MS);
+    }, MAIL_QR_CYCLE_MS);
+    return () => { clearInterval(id); clearTimeout(fade); };
+  }, []);
+
+  return (
+    <div className="dev-id__mailqr" role="img" aria-label="QR code that starts an email to dominic.wokorach-o@outlook.com">
+      {prev !== null && <MailQrSvg key={`p${prev}`} index={prev} />}
+      <MailQrSvg key={`c${index}`} index={index} className={prev !== null ? 'is-in' : undefined} />
+    </div>
+  );
+}
+
 type Props = {
   /** Also flip on mouse hover (fine pointers only). Click/tap/keyboard always work. */
   flipOnHover?: boolean;
@@ -141,7 +197,7 @@ export default function DeveloperIdCard({ flipOnHover = false }: Props) {
               <i className="dev-id__chip" aria-hidden="true" />
             </header>
             <div className="dev-id__photo dev-id__layer" style={{ '--z': '22px' } as CSSProperties}>
-              <Image src="https://res.cloudinary.com/dkkuwmr42/image/upload/v1791023538/Full%20Stack%20Developer/dominic_zw1v8s_ngyl5d.png" alt="DOMINIC" fill sizes="110px" />
+              <Image src="/developer-id-portrait.webp" alt="DOMINIC" fill sizes="110px" unoptimized />
             </div>
             <div className="dev-id__layer" style={{ '--z': '12px' } as CSSProperties}>
               <h3 className="dev-id__name">DOMINIC</h3>
@@ -152,6 +208,7 @@ export default function DeveloperIdCard({ flipOnHover = false }: Props) {
               <div><dt>DEPT.</dt><dd>Engineering</dd></div>
               <div><dt>VALID TILL</dt><dd>2027</dd></div>
             </dl>
+            <MailQr />
             <Barcode value="DO-0001-2027" />
           </div>
 
