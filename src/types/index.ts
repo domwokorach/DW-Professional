@@ -36,6 +36,8 @@ export type ExperienceProject = {
   url?: string;
   /** Optional explicit accessible name for the external action. */
   actionLabel?: string;
+  /** Optional visible text for the external action; defaults to "View Project". */
+  linkLabel?: string;
   /** Optional inline demonstration. MP4 is primary; a fallback asset may also be supplied. */
   video?: {
     src: string;
@@ -79,6 +81,8 @@ export type Project = {
   confidential?: boolean;
   /** Live project, opened in a new tab. */
   url?: string;
+  /** Optional visible text for the live link; defaults to "View project". */
+  linkLabel?: string;
 };
 
 export type Certification = {

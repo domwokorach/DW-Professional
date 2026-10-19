@@ -41,7 +41,7 @@ function Projects({ id, label, projects, gallery }: { id: string; label: string;
                 aria-label={proj.actionLabel}
                 icon={LinkIcon}
               >
-                {proj.video ? 'Watch Demo' : 'View Project'}<span className="sr-only">: {proj.name} (opens in a new tab)</span>
+                {proj.linkLabel ?? (proj.video ? 'Watch Demo' : 'View Project')}<span className="sr-only">: {proj.name} (opens in a new tab)</span>
               </IconLink>
             )}
           </li>

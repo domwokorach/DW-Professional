@@ -41,6 +41,7 @@ export const coreTechGroups: TechGroup[] = [
       { name: 'Tailwind CSS', icon: 'simple-icons:tailwindcss', color: '#06B6D4' },
       { name: 'Sass', icon: 'simple-icons:sass', color: '#CC6699' },
       { name: 'Less', icon: 'simple-icons:less', color: '#1D365D', colorDark: '#6C9BE0' },
+      { name: 'WordPress', icon: 'simple-icons:wordpress', color: '#21759B', colorDark: '#4DA6D6' },
       { name: 'Responsive Design', icon: 'tabler:devices', ...accent('blue') },
       { name: 'Accessibility', icon: 'tabler:accessible', ...accent('blue') },
     ],

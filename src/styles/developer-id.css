@@ -155,9 +155,10 @@
 .scan-pop{position:relative;pointer-events:auto;width:min(100%,360px);padding:30px 26px 26px;border:1px solid var(--line);border-radius:22px;text-align:center;background:rgba(var(--surface-rgb),.62);-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);box-shadow:0 18px 50px rgba(var(--shadow-rgb),.22),inset 0 1px 0 rgba(255,255,255,.35);animation:scan-pop-in .45s cubic-bezier(.22,1,.36,1) both}
 .scan-pop h2{margin:16px 0 8px;font-size:22px;letter-spacing:.01em}
 .scan-pop p{margin:0 0 22px;font-size:14.5px;line-height:1.55;color:var(--text-3)}
-.scan-pop__tick{display:grid;place-items:center;width:52px;height:52px;margin:0 auto;border-radius:50%;background:rgba(47,122,76,.14);border:1px solid rgba(47,122,76,.4);color:var(--live)}
-.scan-pop__tick svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
-.scan-pop__tick path{stroke-dasharray:24;stroke-dashoffset:24;animation:scan-pop-tick .45s .25s ease-out forwards}
+.scan-pop__tick{position:relative;display:grid;place-items:center;width:56px;height:56px;margin:0 auto;border-radius:50%;border:2px solid var(--live);color:#fff;background:var(--live);box-shadow:0 0 0 0 rgba(47,122,76,0),0 6px 18px rgba(47,122,76,.28);animation:scan-tick-ring .3s ease-out both,scan-tick-fill .4s .3s ease-out both,scan-tick-pulse .35s 1.2s ease-out forwards}
+.scan-pop__tick svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.scan-pop__tick path{stroke-dasharray:24;stroke-dashoffset:24;animation:scan-pop-tick .5s .7s ease-out forwards}
+.scan-pop h2{animation:scan-pop-text .4s 1.1s ease-out both}
 .scan-pop__action{display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:999px;background:var(--ink);color:var(--on-ink);font-weight:700;font-size:14px;letter-spacing:.04em;text-decoration:none;transition:transform .15s ease,opacity .15s ease}
 .scan-pop__action:active{transform:scale(.97);opacity:.9}
 .scan-pop__action:focus-visible,.scan-pop__close:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
@@ -166,7 +167,11 @@
 .scan-pop__close svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 @keyframes scan-pop-in{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
 @keyframes scan-pop-tick{to{stroke-dashoffset:0}}
-@media(prefers-reduced-motion:reduce){.scan-pop{animation:none}.scan-pop__tick path{animation:none;stroke-dashoffset:0}.scan-pop__action{transition:none}}
+@keyframes scan-tick-ring{from{opacity:0;transform:scale(.6);background-color:transparent}to{opacity:1;transform:none;background-color:transparent}}
+@keyframes scan-tick-fill{from{background-color:transparent;box-shadow:0 0 0 0 rgba(47,122,76,0)}to{background-color:var(--live);box-shadow:0 0 0 0 rgba(47,122,76,0),0 6px 18px rgba(47,122,76,.28)}}
+@keyframes scan-tick-pulse{0%{box-shadow:0 0 0 0 rgba(47,122,76,.45),0 6px 18px rgba(47,122,76,.28)}100%{box-shadow:0 0 0 14px rgba(47,122,76,0),0 6px 18px rgba(47,122,76,.28)}}
+@keyframes scan-pop-text{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.scan-pop{animation:none}.scan-pop__tick,.scan-pop h2{animation:none}.scan-pop__tick path{animation:none;stroke-dashoffset:0}.scan-pop__action{transition:none}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.scan-pop{background:rgba(var(--surface-rgb),.96)}}
 /* Phones: the cookie notice is pinned to the bottom, so the scan confirmation sits near the top instead and never sits under it. */
 @media(max-width:720px){

@@ -42,6 +42,7 @@
   mask-image:linear-gradient(#000 70%,rgba(0,0,0,.9) 74%,rgba(0,0,0,.5) 80%,rgba(0,0,0,.1) 86%,transparent 90%),linear-gradient(90deg,transparent,rgba(0,0,0,.5) 5%,#000 10%,#000 90%,rgba(0,0,0,.5) 95%,transparent);
   mask-composite:intersect}
 .hero-head__look{position:absolute;inset:0;opacity:0;will-change:opacity}
+.hero-head__look--centre{opacity:1}
 .hero-head__look img{object-fit:fill}
 /* Live 3D avatar (HeroAvatar): fades in once its model has loaded. */
 .hero-avatar-stage{pointer-events:none;opacity:0;transition:opacity .6s ease}
@@ -49,13 +50,20 @@
 .hero-portrait-wrap.has-avatar .hero-avatar-stage{opacity:1}
 .hero-portrait-wrap.has-avatar .hero-poses{opacity:0;visibility:hidden}
 
+/* Halloween backdrop (HeroSection). The scene is dark in both themes, so the hero uses the dark tokens and the dark
+   treatments below (.hero--halloween) for its text, buttons, beam and portrait. The image sits at z-index 0 under all
+   content; the scrim only deepens the lower edge and the text column for contrast. */
+.hero--halloween{--ink:#ece8d9;--ink2:#d2cee3;--muted:#c4c1d6;--line:rgba(236,232,217,.22);--on-ink:#17162b;--ink-rgb:236,232,217;--glass:rgba(10,12,30,.4);--glass-strong:rgba(10,12,30,.55);--shadow-rgb:0,0,0;color:var(--ink)}
+.hero-halloween{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:#0b1530}
+.hero-halloween img{object-fit:cover;object-position:50% 60%}
+.hero-halloween:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,10,28,.55),rgba(6,10,28,.15) 60%,rgba(6,10,28,.05)),linear-gradient(180deg,rgba(6,10,28,.25),rgba(6,10,28,0) 30%,rgba(6,10,28,.45))}
+@media(max-width:720px){.hero-halloween img{object-position:32% 50%}.hero-halloween:after{background:linear-gradient(180deg,rgba(6,10,28,.55),rgba(6,10,28,.2) 45%,rgba(6,10,28,.5))}}
+
 /* Dark theme. The beam is light-on-black: instead of inverting and multiplying (ink on cream), it is
-   screened onto the dark page. The portraits are renders on a pure white background, so in dark they
-   sit on a rounded cream panel (multiplied onto it, which keeps the crossfade between poses intact). */
-:root[data-theme="dark"] .hero-photon-clip{mix-blend-mode:screen}
-:root[data-theme="dark"] .hero-photon-background{filter:none}
-:root[data-theme="dark"] .hero-portrait-wrap{mix-blend-mode:normal;filter:none;background:#ece8d9;border-radius:28px;overflow:hidden}
-:root[data-theme="dark"] .hero-poses{mix-blend-mode:multiply;filter:brightness(1.012)} /* lifts the render's 254 background to pure white, so no seam shows on the panel */
+   screened onto the dark page. The portraits are transparent cut-outs, so in dark they sit straight on the page. */
+:root[data-theme="dark"] .hero-photon-clip,.hero--halloween .hero-photon-clip{mix-blend-mode:screen}
+:root[data-theme="dark"] .hero-photon-background,.hero--halloween .hero-photon-background{filter:none}
+:root[data-theme="dark"] .hero-portrait-wrap,.hero--halloween .hero-portrait-wrap{mix-blend-mode:normal;filter:none}
 /* Touch: a 44px hit area around the 36px scroll mark, without changing how it looks. */
 @media(pointer:coarse){.scroll-mark:before{content:"";position:absolute;inset:-4px;border-radius:50%}}
 

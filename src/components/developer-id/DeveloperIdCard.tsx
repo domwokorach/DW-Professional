@@ -70,7 +70,7 @@ function QrBlock({ value }: { value: string }) {
 // Every mask pattern encodes exactly this string.
 const MAIL_QR_VALUE = DEVELOPER_ID_SCAN_URL;
 const MAIL_QR_MASKS = [0, 1, 2, 3, 4, 5, 6, 7];
-const MAIL_QR_CYCLE_MS = 2000;
+const MAIL_QR_CYCLE_MS = 5000;
 const MAIL_QR_FADE_MS = 300;
 
 // One SVG path per QR mask pattern (ECC level Q: keeps the same module density as before for the longer URL). The mask only changes how the same data is laid out,
@@ -96,7 +96,7 @@ function MailQrSvg({ index, className }: { index: number; className?: string }) 
 }
 
 // Front-of-card QR: opens the scan-confirmation page, whose button starts an email to Dominic. A gentle light sweep repeats every 2s (CSS);
-// the pattern itself switches to the next mask every 2s with a short crossfade.
+// the pattern itself switches to the next mask every 5s with a short crossfade.
 function MailQr() {
   const [index, setIndex] = useState(0);
   const [prev, setPrev] = useState<number | null>(null);

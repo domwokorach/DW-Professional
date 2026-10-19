@@ -70,4 +70,17 @@ export const projects: Project[] = [
     focus: ['Frontend Engineering', 'Digital Banking', 'Release Quality'],
     tech: ['HTML5', 'CSS3', 'JavaScript', 'Git', 'Jenkins'],
   },
+  {
+    id: 'nds-accessible-homepage',
+    title: 'NDS — Accessible Homepage Redesign',
+    headline: 'Freelance Software Developer · Neurodivergents Take A Stand',
+    description: [
+      'An accessible and responsive homepage redesign focused on inclusive navigation, clear content structure and improved usability.',
+    ],
+    category: 'Accessibility & Web Development',
+    focus: ['Website Redesign', 'Web Accessibility', 'Responsive Design'],
+    tech: ['Accessibility', 'Semantic HTML', 'Responsive Layout', 'WordPress'],
+    url: 'https://ndshomepagedemo.wordpress.com/accessible-homepage-mockup/',
+    linkLabel: 'View Live Project',
+  },
 ];
