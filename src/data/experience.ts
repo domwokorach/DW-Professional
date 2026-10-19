@@ -17,6 +17,7 @@ export const experiences: Experience[] = [
     ],
     projectsLabel: 'Freelance projects',
     projects: [
+      { name: 'Neurodivergents Take A Stand (NDS): Accessible Homepage Redesign', description: 'An accessible homepage redesign concept for Neurodivergents Take A Stand, a UK charity supporting neurodivergent people navigating employment tribunals. The project focuses on clear content structure, accessible navigation, readability and responsive user experience.', url: 'https://ndshomepagedemo.wordpress.com/accessible-homepage-mockup/', linkLabel: 'View Live Project' },
       { name: 'Modern News Web Application', description: 'Built a responsive news interface focused on accessible story presentation and intuitive navigation.', url: 'https://the-daily-wire-two.vercel.app/' },
       { name: 'Dog Booking System', description: 'Built a React and TypeScript booking workflow for grooming, training, daycare, and boarding appointments.', url: 'https://booking-system-for-dogs.vercel.app/' },
       { name: 'Air Quality & Weather Forecasting', description: 'Built a Next.js environmental dashboard using D3.js and OpenWeather APIs for real-time air-quality and weather monitoring.', url: 'https://air-quality-weather-forecasting.vercel.app/en' },

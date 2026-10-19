@@ -1,33 +1,27 @@
 /**
- * Hero character. The body is one fixed render, cropped to 500×941 around the character from a 1672×941 source; it
- * never changes or moves. Only the head changes: each other direction is a head-and-shoulders crop from another render,
- * laid over the head box (x 130, y 0, 260×290 px of the body crop; placed in hero.css) and blended in through a mask
- * that is solid over the head and fades out across the collar and shoulders.
- *
- * The renders don't all frame the character identically, so each head crop was fitted to the body render's collar and
- * shoulders (scale and offset); the crop is the box that lands exactly on the head box, padded at the top with the
- * renders' own #fefefe background where it would start above the image. Their sizes differ by a few pixels; each is
- * stretched to the box, which is the fitted scale.
+ * Hero character: transparent cut-outs (public/hero, alpha WebP) layered over the hero scene. The body is one fixed
+ * render, 500×941, with the head area above the collar removed; it never changes or moves. The head is a separate
+ * cut-out in the head box (x 130, y 0, 260×290 px of the body; placed in hero.css): `centre` is the body render's own
+ * head, and each other direction is a head-and-shoulders cut-out from another render, fitted to the body's collar and
+ * shoulders, stacked in the same box and blended in through a mask that is solid over the head and fades out across
+ * the collar and shoulders. Their sizes differ by a few pixels; each is stretched to the box, which is the fitted scale.
  */
-const CLOUDINARY = 'https://res.cloudinary.com/dkkuwmr42/image/upload';
-const FOLDER = 'Full%20Stack%20Developer';
-const img = (transform: string, version: string, file: string) => `${CLOUDINARY}/${transform}/${version}/${FOLDER}/${file}`;
-
-export const HERO_BODY = img('c_crop,w_500,h_941,x_573,y_0', 'v1791023389', 'Friendly_3D_Portrait_in_White_Studio_gvv4mj.png');
+export const HERO_BODY = '/hero/body.webp';
+export const HERO_HEAD_CENTRE = '/hero/head-centre.webp';
 
 /** Which way the head looks, as seen on screen: a 3×3 grid around the forward-facing body render. */
 export type HeroLook = 'upLeft' | 'up' | 'upRight' | 'left' | 'centre' | 'right' | 'downLeft' | 'down' | 'downRight';
 
 /** Head crops per direction, chosen by where each render's head actually looks. 'centre' is the body render itself. */
 export const HERO_HEADS: Record<Exclude<HeroLook, 'centre'>, string> = {
-  upLeft: img('c_crop,w_263,h_282,x_703,y_0/c_pad,w_263,h_293,g_south,b_rgb:fefefe', 'v1791070972', 'ChatGPT_Image_Oct_4_2026_12_41_53_AM-2_os7l4c.png'),
-  up: img('c_crop,w_262,h_280,x_703,y_0/c_pad,w_262,h_292,g_south,b_rgb:fefefe', 'v1791070975', 'ChatGPT_Image_Oct_4_2026_12_41_57_AM-7_uhnsnb.png'),
-  upRight: img('c_crop,w_255,h_281,x_703,y_0/c_pad,w_255,h_284,g_south,b_rgb:fefefe', 'v1791070976', 'ChatGPT_Image_Oct_4_2026_12_41_58_AM-8_epujkb.png'),
-  left: img('c_crop,w_261,h_290,x_702,y_0/c_pad,w_261,h_291,g_south,b_rgb:fefefe', 'v1791070971', 'ChatGPT_Image_Oct_4_2026_12_41_52_AM-1_f09xwz.png'),
-  right: img('c_crop,w_251,h_279,x_700,y_0/c_pad,w_251,h_280,g_south,b_rgb:fefefe', 'v1791070972', 'ChatGPT_Image_Oct_4_2026_12_41_55_AM-4_fd54ke.png'),
-  downLeft: img('c_crop,w_254,h_270,x_693,y_0/c_pad,w_254,h_283,g_south,b_rgb:fefefe', 'v1791070972', 'ChatGPT_Image_Oct_4_2026_12_41_55_AM-3_abdmlj.png'),
-  down: img('c_crop,w_262,h_269,x_696,y_0/c_pad,w_262,h_292,g_south,b_rgb:fefefe', 'v1791070979', 'ChatGPT_Image_Oct_4_2026_12_42_00_AM-10_yyi5sk.png'),
-  downRight: img('c_crop,w_254,h_270,x_705,y_0/c_pad,w_254,h_284,g_south,b_rgb:fefefe', 'v1791070973', 'ChatGPT_Image_Oct_4_2026_12_41_57_AM-6_xo9mku.png'),
+  upLeft: '/hero/head-upLeft.webp',
+  up: '/hero/head-up.webp',
+  upRight: '/hero/head-upRight.webp',
+  left: '/hero/head-left.webp',
+  right: '/hero/head-right.webp',
+  downLeft: '/hero/head-downLeft.webp',
+  down: '/hero/head-down.webp',
+  downRight: '/hero/head-downRight.webp',
 };
 
 export const heroAlt = 'DOMINIC 3D character';
@@ -38,6 +32,6 @@ export const heroAlt = 'DOMINIC 3D character';
  * `down` (shares of the hero's height) it looks up or down. A direction is kept until the pointer is `hysteresis` past
  * a boundary, so it never flickers when the pointer rests on one.
  */
-export const HERO_LOOK_ZONES = { centre: 0.12, up: 0.33, down: 0.67, hysteresis: 0.03 } as const;
+export const HERO_LOOK_ZONES = { centre: 0.12, up: 0.33, down: 0.67, hysteresis: 0.01 } as const;
 /** Crossfade between head directions, in ms. */
-export const HERO_LOOK_FADE = 200;
+export const HERO_LOOK_FADE = 150;

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from '@/hooks';
-import { HERO_BODY, HERO_HEADS, HERO_LOOK_FADE, HERO_LOOK_ZONES, heroAlt, media, type HeroLook } from '@/config';
+import { HERO_BODY, HERO_HEAD_CENTRE, HERO_HEADS, HERO_LOOK_FADE, HERO_LOOK_ZONES, heroAlt, media, type HeroLook } from '@/config';
 // Loaded only when a valid avatar model exists: its lip-sync code pulls in three.js, which
 // would otherwise land in every visitor's initial bundle.
 const HeroAvatar = dynamic(() => import('./avatar/HeroAvatar'), { ssr: false });
@@ -16,6 +16,8 @@ const HERO_SIZES = '(max-width: 720px) 60vw, (max-width: 1050px) 45vw, 30vw';
 /** The head box is 52% of the body's width. */
 const HEAD_SIZES = '(max-width: 720px) 32vw, (max-width: 1050px) 24vw, 16vw';
 const HEADS = Object.keys(HERO_HEADS) as Exclude<HeroLook, 'centre'>[];
+/** Layer index of the body render's own head, kept after the turned heads. */
+const CENTRE = HEADS.length;
 const COLS = ['Left', '', 'Right'] as const;
 
 /** Picks the direction for a pointer at (x, y) in the hero (0…1 each way), with the character's centre at `cx`. */
@@ -106,12 +108,11 @@ export default function HeroPortrait({ avatar }: { avatar?: AvatarAssets }) {
     const layers = layerRefs.current;
     if (!tracking || !ready || !wrap || !hero || HEADS.some((_, i) => !layers[i])) return;
 
-    const CENTRE = -1;
     let look: HeroLook = 'centre';
     /** The head being shown (CENTRE: the body's own head), fade progress per head, and their stacking, bottom first. */
     let target = CENTRE;
-    const progress = HEADS.map(() => 0);
-    const stack = HEADS.map((_, i) => i);
+    const progress = [...HEADS.map(() => 0), 1];
+    const stack = [...HEADS.map((_, i) => i), CENTRE];
     let raf = 0;
     let last = 0;
 
@@ -134,10 +135,7 @@ export default function HeroPortrait({ avatar }: { avatar?: AvatarAssets }) {
       const step = dt / HERO_LOOK_FADE;
       let moving: boolean;
       const top = stack.indexOf(target);
-      if (target === CENTRE) {
-        // Back to centre: fade every head out to reveal the body's own head.
-        moving = fadeOut(stack, step);
-      } else if (top === stack.length - 1) {
+      if (top === stack.length - 1) {
         // The target is on top: fade it in; once it is fully shown, the heads under it can be hidden.
         progress[target] = Math.min(1, progress[target] + step);
         moving = progress[target] < 1;
@@ -165,7 +163,7 @@ export default function HeroPortrait({ avatar }: { avatar?: AvatarAssets }) {
       target = next === 'centre' ? CENTRE : HEADS.indexOf(next);
       // A head that is still fully shown under others stays in place while they fade out; otherwise it goes on top
       // and fades in.
-      if (target !== CENTRE && progress[target] < 1) {
+      if (progress[target] < 1) {
         stack.splice(stack.indexOf(target), 1);
         stack.push(target);
       }
@@ -202,15 +200,20 @@ export default function HeroPortrait({ avatar }: { avatar?: AvatarAssets }) {
         {rig ? <HeroRig manifest={rig} trackArea={header} tracking={finePointer} still={reducedMotion} /> : (
         <div className="hero-figure">
           <Image src={HERO_BODY} alt={heroAlt} fill sizes={HERO_SIZES} priority className="hero-portrait" />
-          {heads && (
-            <div className="hero-head" aria-hidden="true">
+          <div className="hero-head" aria-hidden="true">
+            <div ref={(el) => { layerRefs.current[CENTRE] = el; }} className="hero-head__look hero-head__look--centre">
+              <Image src={HERO_HEAD_CENTRE} alt="" fill sizes={HEAD_SIZES} priority />
+            </div>
+            {heads && (
+              <>
               {HEADS.map((name, i) => (
                 <div key={name} ref={(el) => { layerRefs.current[i] = el; }} className="hero-head__look">
                   <Image src={HERO_HEADS[name]} alt="" fill sizes={HEAD_SIZES} loading="eager" onLoad={(e) => onHeadLoad(i, e.currentTarget)} />
                 </div>
               ))}
-            </div>
-          )}
+              </>
+            )}
+          </div>
         </div>
         )}
       </div>

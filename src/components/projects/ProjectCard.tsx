@@ -48,7 +48,7 @@ export default function ProjectCard({ project: p, index }: { project: Project; i
             icon={LinkIcon}
             iconSize={14}
           >
-            View project
+            {p.linkLabel ?? 'View project'}
           </IconLink>
         )}
       </div>
