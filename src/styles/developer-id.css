@@ -31,11 +31,11 @@
 .dev-id__head small{display:block;font-weight:400;opacity:.7;letter-spacing:.02em;margin-top:2px}
 .dev-id__chip{margin-left:auto;width:26px;height:20px;border-radius:4px;background:linear-gradient(135deg,#d9cfa6,#b7ab80);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);position:relative}
 .dev-id__chip:after{content:"";position:absolute;inset:5px 4px;border:1px solid rgba(var(--ink-rgb),.35);border-radius:2px}
-.dev-id__photo{width:104px;aspect-ratio:4/5;position:relative;margin:22px auto 12px;border:2px solid var(--ink);border-radius:14px;overflow:hidden;flex:none;background:var(--sand)}
+.dev-id__photo{width:96px;aspect-ratio:4/5;position:relative;margin:14px auto 10px;border:2px solid var(--ink);border-radius:14px;overflow:hidden;flex:none;background:var(--sand)}
 .dev-id__photo img{object-fit:cover;object-position:50% 50%;transform:scale(1.1);transform-origin:50% 35%;image-rendering:high-quality}
 .dev-id__name{text-align:center;font-size:15px;letter-spacing:.06em;margin:6px 0 3px}
 .dev-id__role{text-align:center;color:var(--muted);font-size:10px;margin:0}
-.dev-id__details{display:grid;grid-template-columns:1fr 1.3fr .9fr;gap:8px;padding:0 16px;margin:18px 0 0}
+.dev-id__details{display:grid;grid-template-columns:1fr 1.3fr .9fr;gap:8px;padding:0 16px;margin:12px 0 0}
 .dev-id__details div{border-top:1px solid var(--line);padding-top:7px}
 .dev-id__details dt{font-family:var(--font-mono);font-size:7px;letter-spacing:.12em;color:var(--muted)}
 .dev-id__details dd{margin:3px 0 0;font-size:9px;font-weight:700;white-space:nowrap}
@@ -43,15 +43,15 @@
    the card. The track is capped (minmax(0,1fr), so the SVG can't widen it), the SVG can't exceed it
    (width/max-width 100%), and the wrapper clips as a last resort. Keep height fixed: `height:auto`
    would derive it from that same ratio. */
-.dev-id__mailqr{position:relative;flex:none;width:72px;height:72px;margin:auto auto 0;overflow:hidden;border-radius:3px;animation:dev-id-qr-glow 2s ease-in-out infinite}
-.dev-id__mailqr svg{position:absolute;inset:0;width:100%;height:100%;fill:var(--ink)}
+.dev-id__mailqr{position:relative;flex:none;box-sizing:border-box;width:clamp(64px,26%,76px);aspect-ratio:1/1;height:auto;margin:auto;padding:4px;background:#fff;overflow:hidden;border-radius:3px;animation:dev-id-qr-glow 2s ease-in-out infinite}
+.dev-id__mailqr svg{position:absolute;inset:4px;width:calc(100% - 8px);height:calc(100% - 8px);fill:var(--ink)}
 .dev-id__mailqr svg.is-in{animation:dev-id-qr-in .3s ease both}
 .dev-id__mailqr:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 35%,rgba(120,110,255,.2) 50%,transparent 65%);transform:translateY(-100%);animation:dev-id-qr-sweep 2s ease-in-out infinite}
 @keyframes dev-id-qr-sweep{0%{transform:translateY(-100%)}70%,100%{transform:translateY(100%)}}
 @keyframes dev-id-qr-glow{0%,100%{box-shadow:0 0 0 0 rgba(120,110,255,0)}50%{box-shadow:0 0 10px 1px rgba(120,110,255,.28)}}
 @keyframes dev-id-qr-in{from{opacity:0}to{opacity:1}}
 @media(prefers-reduced-motion:reduce){.dev-id__mailqr,.dev-id__mailqr:after,.dev-id__mailqr svg.is-in{animation:none}.dev-id__mailqr:after{display:none}}
-.dev-id__barcode{margin:auto 16px 14px;display:grid;grid-template-columns:minmax(0,1fr);gap:3px;min-width:0;max-width:100%;overflow:hidden}
+.dev-id__barcode{flex:none;margin:8px 16px 14px;display:grid;grid-template-columns:minmax(0,1fr);gap:3px;min-width:0;max-width:100%;overflow:hidden}
 .dev-id__barcode svg{width:100%;max-width:100%;height:30px;display:block;fill:var(--ink)}
 .dev-id__barcode span{min-width:0;font-family:var(--font-mono);font-size:7px;letter-spacing:.42em;text-align:center;color:var(--muted)}
 .dev-id__back-head{display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:9px;letter-spacing:.2em;opacity:.7;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.15)}
