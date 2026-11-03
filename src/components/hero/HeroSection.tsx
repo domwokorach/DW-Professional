@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import EncryptedText from '@/components/animations/EncryptedText';
 import { DownloadIcon } from '@/components/animate-ui/icons/download';
 import { BriefcaseBusinessIcon } from '@/components/ui/briefcase-business';
@@ -14,10 +13,7 @@ import type { AvatarAssets } from './avatar/config';
 
 export default function HeroSection({ heroAvatar }: { heroAvatar?: AvatarAssets }) {
   return (
-    <section className="hero hero--halloween" aria-labelledby="hero-title">
-      <div className="hero-halloween" aria-hidden="true">
-        <Image src="/images/hero-halloween.webp" alt="" fill priority sizes="100vw" quality={85} />
-      </div>
+    <section className="hero" aria-labelledby="hero-title">
       <HeroPhotonBackground />
       <div className="hero-watermark">DOMINIC</div>
       <div className="hero-copy">

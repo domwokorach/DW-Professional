@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { LinkIcon } from '@/components/animate-ui/icons/link';
 import { IconLink } from '@/components/ui';
 import type { Project } from '@/types';
@@ -9,6 +10,11 @@ export default function ProjectCard({ project: p, index }: { project: Project; i
 
   return (
     <article className={`pc${p.url ? ' pc--live' : ''}`} aria-labelledby={titleId}>
+      {p.image && (
+        <div className="pc-shot">
+          <Image src={p.image.src} width={p.image.width} height={p.image.height} alt="" sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 33vw" />
+        </div>
+      )}
       <p className="pc-kicker">
         <span className="pc-num" aria-hidden="true">{n}</span>
         <span className="pc-kicker__sep" aria-hidden="true">/</span>

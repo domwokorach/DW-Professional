@@ -83,6 +83,8 @@ export type Project = {
   url?: string;
   /** Optional visible text for the live link; defaults to "View project". */
   linkLabel?: string;
+  /** Optional preview screenshot shown at the top of the card (decorative; the title names the project). */
+  image?: { src: string; width: number; height: number };
 };
 
 export type Certification = {

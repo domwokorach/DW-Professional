@@ -5,6 +5,11 @@
 .pg-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;max-width:1200px;margin-inline:auto}
 .pg-item{display:flex;min-width:0}
 .pc{position:relative;display:flex;flex-direction:column;width:100%;padding:28px 28px 26px;background:var(--white);border:1px solid var(--line);border-radius:var(--pc-radius);box-shadow:0 1px 0 rgba(var(--shadow-rgb),.04);transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease,border-color .3s ease,background-color .3s ease}
+/* Preview sits flush to the card edges; fixed aspect ratio avoids layout shift while it loads. */
+.pc-shot{margin:-28px -28px 22px;aspect-ratio:8/5;overflow:hidden;border-radius:calc(var(--pc-radius) - 1px) calc(var(--pc-radius) - 1px) 0 0;border-bottom:1px solid var(--line);background:var(--cream2)}
+.pc-shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:top;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){.pc--live:hover .pc-shot img{transform:scale(1.035)}}
+@media(max-width:720px){.pc-shot{margin:-22px -20px 16px}}
 .pc-kicker{display:flex;align-items:center;gap:8px;margin:0 0 22px;font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--pc-muted)}
 .pc-num{color:var(--ink);font-weight:700}
 .pc-kicker__sep{opacity:.5}

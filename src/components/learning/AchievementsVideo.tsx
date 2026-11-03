@@ -13,6 +13,15 @@ export default function AchievementsVideo() {
   const userPaused = useRef(false);
   const reduced = useRef(false);
 
+  const inView = useRef(false);
+  const retries = useRef(0);
+
+  const tryPlay = () => {
+    const video = videoRef.current;
+    if (!video || !inView.current || userPaused.current || !video.paused) return;
+    video.play().catch(() => undefined);
+  };
+
   useEffect(() => {
     const video = videoRef.current;
     const host = video?.parentElement?.parentElement;
@@ -22,9 +31,10 @@ export default function AchievementsVideo() {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
+        inView.current = entry.isIntersecting;
         if (entry.isIntersecting) {
           setLoad(true);
-          if (!userPaused.current) video.play().catch(() => setPlaying(false));
+          tryPlay();
         } else {
           video.pause();
         }
@@ -34,6 +44,42 @@ export default function AchievementsVideo() {
     observer.observe(host);
     return () => observer.disconnect();
   }, []);
+
+  // The src is attached on the render after `load` flips, so start playback once it exists.
+  useEffect(() => {
+    if (load) tryPlay();
+  }, [load]);
+
+  // Recover from a stalled buffer with a bounded number of reloads (no retry loops).
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!load || !video) return;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const clear = () => { if (timer) clearTimeout(timer); timer = undefined; };
+    const watch = () => {
+      clear();
+      if (video.paused || retries.current >= 2) return;
+      timer = setTimeout(() => {
+        if (video.paused || video.readyState >= 3) return;
+        retries.current += 1;
+        const t = video.currentTime;
+        video.load();
+        video.currentTime = t;
+        tryPlay();
+      }, 6000);
+    };
+    video.addEventListener('waiting', watch);
+    video.addEventListener('stalled', watch);
+    video.addEventListener('playing', clear);
+    video.addEventListener('pause', clear);
+    return () => {
+      clear();
+      video.removeEventListener('waiting', watch);
+      video.removeEventListener('stalled', watch);
+      video.removeEventListener('playing', clear);
+      video.removeEventListener('pause', clear);
+    };
+  }, [load]);
 
   const toggle = () => {
     const video = videoRef.current;
@@ -53,10 +99,12 @@ export default function AchievementsVideo() {
         <video
           ref={videoRef}
           src={load ? VIDEO_SRC : undefined}
+          autoPlay
           muted
           loop
           playsInline
-          preload="none"
+          preload={load ? 'auto' : 'none'}
+          onCanPlay={tryPlay}
           tabIndex={-1}
           disablePictureInPicture
           onPlay={() => setPlaying(true)}

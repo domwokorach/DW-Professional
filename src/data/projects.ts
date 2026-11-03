@@ -2,6 +2,20 @@ import type { Project } from '@/types';
 
 export const projects: Project[] = [
   {
+    id: 'british-streaming',
+    title: 'British Streaming',
+    headline: 'A UK-focused streaming experience for films and series.',
+    description: [
+      'A modern, UK-focused entertainment platform featuring films, TV series, trending content, and curated collections. Designed with an immersive streaming-style interface and responsive browsing experience.',
+    ],
+    category: 'Web Application / Entertainment',
+    focus: ['Web Application', 'Entertainment', 'Responsive Design'],
+    tech: ['Responsive UI', 'Content Discovery', 'Streaming-style Interface'],
+    url: 'https://british-streaming.vercel.app/',
+    linkLabel: 'View Live Project',
+    image: { src: '/projects/british-streaming.webp', width: 1200, height: 750 },
+  },
+  {
     id: 'specialist-disability',
     title: 'Specialist Disability',
     headline: 'Improving accessibility across online banking experiences.',
