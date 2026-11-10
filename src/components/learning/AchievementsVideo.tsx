@@ -50,34 +50,46 @@ export default function AchievementsVideo() {
     if (load) tryPlay();
   }, [load]);
 
-  // Recover from a stalled buffer with a bounded number of reloads (no retry loops).
+  // Keep it moving: restart after an unexpected pause (tab switch, decoder hiccup), a loop that failed to wrap, or a
+  // frame that stops advancing. Only a pause the visitor asked for (or reduced motion) is left alone.
   useEffect(() => {
     const video = videoRef.current;
     if (!load || !video) return;
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    const clear = () => { if (timer) clearTimeout(timer); timer = undefined; };
-    const watch = () => {
-      clear();
-      if (video.paused || retries.current >= 2) return;
-      timer = setTimeout(() => {
-        if (video.paused || video.readyState >= 3) return;
+    let lastTime = -1;
+    let stuck = 0;
+    const wanted = () => inView.current && !userPaused.current && !document.hidden;
+    const resume = () => { if (wanted() && video.paused) video.play().catch(() => undefined); };
+    const onEnded = () => { video.currentTime = 0; resume(); };
+    const watchdog = window.setInterval(() => {
+      if (!wanted()) { stuck = 0; return; }
+      if (video.paused) { resume(); return; }
+      const t = video.currentTime;
+      stuck = t === lastTime ? stuck + 1 : 0;
+      lastTime = t;
+      if (stuck === 2) {
+        // Frame stopped advancing: nudge the playhead.
+        video.currentTime = t + 0.05;
+        video.play().catch(() => undefined);
+      } else if (stuck >= 4 && retries.current < 3) {
+        // Still stuck: reload the source from the same spot.
         retries.current += 1;
-        const t = video.currentTime;
+        stuck = 0;
         video.load();
         video.currentTime = t;
-        tryPlay();
-      }, 6000);
-    };
-    video.addEventListener('waiting', watch);
-    video.addEventListener('stalled', watch);
-    video.addEventListener('playing', clear);
-    video.addEventListener('pause', clear);
+        resume();
+      }
+    }, 1500);
+    video.addEventListener('pause', resume);
+    video.addEventListener('ended', onEnded);
+    video.addEventListener('stalled', resume);
+    video.addEventListener('playing', () => { retries.current = 0; });
+    document.addEventListener('visibilitychange', resume);
     return () => {
-      clear();
-      video.removeEventListener('waiting', watch);
-      video.removeEventListener('stalled', watch);
-      video.removeEventListener('playing', clear);
-      video.removeEventListener('pause', clear);
+      window.clearInterval(watchdog);
+      video.removeEventListener('pause', resume);
+      video.removeEventListener('ended', onEnded);
+      video.removeEventListener('stalled', resume);
+      document.removeEventListener('visibilitychange', resume);
     };
   }, [load]);
 
