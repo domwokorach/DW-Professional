@@ -77,4 +77,19 @@ export const projects: Project[] = [
     linkLabel: 'View Project',
     image: { src: '/projects/workspace-teams.webp', width: 1200, height: 750 },
   },
+  {
+    id: 'the-daily-wire',
+    hideLabel: true,
+    title: 'The Daily Wire',
+    headline: 'A news website for UK and world stories.',
+    description: [
+      'A responsive news website with a breaking-news ticker, category navigation across politics, world, business, health, tech and sport, a live weather widget and a newsletter sign-up, designed for fast, clear reading on any screen.',
+    ],
+    category: 'Web Application / News / Media',
+    focus: ['Web Application', 'News', 'Responsive Design'],
+    tech: ['News Feed UI', 'Category Navigation', 'Responsive Design'],
+    url: 'https://the-daily-wire-two.vercel.app/',
+    linkLabel: 'View Project',
+    image: { src: '/projects/the-daily-wire.webp', width: 1200, height: 750 },
+  },
 ];
