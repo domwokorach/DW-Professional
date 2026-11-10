@@ -6,13 +6,14 @@ export const projects: Project[] = [
     title: 'British Streaming',
     headline: 'A UK-focused streaming experience for films and series.',
     description: [
-      'A modern, UK-focused entertainment platform featuring films, TV series, trending content, and curated collections. Designed with an immersive streaming-style interface and responsive browsing experience.',
+      'Developed a modern, responsive entertainment streaming interface for discovering films and television series, featuring a cinematic hero section, trending content, popular titles and organised media collections.',
+      'Key features include a cinematic homepage with featured content, trending and top-rated collections, interactive media cards and browsing layouts, and a responsive interface across desktop, tablet and mobile.',
     ],
-    category: 'Web Application / Entertainment',
+    category: 'Web Application / Entertainment / Streaming Platform',
     focus: ['Web Application', 'Entertainment', 'Responsive Design'],
     tech: ['Responsive UI', 'Content Discovery', 'Streaming-style Interface'],
     url: 'https://british-streaming.vercel.app/',
-    linkLabel: 'View Live Project',
+    linkLabel: 'View Project',
     image: { src: '/projects/british-streaming.webp', width: 1200, height: 750 },
   },
   {

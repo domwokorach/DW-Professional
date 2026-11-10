@@ -199,16 +199,16 @@ export default function HeroPortrait({ avatar }: { avatar?: AvatarAssets }) {
       <div className="hero-person-frame hero-poses">
         {rig ? <HeroRig manifest={rig} trackArea={header} tracking={finePointer} still={reducedMotion} /> : (
         <div className="hero-figure">
-          <Image src={HERO_BODY} alt={heroAlt} fill sizes={HERO_SIZES} priority className="hero-portrait" />
+          <Image src={HERO_BODY} alt={heroAlt} fill sizes={HERO_SIZES} quality={85} priority className="hero-portrait" />
           <div className="hero-head" aria-hidden="true">
             <div ref={(el) => { layerRefs.current[CENTRE] = el; }} className="hero-head__look hero-head__look--centre">
-              <Image src={HERO_HEAD_CENTRE} alt="" fill sizes={HEAD_SIZES} priority />
+              <Image src={HERO_HEAD_CENTRE} alt="" fill sizes={HEAD_SIZES} quality={85} priority />
             </div>
             {heads && (
               <>
               {HEADS.map((name, i) => (
                 <div key={name} ref={(el) => { layerRefs.current[i] = el; }} className="hero-head__look">
-                  <Image src={HERO_HEADS[name]} alt="" fill sizes={HEAD_SIZES} loading="eager" onLoad={(e) => onHeadLoad(i, e.currentTarget)} />
+                  <Image src={HERO_HEADS[name]} alt="" fill sizes={HEAD_SIZES} quality={85} loading="eager" onLoad={(e) => onHeadLoad(i, e.currentTarget)} />
                 </div>
               ))}
               </>

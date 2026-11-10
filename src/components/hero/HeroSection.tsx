@@ -7,14 +7,12 @@ import { SendIcon } from '@/components/ui/send';
 import IconButton from '@/components/ui/IconButton';
 import { ResumeButton } from '@/components/resume';
 import { scrollToSection } from '@/lib/scroll';
-import HeroPhotonBackground from './HeroPhotonBackground';
 import HeroPortrait from './HeroPortrait';
 import type { AvatarAssets } from './avatar/config';
 
 export default function HeroSection({ heroAvatar }: { heroAvatar?: AvatarAssets }) {
   return (
     <section className="hero" aria-labelledby="hero-title">
-      <HeroPhotonBackground />
       <div className="hero-watermark">DOMINIC</div>
       <div className="hero-copy">
         <div className="kicker"><EncryptedText text="DOMINIC" duration={1000} /></div>

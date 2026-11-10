@@ -53,8 +53,10 @@
 .xp-head{display:flex;align-items:flex-start;gap:16px}
 .xp-head__text{min-width:0;flex:1}
 .xp-head h3{margin-bottom:8px;overflow-wrap:anywhere}
-.xp-mark{flex:none;display:grid;place-items:center;width:44px;height:44px;overflow:hidden;border:1px solid var(--line);border-radius:12px;background:var(--glass);color:var(--ink);font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.04em}
-.xp-mark--logo{object-fit:contain;padding:6px}
+.xp-mark{box-sizing:border-box;flex:0 0 50px;display:flex;align-items:center;justify-content:center;width:50px;height:50px;min-width:50px;min-height:50px;overflow:hidden;border:1px solid #e5e7eb;border-radius:50%;background:#fff;color:#111;font-family:var(--font-mono);font-size:13px;font-weight:700;line-height:1;letter-spacing:.02em;text-align:center}
+/* Logos are padded so square artwork sits fully inside the circle instead of being cropped by it. */
+.xp-mark--logo{padding:8px}
+.xp-mark img{display:block;width:100%;height:100%;object-fit:contain;object-position:center}
 .xp-org a{color:inherit;text-decoration:underline;text-decoration-color:rgba(var(--ink-rgb),.35);text-underline-offset:3px}
 .xp-org a:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:3px}
 .xp-facts{list-style:none;display:flex;flex-wrap:wrap;margin:8px 0 0;padding:0;font-size:13px;line-height:1.6;color:var(--xp-muted)}
@@ -121,7 +123,7 @@
 /* Mobile: rail moves to the left edge; the date sits above the role in the content column.
    The card drops its inset so text uses the full width. */
 @media(max-width:768px){.tl{--tl-rail:24px;--tl-col-gap:14px;--tl-gap:56px;--tl-date-size:12px}.tl-item{grid-template-columns:var(--tl-rail) minmax(0,1fr)}.tl-line{left:calc(var(--tl-rail) / 2)}.tl-head{grid-column:1 / 2;position:static}.tl-title--desktop{display:none}.tl-title--mobile{display:block;margin:0 0 12px}.xp-date{font-size:12px}.xp-entry{margin-top:0;padding:0;border:0;border-radius:0}.xp-entry:hover{background:none;box-shadow:none;transform:none}}
-@media(max-width:720px){.xp-bullets li{font-size:13.5px}.xp-head{gap:12px}.xp-mark{width:40px;height:40px;border-radius:10px}}
+@media(max-width:720px){.xp-bullets li{font-size:13.5px}.xp-head{gap:12px}}
 @media(max-width:620px){.xp-gallery{grid-template-columns:minmax(0,1fr)}.xp-gallery-lightbox__stage{grid-template-columns:44px minmax(0,1fr) 44px;gap:4px}.xp-gallery-lightbox__stage img{max-height:calc(100dvh - 150px)}}
 @media(max-width:520px){.xp-lightbox{width:calc(100vw - 16px);max-height:calc(100dvh - 16px)}.xp-lightbox__panel{padding:10px}.xp-lightbox__panel>img{max-height:calc(100dvh - 132px)}}
 @media(prefers-reduced-motion:reduce){.tl-dot,.xp-entry,.xp-projects__item--linked,.xp-gallery__item{transition:none}.xp-entry:hover,.xp-projects__item--linked:hover,.xp-gallery__item:hover{transform:none}.xp-live:after{animation:none;opacity:0}}

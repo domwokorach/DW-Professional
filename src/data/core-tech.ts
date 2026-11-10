@@ -47,6 +47,18 @@ export const coreTechGroups: TechGroup[] = [
     ],
   },
   {
+    // React Native stays under Frontend (each name appears once); these are the mobile platforms and
+    // features named in the Mobile Engineering exposure on the experience timeline.
+    title: 'Mobile App',
+    items: [
+      { name: 'iOS', icon: 'simple-icons:ios', color: '#000000', colorDark: '#F5F5F5' },
+      { name: 'Android', icon: 'simple-icons:android', color: '#3DDC84' },
+      { name: 'Apple Pay', icon: 'simple-icons:applepay', color: '#000000', colorDark: '#F5F5F5' },
+      { name: 'Touch ID', icon: 'tabler:fingerprint', ...accent('security') },
+      { name: 'Mobile Banking', icon: 'tabler:device-mobile-dollar', ...accent('green') },
+    ],
+  },
+  {
     title: 'Backend & APIs',
     items: [
       { name: 'Node.js', icon: 'simple-icons:nodedotjs', color: '#5FA04E' },

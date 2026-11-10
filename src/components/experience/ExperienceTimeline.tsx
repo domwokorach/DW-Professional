@@ -7,6 +7,7 @@ import type { Experience, ExperienceGroup, ExperienceItem } from '@/types';
 import { LockKeyhole } from 'lucide-react';
 import ExperienceCollapse from './ExperienceCollapse';
 import LiveDuration from './LiveDuration';
+import LogoMark from './LogoMark';
 import ProjectVideo from './ProjectVideo';
 import ProjectImagePreview from './ProjectImagePreview';
 import WorkLearningGallery from './WorkLearningGallery';
@@ -80,13 +81,8 @@ const slug = (v: string) => v.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(
 const itemName = (item: ExperienceItem) => ('roles' in item ? item.employer : item.role);
 const itemId = (item: ExperienceItem) => `xp-${item.start.iso}-${slug(itemName(item))}`;
 
-/** Authentic logo when supplied, otherwise a text monogram. Decorative: the name is always in the text beside it. */
 function Mark({ item }: { item: Pick<Experience, 'logo' | 'mark'> }) {
-  if (item.logo) {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img className="xp-mark xp-mark--logo" src={item.logo.src} alt={item.logo.alt} width={44} height={44} loading="lazy" />;
-  }
-  return item.mark ? <span className="xp-mark" aria-hidden="true">{item.mark}</span> : null;
+  return <LogoMark logo={item.logo} mark={item.mark} />;
 }
 
 /** Employment type, workplace type and duration. Education carries no duration. */
