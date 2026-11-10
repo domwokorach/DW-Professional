@@ -108,6 +108,8 @@ export type Project = {
   category: string;
   focus: string[];
   tech: string[];
+  /** Hides the number and category label above the title (the Live badge, if any, stays). */
+  hideLabel?: boolean;
   /** Non-interactive public-facing notice for work that cannot be linked or demonstrated. */
   confidential?: boolean;
   /** Live project, opened in a new tab. */

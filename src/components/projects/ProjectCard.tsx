@@ -15,12 +15,18 @@ export default function ProjectCard({ project: p, index }: { project: Project; i
           <Image src={p.image.src} width={p.image.width} height={p.image.height} alt="" sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 33vw" />
         </div>
       )}
-      <p className="pc-kicker">
-        <span className="pc-num" aria-hidden="true">{n}</span>
-        <span className="pc-kicker__sep" aria-hidden="true">/</span>
-        <span className="sr-only">Category: </span>{p.category}
-        {p.url && <span className="pc-live"><span className="pc-live__dot" aria-hidden="true" />Live</span>}
-      </p>
+      {(!p.hideLabel || p.url) && (
+        <p className="pc-kicker">
+          {p.hideLabel ? <span className="sr-only">Category: {p.category}</span> : (
+            <>
+              <span className="pc-num" aria-hidden="true">{n}</span>
+              <span className="pc-kicker__sep" aria-hidden="true">/</span>
+              <span className="sr-only">Category: </span>{p.category}
+            </>
+          )}
+          {p.url && <span className="pc-live"><span className="pc-live__dot" aria-hidden="true" />Live</span>}
+        </p>
+      )}
       <h3 id={titleId}>{p.title}</h3>
       {p.headline && <p className="pc-headline">{p.headline}</p>}
       <div className="pc-desc">
