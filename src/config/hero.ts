@@ -27,11 +27,11 @@ export const HERO_HEADS: Record<Exclude<HeroLook, 'centre'>, string> = {
 export const heroAlt = 'DOMINIC 3D character';
 
 /**
- * Where the pointer must be (anywhere in the hero) for each direction. Columns: within `centre` (share of the hero's
- * width) either side of the character it looks straight ahead, past that left or right. Rows: above `up` or below
- * `down` (shares of the hero's height) it looks up or down. A direction is kept until the pointer is `hysteresis` past
- * a boundary, so it never flickers when the pointer rests on one.
+ * Pointer zones, from the pointer's position in the viewport normalised to -1…1 on each axis (centre = 0, 0).
+ * Inside `deadZone` (distance from the centre) the head looks straight ahead; beyond it the direction is the nearest
+ * of eight 45° sectors (right, downRight, down, …). A direction is kept until the pointer is `hysteresis` further
+ * out of the dead zone, or `angleHysteresis` degrees past a sector edge, so it never flickers on a boundary.
  */
-export const HERO_LOOK_ZONES = { centre: 0.12, up: 0.33, down: 0.67, hysteresis: 0.01 } as const;
+export const HERO_LOOK_ZONES = { deadZone: 0.16, hysteresis: 0.03, angleHysteresis: 8 } as const;
 /** Crossfade between head directions, in ms. */
 export const HERO_LOOK_FADE = 150;

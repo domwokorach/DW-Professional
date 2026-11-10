@@ -18,34 +18,34 @@ const HEAD_SIZES = '(max-width: 720px) 32vw, (max-width: 1050px) 24vw, 16vw';
 const HEADS = Object.keys(HERO_HEADS) as Exclude<HeroLook, 'centre'>[];
 /** Layer index of the body render's own head, kept after the turned heads. */
 const CENTRE = HEADS.length;
-const COLS = ['Left', '', 'Right'] as const;
+/** The eight directions in 45° sectors, clockwise from pointing right (screen y runs down). */
+const SECTORS: HeroLook[] = ['right', 'downRight', 'down', 'downLeft', 'left', 'upLeft', 'up', 'upRight'];
 
-/** Picks the direction for a pointer at (x, y) in the hero (0…1 each way), with the character's centre at `cx`. */
-function pickLook(x: number, y: number, cx: number, current: HeroLook): HeroLook {
-  const { centre, up, down, hysteresis: h } = HERO_LOOK_ZONES;
-  const wasUp = current.startsWith('up');
-  const wasDown = current.startsWith('down');
-  const wasCentreCol = !/left|right/i.test(current);
-  const dx = x - cx;
-  const band = wasCentreCol ? centre + h : centre - h;
-  const col = Math.abs(dx) <= band ? 1 : dx < 0 ? 0 : 2;
-  const row = y < (wasUp ? up + h : up - h) ? 'up' : y > (wasDown ? down - h : down + h) ? 'down' : '';
-  if (!row) return col === 1 ? 'centre' : col === 0 ? 'left' : 'right';
-  return (col === 1 ? row : row + COLS[col]) as HeroLook;
+/** Picks the direction for a pointer at (x, y), each normalised to -1…1 around the viewport centre. */
+function pickLook(x: number, y: number, current: HeroLook): HeroLook {
+  const { deadZone, hysteresis, angleHysteresis } = HERO_LOOK_ZONES;
+  if (Math.hypot(x, y) < (current === 'centre' ? deadZone + hysteresis : deadZone - hysteresis)) return 'centre';
+  const angle = (Math.atan2(y, x) * 180) / Math.PI;
+  const held = SECTORS.indexOf(current);
+  if (held >= 0) {
+    const off = Math.abs(((angle - held * 45 + 540) % 360) - 180);
+    if (off <= 22.5 + angleHysteresis) return current;
+  }
+  return SECTORS[(Math.round(angle / 45) + 8) % 8];
 }
 
 /** Ease for the crossfade: soft start and finish. */
 const ease = (p: number) => p * p * (3 - 2 * p);
 
 /**
- * The hero character, whose head turns toward the pointer anywhere in the hero. The body is one static image that
+ * The hero character, whose head turns toward the pointer anywhere in the viewport. The body is one static image that
  * never moves; only the head box above it changes. The other directions are head crops stacked in that box behind a
  * mask (solid over the head, fading out over the collar and shoulders, where every crop matches the body), and only
  * their opacity animates: the incoming head fades in on top of the current one; going back to centre fades the heads
  * out to reveal the body render's own head. So the character never goes see-through and nothing shifts.
  *
  * Pointer moves only store a target; one requestAnimationFrame loop eases the opacities and writes them straight to
- * the DOM (no React state per move), and stops once everything is at rest. Tracking starts only once every head has
+ * the DOM (no React state per move), and stops once everything is at rest. Heads preload on mount; tracking starts only once every head has
  * loaded and decoded, so a change never shows a blank or half-drawn image. Touch screens and reduced motion keep the
  * forward head and never download the others. The live 3D avatar (HeroAvatar) takes over once its model has loaded.
  */
@@ -84,16 +84,9 @@ export default function HeroPortrait({ avatar }: { avatar?: AvatarAssets }) {
     return () => { cancelled = true; };
   }, []);
 
-  // Only the body is needed to paint the hero. The heads are only ever shown to a mouse (never on touch or under
-  // reduced motion), so they load once the page has loaded, without competing with the hero image.
-  const [heads, setHeads] = useState(false);
-  useEffect(() => {
-    if (!tracking || heads) return;
-    const start = () => setHeads(true);
-    if (document.readyState === 'complete') { start(); return; }
-    window.addEventListener('load', start, { once: true });
-    return () => window.removeEventListener('load', start);
-  }, [tracking, heads]);
+  // The heads are only ever shown to a mouse (never on touch or under reduced motion), so only then are they
+  // loaded; all of them load as soon as the hero mounts, so the first pointer move never waits on the network.
+  const heads = tracking;
 
   const onHeadLoad = (i: number, el: HTMLImageElement) => {
     el.decode().catch(() => {}).then(() => {
@@ -104,9 +97,8 @@ export default function HeroPortrait({ avatar }: { avatar?: AvatarAssets }) {
 
   useEffect(() => {
     const wrap = wrapRef.current;
-    const hero = wrap?.closest<HTMLElement>('.hero');
     const layers = layerRefs.current;
-    if (!tracking || !ready || !wrap || !hero || HEADS.some((_, i) => !layers[i])) return;
+    if (!tracking || !ready || !wrap || HEADS.some((_, i) => !layers[i])) return;
 
     let look: HeroLook = 'centre';
     /** The head being shown (CENTRE: the body's own head), fade progress per head, and their stacking, bottom first. */
@@ -172,23 +164,27 @@ export default function HeroPortrait({ avatar }: { avatar?: AvatarAssets }) {
 
     const onMove = (e: PointerEvent) => {
       if (e.pointerType === 'touch') return;
-      const box = hero.getBoundingClientRect();
-      const char = wrap.getBoundingClientRect();
-      const x = (e.clientX - box.left) / box.width;
-      const y = (e.clientY - box.top) / box.height;
-      const cx = (char.left + char.width / 2 - box.left) / box.width;
-      setLook(pickLook(x, y, cx, look));
+      // Over a nav link the head looks at that link (from the head's own centre), not just at the pointer.
+      const link = e.target instanceof Element ? e.target.closest('.nav-pill button, .nav-pill a') : null;
+      const head = wrap.querySelector('.hero-head');
+      if (link && head) {
+        const a = link.getBoundingClientRect();
+        const h = head.getBoundingClientRect();
+        setLook(pickLook((a.left + a.width / 2 - (h.left + h.width / 2)) / (window.innerWidth / 2), (a.top + a.height / 2 - (h.top + h.height / 2)) / (window.innerHeight / 2), look));
+        return;
+      }
+      setLook(pickLook((e.clientX / window.innerWidth) * 2 - 1, (e.clientY / window.innerHeight) * 2 - 1, look));
     };
     const rest = () => setLook('centre');
 
     paint();
-    hero.addEventListener('pointermove', onMove, { passive: true });
-    hero.addEventListener('pointerleave', rest);
+    window.addEventListener('pointermove', onMove, { passive: true });
+    document.documentElement.addEventListener('pointerleave', rest);
     window.addEventListener('blur', rest);
     return () => {
       cancelAnimationFrame(raf);
-      hero.removeEventListener('pointermove', onMove);
-      hero.removeEventListener('pointerleave', rest);
+      window.removeEventListener('pointermove', onMove);
+      document.documentElement.removeEventListener('pointerleave', rest);
       window.removeEventListener('blur', rest);
       for (const el of layers) if (el) el.style.opacity = el.style.zIndex = '';
     };
