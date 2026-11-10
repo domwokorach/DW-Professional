@@ -43,6 +43,39 @@
 .xp-bullets li{position:relative;padding-left:20px;color:var(--xp-body);font-size:14.5px;line-height:1.75;margin-bottom:7px}
 .xp-bullets li:last-child{margin-bottom:0}
 .xp-bullets li:before{content:"";position:absolute;left:0;top:.85em;width:9px;height:1px;background:var(--ink);opacity:.45}
+/* Jump links, header (monogram + title), facts, skill badges, disclosure and grouped roles. */
+.xp-nav{max-width:1200px;margin:0 auto 40px}
+.xp-nav ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.xp-nav a{display:inline-flex;align-items:baseline;gap:8px;min-height:44px;padding:10px 14px;border:1px solid var(--line);border-radius:999px;color:var(--ink);font-size:13px;line-height:1.4;text-decoration:none;transition:background-color .25s ease,border-color .25s ease}
+.xp-nav__year{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:var(--xp-muted)}
+.xp-nav a:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+@media(hover:hover){.xp-nav a:hover{background:var(--cream2);border-color:rgba(var(--ink-rgb),.3)}}
+.xp-head{display:flex;align-items:flex-start;gap:16px}
+.xp-head__text{min-width:0;flex:1}
+.xp-head h3{margin-bottom:8px;overflow-wrap:anywhere}
+.xp-mark{flex:none;display:grid;place-items:center;width:44px;height:44px;overflow:hidden;border:1px solid var(--line);border-radius:12px;background:var(--glass);color:var(--ink);font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.04em}
+.xp-mark--logo{object-fit:contain;padding:6px}
+.xp-org a{color:inherit;text-decoration:underline;text-decoration-color:rgba(var(--ink-rgb),.35);text-underline-offset:3px}
+.xp-org a:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:3px}
+.xp-facts{list-style:none;display:flex;flex-wrap:wrap;margin:8px 0 0;padding:0;font-size:13px;line-height:1.6;color:var(--xp-muted)}
+.xp-facts li+li:before{content:"·"/"";margin:0 8px}
+.xp-skills{list-style:none;display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 0;padding:0}
+.xp-skills li{padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:var(--glass);color:var(--xp-body);font-size:12px;line-height:1.5}
+.xp-collapse{margin-top:14px}
+.xp-toggle{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:8px 0;border:0;background:none;color:var(--ink);font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-align:left;text-transform:uppercase;cursor:pointer}
+.xp-toggle svg{flex:none;transition:transform .3s ease}
+.xp-collapse[data-open=true]>.xp-toggle svg{transform:rotate(180deg)}
+.xp-toggle:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:4px}
+/* Collapsed content stays in the DOM; 0fr + overflow clips it and `inert` removes it from tab order. */
+.xp-collapse__panel{display:grid;grid-template-rows:0fr;visibility:hidden;transition:grid-template-rows .35s cubic-bezier(.22,1,.36,1),visibility 0s .35s}
+.xp-collapse[data-open=true]>.xp-collapse__panel{grid-template-rows:1fr;visibility:visible;transition-delay:0s}
+.xp-collapse__inner{min-height:0;overflow:hidden;padding-inline:4px;margin-inline:-4px}
+.xp-collapse__inner>.xp-bullets{margin-top:4px}
+.xp-roles{list-style:none;margin:0;padding:0}
+.xp-role{padding:22px 0;border-top:1px solid var(--line)}
+.xp-role:first-child{padding-top:4px;border-top:0}
+.xp-role h4{margin:0 0 6px;font-size:clamp(18px,1.7vw,22px);line-height:1.2;letter-spacing:-.025em;font-weight:700;text-wrap:balance}
+.xp-role .xp-date{margin-bottom:6px}
 .xp-label{margin:0;font-family:var(--font-mono);font-size:11px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--xp-muted)}
 .xp-projects{margin-top:26px;border-top:1px solid var(--line);padding-top:18px}
 .xp-projects__list{list-style:none;padding:0;margin:6px 0 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:32px}
@@ -88,7 +121,8 @@
 /* Mobile: rail moves to the left edge; the date sits above the role in the content column.
    The card drops its inset so text uses the full width. */
 @media(max-width:768px){.tl{--tl-rail:24px;--tl-col-gap:14px;--tl-gap:56px;--tl-date-size:12px}.tl-item{grid-template-columns:var(--tl-rail) minmax(0,1fr)}.tl-line{left:calc(var(--tl-rail) / 2)}.tl-head{grid-column:1 / 2;position:static}.tl-title--desktop{display:none}.tl-title--mobile{display:block;margin:0 0 12px}.xp-date{font-size:12px}.xp-entry{margin-top:0;padding:0;border:0;border-radius:0}.xp-entry:hover{background:none;box-shadow:none;transform:none}}
-@media(max-width:720px){.xp-bullets li{font-size:13.5px}}
+@media(max-width:720px){.xp-bullets li{font-size:13.5px}.xp-head{gap:12px}.xp-mark{width:40px;height:40px;border-radius:10px}}
 @media(max-width:620px){.xp-gallery{grid-template-columns:minmax(0,1fr)}.xp-gallery-lightbox__stage{grid-template-columns:44px minmax(0,1fr) 44px;gap:4px}.xp-gallery-lightbox__stage img{max-height:calc(100dvh - 150px)}}
 @media(max-width:520px){.xp-lightbox{width:calc(100vw - 16px);max-height:calc(100dvh - 16px)}.xp-lightbox__panel{padding:10px}.xp-lightbox__panel>img{max-height:calc(100dvh - 132px)}}
 @media(prefers-reduced-motion:reduce){.tl-dot,.xp-entry,.xp-projects__item--linked,.xp-gallery__item{transition:none}.xp-entry:hover,.xp-projects__item--linked:hover,.xp-gallery__item:hover{transform:none}.xp-live:after{animation:none;opacity:0}}
+@media(prefers-reduced-motion:reduce){.xp-nav a,.xp-toggle svg,.xp-collapse__panel{transition:none}}

@@ -65,7 +65,38 @@ export type Experience = {
   projects?: ExperienceProject[];
   /** Optional image gallery displayed with this role's project group. */
   projectGallery?: ExperienceImage[];
+  /** e.g. "Full-time", "Freelance". */
+  employmentType?: string;
+  /** e.g. "Remote", "Hybrid". */
+  workplaceType?: string;
+  /** Skills shown as badges; only list skills that are genuinely part of the role. */
+  skills?: string[];
+  /** Employer/organisation website, opened in a new tab. */
+  website?: string;
+  /** Verified logo asset; used instead of `mark` when supplied. */
+  logo?: { src: string; alt: string };
+  /** Text monogram shown where no authentic logo is available, e.g. "LBG". */
+  mark?: string;
+  /** Short label for the timeline jump links; defaults to `role`. */
+  navLabel?: string;
+  /** Education is presented as such, without a duration or employment details. */
+  kind?: 'education';
 };
+
+/** One employer holding several consecutive roles, rendered as a single expandable card. */
+export type ExperienceGroup = {
+  employer: string;
+  logo?: { src: string; alt: string };
+  mark?: string;
+  employmentType: string;
+  location: string;
+  start: Period;
+  end?: Period;
+  /** Newest first. */
+  roles: Experience[];
+};
+
+export type ExperienceItem = Experience | ExperienceGroup;
 
 export type Project = {
   id: string;
