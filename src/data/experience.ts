@@ -49,7 +49,8 @@ export const experiences: ExperienceItem[] = [
     workplaceType: 'Hybrid',
     location: 'London Area, United Kingdom',
     start: p('06/2024'),
-    end: p('09/2026'),
+    end: { label: '2026', iso: '2026-09' },
+    hideDuration: true,
     bullets: [
       'Developed Python-based features for catalogue, pricing and billing systems, contributing to backend application functionality.',
       'Integrated REST APIs with AWS-based microservices, gaining practical experience with distributed systems and service communication.',
@@ -92,21 +93,6 @@ export const experiences: ExperienceItem[] = [
         height: 2129,
       },
     ],
-  },
-  {
-    role: 'Travel Specialist (Career Break)',
-    navLabel: 'Career Break',
-    markIcon: 'globe',
-    description: 'Career Break',
-    employmentType: 'Career Break',
-    workplaceType: 'Travel / Remote',
-    location: 'Abroad',
-    start: p('07/2022'),
-    end: p('06/2024'),
-    bullets: [
-      'Undertook an international travel career break, developing adaptability, problem-solving, organisational, communication and decision-making skills through navigating different environments, managing travel arrangements and adapting to new situations.',
-    ],
-    skills: ['Adaptability', 'Problem Solving', 'Organisation', 'Communication', 'Decision Making'],
   },
   {
     role: 'COVID-19 Career Break',
