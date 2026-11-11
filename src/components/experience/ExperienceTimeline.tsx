@@ -81,18 +81,18 @@ const slug = (v: string) => v.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(
 const itemName = (item: ExperienceItem) => ('roles' in item ? item.employer : item.role);
 const itemId = (item: ExperienceItem) => `xp-${item.start.iso}-${slug(itemName(item))}`;
 
-function Mark({ item }: { item: Pick<Experience, 'logo' | 'mark'> }) {
-  return <LogoMark logo={item.logo} mark={item.mark} />;
+function Mark({ item }: { item: Pick<Experience, 'logo' | 'mark' | 'markIcon'> }) {
+  return <LogoMark logo={item.logo} mark={item.mark} icon={item.markIcon} />;
 }
 
 /** Employment type, workplace type and duration. Education carries no duration. */
-function Facts({ xp }: { xp: Pick<Experience, 'start' | 'end' | 'employmentType' | 'workplaceType' | 'kind'> }) {
+function Facts({ xp }: { xp: Pick<Experience, 'start' | 'end' | 'employmentType' | 'workplaceType' | 'kind' | 'hideDuration'> }) {
   const months = monthsBetween(xp.start.iso, xp.end?.iso);
   return (
     <ul className="xp-facts">
       {xp.employmentType && <li>{xp.employmentType}</li>}
       {xp.workplaceType && <li>{xp.workplaceType}</li>}
-      {xp.kind !== 'education' && (
+      {xp.kind !== 'education' && !xp.hideDuration && (
         <li>
           <span className="sr-only">Duration: </span>
           {xp.end ? formatDuration(months) : <LiveDuration startIso={xp.start.iso} initial={formatDuration(months)} />}

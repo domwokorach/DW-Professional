@@ -77,6 +77,10 @@ export type Experience = {
   logo?: { src: string; alt: string };
   /** Text monogram shown where no authentic logo is available, e.g. "LBG". */
   mark?: string;
+  /** Calendar or globe icon in the circle instead of the text monogram, for periods without an employer. */
+  markIcon?: 'calendar' | 'globe';
+  /** Hides the computed duration, e.g. when the end month is not known. */
+  hideDuration?: boolean;
   /** Short label for the timeline jump links; defaults to `role`. */
   navLabel?: string;
   /** Education is presented as such, without a duration or employment details. */

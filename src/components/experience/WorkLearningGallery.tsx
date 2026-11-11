@@ -3,9 +3,6 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent, type TouchEvent } from 'react';
 import type { ExperienceImage } from '@/types';
 
-const responsiveUrl = (src: string, width: number) =>
-  src.replace('/image/upload/f_auto,q_auto/', `/image/upload/f_auto,q_auto,w_${width}/`);
-
 export default function WorkLearningGallery({ images }: { images: ExperienceImage[] }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const triggers = useRef<Array<HTMLButtonElement | null>>([]);
@@ -75,9 +72,7 @@ export default function WorkLearningGallery({ images }: { images: ExperienceImag
           aria-label={`Open image ${index + 1} of ${images.length}: ${item.alt}`}
         >
           <img
-            src={responsiveUrl(item.src, 800)}
-            srcSet={`${responsiveUrl(item.src, 480)} 480w, ${responsiveUrl(item.src, 800)} 800w, ${responsiveUrl(item.src, 1200)} 1200w`}
-            sizes="(max-width: 620px) 100vw, (max-width: 900px) 50vw, 33vw"
+            src={item.src}
             alt={item.alt}
             width={item.width}
             height={item.height}
@@ -109,9 +104,7 @@ export default function WorkLearningGallery({ images }: { images: ExperienceImag
             <button type="button" className="xp-gallery-lightbox__nav xp-gallery-lightbox__nav--previous" onClick={previous} aria-label="Previous image">←</button>
             <img
               key={image.originalSrc}
-              src={responsiveUrl(image.src, 1800)}
-              srcSet={`${responsiveUrl(image.src, 1200)} 1200w, ${responsiveUrl(image.src, 1800)} 1800w, ${responsiveUrl(image.src, 2400)} 2400w`}
-              sizes="calc(100vw - 64px)"
+              src={image.src}
               alt={image.alt}
               width={image.width}
               height={image.height}
@@ -119,9 +112,6 @@ export default function WorkLearningGallery({ images }: { images: ExperienceImag
             />
             <button type="button" className="xp-gallery-lightbox__nav xp-gallery-lightbox__nav--next" onClick={next} aria-label="Next image">→</button>
           </div>
-          <a href={image.originalSrc} target="_blank" rel="noopener noreferrer" className="xp-lightbox__fallback">
-            Open original image<span className="sr-only"> (opens in a new tab)</span>
-          </a>
         </div>
       </dialog>
     </div>
