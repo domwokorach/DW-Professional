@@ -4,7 +4,7 @@ import { button, CARD, CREAM, esc, FONT, host, INK, INK_SOFT, LINE, MUTED, ON_IN
 import { appendFile } from 'node:fs/promises';
 import { getResend } from '@/lib/resend.server';
 
-export const RESUME_VERIFY_SUBJECT = 'Your verification code for Dominic Wokorach’s résumé';
+export const RESUME_VERIFY_SUBJECT = 'Your Résumé Verification Code';
 
 export type ResumeEmailInput = { fullName: string; pin: string; verifyUrl: string; minutes: number; siteUrl: string };
 
