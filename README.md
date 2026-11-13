@@ -1,5 +1,7 @@
 # DOMINIC — Portfolio
 
+![DOMINIC portfolio hero section](docs/images/portfolio-hero.png)
+
 DOMINIC is a production-oriented developer portfolio for Dominic Wokorach Olanya. It presents professional experience, projects, technical skills, certifications and achievements through an editorial cream-and-navy interface. It also includes moderated testimonials, contact enquiries, protected portfolio-access workflows and private administration tools.
 
 ## Main features
