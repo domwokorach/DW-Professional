@@ -51,3 +51,9 @@ public/avatar/*.glb
 uploads/
 *.sqlite
 *.db
+
+# Expo app
+apps/mobile/dist/
+apps/mobile/.expo/
+apps/mobile/.expo/
+apps/mobile/expo-env.d.ts
