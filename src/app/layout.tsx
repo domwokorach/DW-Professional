@@ -21,6 +21,7 @@ import '@/styles/legal.css';
 import '@/styles/privacy.css';
 import '@/styles/portfolio-access.css';
 import '@/styles/resume.css';
+import '@/styles/platforms.css';
 import '@/styles/christmas.css';
 
 export const metadata: Metadata = {
