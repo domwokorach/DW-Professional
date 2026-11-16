@@ -1,11 +1,23 @@
 import { Image } from 'expo-image';
-import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, Text, View } from 'react-native';
+import { ActionSheetIOS, Appearance, Platform, Share, StyleSheet, Text, View } from 'react-native';
 import type { Project } from '@/types';
-import { Badge, Body, Button, Card } from '~/components/ui';
+import { RetroButton, RetroIconButton } from '~/components/retro';
+import { Badge, Body, Card } from '~/components/ui';
 import { localImages } from '~/lib/images';
 import { openUrl } from '~/lib/links';
 import { mono, useTheme } from '~/theme';
+
+/** Native action sheet on iOS, share sheet elsewhere: the system's own contextual menu for a project. */
+function more(title: string, url: string) {
+  if (Platform.OS !== 'ios') {
+    void Share.share({ message: `${title}: ${url}` });
+    return;
+  }
+  ActionSheetIOS.showActionSheetWithOptions({ title, options: ['Open live project', 'Share link', 'Cancel'], cancelButtonIndex: 2, userInterfaceStyle: Appearance.getColorScheme() === 'dark' ? 'dark' : 'light' }, (i) => {
+    if (i === 0) openUrl(url);
+    if (i === 1) void Share.share({ message: `${title}: ${url}`, url });
+  });
+}
 
 export default function ProjectCard({ project: p }: { project: Project }) {
   const t = useTheme();
@@ -27,7 +39,12 @@ export default function ProjectCard({ project: p }: { project: Project }) {
         {p.description.map((d) => <Body key={d}>{d}</Body>)}
         <View style={styles.badges}>{p.tech.map((x) => <Badge key={x}>{x}</Badge>)}</View>
         {p.url ? (
-          <Button primary label={p.linkLabel ?? 'View project'} hint={`Opens ${p.title} in your browser`} icon={<Ionicons name="open-outline" size={16} color={t.onInk} />} onPress={() => openUrl(p.url!)} />
+          <View style={styles.actions}>
+            <View style={{ flex: 1 }}>
+              <RetroButton primary label={p.linkLabel ?? 'View project'} hint={`Opens ${p.title} in your browser`} icon={{ sf: "arrow.up.right.square", fallback: "open-outline" }} onPress={() => openUrl(p.url!)} />
+            </View>
+            <RetroIconButton sf="ellipsis" fallback="ellipsis-horizontal" label={`More actions for ${p.title}`} onPress={() => more(p.title, p.url!)} />
+          </View>
         ) : null}
       </View>
     </Card>
@@ -41,5 +58,6 @@ const styles = StyleSheet.create({
   liveText: { fontFamily: mono, fontSize: 10, letterSpacing: 2 },
   title: { fontSize: 26, fontWeight: '700', letterSpacing: -0.8 },
   headline: { fontSize: 16, fontWeight: '600', lineHeight: 23 },
+  actions: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   badges: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
 });

@@ -35,12 +35,13 @@
           "image": "./assets/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#f1eedf",
+          "backgroundColor": "#F8EDC4",
           "dark": {
-            "backgroundColor": "#14132a"
+            "backgroundColor": "#0E1A3F"
           }
         }
-      ]
+      ],
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true

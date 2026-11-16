@@ -1,34 +1,43 @@
+import { useState } from 'react';
 import { View } from 'react-native';
+import { RetroHorizontalSlider } from '~/components/retro';
 import Hero from '~/components/hero/Hero';
 import Achievements from '~/components/learning/Achievements';
 import Certifications from '~/components/learning/Certifications';
-import { Card, H2, Screen, SectionTag } from '~/components/ui';
+import { Card, H2, SectionTag } from '~/components/ui';
 import TechIcon from '~/components/ui/TechIcon';
 import { Text, StyleSheet } from 'react-native';
 import { coreTechGroups } from '~/lib/data';
 import { mono, useTheme } from '~/theme';
 
-export default function Home() {
+export function HomeSection() {
   const t = useTheme();
+  const [group, setGroup] = useState(0);
   return (
-    <Screen>
+    <View>
       <Hero />
       <SectionTag num="02" label="SKILLS" />
       <H2 em="stack.">Core </H2>
       <View style={{ gap: 14, marginTop: 20 }}>
-        {coreTechGroups.map((g) => (
-          <Card key={g.title}>
-            <Text accessibilityRole="header" style={[styles.group, { color: t.ink }]}>{g.title.toUpperCase()}</Text>
-            <View style={styles.grid}>
-              {g.items.map((it) => (
-                <View key={it.name} style={styles.item} accessible accessibilityLabel={it.name}>
-                  <TechIcon tech={it} />
-                  <Text style={[styles.name, { color: t.text3 }]}>{it.name}</Text>
-                </View>
-              ))}
-            </View>
-          </Card>
-        ))}
+        <RetroHorizontalSlider
+          label="Technology group"
+          steps={coreTechGroups.length - 1}
+          tooltipWidth={200}
+          value={group / (coreTechGroups.length - 1)}
+          onChange={(v) => setGroup(Math.round(v * (coreTechGroups.length - 1)))}
+          format={(v) => coreTechGroups[Math.round(v * (coreTechGroups.length - 1))].title}
+        />
+        <Card>
+          <Text accessibilityRole="header" style={[styles.group, { color: t.ink }]}>{coreTechGroups[group].title.toUpperCase()}</Text>
+          <View style={styles.grid}>
+            {coreTechGroups[group].items.map((it) => (
+              <View key={it.name} style={styles.item} accessible accessibilityLabel={it.name}>
+                <TechIcon tech={it} />
+                <Text style={[styles.name, { color: t.text3 }]}>{it.name}</Text>
+              </View>
+            ))}
+          </View>
+        </Card>
       </View>
       <SectionTag num="04" label="CERTIFICATIONS" />
       <H2 em="certified.">Proudly </H2>
@@ -36,7 +45,7 @@ export default function Home() {
       <SectionTag num="06" label="ACHIEVEMENTS" />
       <H2 em="moments.">Proud </H2>
       <View style={{ marginTop: 20 }}><Achievements /></View>
-    </Screen>
+    </View>
   );
 }
 

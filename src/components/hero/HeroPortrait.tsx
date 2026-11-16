@@ -59,7 +59,7 @@ export default function HeroPortrait({ avatar }: { avatar?: AvatarAssets }) {
   const finePointer = useMediaQuery(media.finePointer);
   const [rig, setRig] = useState<HeroRigManifest | null>(null);
   const [header, setHeader] = useState<HTMLElement | null>(null);
-  const tracking = finePointer && !reducedMotion && !avatarActive && !rig;
+  const tracking = !reducedMotion && !avatarActive && !rig;
 
   // Layered rig (public/hero-rig): used only when its manifest is valid and every layer has loaded and decoded;
   // otherwise the crossfaded head crops above stay in place unchanged.
@@ -84,8 +84,7 @@ export default function HeroPortrait({ avatar }: { avatar?: AvatarAssets }) {
     return () => { cancelled = true; };
   }, []);
 
-  // The heads are only ever shown to a mouse (never on touch or under reduced motion), so only then are they
-  // loaded; all of them load as soon as the hero mounts, so the first pointer move never waits on the network.
+  // The heads are only shown while tracking (never under reduced motion), so only then are they loaded; all of them load as soon as the hero mounts, so the first pointer move never waits on the network.
   const heads = tracking;
 
   const onHeadLoad = (i: number, el: HTMLImageElement) => {
@@ -163,7 +162,6 @@ export default function HeroPortrait({ avatar }: { avatar?: AvatarAssets }) {
     };
 
     const onMove = (e: PointerEvent) => {
-      if (e.pointerType === 'touch') return;
       // Over a nav link the head looks at that link (from the head's own centre), not just at the pointer.
       const link = e.target instanceof Element ? e.target.closest('.nav-pill button, .nav-pill a') : null;
       const head = wrap.querySelector('.hero-head');
@@ -176,16 +174,22 @@ export default function HeroPortrait({ avatar }: { avatar?: AvatarAssets }) {
       setLook(pickLook((e.clientX / window.innerWidth) * 2 - 1, (e.clientY / window.innerHeight) * 2 - 1, look));
     };
     const rest = () => setLook('centre');
+    // Touch only steers the head while a finger is down; scrolling cancels the pointer, which also returns it to centre.
+    const onTouchEnd = (e: PointerEvent) => { if (e.pointerType === 'touch') rest(); };
 
     paint();
     window.addEventListener('pointermove', onMove, { passive: true });
     document.documentElement.addEventListener('pointerleave', rest);
     window.addEventListener('blur', rest);
+    window.addEventListener('pointerup', onTouchEnd, { passive: true });
+    window.addEventListener('pointercancel', onTouchEnd, { passive: true });
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('pointermove', onMove);
       document.documentElement.removeEventListener('pointerleave', rest);
       window.removeEventListener('blur', rest);
+      window.removeEventListener('pointerup', onTouchEnd);
+      window.removeEventListener('pointercancel', onTouchEnd);
       for (const el of layers) if (el) el.style.opacity = el.style.zIndex = '';
     };
   }, [tracking, ready]);

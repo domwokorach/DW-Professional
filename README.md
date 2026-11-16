@@ -14,6 +14,8 @@ DOMINIC is a production-oriented developer portfolio for Dominic Wokorach Olanya
 - QR-driven Portfolio Access flow with optional LinkedIn OpenID Connect import, file attachments and private administration pages.
 - Companies House-backed company suggestions using a separate imported company database.
 - Server-rendered legal, privacy, cookie and accessibility pages.
+- Hero character whose head follows the cursor (mouse) or a finger (touch), with a static forward pose under `prefers-reduced-motion`.
+- Companion Expo app for iOS, Android and web in [apps/mobile](apps/mobile/README.md), sharing this site's content data.
 
 ## Technology stack
 
@@ -25,6 +27,7 @@ DOMINIC is a production-oriented developer portfolio for Dominic Wokorach Olanya
 - Amazon S3 for optional private file storage.
 - Cloudinary for versioned media sources.
 - Argon2id password hashing and server-managed administrator sessions.
+- Expo and React Native (npm workspace in `apps/mobile`) for the companion app.
 
 ## Prerequisites
 
@@ -104,6 +107,18 @@ Open <http://localhost:3000/en-gb>. `/` redirects to the localised home route. O
 
 There is no standalone `lint` script. `next build` performs the repository's configured linting and type validation; `npm run typecheck` is available for a faster TypeScript-only check.
 
+## Mobile app
+
+`apps/mobile` is an Expo Router app that runs in Expo Go on iOS and Android, and in the browser. It imports this site's data modules from `src/data`, so content is edited once. See [apps/mobile/README.md](apps/mobile/README.md).
+
+```bash
+npm install                  # from the repository root (npm workspaces)
+cd apps/mobile
+npx expo start               # scan the QR code with Expo Go
+npm run web                  # syncs public/ into apps/mobile/public, then starts the web build
+npm run typecheck
+```
+
 ## Database setup and migrations
 
 The main schema is [prisma/schema.prisma](prisma/schema.prisma). `prisma.config.ts` uses `PORTFOLIO_DATABASE_URL` when supplied, otherwise `DATABASE_URL`, and scopes tables to `DATABASE_SCHEMA` (`portfolio` by default).
@@ -140,6 +155,8 @@ Never expose Prisma Studio, administrator scripts, database URLs or long-lived A
 /
 ├── .github/workflows/       Release-driven package publishing automation
 ├── docs/                    Operational guides for comments, company data and S3
+├── apps/
+│   └── mobile/              Expo app for iOS, Android and web (see its README)
 ├── packages/
 │   └── design-tokens/       Reusable generated light/dark CSS token package
 ├── prisma/                  Main and company schemas plus committed migrations

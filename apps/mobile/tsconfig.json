@@ -3,9 +3,34 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@/*": ["../../src/*"],
-      "~/*": ["./*"]
+      "@/*": [
+        "../../src/*"
+      ],
+      "~/*": [
+        "./*"
+      ],
+      "@/lib/avatar-store.server": [
+        "./web/overrides/avatar-store.ts"
+      ],
+      "@/lib/certifications.server": [
+        "./web/overrides/certifications.ts"
+      ],
+      "@/components/developer-id/WeatherQuickFact": [
+        "./web/overrides/WeatherQuickFact.tsx"
+      ],
+      "@/components/learning/CertificationsSection": [
+        "./web/overrides/CertificationsSection.tsx"
+      ]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts", "../../src/data/**/*.ts", "../../src/types/**/*.ts", "../../src/config/hero.ts"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts",
+    "../../src/data/**/*.ts",
+    "../../src/types/**/*.ts",
+    "../../src/config/hero.ts",
+    "web/**/*"
+  ]
 }

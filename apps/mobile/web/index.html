@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>DOMINIC — Software Engineer &amp; Frontend Developer.</title>
+    <!-- Same theme bootstrap as src/lib/theme.ts (THEME_INIT_SCRIPT): sets data-theme before first paint. -->
+    <script>(function(){var t='light';try{var s=localStorage.getItem('portfolio-theme');if(s==='dark'||s==='light'){t=s}else if(matchMedia('(prefers-color-scheme: dark)').matches){t='dark'}}catch(e){try{if(matchMedia('(prefers-color-scheme: dark)').matches)t='dark'}catch(e2){}}document.documentElement.setAttribute('data-theme',t)})();</script>
+    <!-- The document scrolls (as on the website); the default Expo shell locks the page height. -->
+    <style>#root{display:block;min-height:100%}</style>
+  </head>
+  <body>
+    <noscript>This portfolio needs JavaScript.</noscript>
+    <div id="root"></div>
+  </body>
+</html>

@@ -1,16 +1,15 @@
-import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
-import { Button } from '~/components/ui';
+import { RetroButton } from '~/components/retro';
 import { CONTACT_URL, RESUME_URL } from '~/constants/site';
 import HeroCharacter from './HeroCharacter';
 import { openUrl } from '~/lib/links';
 import { mono, useTheme } from '~/theme';
-import { useRouter } from 'expo-router';
+import { useScrollToSection } from '~/components/portfolio/ScrollContext';
 
 /** Hero: kicker, headline and portrait from the website's hero (src/components/hero); the head follows touch (HeroCharacter). */
 export default function Hero() {
   const t = useTheme();
-  const router = useRouter();
+  const scrollTo = useScrollToSection();
   const { width } = useWindowDimensions();
   return (
     <View style={styles.wrap}>
@@ -25,9 +24,9 @@ export default function Hero() {
         <HeroCharacter height={width >= 700 ? 560 : 440} />
       </View>
       <View style={styles.actions}>
-        <Button primary label="Explore work" hint="Opens the Projects tab" icon={<Ionicons name="briefcase-outline" size={16} color={t.onInk} />} onPress={() => router.push('/projects')} />
-        <Button label="Let's talk" hint="Opens the Contact tab" icon={<Ionicons name="send-outline" size={16} color={t.ink} />} onPress={() => router.push('/contact')} />
-        <Button label="Resume" hint="Opens the résumé request on the website" icon={<Ionicons name="download-outline" size={16} color={t.ink} />} onPress={() => openUrl(RESUME_URL)} />
+        <RetroButton primary label="Explore work" hint="Scrolls to the Projects section" icon={{ sf: "briefcase", fallback: "briefcase-outline" }} onPress={() => scrollTo('projects')} />
+        <RetroButton label="Let's talk" hint="Scrolls to the Contact section" icon={{ sf: "paperplane", fallback: "send-outline" }} onPress={() => scrollTo('contact')} />
+        <RetroButton label="Resume" hint="Opens the résumé request on the website" icon={{ sf: "arrow.down.circle", fallback: "download-outline" }} onPress={() => openUrl(RESUME_URL)} />
       </View>
     </View>
   );

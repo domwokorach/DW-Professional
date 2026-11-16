@@ -39,3 +39,7 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Copied from ../../public by scripts/sync-web-public.mjs
+/public/
+/dist/
