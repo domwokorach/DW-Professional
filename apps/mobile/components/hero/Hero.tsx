@@ -1,17 +1,17 @@
-import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { Button } from '~/components/ui';
 import { CONTACT_URL, RESUME_URL } from '~/constants/site';
-import { heroBody } from '~/lib/images';
+import HeroCharacter from './HeroCharacter';
 import { openUrl } from '~/lib/links';
 import { mono, useTheme } from '~/theme';
 import { useRouter } from 'expo-router';
 
-/** Hero: kicker, headline and portrait from the website's hero (src/components/hero), minus the pointer-driven head tracking. */
+/** Hero: kicker, headline and portrait from the website's hero (src/components/hero); the head follows touch (HeroCharacter). */
 export default function Hero() {
   const t = useTheme();
   const router = useRouter();
+  const { width } = useWindowDimensions();
   return (
     <View style={styles.wrap}>
       <Text style={[styles.kicker, { color: t.ink }]}>DOMINIC</Text>
@@ -20,8 +20,9 @@ export default function Hero() {
         <Text style={{ color: t.live }}>.</Text>
       </Text>
       <Text style={[styles.sub, { color: t.text2 }]}>Creative developer · AI &amp; web technology</Text>
-      <View style={[styles.portrait, { backgroundColor: t.sand, borderColor: t.line }]}>
-        <Image source={heroBody} contentFit="cover" contentPosition="top" style={StyleSheet.absoluteFill} accessibilityLabel="Portrait of Dominic" />
+      <View style={styles.stage}>
+        <Text accessibilityElementsHidden importantForAccessibility="no" style={[styles.watermark, { color: t.ink }]} numberOfLines={1} adjustsFontSizeToFit>DOMINIC</Text>
+        <HeroCharacter height={width >= 700 ? 560 : 440} />
       </View>
       <View style={styles.actions}>
         <Button primary label="Explore work" hint="Opens the Projects tab" icon={<Ionicons name="briefcase-outline" size={16} color={t.onInk} />} onPress={() => router.push('/projects')} />
@@ -39,6 +40,7 @@ const styles = StyleSheet.create({
   kicker: { fontFamily: mono, fontSize: 11, letterSpacing: 4 },
   h1: { fontSize: 52, lineHeight: 56, fontWeight: '800', letterSpacing: -2 },
   sub: { fontFamily: mono, fontSize: 12, letterSpacing: 1 },
-  portrait: { height: 360, borderRadius: 24, borderWidth: 1, overflow: 'hidden' },
+  stage: { alignItems: 'center', justifyContent: 'flex-end', paddingTop: 8 },
+  watermark: { position: 'absolute', top: '24%', alignSelf: 'center', width: '100%', textAlign: 'center', fontSize: 120, fontWeight: '800', letterSpacing: -4, opacity: 0.06 },
   actions: { gap: 10 },
 });

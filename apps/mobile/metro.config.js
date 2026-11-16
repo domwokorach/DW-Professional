@@ -7,7 +7,7 @@ const projectRoot = __dirname;
 const repoRoot = path.resolve(projectRoot, '../..');
 const config = getDefaultConfig(projectRoot);
 
-config.watchFolders = [...(config.watchFolders ?? []), path.join(repoRoot, 'src', 'data'), path.join(repoRoot, 'src', 'types')];
+config.watchFolders = [...(config.watchFolders ?? []), path.join(repoRoot, 'src', 'data'), path.join(repoRoot, 'src', 'types'), path.join(repoRoot, 'src', 'config')];
 // Resolve packages from the app first so React/React Native never come from a different copy.
 config.resolver.nodeModulesPaths = [path.join(projectRoot, 'node_modules'), path.join(repoRoot, 'node_modules')];
 

@@ -22,9 +22,9 @@ Home (hero, core tech, certifications, achievements) · About (+ quick facts, te
 
 | Website | Mobile |
 |---|---|
-| Pointer-tracked hero head | Static hero portrait |
+| Mouse-follow hero head | Touch-follow head (drag over the character); static forward head with Reduce Motion |
 | Résumé verification flow, contact form | Buttons that open the website |
-| Developer ID card (QR/NFC, 3D) | Not included |
+| Developer ID card (QR/NFC, 3D) and live 3D avatar (12 MB GLB) | Not included; the layered 2D character is used |
 | Light/dark toggle | Follows the system theme |
 
 Expo Go covers everything used here. Anything needing custom native code would require a development build (`npx expo run:ios|android`).

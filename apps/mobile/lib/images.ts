@@ -22,5 +22,18 @@ export const localImages: Record<string, number> = {
   '/certifications/sql_basic.webp': require('../assets/images/certifications/sql_basic.webp'),
 };
 
-export const heroBody: number = require('../assets/images/hero/body.webp');
-export const heroHead: number = require('../assets/images/hero/head-centre.webp');
+/** Full-body character render (500×941): the head area is cut out; the head boxes below sit on it. */
+export const heroBody: number = require('../assets/images/character/body.webp');
+
+/** Head crops with the website's collar/edge mask baked into their alpha (scripts/bake-hero-heads.mjs). */
+export const heroHeads: Record<'centre' | 'upLeft' | 'up' | 'upRight' | 'left' | 'right' | 'downLeft' | 'down' | 'downRight', number> = {
+  centre: require('../assets/images/face/head-centre.webp'),
+  upLeft: require('../assets/images/face/head-upLeft.webp'),
+  up: require('../assets/images/face/head-up.webp'),
+  upRight: require('../assets/images/face/head-upRight.webp'),
+  left: require('../assets/images/face/head-left.webp'),
+  right: require('../assets/images/face/head-right.webp'),
+  downLeft: require('../assets/images/face/head-downLeft.webp'),
+  down: require('../assets/images/face/head-down.webp'),
+  downRight: require('../assets/images/face/head-downRight.webp'),
+};
