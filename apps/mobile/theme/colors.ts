@@ -1,73 +1,83 @@
 /**
- * Semantic colour tokens for both appearances, in one place: a flat retro palette (cream paper, navy ink, teal and orange
- * fills). `Theme` is the app chrome (text, cards); `Retro` is the control set (fills, outlines and the text that sits on them).
- * Components never hold hex values for these roles: they read them through useTheme() / useRetro(), which follow the
- * user's appearance preference (see ./appearance.tsx).
+ * Semantic colour tokens for both appearances. Values come from the website's tokens (src/styles/base.css, generated
+ * into src/styles/tokens.generated.ts) so web and Expo share one palette. `Theme` is the app chrome (text, cards);
+ * `Retro` is the control set (fills, outlines and the text that sits on them). Components read them through
+ * useTheme() / useRetro(), which follow the user's appearance preference (see ./appearance.tsx).
  *
- * Each filled colour has an `on*` partner chosen for contrast: light mode uses cream on the dark fills; dark mode lifts
- * teal and orange and puts navy text on them.
+ * `accent` / `orange` map to the champagne gold: use it for fills, rules and borders, never as text on cream.
+ * `teal` is the secondary ink (--ink2); the key names are kept so existing components need no change.
  */
-export const lightTheme = {
-  ink: '#0F1F4B',
-  ink2: '#1C7C94',
-  cream: '#F8EDC4',
-  cream2: '#FBF3D6',
-  sand: '#EFDFA7',
-  card: '#FBF3D6',
-  badge: '#F3E6B0',
-  line: 'rgba(15,31,75,0.35)',
-  onInk: '#FFF8E1',
-  text2: '#46587A',
-  text3: '#2B3C63',
-  live: '#1C7C94',
-  accent: '#E8601C',
+import { darkTokens as d, lightTokens as l } from '@/styles/tokens.generated';
+
+type Widen<T> = { -readonly [K in keyof T]: T[K] extends boolean ? boolean : string };
+
+const lineOf = (rgb: string) => `rgba(${rgb},0.16)`;
+
+const lightThemeValues = {
+  ink: l.ink,
+  ink2: l.ink2,
+  cream: l.cream,
+  cream2: l.cream2,
+  sand: l.sand,
+  card: l.white,
+  badge: l.badge,
+  line: lineOf(l['ink-rgb']),
+  onInk: l['on-ink'],
+  text2: l['text-2'],
+  text3: l['text-3'],
+  live: l.live,
+  accent: l.gold,
   dark: false,
 };
 
+export const lightTheme: Widen<typeof lightThemeValues> = lightThemeValues;
+
 export const darkTheme: typeof lightTheme = {
-  ink: '#F8EDC4',
-  ink2: '#7CC6D8',
-  cream: '#0E1A3F',
-  cream2: '#12214D',
-  sand: '#1B2F68',
-  card: '#15265A',
-  badge: '#1B2F68',
-  line: 'rgba(248,237,196,0.3)',
-  onInk: '#0E1A3F',
-  text2: '#B7C0D8',
-  text3: '#D8DCEA',
-  live: '#5CD0E6',
-  accent: '#FF7A33',
+  ink: d.ink,
+  ink2: d.ink2,
+  cream: d.cream,
+  cream2: d.cream2,
+  sand: d.sand,
+  card: d.white,
+  badge: d.badge,
+  line: lineOf(d['ink-rgb']),
+  onInk: d['on-ink'],
+  text2: d['text-2'],
+  text3: d['text-3'],
+  live: d.live,
+  accent: d.gold,
   dark: true,
 };
 
-export const lightRetro = {
+const lightRetroValues = {
   dark: false,
-  bg: '#F8EDC4',
-  paper: '#FBF3D6',
-  ink: '#0F1F4B',
-  onInk: '#FFF8E1',
-  teal: '#1C7C94',
-  onTeal: '#FFF8E1',
-  orange: '#E8601C',
-  onOrange: '#FFFFFF',
-  text: '#0F1F4B',
-  muted: '#46587A',
-  danger: '#C62828',
+  bg: l.cream,
+  paper: l.white,
+  ink: l.ink,
+  onInk: l['on-ink'],
+  teal: l.ink2,
+  onTeal: l['on-ink'],
+  orange: l.gold,
+  onOrange: l['on-gold'],
+  text: l.ink,
+  muted: l['text-2'],
+  danger: '#B42318',
 };
+
+export const lightRetro: Widen<typeof lightRetroValues> = lightRetroValues;
 
 export const darkRetro: typeof lightRetro = {
   dark: true,
-  bg: '#0E1A3F',
-  paper: '#15265A',
-  ink: '#F8EDC4',
-  onInk: '#0E1A3F',
-  teal: '#3FB0CB',
-  onTeal: '#0E1A3F',
-  orange: '#FF7A33',
-  onOrange: '#0E1A3F',
-  text: '#F8EDC4',
-  muted: '#B7C0D8',
+  bg: d.cream,
+  paper: d.white,
+  ink: d.ink,
+  onInk: d['on-ink'],
+  teal: d.ink2,
+  onTeal: d['on-ink'],
+  orange: d.gold,
+  onOrange: d['on-gold'],
+  text: d.ink,
+  muted: d['text-2'],
   danger: '#FF7B7B',
 };
 

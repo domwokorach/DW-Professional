@@ -22,3 +22,17 @@ await mkdir(dirname(outputPath), { recursive: true });
 await writeFile(outputPath, `${banner}\n${source.slice(start, end).trim()}\n`, "utf8");
 
 console.log(`Built ${outputPath}`);
+
+// Also emit the same tokens as a TypeScript module so the Expo app reads one source of truth.
+const parse = (block) =>
+  Object.fromEntries([...block.matchAll(/--([\w-]+):([^;}]+?)(?=;|\})/g)].map(([, name, value]) => [name, value.trim()]));
+const light = source.match(/:root\{([\s\S]*?)color-scheme:light\}/)?.[1];
+const dark = source.match(/:root\[data-theme="dark"\]\{([\s\S]*?)color-scheme:dark\}/)?.[1];
+if (!light || !dark) throw new Error("Could not parse light/dark token blocks.");
+const tsPath = resolve(packageDirectory, "../../src/styles/tokens.generated.ts");
+await writeFile(
+  tsPath,
+  `// Generated from src/styles/base.css by packages/design-tokens/scripts/build.mjs. Do not edit.\nexport const lightTokens = ${JSON.stringify(parse(light), null, 2)} as const;\nexport const darkTokens = ${JSON.stringify(parse(dark), null, 2)} as const;\n`,
+  "utf8",
+);
+console.log(`Built ${tsPath}`);

@@ -9,8 +9,6 @@ import { useGlass } from './useGlass';
 import type { SFSymbol } from 'expo-symbols';
 
 export const TAB_BAR_HEIGHT = 64;
-/** Active tint: the orange-red of the reference footer, in both appearances. */
-const ACTIVE = '#FF4A2F';
 const GAP = 12;
 const SIDE = 16;
 const PAD = 4;
@@ -76,7 +74,8 @@ export default function LiquidGlassTabBar({ items, active, onSelect, action, bot
 }
 
 function TabButton({ item, width, selected, idle, onPress }: { item: TabItem; width: number; selected: boolean; idle: string; onPress: () => void }) {
-  const color = selected ? ACTIVE : idle;
+  const t = useTheme();
+  const color = selected ? t.ink : idle; // ink keeps AA contrast on glass in both themes (gold is for fills only)
   const scale = useSharedValue(selected ? 1.06 : 1);
   useEffect(() => { scale.value = withSpring(selected ? 1.06 : 1, spring.press); }, [selected]); // eslint-disable-line react-hooks/exhaustive-deps
   const style = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));

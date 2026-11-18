@@ -8,6 +8,8 @@
   --text-2:#5f5c56;--text-3:#4f4c47;--text-4:#6e6b69;--legal-body:#4f4c58;--live:#2f7a4c;
   --orb-1:#fff4a8;--orb-2:#d8d0ff;--orb-opacity:.22;
   --footer-bg:#111827;--footer-fg:#F8F5EE;
+  /* Champagne gold accent: fills, rules and borders only. Use --gold-ink for gold-toned text (AA on --cream). */
+  --gold:#C6A667;--gold-ink:#7a5f1e;--on-gold:#25233f;
   color-scheme:light}
 /* Dark theme: applied by data-theme="dark" on <html> (set before first paint by the inline script in
    layout.tsx, from the visitor's saved choice or their system setting). */
@@ -17,6 +19,7 @@
   --text-2:#b3b0c4;--text-3:#c8c5d6;--text-4:#b8b5c8;--legal-body:#c4c1d2;--live:#5fd08f;
   --orb-1:#6a5acd;--orb-2:#3b6bd6;--orb-opacity:.1;
   --footer-bg:#0d0c1e;--footer-fg:#F3F1EA;
+  --gold:#D8BA80;--gold-ink:#D8BA80;--on-gold:#14132a;
   color-scheme:dark}
 *{box-sizing:border-box}
 /* text-size-adjust stops iOS/Samsung Internet inflating text in landscape. */
