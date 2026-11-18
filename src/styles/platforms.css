@@ -1,0 +1,16 @@
+/* platforms */
+.platform-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin:48px 0 0;padding:0;list-style:none}
+.platform-card{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:28px;border:1px solid var(--line);border-radius:18px;background:var(--white);box-shadow:0 16px 30px rgba(var(--shadow-rgb),.08);transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease,background-color .3s ease}
+.platform-card:hover,.platform-card:focus-within{transform:translateY(-4px);background:var(--card-hover);box-shadow:0 22px 38px rgba(var(--shadow-rgb),.16)}
+.platform-card__icon{display:grid;width:52px;height:52px;place-items:center;border:1px solid var(--line);border-radius:14px;color:var(--ink)}
+.platform-card__icon svg{width:26px;height:26px}
+.platform-card h3{margin:10px 0 0;font-size:clamp(24px,2.4vw,30px);letter-spacing:-.03em}
+.platform-card p{margin:0;color:var(--text-2);line-height:1.6}
+.platform-card .platform-card__devices{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-4)}
+.platform-card__cta{display:inline-flex;align-items:center;gap:8px;min-height:46px;margin-top:auto;padding:0 20px;border-radius:999px;background:var(--ink);color:var(--on-ink);font-family:var(--font-mono);font-size:12px;font-weight:700;letter-spacing:.08em;text-decoration:none;text-transform:uppercase;transition:transform .25s ease,opacity .25s ease}
+.platform-card__cta:hover{transform:translateY(-1px);opacity:.9}
+.platform-card__cta:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.platform-card__cta svg{transition:transform .25s ease}
+.platform-card__cta:hover svg{transform:translate(2px,-2px)}
+@media(max-width:980px){.platform-grid{grid-template-columns:1fr;max-width:560px}}
+@media(prefers-reduced-motion:reduce){.platform-card,.platform-card__cta,.platform-card__cta svg{transition:none}.platform-card:hover,.platform-card:focus-within,.platform-card__cta:hover,.platform-card__cta:hover svg{transform:none}}
