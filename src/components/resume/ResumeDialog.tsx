@@ -236,7 +236,7 @@ export default function ResumeDialog({ open, onClose }: { open: boolean; onClose
               </button>
               <div className="rs-links">
                 <button type="button" className="rs-linkbtn" onClick={resend} aria-disabled={busy === 'resend' || resendIn > 0}>
-                  {busy === 'resend' ? 'Sending…' : resendIn > 0 ? `Resend email in ${resendIn}s` : 'Resend verification email'}
+                  {busy === 'resend' ? 'Sending…' : resendIn > 0 ? `Resend Verification Code in ${resendIn}s` : 'Resend Verification Code'}
                 </button>
                 <button type="button" className="rs-linkbtn" onClick={reset}>Change email address</button>
               </div>
