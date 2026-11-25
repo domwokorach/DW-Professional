@@ -6,7 +6,7 @@ export const lightTokens = {
   "cream": "#f1eedf",
   "cream2": "#f8f5e9",
   "sand": "#e6e0ce",
-  "muted": "#817e77",
+  "muted": "#6c6962",
   "line": "rgba(var(--ink-rgb),.16)",
   "white": "#fffdf7",
   "on-ink": "#fff",
@@ -32,7 +32,22 @@ export const lightTokens = {
   "footer-fg": "#F8F5EE",
   "gold": "#C6A667",
   "gold-ink": "#7a5f1e",
-  "on-gold": "#25233f"
+  "on-gold": "#25233f",
+  "ease-out": "cubic-bezier(.22,1,.36,1)",
+  "ease-in-out": "cubic-bezier(.65,0,.35,1)",
+  "dur-micro": "140ms",
+  "dur-control": "200ms",
+  "dur-base": "280ms",
+  "dur-reveal": "480ms",
+  "dur-cinematic": "800ms",
+  "radius-sm": "8px",
+  "radius-md": "14px",
+  "radius-lg": "18px",
+  "radius-pill": "999px",
+  "z-nav": "50",
+  "z-overlay": "100",
+  "z-modal": "200",
+  "focus-ring": "2px solid var(--ink)"
 } as const;
 export const darkTokens = {
   "ink": "#ece8d9",

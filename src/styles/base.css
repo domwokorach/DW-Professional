@@ -1,5 +1,5 @@
 /* base */
-:root{--font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono","Courier New",monospace;--ink:#25233f;--ink2:#383653;--cream:#f1eedf;--cream2:#f8f5e9;--sand:#e6e0ce;--muted:#817e77;--line:rgba(var(--ink-rgb),.16);--white:#fffdf7;
+:root{--font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono","Courier New",monospace;--ink:#25233f;--ink2:#383653;--cream:#f1eedf;--cream2:#f8f5e9;--sand:#e6e0ce;--muted:#6c6962;--line:rgba(var(--ink-rgb),.16);--white:#fffdf7;
   /* Theme tokens. --ink is both the text colour and the colour of emphasis surfaces (primary buttons,
      the active nav item), so --on-ink is the text that sits on those surfaces. Dark mode (below)
      redefines all of these; most of the CSS just uses the tokens. */
@@ -10,6 +10,13 @@
   --footer-bg:#111827;--footer-fg:#F8F5EE;
   /* Champagne gold accent: fills, rules and borders only. Use --gold-ink for gold-toned text (AA on --cream). */
   --gold:#C6A667;--gold-ink:#7a5f1e;--on-gold:#25233f;
+  /* Shared non-colour tokens (mode-independent). Durations follow the motion scale: micro 100–180ms,
+     control 150–250ms, base 200–350ms, reveal 350–600ms, cinematic 600–1000ms. */
+  --ease-out:cubic-bezier(.22,1,.36,1);--ease-in-out:cubic-bezier(.65,0,.35,1);
+  --dur-micro:140ms;--dur-control:200ms;--dur-base:280ms;--dur-reveal:480ms;--dur-cinematic:800ms;
+  --radius-sm:8px;--radius-md:14px;--radius-lg:18px;--radius-pill:999px;
+  --z-nav:50;--z-overlay:100;--z-modal:200;
+  --focus-ring:2px solid var(--ink);
   color-scheme:light}
 /* Dark theme: applied by data-theme="dark" on <html> (set before first paint by the inline script in
    layout.tsx, from the visitor's saved choice or their system setting). */
