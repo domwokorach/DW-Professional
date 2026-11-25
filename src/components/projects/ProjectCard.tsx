@@ -44,6 +44,7 @@ export default function ProjectCard({ project: p, index }: { project: Project; i
         <ul className="pc-tags">
           {p.tech.map((t) => <li key={t}>{t}</li>)}
         </ul>
+        {p.placeholder && <p className="project-status">Details coming soon</p>}
         {p.confidential && (
           <p className="project-status project-status--confidential">
             <LockKeyhole aria-hidden="true" size={14} strokeWidth={1.8} />
