@@ -49,7 +49,7 @@ export const experiences: ExperienceItem[] = [
     workplaceType: 'Hybrid',
     location: 'London Area, United Kingdom',
     start: p('06/2024'),
-    end: { label: '2026', iso: '2026-09' },
+    end: p('08/2024'),
     hideDuration: true,
     bullets: [
       'Developed Python-based features for catalogue, pricing and billing systems, contributing to backend application functionality.',
