@@ -116,6 +116,13 @@
 .xp-gallery-lightbox__nav{display:grid;width:44px;height:44px;place-items:center;border:1px solid var(--line);border-radius:999px;background:var(--glass);color:var(--ink);font-size:20px;cursor:pointer}
 @media(hover:hover){.xp-gallery__item:hover{border-color:rgba(var(--ink-rgb),.3);box-shadow:0 12px 24px -20px rgba(var(--shadow-rgb),.5);transform:translateY(-2px)}}
 @media(hover:hover){.xp-projects__item--linked:hover{background:var(--cream2);border-color:rgba(var(--ink-rgb),.28);box-shadow:0 12px 28px -22px rgba(var(--shadow-rgb),.45);transform:translateY(-2px)}}
+/* Education & Qualifications: its own subsection after the employment timeline, same card language. */
+.xp-education{max-width:1200px;margin:clamp(72px,8vw,120px) auto 0;padding-top:clamp(32px,4vw,48px);border-top:1px solid var(--line)}
+.xp-education__title{margin:0 0 28px;font-size:clamp(24px,2.4vw,34px);line-height:1.12;letter-spacing:-.035em;font-weight:700;text-wrap:balance}
+.xp-education__item .xp-date{margin:0 0 8px}
+.xp-education__item .xp-entry{margin-top:0}
+.xp-entry--education h4,.xp-entry--career-break h3{overflow-wrap:anywhere}
+.xp-entry h4{font-size:clamp(20px,1.9vw,26px);line-height:1.15;letter-spacing:-.03em;font-weight:700;margin:0 0 8px;text-wrap:balance}
 @supports not (grid-template-columns:subgrid){.tl-head{grid-template-columns:var(--tl-date) var(--tl-rail);column-gap:var(--tl-col-gap)}@media(max-width:768px){.tl-head{grid-template-columns:var(--tl-rail)}}}
 @media(max-width:1050px){.tl{--tl-date:140px;--tl-rail:40px;--tl-col-gap:18px}}
 @media(max-width:900px){.xp-projects__list{grid-template-columns:minmax(0,1fr)}.xp-projects__list li:last-child{border-bottom:0}}

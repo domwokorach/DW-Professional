@@ -1,7 +1,7 @@
 import { LinkIcon } from '@/components/animate-ui/icons/link';
 import { Timeline, type TimelineEntry } from '@/components/ui';
 import IconLink from '@/components/ui/IconLink';
-import { experiences } from '@/data';
+import { education, experiences } from '@/data';
 import { formatDuration, monthsBetween } from '@/lib/experience-duration';
 import type { Experience, ExperienceGroup, ExperienceItem } from '@/types';
 import { LockKeyhole } from 'lucide-react';
@@ -86,13 +86,13 @@ function Mark({ item }: { item: Pick<Experience, 'logo' | 'mark' | 'markIcon'> }
 }
 
 /** Employment type, workplace type and duration. Education carries no duration. */
-function Facts({ xp }: { xp: Pick<Experience, 'start' | 'end' | 'employmentType' | 'workplaceType' | 'kind' | 'hideDuration'> }) {
+function Facts({ xp }: { xp: Pick<Experience, 'start' | 'end' | 'employmentType' | 'workplaceType' | 'hideDuration'> }) {
   const months = monthsBetween(xp.start.iso, xp.end?.iso);
   return (
     <ul className="xp-facts">
       {xp.employmentType && <li>{xp.employmentType}</li>}
       {xp.workplaceType && <li>{xp.workplaceType}</li>}
-      {xp.kind !== 'education' && !xp.hideDuration && (
+      {!xp.hideDuration && (
         <li>
           <span className="sr-only">Duration: </span>
           {xp.end ? formatDuration(months) : <LiveDuration startIso={xp.start.iso} initial={formatDuration(months)} />}
@@ -102,17 +102,17 @@ function Facts({ xp }: { xp: Pick<Experience, 'start' | 'end' | 'employmentType'
   );
 }
 
-function Skills({ skills }: { skills?: string[] }) {
+function Skills({ skills, label = 'Skills' }: { skills?: string[]; label?: string }) {
   if (!skills?.length) return null;
   return (
-    <ul className="xp-skills" aria-label="Skills">
+    <ul className="xp-skills" aria-label={label}>
       {skills.map((skill) => <li key={skill}>{skill}</li>)}
     </ul>
   );
 }
 
 function Details({ id, xp, nested, defaultOpen }: { id: string; xp: Experience; nested?: boolean; defaultOpen?: boolean }) {
-  const label = xp.kind === 'education' ? 'Qualifications' : xp.projects ? 'Responsibilities & projects' : 'Responsibilities';
+  const label = xp.bulletsLabel ?? (xp.kind === 'education' ? 'Qualifications' : xp.projects ? 'Responsibilities & projects' : 'Responsibilities');
   return (
     <ExperienceCollapse id={`${id}-details`} label={label} name={xp.role} defaultOpen={defaultOpen}>
       <ul className="xp-bullets">
@@ -123,14 +123,15 @@ function Details({ id, xp, nested, defaultOpen }: { id: string; xp: Experience; 
   );
 }
 
-function Entry({ xp, id, defaultOpen }: { xp: Experience; id: string; defaultOpen?: boolean }) {
+export function Entry({ xp, id, defaultOpen, level = 3 }: { xp: Experience; id: string; defaultOpen?: boolean; level?: 3 | 4 }) {
   const org = xp.company ?? xp.description;
+  const Title = `h${level}` as const;
   return (
-    <article className="xp-entry" id={id} aria-labelledby={`${id}-title`}>
+    <article className={`xp-entry${xp.kind ? ` xp-entry--${xp.kind}` : ''}`} id={id} aria-labelledby={`${id}-title`}>
       <header className="xp-head">
         <Mark item={xp} />
         <div className="xp-head__text">
-          <h3 id={`${id}-title`}>{xp.role}</h3>
+          <Title id={`${id}-title`}>{xp.role}</Title>
           <p className="xp-meta">
             {org && <span className="xp-org">{xp.website ? <a href={xp.website} target="_blank" rel="noopener noreferrer">{org}<span className="sr-only"> (opens in a new tab)</span></a> : org}</span>}
             {org && xp.location && <span className="xp-sep" aria-hidden="true">/</span>}
@@ -139,8 +140,8 @@ function Entry({ xp, id, defaultOpen }: { xp: Experience; id: string; defaultOpe
           <Facts xp={xp} />
         </div>
       </header>
-      <Skills skills={xp.skills} />
-      <Details id={id} xp={xp} defaultOpen={defaultOpen} />
+      <Skills skills={xp.skills} label={xp.skillsLabel} />
+      <Details id={id} xp={xp} defaultOpen={defaultOpen} nested={level === 4} />
     </article>
   );
 }
@@ -201,8 +202,28 @@ export function TimelineNav() {
             </a>
           </li>
         ))}
+        <li>
+          <a href="#xp-education"><span className="xp-nav__year">{education[0]?.start.iso.slice(0, 4)}</span>Education</a>
+        </li>
       </ol>
     </nav>
+  );
+}
+
+/** Academic qualifications: a dated entry of its own, not part of the employment timeline. */
+export function EducationEntries() {
+  return (
+    <div className="xp-education__list">
+      {education.map((xp) => {
+        const id = `xp-${xp.start.iso}-${slug(xp.role)}`;
+        return (
+          <div key={id} className="xp-education__item">
+            <Period xp={xp} />
+            <Entry xp={xp} id={id} level={4} defaultOpen />
+          </div>
+        );
+      })}
+    </div>
   );
 }
 

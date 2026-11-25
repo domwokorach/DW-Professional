@@ -1,4 +1,4 @@
-import type { ExperienceItem, Period } from '@/types';
+import type { Experience, ExperienceItem, Period } from '@/types';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -15,10 +15,10 @@ export const experiences: ExperienceItem[] = [
     navLabel: 'Freelance',
     mark: 'FR',
     company: 'Freelance',
-    employmentType: 'Freelance',
+    employmentType: 'Self-employed',
     workplaceType: 'Remote',
     location: 'London Area, United Kingdom',
-    start: p('01/2026'),
+    start: p('01/2024'),
     bullets: [
       'Built modern, responsive web applications using React, TypeScript, Next.js and JavaScript, focusing on accessibility, performance and intuitive user experiences.',
       'Developed an AI-powered job tracking application designed to simplify job application management and improve workflow organisation.',
@@ -26,7 +26,7 @@ export const experiences: ExperienceItem[] = [
       'Created reusable React components and maintainable front-end architectures to support scalable application development.',
       'Applied responsive design, accessibility best practices and performance optimisation techniques across different web projects.',
     ],
-    skills: ['React', 'Next.js', 'TypeScript', 'JavaScript', 'Responsive Web Design', 'Accessibility', 'Frontend Development'],
+    skills: ['React', 'TypeScript', 'JavaScript', 'Next.js', 'Frontend Development', 'Responsive Web Design', 'Accessibility', 'UI/UX Design', 'Component Architecture', 'AI Integration', 'Performance Optimisation', 'Software Engineering'],
     projectsLabel: 'Freelance projects',
     projects: [
       { name: 'British Streaming', description: 'Developed a modern, responsive entertainment streaming web application featuring a cinematic interface for discovering films and television series, with trending content, popular titles and organised media collections.', url: 'https://british-streaming.vercel.app/', linkLabel: 'View Project — British Streaming', actionLabel: 'View Project — British Streaming (opens in a new tab)' },
@@ -40,7 +40,7 @@ export const experiences: ExperienceItem[] = [
     ],
   },
   {
-    role: 'Software Engineer Placement',
+    role: 'Software Engineer',
     navLabel: 'Sky',
     mark: 'Sky',
     logo: { src: 'https://res.cloudinary.com/dkkuwmr42/image/upload/v1794310779/Full%20Stack%20Developer/Sky_50x50_io5fjd.jpg', alt: 'Sky logo' },
@@ -50,14 +50,13 @@ export const experiences: ExperienceItem[] = [
     location: 'London Area, United Kingdom',
     start: p('06/2024'),
     end: p('08/2024'),
-    hideDuration: true,
     bullets: [
       'Developed Python-based features for catalogue, pricing and billing systems, contributing to backend application functionality.',
       'Integrated REST APIs with AWS-based microservices, gaining practical experience with distributed systems and service communication.',
       'Worked with Docker, Kubernetes and CI/CD pipelines, gaining exposure to modern software deployment practices.',
       'Collaborated within an Agile development environment, gaining hands-on experience with professional software engineering workflows.',
     ],
-    skills: ['Python', 'REST APIs', 'AWS', 'Microservices', 'Docker', 'Kubernetes', 'CI/CD', 'Jenkins', 'Pipelines', 'Agile Methodologies'],
+    skills: ['Python', 'AWS', 'REST APIs', 'Microservices', 'Docker', 'Kubernetes', 'Jenkins', 'CI/CD Pipelines', 'Agile Development'],
     projectsLabel: 'Work Learning',
     projects: [
       { name: 'Analysis — Technical Analyst', description: 'Requirements, dependencies, system understanding and impact analysis.' },
@@ -95,25 +94,33 @@ export const experiences: ExperienceItem[] = [
     ],
   },
   {
-    role: 'COVID-19 Career Break',
-    navLabel: 'COVID-19 Break',
-    markIcon: 'calendar',
-    description: 'Unemployed',
-    employmentType: 'Career Break / COVID-19 Pandemic',
-    location: 'London, United Kingdom',
-    start: p('03/2020'),
-    end: { label: '2022', iso: '2022-01' },
-    hideDuration: true,
+    kind: 'career-break',
+    role: 'Travel Specialist',
+    navLabel: 'Travel',
+    markIcon: 'globe',
+    description: 'Career Break',
+    employmentType: 'Career Break',
+    workplaceType: 'Remote',
+    location: 'International',
+    start: p('01/2022'),
+    end: p('06/2024'),
+    bulletsLabel: 'Experience',
+    skillsLabel: 'Transferable skills',
     bullets: [
-      'The COVID-19 pandemic affected employment opportunities and career progression during this period, resulting in a period of unemployment in London.',
+      'Travelled internationally, experiencing diverse cultures and environments while developing adaptability, independence and cross-cultural communication skills.',
+      'Strengthened problem-solving, organisation and decision-making skills through planning and navigating unfamiliar destinations.',
+      'Developed a broader global perspective and greater confidence working with people from different backgrounds.',
+      'Maintained an interest in software engineering and continued developing technical knowledge and skills throughout the career break.',
     ],
+    skills: ['Adaptability', 'Communication', 'Problem Solving', 'Organisation', 'Independent Learning', 'Cross-cultural Communication'],
   },
   {
     employer: 'Lloyds Banking Group',
     mark: 'LBG',
     logo: { src: 'https://res.cloudinary.com/dkkuwmr42/image/upload/v1794310779/Full%20Stack%20Developer/Lloyds_Banking_Group_50x50_sregtq.jpg', alt: 'Lloyds Banking Group logo' },
     employmentType: 'Full-time',
-    location: 'London, United Kingdom',
+    workplaceType: 'Remote',
+    location: 'London Area, United Kingdom',
     start: p('11/2014'),
     end: p('01/2020'),
     roles: [
@@ -127,7 +134,7 @@ export const experiences: ExperienceItem[] = [
           'Improved frontend usability and maintainability through component-based development, responsive design and accessibility best practices.',
           'Collaborated with cross-functional teams in an Agile environment to deliver and maintain digital banking solutions.',
         ],
-        skills: ['Software Engineering', 'Responsive Web Design', 'Accessibility', 'Frontend Development'],
+        skills: ['Software Engineering', 'Responsive Web Design', 'Accessibility', 'Frontend Development', 'UI Components', 'Agile Development'],
         projectsLabel: 'Work projects',
         projects: [
           {
@@ -163,7 +170,7 @@ export const experiences: ExperienceItem[] = [
         ],
       },
       {
-        role: 'Architecture, Methodology & Innovation, Applied Technology',
+        role: 'Architecture, Methodology & Innovation — Applied Technology',
         location: 'London Area, United Kingdom',
         start: p('03/2016'),
         end: p('09/2018'),
@@ -172,7 +179,7 @@ export const experiences: ExperienceItem[] = [
           'Designed and developed digital banking concepts, combining software engineering with UX/UI design to explore new customer experiences.',
           'Investigated emerging technologies and technical approaches, applying problem-solving and prototyping skills to digital transformation initiatives.',
         ],
-        skills: ['Python', 'D3.js', 'Neo4j', 'UI Design', 'Prototyping', 'Technology Innovation'],
+        skills: ['Python', 'D3.js', 'Neo4j', 'Graph Databases', 'AI Prototyping', 'UI/UX Design', 'Technology Innovation', 'Digital Transformation'],
         projectsLabel: 'Work projects',
         projects: [
           { name: 'Data Analytics, Data Science & Machine Learning', description: 'Python foundations supporting backend, data-analysis, data-science and machine-learning understanding.', visibility: 'confidential' },
@@ -192,7 +199,7 @@ export const experiences: ExperienceItem[] = [
           'Built reusable UI components to support consistent interface design and simplify ongoing application maintenance.',
           'Investigated and resolved frontend technical issues, contributing to improved application performance, usability and responsiveness.',
         ],
-        skills: ['Responsive Web Design', 'User Interface Design', 'Frontend Development', 'Technical Troubleshooting'],
+        skills: ['Responsive Web Design', 'User Interface Design', 'HTML', 'CSS', 'Frontend Development', 'Component Development', 'Performance Optimisation'],
         projectsLabel: 'Work projects',
         projects: [
           { name: 'UI Delivery and Transformation', description: 'Frontend testing, Jenkins/Git workflows, debugging, defect investigation and release validation for digital banking changes.', visibility: 'confidential' },
@@ -209,7 +216,7 @@ export const experiences: ExperienceItem[] = [
           'Explored DevOps practices, mobile application development and digital transformation, developing foundational technical knowledge.',
           'Strengthened problem-solving, technical troubleshooting and collaborative working skills through hands-on learning and development activities.',
         ],
-        skills: ['Problem Solving', 'Developer Tools', 'DevOps Fundamentals', 'Mobile Application Development'],
+        skills: ['Problem Solving', 'DevTools', 'DevOps', 'Mobile Application Development', 'Technical Troubleshooting', 'Digital Transformation'],
         projectsLabel: 'Work Trainee',
         projects: [
           { name: 'HR', description: 'Shadowing and organisational learning across HR and business operations.' },
@@ -221,11 +228,11 @@ export const experiences: ExperienceItem[] = [
     ],
   },
   {
-    role: 'Career Development, Leonard Cheshire Disability',
+    role: 'Career Development',
     navLabel: 'Leonard Cheshire',
     logo: { src: 'https://res.cloudinary.com/dkkuwmr42/image/upload/v1794311012/Full%20Stack%20Developer/Leonard_Cheshire_Disability_50x50_lgtwas.jpg', alt: 'Leonard Cheshire Disability logo' },
-    company: 'Leonard Cheshire',
-    employmentType: 'Indirect Contract / Career Development',
+    company: 'Leonard Cheshire Disability',
+    employmentType: 'Indirect Contract',
     workplaceType: 'Remote',
     location: 'Greater London, England, United Kingdom',
     start: p('09/2013'),
@@ -236,7 +243,7 @@ export const experiences: ExperienceItem[] = [
       'Strengthened communication, problem-solving and organisational skills through professional development activities.',
       'Built confidence, technical awareness and workplace readiness, establishing a foundation for progression into software engineering and digital transformation.',
     ],
-    skills: ['Technical Support', 'Employee Training', 'Responsive Web Design', 'Professional Development'],
+    skills: ['Technical Support', 'Employee Training', 'Responsive Web Design', 'Communication', 'Problem Solving'],
   },
   {
     role: 'Web Development Training',
@@ -244,7 +251,7 @@ export const experiences: ExperienceItem[] = [
     mark: 'LWV',
     company: 'Lion Web Vision',
     website: 'https://www.lionwebvision.com',
-    employmentType: 'Contract / Technical Training',
+    employmentType: 'Contract',
     workplaceType: 'On-site',
     location: 'West Ham, East London',
     start: p('08/2013'),
@@ -255,22 +262,27 @@ export const experiences: ExperienceItem[] = [
       'Developed practical knowledge of website deployment, maintenance and troubleshooting within a professional web development environment.',
       'Strengthened technical problem-solving skills and gained practical experience with web development workflows, establishing a foundation for further progression in software engineering.',
     ],
-    skills: ['WordPress', 'HTML', 'CSS', 'Responsive Web Design', 'Website Maintenance'],
+    skills: ['WordPress', 'HTML', 'CSS', 'Responsive Web Design', 'Content Management', 'Website Maintenance', 'Technical Troubleshooting'],
   },
+];
+
+/** Academic qualifications, shown in their own subsection rather than as employment. */
+export const education: Experience[] = [
   {
     kind: 'education',
     role: 'Ealing, Hammersmith & West London College',
     navLabel: 'Education',
     logo: { src: 'https://res.cloudinary.com/dkkuwmr42/image/upload/v1794311336/Full%20Stack%20Developer/Ealing_Hammersmith_West_London_College_50x50_dqvat2.jpg', alt: 'Ealing, Hammersmith & West London College logo' },
     description: 'Education',
-    employmentType: 'Full-time, On-site',
+    employmentType: 'Full-time',
+    workplaceType: 'On-site',
     location: 'Hammersmith, London',
     start: p('09/2005'),
     end: p('05/2009'),
     bullets: [
-      'BTEC National Diploma (Level 3) – DMM (104 UCAS points).',
-      'BTEC First Diploma – Merit.',
-      'GNVQ Foundation – Distinction.',
+      'BTEC National Diploma — Level 3 — DMM (104 UCAS points).',
+      'BTEC First Diploma — Merit.',
+      'GNVQ Foundation — Distinction.',
     ],
   },
 ];

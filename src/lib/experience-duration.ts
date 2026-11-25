@@ -13,3 +13,17 @@ export function formatDuration(months: number): string {
   const rest = months % 12;
   return [years && unit(years, 'year'), rest && unit(rest, 'month')].filter(Boolean).join(' ');
 }
+
+/** Months covered by a set of periods; overlaps (e.g. Sky vs freelance) are counted once, not summed. */
+export function totalMonths(periods: { start: string; end?: string }[], now = new Date()): number {
+  const index = (iso: string) => { const [y, m] = iso.split('-').map(Number); return y * 12 + m - 1; };
+  const nowIndex = now.getFullYear() * 12 + now.getMonth();
+  const spans = periods.map((p) => [index(p.start), p.end ? index(p.end) : nowIndex] as const).sort((a, b) => a[0] - b[0]);
+  let total = 0;
+  let [from, to] = spans[0] ?? [0, -1];
+  for (const [s, e] of spans.slice(1)) {
+    if (s <= to + 1) to = Math.max(to, e);
+    else { total += to - from + 1; [from, to] = [s, e]; }
+  }
+  return spans.length ? total + to - from + 1 : 0;
+}

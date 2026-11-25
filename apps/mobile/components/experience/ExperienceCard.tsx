@@ -1,20 +1,24 @@
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { AccessibilityInfo, LayoutAnimation, Pressable, StyleSheet, Text, View } from 'react-native';
+import { formatDuration, monthsBetween } from '@/lib/experience-duration';
 import type { Experience, ExperienceGroup, ExperienceItem } from '@/types';
 import { Badge, Body, Card } from '~/components/ui';
+import { tap } from '~/lib/haptics';
 import { openUrl } from '~/lib/links';
 import { mono, useTheme } from '~/theme';
 
 const isGroup = (e: ExperienceItem): e is ExperienceGroup => 'roles' in e;
 const range = (e: { start: { label: string }; end?: { label: string } }) => `${e.start.label} – ${e.end?.label ?? 'Present'}`;
+/** Computed from today's date for the current role, never hardcoded. */
+const duration = (e: { start: { iso: string }; end?: { iso: string }; hideDuration?: boolean }) => (e.hideDuration ? undefined : formatDuration(monthsBetween(e.start.iso, e.end?.iso)));
 
-function Mark({ logo, mark, title }: { logo?: { src: string; alt: string }; mark?: string; title: string }) {
+function Mark({ logo, mark, icon, title }: { logo?: { src: string; alt: string }; mark?: string; icon?: 'calendar' | 'globe'; title: string }) {
   const t = useTheme();
   return (
     <View style={[styles.mark, { backgroundColor: t.sand, borderColor: t.line }]}>
-      {logo ? <Image source={{ uri: logo.src }} style={styles.logo} contentFit="cover" accessibilityLabel={logo.alt} /> : <Text style={[styles.markText, { color: t.ink }]}>{(mark ?? title).slice(0, 3)}</Text>}
+      {logo ? <Image source={{ uri: logo.src }} style={styles.logo} contentFit="contain" accessibilityLabel={logo.alt} /> : icon ? <Ionicons name={icon === 'globe' ? 'globe-outline' : 'calendar-outline'} size={22} color={t.ink} accessibilityElementsHidden importantForAccessibility="no" /> : <Text style={[styles.markText, { color: t.ink }]}>{(mark ?? title).slice(0, 3)}</Text>}
     </View>
   );
 }
@@ -29,7 +33,7 @@ function RoleBody({ role }: { role: Experience }) {
           <Body style={{ flex: 1 }}>{b}</Body>
         </View>
       ))}
-      {role.skills?.length ? <View style={styles.badges}>{role.skills.map((s) => <Badge key={s}>{s}</Badge>)}</View> : null}
+      {role.skills?.length ? <View style={styles.badges} accessibilityLabel={role.skillsLabel ?? 'Skills'}>{role.skills.map((s) => <Badge key={s}>{s}</Badge>)}</View> : null}
       {role.projects?.length ? (
         <View style={{ gap: 8 }}>
           <Text style={[styles.sub, { color: t.ink }]}>{`${role.projectsLabel ?? 'Projects'} (${role.projects.length})`.toUpperCase()}</Text>
@@ -59,23 +63,31 @@ function RoleBody({ role }: { role: Experience }) {
 export default function ExperienceCard({ item }: { item: ExperienceItem }) {
   const t = useTheme();
   const [open, setOpen] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
+  useEffect(() => { void AccessibilityInfo.isReduceMotionEnabled().then(setReduceMotion); }, []);
+  const toggle = () => {
+    tap();
+    if (!reduceMotion) LayoutAnimation.configureNext(LayoutAnimation.create(220, 'easeInEaseOut', 'opacity'));
+    setOpen((v) => !v);
+  };
   const title = isGroup(item) ? item.employer : item.role;
   const subtitle = isGroup(item) ? item.roles.map((r) => r.role).join(' · ') : item.company ?? item.description;
-  const meta = isGroup(item) ? [item.employmentType, item.location] : [item.employmentType, item.workplaceType, item.location];
+  const meta = isGroup(item) ? [item.employmentType, item.workplaceType, item.location] : [item.employmentType, item.workplaceType, item.location];
+  const total = duration(item);
   return (
     <Card>
       <Pressable
         accessibilityRole="button"
         accessibilityState={{ expanded: open }}
-        accessibilityLabel={`${title}, ${range(item)}. ${open ? 'Collapse' : 'Expand'} details`}
-        onPress={() => setOpen((v) => !v)}
+        accessibilityLabel={`${title}, ${range(item)}${total ? `, ${total}` : ''}. ${open ? 'Collapse' : 'Expand'} details`}
+        onPress={toggle}
         style={styles.head}
       >
-        <Mark logo={item.logo} mark={item.mark} title={title} />
+        <Mark logo={item.logo} mark={item.mark} icon={'markIcon' in item ? item.markIcon : undefined} title={title} />
         <View style={{ flex: 1, gap: 3 }}>
           <Text style={[styles.title, { color: t.ink }]}>{title}</Text>
           {subtitle ? <Text style={[styles.subtitle, { color: t.ink2 }]}>{subtitle}</Text> : null}
-          <Text style={[styles.meta, { color: t.text2 }]}>{range(item)}</Text>
+          <Text style={[styles.meta, { color: t.text2 }]}>{total ? `${range(item)} · ${total}` : range(item)}</Text>
           <Text style={[styles.meta, { color: t.text2 }]}>{meta.filter(Boolean).join(' · ')}</Text>
         </View>
         <Ionicons name={open ? 'chevron-up' : 'chevron-down'} size={20} color={t.ink} />
@@ -83,7 +95,7 @@ export default function ExperienceCard({ item }: { item: ExperienceItem }) {
       {open ? (isGroup(item) ? <View style={{ gap: 20 }}>{item.roles.map((r) => (
         <View key={r.role + r.start.iso} style={{ gap: 8 }}>
           <Text style={[styles.title, { color: t.ink, fontSize: 17 }]}>{r.role}</Text>
-          <Text style={[styles.meta, { color: t.text2 }]}>{range(r)}</Text>
+          <Text style={[styles.meta, { color: t.text2 }]}>{`${range(r)} · ${duration(r)}`}</Text>
           <RoleBody role={r} />
         </View>
       ))}</View> : <RoleBody role={item} />) : null}

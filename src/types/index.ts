@@ -83,8 +83,12 @@ export type Experience = {
   hideDuration?: boolean;
   /** Short label for the timeline jump links; defaults to `role`. */
   navLabel?: string;
-  /** Education is presented as such, without a duration or employment details. */
-  kind?: 'education';
+  /** Education and career breaks get their own labels instead of "Responsibilities". */
+  kind?: 'education' | 'career-break';
+  /** Overrides the heading for `bullets`, e.g. "Experience" for a career break. */
+  bulletsLabel?: string;
+  /** Overrides the aria-label for `skills`, e.g. "Transferable skills". */
+  skillsLabel?: string;
 };
 
 /** One employer holding several consecutive roles, rendered as a single expandable card. */
@@ -93,6 +97,8 @@ export type ExperienceGroup = {
   logo?: { src: string; alt: string };
   mark?: string;
   employmentType: string;
+  /** e.g. "Remote", "Hybrid". */
+  workplaceType?: string;
   location: string;
   start: Period;
   end?: Period;
@@ -114,6 +120,8 @@ export type Project = {
   tech: string[];
   /** Hides the number and category label above the title (the Live badge, if any, stays). */
   hideLabel?: boolean;
+  /** Marks an entry whose details, screenshot and link are not yet available. */
+  placeholder?: boolean;
   /** Non-interactive public-facing notice for work that cannot be linked or demonstrated. */
   confidential?: boolean;
   /** Live project, opened in a new tab. */

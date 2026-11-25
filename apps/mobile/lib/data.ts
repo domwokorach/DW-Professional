@@ -3,7 +3,7 @@
 import { achievements } from '@/data/achievements';
 import { CONTACT_EMAIL, contactInfo } from '@/data/contact';
 import { coreTechGroups } from '@/data/core-tech';
-import { experiences } from '@/data/experience';
+import { education, experiences } from '@/data/experience';
 import { projects } from '@/data/projects';
 import { quickFacts } from '@/data/quick-facts';
 import { socialLinks } from '@/data/social';
@@ -11,7 +11,7 @@ import { stackIcons } from '@/data/stack-icons';
 import { testimonials } from '@/data/testimonials';
 import certificationList from '@/data/certifications.generated.json';
 
-export { achievements, CONTACT_EMAIL, contactInfo, coreTechGroups, experiences, projects, quickFacts, socialLinks, stackIcons, testimonials };
+export { achievements, CONTACT_EMAIL, contactInfo, coreTechGroups, education, experiences, projects, quickFacts, socialLinks, stackIcons, testimonials };
 
 export type CertificationItem = { id: string; name: string; url: string; issuer: string; technology: string; category: string; level?: string; issuedAt: string };
 export const certifications = certificationList as CertificationItem[];
