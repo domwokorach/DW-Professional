@@ -54,7 +54,11 @@ pipeline {
       steps {
         // Installs the root app and both workspaces (packages/*, apps/*) exactly as locked.
         // postinstall also generates both Prisma clients.
-        sh 'npm ci'
+        sh '''
+          echo "##[group]npm ci"
+          npm ci
+          echo "##[endgroup]"
+        '''
       }
     }
 
@@ -90,12 +94,24 @@ pipeline {
           if (env.TEST_DATABASE_URL) {
             // A throwaway database supplied by the Jenkins environment (never production: tests delete rows).
             withEnv(["DATABASE_URL=${env.TEST_DATABASE_URL}", "COMPANY_DATABASE_URL=${env.TEST_DATABASE_URL}"]) {
-              sh 'npm run db:deploy && npm run companies:migrate'
-              sh 'npm run test:ci'
+              sh '''
+                echo "##[group]Database migrations"
+                npm run db:deploy && npm run companies:migrate
+                echo "##[endgroup]"
+              '''
+              sh '''
+                echo "##[group]Tests"
+                npm run test:ci
+                echo "##[endgroup]"
+              '''
             }
           } else if (!hasDocker) {
             unstable('Docker is unavailable: database integration tests were skipped.')
-            sh 'npm run test:ci'
+            sh '''
+                echo "##[group]Tests"
+                npm run test:ci
+                echo "##[endgroup]"
+              '''
           } else {
             def name = "dw-ci-pg-${env.BUILD_TAG}".replaceAll('[^a-zA-Z0-9_.-]', '-')
             env.PG_CONTAINER = name
@@ -112,8 +128,16 @@ pipeline {
               "DATABASE_URL=postgresql://ci:ci@127.0.0.1:${port}/ci",
               "COMPANY_DATABASE_URL=postgresql://ci:ci@127.0.0.1:${port}/ci",
             ]) {
-              sh 'npm run db:deploy && npm run companies:migrate'
-              sh 'npm run test:ci'
+              sh '''
+                echo "##[group]Database migrations"
+                npm run db:deploy && npm run companies:migrate
+                echo "##[endgroup]"
+              '''
+              sh '''
+                echo "##[group]Tests"
+                npm run test:ci
+                echo "##[endgroup]"
+              '''
             }
           }
         }
@@ -134,11 +158,17 @@ pipeline {
 
     stage('Build web') {
       steps {
-        sh 'npm run build'
+        sh '''
+          echo "##[group]next build"
+          npm run build
+          echo "##[endgroup]"
+        '''
       }
     }
 
     stage('Validate mobile') {
+      // Fail fast instead of consuming the whole 45 minute pipeline budget if Metro stalls.
+      options { timeout(time: 15, unit: 'MINUTES') }
       steps {
         // Bundles the Expo Router app for web; fails on any Metro resolution or export error.
         sh 'npm --prefix apps/mobile run export:web'
@@ -148,8 +178,10 @@ pipeline {
     stage('Archive') {
       steps {
         sh '''
+          echo "##[group]Package build outputs"
           tar --exclude=.next/cache -czf "$REPORTS/next-build.tgz" .next
           tar -czf "$REPORTS/mobile-web-dist.tgz" -C apps/mobile dist
+          echo "##[endgroup]"
         '''
         archiveArtifacts artifacts: 'reports/ci/**', fingerprint: true, allowEmptyArchive: false
       }
