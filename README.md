@@ -16,6 +16,7 @@ DOMINIC is a production-oriented developer portfolio for Dominic Wokorach Olanya
 - Server-rendered legal, privacy, cookie and accessibility pages.
 - Hero character whose head follows the cursor (mouse) or a finger (touch), with a static forward pose under `prefers-reduced-motion`.
 - Companion Expo app for iOS, Android and web in [apps/mobile](apps/mobile/README.md), sharing this site's content data.
+- Engineering section (`src/components/engineering`) linking to the source, CI/CD pipelines, automated tests and documentation, with its own styles in `src/styles/engineering.css`.
 
 ## Technology stack
 
@@ -91,7 +92,8 @@ Open <http://localhost:3000/en-gb>. `/` redirects to the localised home route. O
 | `npm run build` | Generate icons and Prisma clients, lint/type-check through Next.js, and create the production build. |
 | `npm start` | Serve the completed production build. |
 | `npm run typecheck` | Run TypeScript without emitting files. |
-| `npm test` | Run the automated Node/TypeScript test suite. |
+| `npm test` | Run the automated Node/TypeScript test suite. See [TEST.md](TEST.md). |
+| `npm run test:ci` | Run the suite with coverage and write JUnit and LCOV reports to `reports/ci/`. |
 | `npm run package:build` | Generate the reusable design-token package from the canonical CSS source. |
 | `npm run icons` | Rebuild `src/data/stack-icons.ts` from configured Iconify identifiers. |
 | `npm run db:generate` | Generate the portfolio Prisma client. |
@@ -106,6 +108,13 @@ Open <http://localhost:3000/en-gb>. `/` redirects to the localised home route. O
 | `npm run admin -- <command>` | Manage administrator accounts and sessions from the terminal. |
 
 There is no standalone `lint` script. `next build` performs the repository's configured linting and type validation; `npm run typecheck` is available for a faster TypeScript-only check.
+
+## Continuous integration
+
+- `Jenkinsfile` runs install, Prisma generation, web and mobile typechecks, a high-severity `npm audit`, the test suite with JUnit/LCOV reports, the web build and the mobile web export, then archives artefacts under `reports/ci/`.
+- `.github/workflows/ci.yml` runs install, typecheck and the production build; `publish-package.yml` publishes the design-token package.
+
+See [TEST.md](TEST.md) for test commands, database-backed tests and known issues.
 
 ## Mobile app
 
@@ -176,7 +185,9 @@ Never expose Prisma Studio, administrator scripts, database URLs or long-lived A
 │   ├── styles/              Global tokens and section-scoped CSS
 │   ├── types/               Shared domain types
 │   └── views/               Route-level page compositions
-├── tests/                   Automated tests
+├── tests/                   Automated tests (see TEST.md)
+├── Jenkinsfile              Jenkins CI pipeline
+├── TEST.md                  Test commands, coverage and CI behaviour
 ├── COPYRIGHT.md             Ownership and third-party copyright boundaries
 ├── DESIGN.md                Design-system and component conventions
 ├── LICENSE.md               Repository licence and third-party notice
@@ -218,6 +229,7 @@ Security controls reduce risk but are not a certification. Review dependencies, 
 
 ## Additional documentation
 
+- [TEST.md](TEST.md) — test commands, test files and CI pipelines.
 - [DESIGN.md](DESIGN.md) — visual language and reusable UI conventions.
 - [COPYRIGHT.md](COPYRIGHT.md) — ownership and third-party copyright boundaries.
 - [PRIVACY.md](PRIVACY.md) — implemented data flows and documentation boundaries.
