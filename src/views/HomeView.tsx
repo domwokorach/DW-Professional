@@ -4,6 +4,7 @@ import { BackgroundOrbs, SiteHeader } from '@/components/layout';
 import { CommentsSection } from '@/components/comments';
 import { ContactSection } from '@/components/contact';
 import { AboutSection } from '@/components/developer-id';
+import { EngineeringSection } from '@/components/engineering';
 import { ExperienceSection } from '@/components/experience';
 import { HeroSection } from '@/components/hero';
 import type { AvatarAssets } from '@/components/hero/avatar/config';
@@ -26,6 +27,7 @@ export default function HomeView({ heroAvatar }: { heroAvatar?: AvatarAssets }) 
       <CommentsSection />
       <ContactSection />
       <PlatformsSection />
+      <EngineeringSection />
     </main>
   );
 }

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+	<testcase name="tests/admin-auth.test.ts" time="0.464485" classname="test" failure="test failed">
+		<failure type="testCodeFailure" message="test failed">
+[Error: test failed] { code: 'ERR_TEST_FAILURE', failureType: 'testCodeFailure', cause: 'test failed', exitCode: 1, signal: null }
+		</failure>
+	</testcase>
+	<testcase name="tests/certifications-carousel.test.ts" time="0.335720" classname="test" failure="test failed">
+		<failure type="testCodeFailure" message="test failed">
+[Error: test failed] { code: 'ERR_TEST_FAILURE', failureType: 'testCodeFailure', cause: 'test failed', exitCode: 1, signal: null }
+		</failure>
+	</testcase>
+	<testcase name="tests/clock-angles.test.ts" time="0.302172" classname="test" failure="test failed">
+		<failure type="testCodeFailure" message="test failed">
+[Error: test failed] { code: 'ERR_TEST_FAILURE', failureType: 'testCodeFailure', cause: 'test failed', exitCode: 1, signal: null }
+		</failure>
+	</testcase>
+	<testcase name="company search with PostgreSQL" time="0.000701" classname="test">
+		<skipped type="skipped" message="TEST_DATABASE_URL is not set"/>
+	</testcase>
+	<testcase name="tests/companies-live.test.ts" time="0.571495" classname="test" failure="test failed">
+		<failure type="testCodeFailure" message="test failed">
+[Error: test failed] { code: 'ERR_TEST_FAILURE', failureType: 'testCodeFailure', cause: 'test failed', exitCode: 1, signal: null }
+		</failure>
+	</testcase>
+	<testcase name="light theme token pairs meet WCAG contrast" time="0.002163" classname="test"/>
+	<testcase name="dark theme token pairs meet WCAG contrast" time="0.000157" classname="test"/>
+	<testcase name="durations match the supplied career history" time="0.000973" classname="test"/>
+	<testcase name="an active role grows from today rather than a hardcoded value" time="0.008662" classname="test"/>
+	<testcase name="total experience merges overlapping periods instead of summing them" time="0.000373" classname="test"/>
+	<testcase name="experience data lists the ongoing role first, then ended roles newest first, with Lloyds grouped" time="0.002479" classname="test"/>
+	<testcase name="accepts a correctly signed LinkedIn ID token with the published issuer" time="0.150466" classname="test"/>
+	<testcase name="rejects wrong issuer, expired token, missing issued-at and wrong nonce" time="0.005093" classname="test"/>
+	<testcase name="résumé request stores the verified company" time="0.000559" classname="test">
+		<skipped type="skipped" message="TEST_DATABASE_URL is not set"/>
+	</testcase>
+	<testcase name="résumé verification flow" time="0.002317" classname="test">
+		<skipped type="skipped" message="TEST_DATABASE_URL is not set"/>
+	</testcase>
+	<testsuite name="visitor-facing messages" time="0.004187" disabled="0" errors="0" tests="1" failures="0" skipped="0" hostname="MacBookPro.communityfibre.co.uk">
+		<testcase name="each failure has its own honest message; only unexpected statuses are generic" time="0.000957" classname="test"/>
+	</testsuite>
+	<testsuite name="Companies House rejects the API key (401)" time="0.056723" disabled="0" errors="0" tests="3" failures="0" skipped="0" hostname="MacBookPro.communityfibre.co.uk">
+		<testcase name="live search and profile lookups pause after one 401 instead of calling Companies House on every keystroke" time="0.054876" classname="test"/>
+		<testcase name="the server log names the setting to fix, once, and never contains the key" time="0.000609" classname="test"/>
+		<testcase name="a 429 or 500 is a temporary failure, not a rejected key" time="0.000921" classname="test"/>
+	</testsuite>
+	<testcase name="migrations not applied to the database in use" time="0.000056" classname="test">
+		<skipped type="skipped" message="TEST_DATABASE_URL is not set"/>
+	</testcase>
+	<testcase name="tests/resume-unit.test.ts" time="0.467513" classname="test" failure="test failed">
+		<failure type="testCodeFailure" message="test failed">
+[Error: test failed] { code: 'ERR_TEST_FAILURE', failureType: 'testCodeFailure', cause: 'test failed', exitCode: 1, signal: null }
+		</failure>
+	</testcase>
+	<!-- tests 17 -->
+	<!-- suites 6 -->
+	<!-- pass 12 -->
+	<!-- fail 5 -->
+	<!-- cancelled 0 -->
+	<!-- skipped 0 -->
+	<!-- todo 0 -->
+	<!-- duration_ms 4235.233917 -->
+</testsuites>
