@@ -46,6 +46,7 @@
     "postinstall": "prisma generate && npm run companies:generate",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test --test-concurrency=1 tests/*.test.ts",
+    "test:ci": "mkdir -p reports/ci && tsx --test --test-concurrency=1 --experimental-test-coverage --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=reports/ci/junit.xml --test-reporter=lcov --test-reporter-destination=reports/ci/lcov.info tests/*.test.ts",
     "import:certifications": "tsx scripts/import-certifications.mts",
     "resume:import": "tsx scripts/resume-import.mts",
     "resume:purge": "tsx scripts/resume-purge.mts",
@@ -102,7 +103,8 @@
     "typescript": "^5.7.0"
   },
   "overrides": {
-    "react-native-worklets": "0.13.0"
+    "react-native-worklets": "0.13.0",
+    "effect": "^3.22.5"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
