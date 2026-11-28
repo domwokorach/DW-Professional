@@ -22,7 +22,10 @@ import '@/styles/privacy.css';
 import '@/styles/portfolio-access.css';
 import '@/styles/resume.css';
 import '@/styles/platforms.css';
+import '@/styles/engineering.css';
 import '@/styles/christmas.css';
+import '@/styles/home-travel.css';
+import '@/styles/github-activity.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),

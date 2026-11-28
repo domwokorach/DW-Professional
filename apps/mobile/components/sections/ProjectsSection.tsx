@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Text, View } from 'react-native';
+import GitHubActivity from '~/components/github/GitHubActivity';
 import ProjectCard from '~/components/projects/ProjectCard';
 import { RetroButton, RetroDropdown, RetroRow, RetroSearch } from '~/components/retro';
 import { H2, SectionTag } from '~/components/ui';
@@ -39,6 +40,7 @@ export function ProjectsSection() {
           </View>
         )}
       </View>
+      <GitHubActivity />
     </View>
   );
 }

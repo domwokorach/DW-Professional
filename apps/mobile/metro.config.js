@@ -10,6 +10,10 @@ const src = path.join(repoRoot, 'src');
 const config = getDefaultConfig(projectRoot);
 
 config.watchFolders = [...(config.watchFolders ?? []), src];
+// Keep the website's build output and CI reports out of Metro's file crawl (the repo root is watched in a monorepo).
+const escape = (p) => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const ignored = ['.next', 'reports', 'generated'].map((d) => new RegExp(`^${escape(path.join(repoRoot, d))}[/\\\\].*`));
+config.resolver.blockList = [...[].concat(config.resolver.blockList ?? []), ...ignored];
 // Resolve packages from the app first so React/React Native never come from a different copy.
 config.resolver.nodeModulesPaths = [path.join(projectRoot, 'node_modules'), path.join(repoRoot, 'node_modules')];
 

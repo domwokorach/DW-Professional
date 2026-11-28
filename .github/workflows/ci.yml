@@ -1,0 +1,67 @@
+
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: TypeScript, Tests and Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript validation
+        id: typecheck
+        run: npm run typecheck
+
+      - name: Automated testing
+        id: tests
+        run: |
+          mkdir -p reports
+          npm test 2>&1 | tee reports/test-results.txt
+        shell: bash
+
+      - name: Production build
+        id: build
+        run: npm run build
+
+      - name: Upload test evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: automated-test-results
+          path: reports/
+          retention-days: 30
+
+      - name: Engineering summary
+        if: ${{ always() }}
+        run: |
+          echo "## Engineering Verification" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Commit: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+          echo "- TypeScript: ${{ steps.typecheck.outcome }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Tests: ${{ steps.tests.outcome }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Production build: ${{ steps.build.outcome }}" >> "$GITHUB_STEP_SUMMARY"

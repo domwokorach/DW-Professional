@@ -16,3 +16,5 @@ import '../../../src/styles/privacy.css';
 import '../../../src/styles/resume.css';
 import '../../../src/styles/platforms.css';
 import '../../../src/styles/christmas.css';
+import '../../../src/styles/home-travel.css';
+import '../../../src/styles/github-activity.css';

@@ -57,3 +57,6 @@ apps/mobile/dist/
 apps/mobile/.expo/
 apps/mobile/.expo/
 apps/mobile/expo-env.d.ts
+
+# Jenkins CI output (JUnit, lcov, audit, bundles)
+reports/ci/

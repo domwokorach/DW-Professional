@@ -1,0 +1,75 @@
+/* /studio — scoped warm-stationery landing page. Blue is used for type, rules and drawn lines only. */
+.studio{--g:#EFE9DD;--g2:#E5DED0;--ink:#141C2B;--ink2:#4A5364;--mut:#767E8C;--blue:#2C4A8F;--hair:rgba(20,28,43,.16);
+  --serif:var(--studio-serif),Georgia,serif;--mono:var(--studio-mono),"Courier New",monospace;
+  background:var(--g);color:var(--ink);font:400 12px/1.9 var(--mono);letter-spacing:.08em;position:relative;overflow-x:clip}
+.studio *{border-radius:0;box-sizing:border-box}
+.studio h1,.studio h2{font-family:var(--serif);font-weight:500;letter-spacing:-.02em;line-height:1.08;margin:0}
+.studio em{font-style:italic;color:var(--blue)}
+.studio h2{font-size:clamp(28px,3.6vw,52px)}
+.studio a{text-decoration:none}
+.studio :focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+
+.studio-product{position:fixed;left:0;top:0;height:62vh;width:auto;z-index:5;pointer-events:none;visibility:hidden;opacity:0;
+  filter:drop-shadow(0 18px 22px rgba(20,28,43,.28));will-change:transform,opacity}
+@media(prefers-reduced-motion:reduce){.studio-product{display:none}}
+
+.studio-nav{position:fixed;inset:0 0 auto 0;height:58px;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 clamp(16px,4vw,56px);
+  background:rgba(239,233,221,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--hair)}
+.studio-logo{font:500 19px/1 var(--serif);letter-spacing:-.02em}
+.studio-logo span{color:var(--blue)}
+.studio-links{display:flex;gap:28px;text-transform:uppercase;font-size:11px}
+.studio-links a{transition:color .2s}
+.studio-links a:hover{color:var(--blue)}
+@media(max-width:860px){.studio-links{display:none}}
+
+.studio .btn{display:inline-flex;align-items:center;min-height:40px;padding:0 20px;border:1px solid var(--ink);background:transparent;color:var(--ink);
+  font:700 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:color .2s,border-color .2s}
+.studio .btn:hover{color:var(--blue);border-color:var(--blue)}
+.studio .btn-solid{background:var(--ink);color:var(--g)}
+.studio .btn-solid:hover{background:var(--ink);color:var(--g);border-color:var(--blue);outline:1px solid var(--blue)}
+.studio .btn-row{display:flex;flex-wrap:wrap;gap:12px}
+.studio .kicker{text-transform:uppercase;font-size:11px;color:var(--ink2);margin:0 0 20px}
+.studio .lede{color:var(--ink2);max-width:46ch;margin:20px 0 28px}
+
+.studio-hero{min-height:calc(100svh - 58px);margin-top:58px;background:var(--g2);overflow:hidden;display:flex;flex-direction:column;position:relative}
+.studio .hero-copy{max-width:46vw;padding:clamp(32px,7vh,88px) clamp(16px,4vw,56px) 0}
+@media(max-width:860px){.studio .hero-copy{max-width:100%}}
+.studio-hero h1{font-size:clamp(32px,4.6vw,68px)}
+.studio .hero-specs{margin:auto 0 0;display:flex;gap:clamp(20px,5vw,64px);padding:16px clamp(16px,4vw,56px);border-top:1px solid var(--hair);position:relative;z-index:1}
+.studio .hero-specs div{display:flex;flex-direction:column}
+.studio .hero-specs dt,.studio .demo-facts dt{text-transform:uppercase;font-size:11px;color:var(--mut)}
+.studio .hero-specs dd,.studio .demo-facts dd{margin:0;font-weight:700}
+
+.studio .wordmark{display:flex;justify-content:space-between;width:102%;margin-left:-1%;font:500 clamp(80px,21vw,340px)/.8 var(--serif);letter-spacing:-.04em;
+  color:var(--ink);transform:translateY(.14em);user-select:none;pointer-events:none}
+.studio .wm-letter{display:inline-block;transform:translate(var(--dx,0),var(--dy,0))}
+.studio.motion-ok .studio-hero .wm-letter{opacity:0;transition:opacity .9s ease,transform .12s linear}
+.studio.motion-ok.wm-loaded .studio-hero .wm-letter{opacity:1}
+
+.studio-section{padding:clamp(72px,12vh,140px) clamp(16px,4vw,56px)}
+.studio .two-col{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:clamp(24px,6vw,96px);align-items:start}
+@media(max-width:860px){.studio .two-col{grid-template-columns:1fr}}
+.studio .rows{list-style:none;margin:0;padding:0;border-top:1px solid var(--hair)}
+.studio .row{display:grid;grid-template-columns:8rem 1fr auto;gap:16px;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--hair)}
+.studio .row-label{text-transform:uppercase;font-size:11px;color:var(--blue)}
+.studio .row-text{color:var(--ink2)}
+.studio .row-value{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+@media(max-width:560px){.studio .row{grid-template-columns:1fr auto}.studio .row-text{grid-column:1/-1;order:3}}
+
+.studio .variant-row{display:flex;flex-wrap:wrap;gap:12px;margin:32px 0 20px}
+.studio .variant-btn{min-height:40px;padding:0 20px;border:1px solid var(--hair);background:transparent;color:var(--ink2);font:700 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:color .2s,border-color .2s}
+.studio .variant-btn:hover{color:var(--blue)}
+.studio .variant-btn[aria-pressed="true"]{color:var(--blue);border-color:var(--blue);box-shadow:inset 0 -2px 0 var(--blue)}
+.studio .demo-panel{border:1px solid var(--hair);background:var(--g2);padding:clamp(12px,3vw,40px);color:var(--blue)}
+.studio .demo-panel svg{display:block;width:100%;height:auto}
+.studio .demo-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0 0}
+.studio .demo-facts div{border-top:1px solid var(--hair);padding-top:12px}
+
+.studio-close{padding:clamp(72px,12vh,140px) 0 0;overflow:hidden;background:var(--g2)}
+.studio .close-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:32px;padding:0 clamp(16px,4vw,56px) clamp(48px,8vh,96px)}
+.studio .fine{color:var(--mut);font-size:11px;margin:20px 0 0}
+.studio .close-strip{display:flex;justify-content:space-between;padding:14px clamp(16px,4vw,56px);border-top:1px solid var(--hair);font-size:11px;text-transform:uppercase;color:var(--mut)}
+
+/* Entry reveals: only exist once motion is confirmed OK, fire once, never un-reveal. */
+.studio.motion-ok .reveal{opacity:0;transform:translateY(14px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1)}
+.studio.motion-ok .reveal.is-in{opacity:1;transform:none}
