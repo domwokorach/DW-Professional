@@ -1,0 +1,28 @@
+/* Hand-ported from the Aceternity UI Terminal; the terminal is dark in both site themes, like a real macOS terminal. */
+.term{--term-bg:#16151f;--term-bar:#201f2c;--term-line:rgba(255,255,255,.1);--term-fg:#d6d4e2;--term-muted:#8f8ca6;--term-ok:#5fd08f;--term-cmd:#7ee0b0;--term-arg:#8fd3f4;--term-str:#f2cf86;--term-num:#c4a4f2;--term-path:#7fd8d4;width:100%;max-width:100%;min-width:0;font-family:var(--font-mono)}
+.term__window{overflow:hidden;border-radius:var(--radius-md);border:1px solid var(--term-line);background:var(--term-bg);box-shadow:0 14px 34px -18px rgba(0,0,0,.55)}
+.term__bar{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--term-bar);border-bottom:1px solid var(--term-line)}
+.term__dots{display:flex;gap:7px;flex:none}
+.term__dots i{width:11px;height:11px;border-radius:50%}
+.term__dots i:nth-child(1){background:#ff5f57}.term__dots i:nth-child(2){background:#febc2e}.term__dots i:nth-child(3){background:#28c840}
+.term__title{flex:1;min-width:0;margin-right:46px;text-align:center;font-size:12px;color:var(--term-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.term__body{height:300px;max-height:60svh;overflow:auto;overscroll-behavior:contain;padding:14px 16px;font-size:13px;line-height:1.65;color:var(--term-fg)}
+.term__line{white-space:pre-wrap;overflow-wrap:anywhere}
+.term__line--output,.term__line--blank{animation:term-in .22s ease-out both}
+.term__prompt{color:var(--term-muted)}
+.term__tok--command{color:var(--term-cmd)}.term__tok--flag{color:var(--term-arg)}.term__tok--string{color:var(--term-str)}.term__tok--number{color:var(--term-num)}.term__tok--path{color:var(--term-path)}
+.term__tag{margin-right:.6ch}
+.term__tag--ok{color:var(--term-ok);font-weight:600}.term__tag--info{color:var(--term-muted)}
+.term__msg--info{color:var(--term-muted)}
+.term__cursor{display:inline-block;width:.55em;height:1.1em;margin-left:2px;vertical-align:text-bottom;background:var(--term-fg)}
+.term__cursor.is-blinking{animation:term-blink 1.06s steps(1) infinite}
+.term__controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:12px}
+.term__btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;min-width:44px;padding:0 16px;font:inherit;font-size:12px;letter-spacing:.06em;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:var(--radius-pill);cursor:pointer;transition:background-color .2s,border-color .2s}
+.term__btn:hover:not(:disabled){background:var(--sand);border-color:var(--ink)}
+.term__btn:focus-visible{outline:var(--focus-ring);outline-offset:3px}
+.term__btn:disabled{opacity:.5;cursor:not-allowed}
+.term__note{margin:12px 0 0;font-size:12px;line-height:1.5;color:var(--text-3)}
+@keyframes term-in{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+@keyframes term-blink{50%{opacity:0}}
+@media(max-width:600px){.term__body{height:240px;padding:12px;font-size:12px}.term__title{margin-right:0}}
+@media(prefers-reduced-motion:reduce){.term__line--output,.term__line--blank{animation:none}.term__cursor.is-blinking{animation:none}.term__btn{transition:none}}

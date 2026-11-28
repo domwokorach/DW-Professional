@@ -194,6 +194,7 @@ export const experiences: ExperienceItem[] = [
           { name: 'UI Delivery and Transformation', description: 'Frontend testing, Jenkins/Git workflows, debugging, defect investigation and release validation for digital banking changes.', visibility: 'confidential' },
           { name: 'HTML Email', description: 'Internal HTML email template development and communication support across Lloyds Banking Group.', visibility: 'confidential' },
         ],
+        preview: 'ui-transformation-terminal',
       },
       {
         role: 'Trainee Digital Transformation',

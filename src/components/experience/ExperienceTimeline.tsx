@@ -9,6 +9,7 @@ import ExperienceCollapse from './ExperienceCollapse';
 import LiveDuration from './LiveDuration';
 import LogoMark from './LogoMark';
 import ProjectVideo from './ProjectVideo';
+import UITransformationTerminalPreview from './UITransformationTerminalPreview';
 import TimelineNavLinks, { type TimelineNavItem } from './TimelineNav';
 import ProjectImagePreview from './ProjectImagePreview';
 import WorkLearningGallery from './WorkLearningGallery';
@@ -104,6 +105,17 @@ function Facts({ xp, progression }: { xp: Pick<Experience, 'start' | 'end' | 'em
   );
 }
 
+function Preview({ id, nested }: { id: string; nested?: boolean }) {
+  const headingId = `${id}-preview`;
+  const Label = nested ? 'h5' : 'h4';
+  return (
+    <section className="xp-preview" aria-labelledby={headingId}>
+      <Label className="xp-label" id={headingId}>Preview <span aria-hidden="true">· Interactive developer terminal</span></Label>
+      <UITransformationTerminalPreview />
+    </section>
+  );
+}
+
 function Skills({ skills, label = 'Skills' }: { skills?: string[]; label?: string }) {
   if (!skills?.length) return null;
   return (
@@ -121,6 +133,7 @@ function Details({ id, xp, nested, defaultOpen }: { id: string; xp: Experience; 
         {xp.bullets.map((b) => <li key={b}>{b}</li>)}
       </ul>
       {xp.projects && <Projects id={id} label={xp.projectsLabel ?? 'Projects'} projects={xp.projects} gallery={xp.projectGallery} nested={nested} />}
+      {xp.preview === 'ui-transformation-terminal' && <Preview id={id} nested={nested} />}
     </ExperienceCollapse>
   );
 }

@@ -89,6 +89,8 @@ export type Experience = {
   bulletsLabel?: string;
   /** Overrides the aria-label for `skills`, e.g. "Transferable skills". */
   skillsLabel?: string;
+  /** Illustrative interactive preview shown beneath the responsibilities and projects. */
+  preview?: 'ui-transformation-terminal';
 };
 
 /** One employer holding several consecutive roles, rendered as a single expandable card. */
