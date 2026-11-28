@@ -88,7 +88,14 @@ export const projects: Project[] = [
     headline: 'A UK-focused streaming experience for films and series.',
     description: [
       'Developed a modern, responsive entertainment streaming interface for discovering films and television series, featuring a cinematic hero section, trending content, popular titles and organised media collections.',
-      'Key features include a cinematic homepage with featured content, trending and top-rated collections, interactive media cards and browsing layouts, and a responsive interface across desktop, tablet and mobile.',
+    ],
+    features: [
+      'Cinematic homepage.',
+      'Featured entertainment content.',
+      'Trending and top-rated collections.',
+      'Interactive media cards.',
+      'Organised browsing layouts.',
+      'Responsive desktop, tablet and mobile interfaces.',
     ],
     category: 'Streaming & Entertainment',
     focus: ['Web Application', 'Entertainment', 'Responsive Design'],

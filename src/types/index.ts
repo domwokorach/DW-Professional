@@ -118,6 +118,8 @@ export type Project = {
   category: string;
   focus: string[];
   tech: string[];
+  /** Optional key features, listed in the expanded project view. */
+  features?: string[];
   /** Hides the number and category label above the title (the Live badge, if any, stays). */
   hideLabel?: boolean;
   /** Marks an entry whose details, screenshot and link are not yet available. */

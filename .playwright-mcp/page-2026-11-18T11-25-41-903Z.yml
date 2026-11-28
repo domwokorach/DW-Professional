@@ -1,0 +1,14 @@
+- main [ref=f3e2]:
+  - generic [ref=f3e3]:
+    - heading "Sign in to Jenkins" [level=1] [ref=f3e5]
+    - generic [ref=f3e6]:
+      - generic [ref=f3e7]:
+        - generic [ref=f3e8]: Username
+        - textbox "Username" [active] [ref=f3e9]
+      - generic [ref=f3e10]:
+        - generic [ref=f3e11]: Password
+        - textbox "Password" [ref=f3e12]
+      - generic [ref=f3e13]:
+        - checkbox "Keep me signed in" [ref=f3e14]
+        - generic [ref=f3e15] [cursor=pointer]: Keep me signed in
+      - button "Sign in" [ref=f3e16] [cursor=pointer]
