@@ -64,3 +64,6 @@ playwright-report/
 test-results/
 .next-test/
 .next-dev2/
+
+# Playwright MCP browser-tool output (screenshots and page snapshots)
+.playwright-mcp/
