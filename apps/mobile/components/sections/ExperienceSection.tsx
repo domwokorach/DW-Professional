@@ -8,7 +8,7 @@ const key = (e: (typeof experiences)[number]) => ('role' in e ? e.role + e.start
 export function ExperienceSection() {
   return (
     <View>
-      <SectionTag num="05" label="EXPERIENCE" />
+      <SectionTag num="05" label="EMPLOYER HISTORY" />
       <H2 em="journey.">{'My professional '}</H2>
       <Body style={{ marginTop: 12 }}>A journey through software engineering, digital transformation, technology innovation and continuous professional development — building accessible, scalable and meaningful digital experiences.</Body>
       <View style={{ gap: 14, marginTop: 20 }}>

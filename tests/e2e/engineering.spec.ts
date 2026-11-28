@@ -19,7 +19,8 @@ test.describe('engineering section', () => {
     );
     expect(links.length).toBeGreaterThanOrEqual(15);
     for (const l of links) {
-      expect(l.href).toMatch(/^https:\/\/github\.com\/domwokorach\/DW-Professional(\/|$)/);
+      // Card and button links are exact repository URLs. The live panel may also link the real deployment GitHub reports.
+      expect(l.href).toMatch(/^https:\/\/(github\.com\/domwokorach\/DW-Professional(\/|$)|[a-z0-9-]+\.vercel\.app\/)/);
       expect(l.target).toBe('_blank');
       expect(l.rel).toContain('noopener');
     }
