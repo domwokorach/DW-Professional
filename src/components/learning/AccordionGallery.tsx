@@ -44,7 +44,7 @@ export default function AccordionGallery() {
             ref={(button) => { buttons.current[index] = button; }}
             type="button"
             className={`achievement-accordion__panel${selected ? ' is-active' : ''}`}
-            aria-label={`${item.label}, photograph ${index + 1} of ${achievements.length}`}
+            aria-label={`${String(index + 1).padStart(2, '0')} / 15 ${item.label}`}
             aria-pressed={selected}
             onMouseEnter={() => setActive(index)}
             onFocus={() => setActive(index)}
@@ -64,7 +64,7 @@ export default function AccordionGallery() {
             />
             <span className="achievement-accordion__shade" aria-hidden="true" />
             <span className="achievement-accordion__caption" aria-hidden="true">
-              <span className="achievement-accordion__number">{String(index + 1).padStart(2, '0')} / 15</span>
+              <span className="achievement-accordion__number">{String(index + 1).padStart(2, '0')} / 15</span>{' '}
               <span className="achievement-accordion__name">{item.label}</span>
             </span>
           </button>

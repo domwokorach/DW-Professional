@@ -57,3 +57,10 @@ apps/mobile/dist/
 apps/mobile/.expo/
 apps/mobile/.expo/
 apps/mobile/expo-env.d.ts
+
+# Test, coverage and browser-test output (generated)
+reports/
+playwright-report/
+test-results/
+.next-test/
+.next-dev2/

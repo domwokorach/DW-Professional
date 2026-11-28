@@ -1,6 +1,18 @@
 import type { NextConfig } from 'next';
+
+const securityHeaders = [
+  { key: 'X-Content-Type-Options', value: 'nosniff' },
+  { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  { key: 'Permissions-Policy', value: 'camera=(self), microphone=(), geolocation=(), payment=(), usb=()' },
+  { key: 'Strict-Transport-Security', value: 'max-age=31536000' },
+];
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Opt-in: lets CI and local test runs build into a separate folder without touching a running `next dev`.
+  // Unset (Vercel, normal development) it is the default `.next`.
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   // The portfolio lives at /en-gb. Temporary (307) for now; switch to permanent once the domain
   // setup is final, since browsers cache permanent redirects indefinitely.
   async redirects() {
@@ -24,7 +36,13 @@ const nextConfig: NextConfig = {
   // reaches visitors within a day without the browser re-downloading unchanged files on every visit.
   async headers() {
     const cache = [{ key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' }];
-    return ['/images/:path*', '/hero-poses/:path*', '/draco/:path*', '/certifications/:path*'].map((source) => ({ source, headers: cache }));
+    return [
+      // Baseline hardening for every response. The camera is used by the portfolio-access attachment capture, so it
+      // stays available to this origin only. A Content-Security-Policy is not set yet: the inline theme script and
+      // third-party media need a nonce-based policy tested in report-only mode first (see SECURITY.md).
+      { source: '/((?!admin|api/admin).*)', headers: securityHeaders }, // admin routes get their own (stricter) headers in src/proxy.ts
+      ...['/images/:path*', '/hero-poses/:path*', '/draco/:path*', '/certifications/:path*'].map((source) => ({ source, headers: cache })),
+    ];
   },
   images: {
     // AVIF where supported (usually smaller than WebP), WebP otherwise.

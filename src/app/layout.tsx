@@ -23,6 +23,7 @@ import '@/styles/portfolio-access.css';
 import '@/styles/resume.css';
 import '@/styles/platforms.css';
 import '@/styles/github.css';
+import '@/styles/engineering.css';
 import '@/styles/christmas.css';
 
 export const metadata: Metadata = {

@@ -9,7 +9,8 @@
 // - no dragging/flicking (not useful in a nav bar), no icons, styles in project CSS (`rs-*`)
 // - `aria-current` marks the current item; the thumb is decorative
 // - under prefers-reduced-motion the thumb moves without stretch or spring
-import { animate, motion, useMotionValue, useReducedMotion, useTransform } from "motion/react";
+import { animate, motion, useMotionValue, useTransform } from "motion/react";
+import { useReducedMotionSafe } from "@/hooks/use-reduced-motion-safe";
 import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 
 export type RubberSegmentItem = { value: string; label: string };
@@ -42,7 +43,7 @@ export function RubberSegment({
   /** `aria-current` value for the current item. */
   current?: "page" | "location" | "true";
 }) {
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotionSafe();
   const trackRef = useRef<HTMLDivElement>(null);
   const itemEls = useRef<(HTMLButtonElement | null)[]>([]);
   const slots = useRef<Slot[]>([]);

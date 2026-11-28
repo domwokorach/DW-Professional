@@ -1,0 +1,80 @@
+name: Security
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  schedule:
+    - cron: '17 5 * * 1' # weekly: new advisories appear without any code change
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Verify registry signatures and provenance
+        run: npm audit signatures
+      - name: Block on critical production vulnerabilities
+        run: npm audit --omit=dev --audit-level=critical
+      - name: Report all production vulnerabilities
+        # Visible in the job summary. Not blocking: the remaining high findings (see SECURITY.md) can only be
+        # "fixed" by downgrading Prisma, which is a breaking change that must not be applied with --force.
+        continue-on-error: true
+        run: |
+          {
+            echo '### npm audit (production dependencies)'
+            echo '```'
+            npm audit --omit=dev || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  secrets:
+    name: Repository hygiene
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: No environment files are tracked (only .env.example)
+        run: |
+          tracked="$(git ls-files | grep -E '(^|/)\.env(\..+)?$' | grep -v '^\.env\.example$' || true)"
+          if [ -n "$tracked" ]; then echo "Tracked environment files:"; echo "$tracked"; exit 1; fi
+      - name: No private keys or cloud credentials in tracked files
+        run: |
+          if git grep -nIE -e '-----BEGIN (RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----' -e 'AKIA[0-9A-Z]{16}' -e 'gh[pousr]_[A-Za-z0-9]{36,}' -e 'sk_live_[A-Za-z0-9]{20,}' -- . ':!package-lock.json'; then
+            echo "Possible secret committed. Rotate it, then remove it from history."; exit 1
+          fi
+
+  dependency-review:
+    name: Dependency review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/dependency-review-action@bbc44d14a204704ccc493733616cd1e93a0321ec # v5.0.1
+        with:
+          fail-on-severity: high

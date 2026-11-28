@@ -2,11 +2,11 @@
 
 import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
+import { useMediaQuery } from '@/hooks';
+import { media } from '@/config';
 
 // cobe (and react-spring, which the globe uses) load only when the globe nears the viewport.
 const Cobe = dynamic(() => import('@/components/ui/cobe-globe').then((m) => m.Cobe), { ssr: false });
-import { useMediaQuery } from '@/hooks';
-import { media } from '@/config';
 
 /*
  * Cobe only takes hex colours, so it can't read var(--contact-dark) directly. Instead the globe is

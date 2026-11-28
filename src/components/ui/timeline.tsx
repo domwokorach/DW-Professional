@@ -8,11 +8,11 @@
 // - progress line is hidden under prefers-reduced-motion
 // - entries reveal once on scroll (opacity/translate), only after JS runs
 import {
-  useReducedMotion,
   useScroll,
   useTransform,
   motion,
 } from "motion/react";
+import { useReducedMotionSafe } from "@/hooks/use-reduced-motion-safe";
 import React, { useEffect, useRef, useState } from "react";
 
 export interface TimelineEntry {
@@ -27,7 +27,7 @@ export const Timeline = ({ data }: { data: TimelineEntry[] }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
   const [reveal, setReveal] = useState(false);
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotionSafe();
 
   useEffect(() => {
     const el = ref.current;

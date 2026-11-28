@@ -1,0 +1,52 @@
+name: Deployment verification
+
+# After Vercel reports a successful PRODUCTION deployment, smoke-test the real deployed URL.
+# Only the repository's own default-branch code runs here; nothing from a pull request, and no secrets.
+# Preview deployments sit behind Vercel Deployment Protection, so they are not probed from here.
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'Deployed base URL to verify'
+        required: false
+        default: 'https://www.dominicwokorach.me'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deployment-verification
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    name: Smoke test
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PLAYWRIGHT_BASE_URL: ${{ github.event_name == 'workflow_dispatch' && inputs.url || github.event.deployment_status.target_url }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Smoke tests against ${{ env.PLAYWRIGHT_BASE_URL }}
+        run: npx playwright test --project=smoke
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: smoke-reports
+          path: |
+            playwright-report/
+            test-results/
+            reports/junit/e2e.xml
+          if-no-files-found: error

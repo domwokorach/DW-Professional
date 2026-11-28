@@ -9,7 +9,7 @@
 .legal-header a:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:999px}
 .legal-page{padding:48px 7vw 110px}
 .legal-article{max-width:720px;margin:0 auto}
-.legal-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;margin:0;opacity:.65}
+.legal-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;margin:0;opacity:.85}
 .legal-article h1{font-size:clamp(44px,6vw,80px);line-height:.92;letter-spacing:-.055em;margin:18px 0 14px}
 .legal-article h1 em{font-family:Georgia,serif;font-weight:400}
 .legal-updated{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--muted);margin:0 0 40px}

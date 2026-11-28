@@ -5,12 +5,12 @@ import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from '@/hooks';
 import { HERO_BODY, HERO_HEAD_CENTRE, HERO_HEADS, HERO_LOOK_FADE, HERO_LOOK_ZONES, heroAlt, media, type HeroLook } from '@/config';
-// Loaded only when a valid avatar model exists: its lip-sync code pulls in three.js, which
-// would otherwise land in every visitor's initial bundle.
-const HeroAvatar = dynamic(() => import('./avatar/HeroAvatar'), { ssr: false });
 import type { AvatarAssets } from './avatar/config';
 import HeroRig from './HeroRig';
 import { HERO_RIG_DIR, isHeroRigManifest, type HeroRigManifest } from '@/config/hero-rig';
+// Loaded only when a valid avatar model exists: its lip-sync code pulls in three.js, which
+// would otherwise land in every visitor's initial bundle.
+const HeroAvatar = dynamic(() => import('./avatar/HeroAvatar'), { ssr: false });
 
 const HERO_SIZES = '(max-width: 720px) 60vw, (max-width: 1050px) 45vw, 30vw';
 /** The head box is 52% of the body's width. */

@@ -55,7 +55,7 @@ export default function WorkLearningGallery({ images }: { images: ExperienceImag
     else previous();
   };
 
-  const useFallback = (element: HTMLImageElement, fallbackSrc: string) => {
+  const applyFallback = (element: HTMLImageElement, fallbackSrc: string) => {
     element.removeAttribute('srcset');
     if (element.src !== fallbackSrc) element.src = fallbackSrc;
   };
@@ -78,7 +78,7 @@ export default function WorkLearningGallery({ images }: { images: ExperienceImag
             height={item.height}
             loading="lazy"
             decoding="async"
-            onError={(event) => useFallback(event.currentTarget, item.fallbackSrc)}
+            onError={(event) => applyFallback(event.currentTarget, item.fallbackSrc)}
           />
           <span className="xp-gallery__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
         </button>
@@ -108,7 +108,7 @@ export default function WorkLearningGallery({ images }: { images: ExperienceImag
               alt={image.alt}
               width={image.width}
               height={image.height}
-              onError={(event) => useFallback(event.currentTarget, image.fallbackSrc)}
+              onError={(event) => applyFallback(event.currentTarget, image.fallbackSrc)}
             />
             <button type="button" className="xp-gallery-lightbox__nav xp-gallery-lightbox__nav--next" onClick={next} aria-label="Next image">→</button>
           </div>

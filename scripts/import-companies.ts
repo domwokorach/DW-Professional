@@ -86,7 +86,7 @@ async function main() {
     console.log(`Processed: ${n(stats.read)}  ${dryRun ? 'Valid' : 'Imported'}: ${n(stats.imported)}  Skipped: ${n(skippedCount())}  Errors: 0`);
 
   let batch: CompanyRow[] = [];
-  let sample: CompanyRow[] = [];
+  const sample: CompanyRow[] = [];
   const flush = async () => {
     if (!batch.length) return;
     if (prisma) stats.imported += await upsertCompanies(prisma, batch);

@@ -119,7 +119,7 @@ export default function LinkedInConnect({
             {busy === 'redirecting' ? 'Opening LinkedIn…' : 'Continue with LinkedIn'}
           </button>
           <p className="pa-note pa-li__hint" id="pa-li-hint">
-            Optional. Shares your LinkedIn name and email; what you've typed here is kept while you sign in.
+            Optional. Shares your LinkedIn name and email; what you&apos;ve typed here is kept while you sign in.
             {attachmentPending && <> Your attachment will need adding again afterwards.</>}
           </p>
         </>

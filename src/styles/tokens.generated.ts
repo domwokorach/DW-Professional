@@ -24,7 +24,7 @@ export const lightTokens = {
   "text-3": "#4f4c47",
   "text-4": "#6e6b69",
   "legal-body": "#4f4c58",
-  "live": "#2f7a4c",
+  "live": "#2a7048",
   "orb-1": "#fff4a8",
   "orb-2": "#d8d0ff",
   "orb-opacity": ".22",

@@ -57,7 +57,7 @@ export default function ProjectCard({ project: p, index }: { project: Project; i
             href={p.url}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`View ${p.title} live project (opens in a new tab)`}
+            aria-label={`${p.linkLabel ?? 'View project'}: ${p.title} live project (opens in a new tab)`}
             icon={LinkIcon}
             iconSize={14}
           >

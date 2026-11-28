@@ -39,7 +39,7 @@
 @media(max-width:860px){.contact-globe{--globe-w:400px;opacity:.18}}
 @media(max-width:720px){.contact-globe{--globe-w:300px;top:-10px;right:-100px;opacity:.16}}
 .contact-section .section-tag{color:var(--contact-dark)}
-.contact-section .section-tag span{color:var(--contact-dark);opacity:.55;border:1px solid var(--contact-border);border-radius:6px;padding:4px 7px}
+.contact-section .section-tag span{color:var(--contact-dark);opacity:.8;border:1px solid var(--contact-border);border-radius:6px;padding:4px 7px}
 .contact-section .section-tag i{background:var(--contact-dark);opacity:.35}
 
 .contact-layout{display:grid;grid-template-columns:minmax(280px,.7fr) minmax(0,1.3fr);gap:clamp(48px,7vw,110px);align-items:start}

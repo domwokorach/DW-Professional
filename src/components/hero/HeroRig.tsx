@@ -27,7 +27,7 @@ export default function HeroRig({ manifest, trackArea, tracking, still }: { mani
   useEffect(() => {
     const root = rootRef.current, head = headRef.current, eyes = eyesRef.current, lids = lidsRef.current;
     if (!root || !head || !eyes || !lids || still) return;
-    const { width, height, pivot, eyeTravel } = manifest;
+    const { width, height, eyeTravel } = manifest;
     const L = HERO_RIG_LIMITS;
     // Pointer → look target in -1…1 (x right, y down).
     const aim = { x: 0, y: 0 }, headAim = { x: 0, y: 0 };

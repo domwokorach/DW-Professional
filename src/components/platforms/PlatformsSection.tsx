@@ -29,7 +29,7 @@ const platforms: { name: string; icon: ReactNode; devices: string; text: string;
     text: 'The live portfolio, in any modern browser. No install needed.',
     cta: 'Open Website',
     href: WEBSITE,
-    label: 'Open the portfolio website',
+    label: 'Open Website: the DW portfolio website',
     external: false,
   },
   {

@@ -43,7 +43,7 @@ export type PublicComment = {
 export type CommentStatusValue = 'PENDING' | 'APPROVED' | 'REJECTED';
 
 // Control characters (except tab/newline), zero-width and bidi-override characters: invisible, never wanted.
-// eslint-disable-next-line no-control-regex
+ 
 const INVISIBLE = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F​-‏‪-‮⁠-⁤﻿]/g;
 /** Anything that looks like an HTML/XML tag or comment. */
 const MARKUP = /<\s*\/?\s*[a-z!?][^>]*>|<!--/i;

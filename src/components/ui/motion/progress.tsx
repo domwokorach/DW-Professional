@@ -9,7 +9,8 @@
 import * as React from "react";
 
 import { Progress as ProgressPrimitive } from "@base-ui/react/progress";
-import { type Transition, motion, useReducedMotion } from "motion/react";
+import { type Transition, motion, } from "motion/react";
+import { useReducedMotionSafe } from "@/hooks/use-reduced-motion-safe";
 
 const cn = (...classes: (string | false | null | undefined)[]) => classes.filter(Boolean).join(" ");
 // base-ui `className` may be a string or a function of the part's state; prepend our base class to either.
@@ -77,7 +78,7 @@ function ProgressTrack({ className, ...props }: ProgressTrackProps) {
 
 function ProgressIndicator({ className, transition: explicitTransition, ...props }: ProgressIndicatorProps) {
     const context = React.useContext(ProgressContext);
-    const reduceMotion = useReducedMotion();
+    const reduceMotion = useReducedMotionSafe();
     const transition = explicitTransition ??
         context.transition ?? {
             type: "spring",

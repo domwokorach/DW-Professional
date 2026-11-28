@@ -4,10 +4,10 @@ import TechIcon from '@/components/ui/TechIcon';
 import { contactInfo } from '@/data';
 import ContactInfoRow from './ContactInfoRow';
 import LazyContactForm from './LazyContactForm';
+import ContactGlobe from './ContactGlobe';
 
 /** Whether attachments go straight to S3 (bigger files) or through the server (fallback). Read on the server. */
 const directUploads = () => Boolean(process.env.AWS_S3_BUCKET_NAME && process.env.AWS_REGION);
-import ContactGlobe from './ContactGlobe';
 
 export default function ContactSection() {
   return (
