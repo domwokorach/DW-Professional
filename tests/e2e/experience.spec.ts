@@ -28,7 +28,7 @@ test.describe('employer history', () => {
     const lloyds = page.locator('article.xp-group');
     await expect(lloyds.getByRole('heading', { level: 3, name: 'Lloyds Banking Group' })).toBeVisible();
     await expect(lloyds).toContainText('Career progression: 4 roles');
-    await expect(lloyds).toContainText('5 years 3 months');
+    await expect(lloyds).toContainText('5 years 4 months');
     await expect(lloyds.locator('li.xp-role')).toHaveCount(4);
   });
 
@@ -52,13 +52,10 @@ test.describe('employer history', () => {
     await expect(travel).not.toContainText('Remote');
   });
 
-  test('freelance projects: eight, each with a safe external link', async ({ page }) => {
+  test('freelance entry no longer lists a project block', async ({ page }) => {
     await page.goto('/en-gb');
     const freelance = page.locator('#experience article.xp-entry').first();
-    const items = freelance.locator('.xp-projects__list > li');
-    await expect(items).toHaveCount(8);
-    const hrefs = await freelance.locator('.xp-projects__link').evaluateAll((as) => as.map((a) => ({ h: (a as HTMLAnchorElement).href, t: (a as HTMLAnchorElement).target, r: (a as HTMLAnchorElement).rel })));
-    expect(hrefs).toHaveLength(8);
-    for (const l of hrefs) { expect(l.h).toMatch(/^https:\/\//); expect(l.t).toBe('_blank'); expect(l.r).toContain('noopener'); }
+    await expect(freelance).toContainText('Freelance Software Engineer');
+    await expect(freelance.locator('.xp-projects')).toHaveCount(0);
   });
 });

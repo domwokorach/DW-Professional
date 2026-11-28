@@ -12,20 +12,19 @@ describe('employer history content', () => {
     assert.equal(education[0].start.iso.slice(0, 4), '2005');
   });
 
-  test('Freelance is current, with 8 projects that all keep a URL', () => {
+  test('Freelance is current and lists no project block', () => {
     const f = named('Freelance');
     assert.ok(f && !('roles' in f));
     assert.equal(f.end, undefined);
-    assert.equal(f.projects?.length, 8);
-    for (const p of f.projects ?? []) assert.match(p.url ?? '', /^https:\/\//, `${p.name} must keep its URL`);
+    assert.equal(f.projects, undefined);
   });
 
-  test('Sky: Jun 2024 – Aug 2024, 3 months, Osterley, hybrid', () => {
+  test('Sky: Jun 2024 – Sep 2026, 2 years 4 months, Osterley, hybrid', () => {
     const s = named('Sky');
     assert.ok(s && !('roles' in s));
     assert.equal(s.start.label, 'Jun 2024');
-    assert.equal(s.end?.label, 'Aug 2024');
-    assert.equal(formatDuration(monthsBetween(s.start.iso, s.end?.iso)), '3 months');
+    assert.equal(s.end?.label, 'Sep 2026');
+    assert.equal(formatDuration(monthsBetween(s.start.iso, s.end?.iso)), '2 years 4 months');
     assert.equal(s.location, 'Osterley, London, United Kingdom');
     assert.equal(s.workplaceType, 'Hybrid');
   });
@@ -39,16 +38,16 @@ describe('employer history content', () => {
     assert.equal(formatDuration(monthsBetween(t.start.iso, t.end?.iso)), '2 years 6 months');
   });
 
-  test('Lloyds: one employer, 5 years 3 months, four roles with the specified periods and durations', () => {
+  test('Lloyds: one employer, 5 years 4 months, four roles with the specified periods and durations', () => {
     const l = named('Lloyds Banking Group');
     assert.ok(l && 'roles' in l);
-    assert.equal(formatDuration(monthsBetween(l.start.iso, l.end?.iso)), '5 years 3 months');
+    assert.equal(formatDuration(monthsBetween(l.start.iso, l.end?.iso)), '5 years 4 months');
     assert.equal(l.roles.length, 4);
     const expected = [
-      ['Senior Software Engineer', '2018-09', '2020-01', '1 year 5 months'],
-      ['Architecture, Methodology & Innovation — Applied Technology', '2016-03', '2018-09', '2 years 7 months'],
-      ['UI Transformation', '2015-03', '2016-09', '1 year 7 months'],
-      ['Trainee Digital Transformation', '2014-11', '2015-03', '5 months'],
+      ['Senior Frontend Developer', '2018-09', '2020-01', '1 year 5 months'],
+      ['Senior Web Developer, Innovation & Architecture and Strategy', '2016-03', '2018-09', '2 years 7 months'],
+      ['Junior UI Delivery and Transformation', '2015-03', '2016-03', '1 year 1 month'],
+      ['Trainee Digital Transformation', '2014-10', '2015-03', '6 months'],
     ];
     expected.forEach(([role, start, end, duration], i) => {
       assert.equal(l.roles[i].role, role);
@@ -56,7 +55,7 @@ describe('employer history content', () => {
       assert.equal(l.roles[i].end?.iso, end);
       assert.equal(formatDuration(monthsBetween(start, end)), duration, role);
     });
-    // Overlapping periods are real (e.g. UI Transformation overlaps Architecture, Mar–Sep 2016): they are kept, not clipped.
-    assert.ok(l.roles[1].start.iso < (l.roles[2].end?.iso ?? ''));
+    // Consecutive roles: each starts in the month the previous one (in time) ended.
+    assert.equal(l.roles[1].start.iso, l.roles[2].end?.iso);
   });
 });
