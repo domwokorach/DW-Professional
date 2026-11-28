@@ -1,0 +1,1942 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic:
+      - button "Back to top" [ref=e3] [cursor=pointer]:
+        - generic [ref=e4]: DO
+        - generic [ref=e5]: DOMINIC
+      - generic [ref=e6]:
+        - navigation "Primary navigation" [ref=e7]:
+          - generic [ref=e8]:
+            - button "About" [ref=e9] [cursor=pointer]
+            - button "Skills" [ref=e10] [cursor=pointer]
+            - button "Work" [ref=e11] [cursor=pointer]
+            - button "Experience" [ref=e12]
+            - button "Achievements" [ref=e13] [cursor=pointer]
+            - button "Contact" [ref=e14] [cursor=pointer]
+            - generic [aria-hidden]:
+              - generic: About
+              - generic: Skills
+              - generic: Work
+              - generic: Experience
+              - generic: Achievements
+              - generic: Contact
+        - button "Light" [ref=e15] [cursor=pointer]
+    - region "Software Engineer & Frontend Developer." [ref=e23]:
+      - generic [ref=e24]: DOMINIC
+      - generic [ref=e25]:
+        - generic [ref=e27]:
+          - generic [ref=e28]: DOMINIC
+          - generic [aria-hidden] [ref=e29]: DOMIN\#
+        - heading "Software Engineer & Frontend Developer." [level=1] [ref=e30]:
+          - generic [ref=e31]:
+            - generic [ref=e32]: Software Engineer & Frontend Developer.
+            - generic [aria-hidden] [ref=e33]: Software Engine/0 \ -X1%@0X1 1#1#\&-Z@\
+        - paragraph [ref=e34]: Creative developer · AI & web technology
+      - img "DOMINIC 3D character" [ref=e38]
+      - generic [ref=e39]:
+        - button "Explore work" [ref=e40] [cursor=pointer]
+        - button "Let's talk" [ref=e46] [cursor=pointer]
+        - button "Resume" [ref=e53] [cursor=pointer]
+      - button "Scroll to about" [ref=e58] [cursor=pointer]: ⌄
+    - generic [ref=e59]:
+      - generic [ref=e60]:
+        - generic [ref=e61]: "01"
+        - text: ABOUT
+      - generic [ref=e63]:
+        - article [ref=e64]:
+          - heading [level=2] [ref=e65]:
+            - text: Hi, I'm
+            - emphasis [ref=e66]: DOMINIC.
+          - paragraph [ref=e67]: Software Engineer and Frontend Developer with commercial experience at Sky and Lloyds Banking Group, specialising in React, TypeScript, and accessible digital products.
+          - paragraph [ref=e68]: Proven track record of delivering scalable web applications, improving user experiences, and collaborating with Agile teams. Passionate about technology, innovation, and creating inclusive solutions for diverse audiences.
+          - generic [ref=e69]:
+            - button "Resume" [ref=e70] [cursor=pointer]
+            - link "LinkedIn" [ref=e75] [cursor=pointer]:
+              - /url: https://www.linkedin.com/in/dominic-w-3673523b/
+            - link "GitHub" [ref=e79] [cursor=pointer]:
+              - /url: https://github.com/domwokorach
+        - generic [ref=e83]:
+          - button "Developer ID card, front side. Activate to show the back." [ref=e91] [cursor=pointer]:
+            - generic [ref=e92]:
+              - generic [ref=e93]:
+                - generic [aria-hidden]:
+                  - generic:
+                    - generic:
+                      - paragraph: Rdp3AlbaQtvxmnB8uCconKA35OyWoYR7mzzTlSSmmH8O9FcvCQbXfLLZW73cRPIYJ0K1FJ9AhwbeeOD0hsIoKopuAI9XA6lBvn3CemEJNVdvF6x5nhDcEwO0KkIkUHbYOIvCZTAl3AiEk2eAKpQJnWTSfLQCJo5YuNHTSh8GS1X9VDeSsqkKKcV4ky1OhvqTzKeT03ABbrYJtNhUQGti5n8nIT55ETSRALRWYBBtwZV6FkhB7bPVyHPzeF8R7gsnyrKeXNHSnUfKXbUQWhShUNyrq1G87lzqhyDneUQ1KXiw3Gg3MO7aWBxJLmQEjEAwjGmCxMrJxkdZ2hmQKSirUzNYtZOoicupVPhUuCQtkPz7BF76eRjw2o8N7SiQ0OHnHkihjOG03ScgJXczlqjcJzRQlRpV1UZ0B7mKftRymWrCQndKJrZfSi4kz43z7MKbyVl59aHK5Ck1RjvRouk3R8JTzb7rc5tQvgSAFjIAkZM2Xc5DkYJby4kTimGQjeJDOlOznBRdSfSQ5TA6nP5BOwBxHBcHeltiCLcF1MgVp9734vzcPYnOclljCn0n2viMJThxnT3x7Z21JbX1jux7yJwPKfW6jsrrOhY5q5DhHJocW1Uk3iknEqfX2If7VVUPQBtmW2cxWAQg7XmlZbBOdFuAjyoVnjPJpQTfnly22W107T9cuSPOcaqCD9Jk4QwQg7pP6fme4z271KkeRYE4WOak8ZZvihLsYFPedTNb0r3QK450x0DZbJZKQdxYJX3IrzA0N3DiCj3IUzYQtzYjHxZd5R7tuFS3SThO05znv89NGfMM1H8ctRRsPFnrUYl5457j8y0ZEjCtXnM14TkWSUg8wcdG3207XpQRx6RnVQAnihn3Xb5x9D9jFvDQ5JvpK5J2zqi2uVeSDIsaAPYMbBGvAn4YFs4VtqyqIwQJboiV9nUw8QMs6BfZ488XwdrtV8pnPYETtsxaGGtSQ6OWqNFGuTgdRBvSxhDi4stqCeYbVCkRAcQH1P114ixHlYlUkaIUMIUco7jLbXQl2IDwyr2uIa6OSQihTPRcmUnNR1RCxb15ppKFuiDq0NrxyMYR52gEJmyZmlpFZs0hB5czr3dBVxHFWJsyf2FZdaBo2mZsA5tDrY4nuaWA3uEAnFaTDt3sA4QHJhqSmGe7GnLmhRW9Qbk4qGiTsmLPew2jaXmxdW2PDsH4fuIs2oUUGWqq9ogrTyji0vb5JyrqKJtguttgRUbe0Y63lTzR9sOvk2pnAcjYjXI3AJHs8xkERigC79wr49SVXP3CqO38MibVoZfgWcY51jdhHd2ruWmuU7EHQF1fAnFaJoQelVbWci7L0mil6RGjU2jqdRa2Gvzah7GNCd8BHc1nL9qgdTVbL37VWI5D0raofm0ytcrW4lW94985yyRyOoQK7lfvVGFRhghRh0pQLUpIgaTgn9Z4fW9yjuNDcHuICJTMC8mLAwPYJ9yPMLpGKq6s7rdvzOVz7owQdDgH
+                - generic [ref=e94]:
+                  - generic [ref=e95]: DO
+                  - generic [ref=e96]:
+                    - text: DEVELOPER ID
+                    - generic [ref=e97]: Portfolio · 2026
+                - img "DOMINIC" [ref=e100]
+                - generic [ref=e101]:
+                  - heading "DOMINIC" [level=3] [ref=e102]
+                  - paragraph [ref=e103]: Software Engineer & Frontend Developer.
+                - generic [ref=e104]:
+                  - generic [ref=e105]:
+                    - term [ref=e106]: ID NO.
+                    - definition [ref=e107]: DO-0001
+                  - generic [ref=e108]:
+                    - term [ref=e109]: DEPT.
+                    - definition [ref=e110]: Engineering
+                  - generic [ref=e111]:
+                    - term [ref=e112]: VALID TILL
+                    - definition [ref=e113]: "2027"
+                - img "QR code that opens a page with a button to email Dominic" [ref=e114]
+                - generic [ref=e117]: "*DO00012027*"
+              - generic [aria-hidden] [ref=e170]:
+                - generic [aria-hidden]:
+                  - generic:
+                    - generic:
+                      - paragraph: LAREsIOILFWgcV5axa1aVPBGkhlF8C8pvHMmjNyPgQJNcOF0JjgsyXKQY6C0FX4MkMfGE38dXTwxUI9RRVbfBLRbe4asXtnBLDQ0mQVgRQUA7lITh9Ahrx2QHO2TxXX25uhquooibucEMko7kRQRSiIrO6qBd8Byc208Jvm733UJHSQI3WL4W49qhjJlwSJkTMY2gmBculsBCYeyoP0vgl2ZbIwSyuVxQ0ojRB289qGHLBcTUcNbj8G2Hnn70fq9NGtwesfqp5UQUcwBj9ZZQRaBALyimvOdvX3ZK8QTbnz9Nuv70ZxX4zWbwlaZgVi1mi5TgeItkS65g9S4HkjYWv77KDbtrnj0HjOxbp2XSNUjgBoZAn8LlmlXm9TPdpYNEhCOQtdoxDH9BwzKt9VrKYgY8DR8uaoJ6li039HwcpX88LIO0nLv5hT3D82Mdxn0S9F3dpy5yrv91KGMVzvuWQELxYWlDsOlDHY71GZGlNUSwaGzUwp7BFvIrW6HBO1khj4vu2UHJ8fRkDJjUNvJGkEUjDPzg39EVrqXCyF2L8wS5KwX0A6K95lo2IGODZfyZGgwXQfd8StkZtdh7zKyXCNpMtS83l6SbDbkm13sPp3pSMq5hheh3xnef4v3Z8hstuhjaOhW4vZaWbisfgHnrB5yReIM1hcnAcbYliV5gjFMxT80NNPeKdSuPzeB0CBZKg3PurS0sf3JxfyIlyxg1NmC9F43Uq7nlcjWggo0VN4lXPbt4H9kFSTyoV0X59H6ceSnb3hdCsX38CrJA9uE6j3KrJHzIOltoepReFMzxNpsoPkFaNVWoWu2QhrZA0csaXFXGy4R11Vdq5egC7TrSgfhRARh2774AACPWKapKTX84eZyv6DPsyrZBaGNDg6h5h9NY4LJlbql79p9gusCOHmPO8cZEteftt3u2KZq7Ar2WODHKQADzlmX2mPo4x3OeLLWWJhYuGhOMCORz8u96Zmsv8NBPqYh6d76bREsf1scmhOMfyOBAsLrE1cx5yKai7M0cbSfWUXxBdTWGhEEK0atjjvqDh5xkXiLnT2rGAXCggwFEzPwTAdNJD5CGAwJDqvBrfPz9ChKj0q2o1PU4b7nvjo7hfNMRVHh3b6WH8Xu3wIvjCZA9KaUxtYYy4Nv4c7w9sbC068it49SXg22GiCZx6fQJOTALLY79k6W2umaqSdb81ypwoZWWLaS3wUJoEZTBUGTaNYESk3htn5b4waJW7kozdMEN3JnPWfkG0N4ILeQHqLOHRYjtUUx9fnNYToe7iuAVr53uPwJrqw2CA3KYkIijHaqmIKQpmFIzbTFZF1KxnCQ14KOKTPERGPGs0KZBFSHl3tNABxg51RKblXFpnDheMXYbv71mMRJ2puHut2NkLBfGQgIYkScBbegXpEVtwSOux9n1SAjNz334RPZC86bDCQHXba94HM5kX5mT3dGRPkyA2BWaa6tHZAeGCNmkOWz1QNMGGuKSDs4UFJK2PqW
+                - generic [ref=e171]:
+                  - generic [ref=e172]: DEVELOPER PROFILE
+                  - generic [ref=e173]: DO
+                - heading [level=3] [ref=e174]: DOMINIC
+                - paragraph [ref=e175]: SOFTWARE ENGINEER & FRONTEND DEVELOPER.
+                - paragraph [ref=e176]: I build responsive web applications, interactive digital experiences, and AI-powered platforms.
+                - list [ref=e177]:
+                  - listitem [ref=e178]: React
+                  - listitem [ref=e179]: Next.js
+                  - listitem [ref=e180]: Vue
+                  - listitem [ref=e181]: TypeScript
+                  - listitem [ref=e182]: Node.js
+                  - listitem [ref=e183]: Python
+                  - listitem [ref=e184]: AI
+                  - listitem [ref=e185]: Data
+                - generic [ref=e187]:
+                  - term [ref=e188]: PORTFOLIO ACCESS
+                  - definition [ref=e189]: "STATUS: ACTIVE"
+                  - definition [ref=e191]: "ID: DO-0001"
+                - paragraph [ref=e639]: Tap to return
+          - paragraph [ref=e640]:
+            - generic [ref=e641]: Click or tap the card to flip
+            - generic [ref=e643]: CLICK OR TAP THE CARD TO FLIP
+        - complementary [ref=e644]:
+          - generic [ref=e645]: QUICK FACTS
+          - 'figure "Current time in London: Wednesday 25 November at 17:05:49 GMT" [ref=e646]':
+            - generic [aria-hidden] [ref=e647]:
+              - img:
+                - generic: "25"
+            - generic [ref=e648]:
+              - generic [ref=e649]: "Current time in London: Wednesday 25 November at 17:05:49 GMT. Blue and gold dive-watch style analogue clock."
+              - generic [aria-hidden] [ref=e650]: November
+          - generic [ref=e651]:
+            - generic [ref=e652]:
+              - term [ref=e653]:
+                - text: Time
+                - generic [aria-hidden] [ref=e654]: Live
+              - definition [ref=e655]:
+                - generic [ref=e656]: "Current time in London:"
+                - generic [ref=e657]: 17:05:49
+                - generic [ref=e658]: London · GMT
+            - generic [ref=e659]:
+              - term [ref=e660]: Weather
+              - definition [ref=e661]:
+                - generic [ref=e663]:
+                  - generic [ref=e664]: 6°C
+                  - text: Overcast clouds
+                  - generic [ref=e665]:
+                    - text: London, UK
+                    - generic [ref=e666]: · Feels like 2°C
+            - generic [ref=e667]:
+              - term [ref=e668]: Based in
+              - definition [ref=e669]: London, United Kingdom
+            - generic [ref=e670]:
+              - term [ref=e671]: Current
+              - definition [ref=e672]: Freelance Software Engineer
+            - generic [ref=e673]:
+              - term [ref=e674]: Batch
+              - definition [ref=e675]: 2014 – Present
+          - blockquote [ref=e676]: “From the database to the last pixel.”
+    - region "The periodic table of my stack." [ref=e677]:
+      - generic [ref=e678]:
+        - generic [ref=e679]: "02"
+        - text: SKILLS
+      - heading "The periodic table of my stack." [level=2] [ref=e682]:
+        - generic [aria-hidden] [ref=e684]:
+          - generic [ref=e685]: The
+          - generic [ref=e687]: periodic
+          - generic [ref=e689]: table
+          - emphasis [ref=e691]:
+            - generic [ref=e692]: of
+            - generic [ref=e694]: my
+            - generic [ref=e696]: stack.
+      - generic [ref=e698]:
+        - heading "Core technologies" [level=3] [ref=e699]
+        - generic [ref=e700]:
+          - group "Frontend" [ref=e701]:
+            - heading "Frontend" [level=4] [ref=e702]
+            - region "Frontend" [ref=e703]:
+              - generic [ref=e704]:
+                - list [ref=e705]:
+                  - listitem [ref=e706]:
+                    - generic [ref=e707]: React
+                  - listitem [ref=e712]:
+                    - generic [ref=e713]: Next.js
+                  - listitem [ref=e718]:
+                    - generic [ref=e719]: React Native
+                  - listitem [ref=e724]:
+                    - generic [ref=e725]: TypeScript
+                  - listitem [ref=e730]:
+                    - generic [ref=e731]: JavaScript
+                  - listitem [ref=e737]:
+                    - generic [ref=e738]: HTML5
+                  - listitem [ref=e743]:
+                    - generic [ref=e744]: CSS
+                  - listitem [ref=e749]:
+                    - generic [ref=e750]: PostCSS
+                  - listitem [ref=e755]:
+                    - generic [ref=e756]: D3.js
+                  - listitem [ref=e761]:
+                    - generic [ref=e762]: MUI
+                  - listitem [ref=e767]:
+                    - generic [ref=e768]: Tailwind CSS
+                  - listitem [ref=e773]:
+                    - generic [ref=e774]: Sass
+                  - listitem [ref=e779]:
+                    - generic [ref=e780]: Less
+                  - listitem [ref=e785]:
+                    - generic [ref=e786]: WordPress
+                  - listitem [ref=e791]:
+                    - generic [ref=e792]: Responsive Design
+                  - listitem [ref=e799]:
+                    - generic [ref=e800]: Accessibility
+                - list [aria-hidden] [ref=e808]:
+                  - listitem [ref=e809]:
+                    - generic [ref=e810]: React
+                  - listitem [ref=e815]:
+                    - generic [ref=e816]: Next.js
+                  - listitem [ref=e821]:
+                    - generic [ref=e822]: React Native
+                  - listitem [ref=e827]:
+                    - generic [ref=e828]: TypeScript
+                  - listitem [ref=e833]:
+                    - generic [ref=e834]: JavaScript
+                  - listitem [ref=e840]:
+                    - generic [ref=e841]: HTML5
+                  - listitem [ref=e846]:
+                    - generic [ref=e847]: CSS
+                  - listitem [ref=e852]:
+                    - generic [ref=e853]: PostCSS
+                  - listitem [ref=e858]:
+                    - generic [ref=e859]: D3.js
+                  - listitem [ref=e864]:
+                    - generic [ref=e865]: MUI
+                  - listitem [ref=e870]:
+                    - generic [ref=e871]: Tailwind CSS
+                  - listitem [ref=e876]:
+                    - generic [ref=e877]: Sass
+                  - listitem [ref=e882]:
+                    - generic [ref=e883]: Less
+                  - listitem [ref=e888]:
+                    - generic [ref=e889]: WordPress
+                  - listitem [ref=e894]:
+                    - generic [ref=e895]: Responsive Design
+                  - listitem [ref=e902]:
+                    - generic [ref=e903]: Accessibility
+                - list [aria-hidden] [ref=e911]:
+                  - listitem [ref=e912]:
+                    - generic [ref=e913]: React
+                  - listitem [ref=e918]:
+                    - generic [ref=e919]: Next.js
+                  - listitem [ref=e924]:
+                    - generic [ref=e925]: React Native
+                  - listitem [ref=e930]:
+                    - generic [ref=e931]: TypeScript
+                  - listitem [ref=e936]:
+                    - generic [ref=e937]: JavaScript
+                  - listitem [ref=e943]:
+                    - generic [ref=e944]: HTML5
+                  - listitem [ref=e949]:
+                    - generic [ref=e950]: CSS
+                  - listitem [ref=e955]:
+                    - generic [ref=e956]: PostCSS
+                  - listitem [ref=e961]:
+                    - generic [ref=e962]: D3.js
+                  - listitem [ref=e967]:
+                    - generic [ref=e968]: MUI
+                  - listitem [ref=e973]:
+                    - generic [ref=e974]: Tailwind CSS
+                  - listitem [ref=e979]:
+                    - generic [ref=e980]: Sass
+                  - listitem [ref=e985]:
+                    - generic [ref=e986]: Less
+                  - listitem [ref=e991]:
+                    - generic [ref=e992]: WordPress
+                  - listitem [ref=e997]:
+                    - generic [ref=e998]: Responsive Design
+                  - listitem [ref=e1005]:
+                    - generic [ref=e1006]: Accessibility
+          - group "Mobile App" [ref=e1014]:
+            - heading "Mobile App" [level=4] [ref=e1015]
+            - region "Mobile App" [ref=e1016]:
+              - generic [ref=e1017]:
+                - list [ref=e1018]:
+                  - listitem [ref=e1019]:
+                    - generic [ref=e1020]: iOS
+                  - listitem [ref=e1025]:
+                    - generic [ref=e1026]: Android
+                  - listitem [ref=e1031]:
+                    - generic [ref=e1032]: Apple Pay
+                  - listitem [ref=e1037]:
+                    - generic [ref=e1038]: Touch ID
+                  - listitem [ref=e1045]:
+                    - generic [ref=e1046]: Mobile Banking
+                - list [aria-hidden] [ref=e1051]:
+                  - listitem [ref=e1052]:
+                    - generic [ref=e1053]: iOS
+                  - listitem [ref=e1058]:
+                    - generic [ref=e1059]: Android
+                  - listitem [ref=e1064]:
+                    - generic [ref=e1065]: Apple Pay
+                  - listitem [ref=e1070]:
+                    - generic [ref=e1071]: Touch ID
+                  - listitem [ref=e1078]:
+                    - generic [ref=e1079]: Mobile Banking
+                - list [aria-hidden] [ref=e1084]:
+                  - listitem [ref=e1085]:
+                    - generic [ref=e1086]: iOS
+                  - listitem [ref=e1091]:
+                    - generic [ref=e1092]: Android
+                  - listitem [ref=e1097]:
+                    - generic [ref=e1098]: Apple Pay
+                  - listitem [ref=e1103]:
+                    - generic [ref=e1104]: Touch ID
+                  - listitem [ref=e1111]:
+                    - generic [ref=e1112]: Mobile Banking
+                - list [aria-hidden] [ref=e1117]:
+                  - listitem [ref=e1118]:
+                    - generic [ref=e1119]: iOS
+                  - listitem [ref=e1124]:
+                    - generic [ref=e1125]: Android
+                  - listitem [ref=e1130]:
+                    - generic [ref=e1131]: Apple Pay
+                  - listitem [ref=e1136]:
+                    - generic [ref=e1137]: Touch ID
+                  - listitem [ref=e1144]:
+                    - generic [ref=e1145]: Mobile Banking
+          - group "Backend & APIs" [ref=e1150]:
+            - heading "Backend & APIs" [level=4] [ref=e1151]
+            - region "Backend & APIs" [ref=e1152]:
+              - generic [ref=e1153]:
+                - list [ref=e1154]:
+                  - listitem [ref=e1155]:
+                    - generic [ref=e1156]: Node.js
+                  - listitem [ref=e1161]:
+                    - generic [ref=e1162]: NestJS
+                  - listitem [ref=e1167]:
+                    - generic [ref=e1168]: Express
+                  - listitem [ref=e1173]:
+                    - generic [ref=e1174]: Python
+                  - listitem [ref=e1180]:
+                    - generic [ref=e1181]: FastAPI
+                  - listitem [ref=e1186]:
+                    - generic [ref=e1187]: Django
+                  - listitem [ref=e1192]:
+                    - generic [ref=e1193]: GraphQL
+                  - listitem [ref=e1198]:
+                    - generic [ref=e1199]: REST API
+                  - listitem [ref=e1204]:
+                    - generic [ref=e1205]: Socket.IO
+                  - listitem [ref=e1210]:
+                    - generic [ref=e1211]: MCP
+                - list [aria-hidden] [ref=e1216]:
+                  - listitem [ref=e1217]:
+                    - generic [ref=e1218]: Node.js
+                  - listitem [ref=e1223]:
+                    - generic [ref=e1224]: NestJS
+                  - listitem [ref=e1229]:
+                    - generic [ref=e1230]: Express
+                  - listitem [ref=e1235]:
+                    - generic [ref=e1236]: Python
+                  - listitem [ref=e1242]:
+                    - generic [ref=e1243]: FastAPI
+                  - listitem [ref=e1248]:
+                    - generic [ref=e1249]: Django
+                  - listitem [ref=e1254]:
+                    - generic [ref=e1255]: GraphQL
+                  - listitem [ref=e1260]:
+                    - generic [ref=e1261]: REST API
+                  - listitem [ref=e1266]:
+                    - generic [ref=e1267]: Socket.IO
+                  - listitem [ref=e1272]:
+                    - generic [ref=e1273]: MCP
+                - list [aria-hidden] [ref=e1278]:
+                  - listitem [ref=e1279]:
+                    - generic [ref=e1280]: Node.js
+                  - listitem [ref=e1285]:
+                    - generic [ref=e1286]: NestJS
+                  - listitem [ref=e1291]:
+                    - generic [ref=e1292]: Express
+                  - listitem [ref=e1297]:
+                    - generic [ref=e1298]: Python
+                  - listitem [ref=e1304]:
+                    - generic [ref=e1305]: FastAPI
+                  - listitem [ref=e1310]:
+                    - generic [ref=e1311]: Django
+                  - listitem [ref=e1316]:
+                    - generic [ref=e1317]: GraphQL
+                  - listitem [ref=e1322]:
+                    - generic [ref=e1323]: REST API
+                  - listitem [ref=e1328]:
+                    - generic [ref=e1329]: Socket.IO
+                  - listitem [ref=e1334]:
+                    - generic [ref=e1335]: MCP
+          - group "Authentication & Web Security" [ref=e1340]:
+            - heading "Authentication & Web Security" [level=4] [ref=e1341]
+            - region "Authentication & Web Security" [ref=e1342]:
+              - generic [ref=e1343]:
+                - list [ref=e1344]:
+                  - listitem [ref=e1345]:
+                    - generic [ref=e1346]: JWT Authentication
+                  - listitem [ref=e1351]:
+                    - generic [ref=e1352]: OAuth 2.0
+                  - listitem [ref=e1359]:
+                    - generic [ref=e1360]: CORS
+                  - listitem [ref=e1367]:
+                    - generic [ref=e1368]: Helmet
+                  - listitem [ref=e1375]:
+                    - generic [ref=e1376]: bcrypt
+                  - listitem [ref=e1381]:
+                    - generic [ref=e1382]: HTTPS / TLS
+                  - listitem [ref=e1389]:
+                    - generic [ref=e1390]: OWASP
+                - list [aria-hidden] [ref=e1395]:
+                  - listitem [ref=e1396]:
+                    - generic [ref=e1397]: JWT Authentication
+                  - listitem [ref=e1402]:
+                    - generic [ref=e1403]: OAuth 2.0
+                  - listitem [ref=e1410]:
+                    - generic [ref=e1411]: CORS
+                  - listitem [ref=e1418]:
+                    - generic [ref=e1419]: Helmet
+                  - listitem [ref=e1426]:
+                    - generic [ref=e1427]: bcrypt
+                  - listitem [ref=e1432]:
+                    - generic [ref=e1433]: HTTPS / TLS
+                  - listitem [ref=e1440]:
+                    - generic [ref=e1441]: OWASP
+                - list [aria-hidden] [ref=e1446]:
+                  - listitem [ref=e1447]:
+                    - generic [ref=e1448]: JWT Authentication
+                  - listitem [ref=e1453]:
+                    - generic [ref=e1454]: OAuth 2.0
+                  - listitem [ref=e1461]:
+                    - generic [ref=e1462]: CORS
+                  - listitem [ref=e1469]:
+                    - generic [ref=e1470]: Helmet
+                  - listitem [ref=e1477]:
+                    - generic [ref=e1478]: bcrypt
+                  - listitem [ref=e1483]:
+                    - generic [ref=e1484]: HTTPS / TLS
+                  - listitem [ref=e1491]:
+                    - generic [ref=e1492]: OWASP
+                - list [aria-hidden] [ref=e1497]:
+                  - listitem [ref=e1498]:
+                    - generic [ref=e1499]: JWT Authentication
+                  - listitem [ref=e1504]:
+                    - generic [ref=e1505]: OAuth 2.0
+                  - listitem [ref=e1512]:
+                    - generic [ref=e1513]: CORS
+                  - listitem [ref=e1520]:
+                    - generic [ref=e1521]: Helmet
+                  - listitem [ref=e1528]:
+                    - generic [ref=e1529]: bcrypt
+                  - listitem [ref=e1534]:
+                    - generic [ref=e1535]: HTTPS / TLS
+                  - listitem [ref=e1542]:
+                    - generic [ref=e1543]: OWASP
+          - group "Testing & Quality" [ref=e1548]:
+            - heading "Testing & Quality" [level=4] [ref=e1549]
+            - region "Testing & Quality" [ref=e1550]:
+              - generic [ref=e1551]:
+                - list [ref=e1552]:
+                  - listitem [ref=e1553]:
+                    - generic [ref=e1554]: Jest
+                  - listitem [ref=e1559]:
+                    - generic [ref=e1560]: React Testing Library
+                  - listitem [ref=e1565]:
+                    - generic [ref=e1566]: Playwright
+                  - listitem [ref=e1577]:
+                    - generic [ref=e1578]: TDD
+                  - listitem [ref=e1583]:
+                    - generic [ref=e1584]: Postman
+                  - listitem [ref=e1589]:
+                    - generic [ref=e1590]: Browser DevTools
+                - list [aria-hidden] [ref=e1595]:
+                  - listitem [ref=e1596]:
+                    - generic [ref=e1597]: Jest
+                  - listitem [ref=e1602]:
+                    - generic [ref=e1603]: React Testing Library
+                  - listitem [ref=e1608]:
+                    - generic [ref=e1609]: Playwright
+                  - listitem [ref=e1620]:
+                    - generic [ref=e1621]: TDD
+                  - listitem [ref=e1626]:
+                    - generic [ref=e1627]: Postman
+                  - listitem [ref=e1632]:
+                    - generic [ref=e1633]: Browser DevTools
+                - list [aria-hidden] [ref=e1638]:
+                  - listitem [ref=e1639]:
+                    - generic [ref=e1640]: Jest
+                  - listitem [ref=e1645]:
+                    - generic [ref=e1646]: React Testing Library
+                  - listitem [ref=e1651]:
+                    - generic [ref=e1652]: Playwright
+                  - listitem [ref=e1663]:
+                    - generic [ref=e1664]: TDD
+                  - listitem [ref=e1669]:
+                    - generic [ref=e1670]: Postman
+                  - listitem [ref=e1675]:
+                    - generic [ref=e1676]: Browser DevTools
+                - list [aria-hidden] [ref=e1681]:
+                  - listitem [ref=e1682]:
+                    - generic [ref=e1683]: Jest
+                  - listitem [ref=e1688]:
+                    - generic [ref=e1689]: React Testing Library
+                  - listitem [ref=e1694]:
+                    - generic [ref=e1695]: Playwright
+                  - listitem [ref=e1706]:
+                    - generic [ref=e1707]: TDD
+                  - listitem [ref=e1712]:
+                    - generic [ref=e1713]: Postman
+                  - listitem [ref=e1718]:
+                    - generic [ref=e1719]: Browser DevTools
+          - group "Databases & Data" [ref=e1724]:
+            - heading "Databases & Data" [level=4] [ref=e1725]
+            - region "Databases & Data" [ref=e1726]:
+              - generic [ref=e1727]:
+                - list [ref=e1728]:
+                  - listitem [ref=e1729]:
+                    - generic [ref=e1730]: PostgreSQL
+                  - listitem [ref=e1735]:
+                    - generic [ref=e1736]: MongoDB
+                  - listitem [ref=e1741]:
+                    - generic [ref=e1742]: MySQL
+                  - listitem [ref=e1747]:
+                    - generic [ref=e1748]: SQLite
+                  - listitem [ref=e1753]:
+                    - generic [ref=e1754]: Supabase
+                  - listitem [ref=e1759]:
+                    - generic [ref=e1760]: Prisma
+                  - listitem [ref=e1765]:
+                    - generic [ref=e1766]: ORM
+                - list [aria-hidden] [ref=e1774]:
+                  - listitem [ref=e1775]:
+                    - generic [ref=e1776]: PostgreSQL
+                  - listitem [ref=e1781]:
+                    - generic [ref=e1782]: MongoDB
+                  - listitem [ref=e1787]:
+                    - generic [ref=e1788]: MySQL
+                  - listitem [ref=e1793]:
+                    - generic [ref=e1794]: SQLite
+                  - listitem [ref=e1799]:
+                    - generic [ref=e1800]: Supabase
+                  - listitem [ref=e1805]:
+                    - generic [ref=e1806]: Prisma
+                  - listitem [ref=e1811]:
+                    - generic [ref=e1812]: ORM
+                - list [aria-hidden] [ref=e1820]:
+                  - listitem [ref=e1821]:
+                    - generic [ref=e1822]: PostgreSQL
+                  - listitem [ref=e1827]:
+                    - generic [ref=e1828]: MongoDB
+                  - listitem [ref=e1833]:
+                    - generic [ref=e1834]: MySQL
+                  - listitem [ref=e1839]:
+                    - generic [ref=e1840]: SQLite
+                  - listitem [ref=e1845]:
+                    - generic [ref=e1846]: Supabase
+                  - listitem [ref=e1851]:
+                    - generic [ref=e1852]: Prisma
+                  - listitem [ref=e1857]:
+                    - generic [ref=e1858]: ORM
+                - list [aria-hidden] [ref=e1866]:
+                  - listitem [ref=e1867]:
+                    - generic [ref=e1868]: PostgreSQL
+                  - listitem [ref=e1873]:
+                    - generic [ref=e1874]: MongoDB
+                  - listitem [ref=e1879]:
+                    - generic [ref=e1880]: MySQL
+                  - listitem [ref=e1885]:
+                    - generic [ref=e1886]: SQLite
+                  - listitem [ref=e1891]:
+                    - generic [ref=e1892]: Supabase
+                  - listitem [ref=e1897]:
+                    - generic [ref=e1898]: Prisma
+                  - listitem [ref=e1903]:
+                    - generic [ref=e1904]: ORM
+          - group "Cloud, DevOps & Delivery" [ref=e1912]:
+            - heading "Cloud, DevOps & Delivery" [level=4] [ref=e1913]
+            - region "Cloud, DevOps & Delivery" [ref=e1914]:
+              - generic [ref=e1915]:
+                - list [ref=e1916]:
+                  - listitem [ref=e1917]:
+                    - generic [ref=e1918]: AWS
+                  - listitem [ref=e1923]:
+                    - generic [ref=e1924]: Google Cloud Platform (GCP)
+                  - listitem [ref=e1932]:
+                    - generic [ref=e1933]: Cloudflare
+                  - listitem [ref=e1938]:
+                    - generic [ref=e1939]: Docker
+                  - listitem [ref=e1944]:
+                    - generic [ref=e1945]: Kubernetes
+                  - listitem [ref=e1950]:
+                    - generic [ref=e1951]: Jenkins
+                  - listitem [ref=e1956]:
+                    - generic [ref=e1957]: GitHub Actions
+                  - listitem [ref=e1962]:
+                    - generic [ref=e1963]: CI/CD
+                - list [aria-hidden] [ref=e1968]:
+                  - listitem [ref=e1969]:
+                    - generic [ref=e1970]: AWS
+                  - listitem [ref=e1975]:
+                    - generic [ref=e1976]: Google Cloud Platform (GCP)
+                  - listitem [ref=e1984]:
+                    - generic [ref=e1985]: Cloudflare
+                  - listitem [ref=e1990]:
+                    - generic [ref=e1991]: Docker
+                  - listitem [ref=e1996]:
+                    - generic [ref=e1997]: Kubernetes
+                  - listitem [ref=e2002]:
+                    - generic [ref=e2003]: Jenkins
+                  - listitem [ref=e2008]:
+                    - generic [ref=e2009]: GitHub Actions
+                  - listitem [ref=e2014]:
+                    - generic [ref=e2015]: CI/CD
+                - list [aria-hidden] [ref=e2020]:
+                  - listitem [ref=e2021]:
+                    - generic [ref=e2022]: AWS
+                  - listitem [ref=e2027]:
+                    - generic [ref=e2028]: Google Cloud Platform (GCP)
+                  - listitem [ref=e2036]:
+                    - generic [ref=e2037]: Cloudflare
+                  - listitem [ref=e2042]:
+                    - generic [ref=e2043]: Docker
+                  - listitem [ref=e2048]:
+                    - generic [ref=e2049]: Kubernetes
+                  - listitem [ref=e2054]:
+                    - generic [ref=e2055]: Jenkins
+                  - listitem [ref=e2060]:
+                    - generic [ref=e2061]: GitHub Actions
+                  - listitem [ref=e2066]:
+                    - generic [ref=e2067]: CI/CD
+          - group "AI" [ref=e2072]:
+            - heading "AI" [level=4] [ref=e2073]
+            - region "AI" [ref=e2074]:
+              - generic [ref=e2075]:
+                - list [ref=e2076]:
+                  - listitem [ref=e2077]:
+                    - generic [ref=e2078]: Generative AI
+                  - listitem [ref=e2083]:
+                    - generic [ref=e2084]: LLM
+                - list [aria-hidden] [ref=e2093]:
+                  - listitem [ref=e2094]:
+                    - generic [ref=e2095]: Generative AI
+                  - listitem [ref=e2100]:
+                    - generic [ref=e2101]: LLM
+                - list [aria-hidden] [ref=e2110]:
+                  - listitem [ref=e2111]:
+                    - generic [ref=e2112]: Generative AI
+                  - listitem [ref=e2117]:
+                    - generic [ref=e2118]: LLM
+                - list [aria-hidden] [ref=e2127]:
+                  - listitem [ref=e2128]:
+                    - generic [ref=e2129]: Generative AI
+                  - listitem [ref=e2134]:
+                    - generic [ref=e2135]: LLM
+                - list [aria-hidden] [ref=e2144]:
+                  - listitem [ref=e2145]:
+                    - generic [ref=e2146]: Generative AI
+                  - listitem [ref=e2151]:
+                    - generic [ref=e2152]: LLM
+                - list [aria-hidden] [ref=e2161]:
+                  - listitem [ref=e2162]:
+                    - generic [ref=e2163]: Generative AI
+                  - listitem [ref=e2168]:
+                    - generic [ref=e2169]: LLM
+                - list [aria-hidden] [ref=e2178]:
+                  - listitem [ref=e2179]:
+                    - generic [ref=e2180]: Generative AI
+                  - listitem [ref=e2185]:
+                    - generic [ref=e2186]: LLM
+          - group "Development & Collaboration Tools" [ref=e2195]:
+            - heading "Development & Collaboration Tools" [level=4] [ref=e2196]
+            - region "Development & Collaboration Tools" [ref=e2197]:
+              - generic [ref=e2198]:
+                - list [ref=e2199]:
+                  - listitem [ref=e2200]:
+                    - generic [ref=e2201]: Local Development Environment
+                  - listitem [ref=e2208]:
+                    - generic [ref=e2209]: GitHub
+                  - listitem [ref=e2214]:
+                    - generic [ref=e2215]: JIRA
+                  - listitem [ref=e2220]:
+                    - generic [ref=e2221]: Confluence
+                  - listitem [ref=e2226]:
+                    - generic [ref=e2227]: Figma
+                  - listitem [ref=e2236]:
+                    - generic [ref=e2237]: Adobe
+                - list [aria-hidden] [ref=e2242]:
+                  - listitem [ref=e2243]:
+                    - generic [ref=e2244]: Local Development Environment
+                  - listitem [ref=e2251]:
+                    - generic [ref=e2252]: GitHub
+                  - listitem [ref=e2257]:
+                    - generic [ref=e2258]: JIRA
+                  - listitem [ref=e2263]:
+                    - generic [ref=e2264]: Confluence
+                  - listitem [ref=e2269]:
+                    - generic [ref=e2270]: Figma
+                  - listitem [ref=e2279]:
+                    - generic [ref=e2280]: Adobe
+                - list [aria-hidden] [ref=e2285]:
+                  - listitem [ref=e2286]:
+                    - generic [ref=e2287]: Local Development Environment
+                  - listitem [ref=e2294]:
+                    - generic [ref=e2295]: GitHub
+                  - listitem [ref=e2300]:
+                    - generic [ref=e2301]: JIRA
+                  - listitem [ref=e2306]:
+                    - generic [ref=e2307]: Confluence
+                  - listitem [ref=e2312]:
+                    - generic [ref=e2313]: Figma
+                  - listitem [ref=e2322]:
+                    - generic [ref=e2323]: Adobe
+                - list [aria-hidden] [ref=e2328]:
+                  - listitem [ref=e2329]:
+                    - generic [ref=e2330]: Local Development Environment
+                  - listitem [ref=e2337]:
+                    - generic [ref=e2338]: GitHub
+                  - listitem [ref=e2343]:
+                    - generic [ref=e2344]: JIRA
+                  - listitem [ref=e2349]:
+                    - generic [ref=e2350]: Confluence
+                  - listitem [ref=e2355]:
+                    - generic [ref=e2356]: Figma
+                  - listitem [ref=e2365]:
+                    - generic [ref=e2366]: Adobe
+    - region "Things I've built." [ref=e2371]:
+      - generic [ref=e2372]:
+        - generic [ref=e2373]: "03"
+        - text: PROJECTS
+      - generic [ref=e2375]:
+        - heading "Things I've built." [level=2] [ref=e2376]:
+          - generic [aria-hidden] [ref=e2378]:
+            - generic [ref=e2379]: Things
+            - generic [ref=e2381]: I've
+            - emphasis [ref=e2383]:
+              - generic [ref=e2384]: built.
+        - paragraph [ref=e2386]: Eight projects across telecom, fintech, banking, monitoring, media and DevOps.
+      - list [ref=e2387]:
+        - listitem [ref=e2388]:
+          - article [ref=e2389]:
+            - paragraph [ref=e2390]:
+              - generic [aria-hidden] [ref=e2391]: "01"
+              - generic [aria-hidden] [ref=e2392]: /
+              - generic [ref=e2393]: "Category:"
+              - text: Telecom & Customer Experience
+            - heading "Telecom Customer Portal" [level=3] [ref=e2394]
+            - paragraph [ref=e2395]: Project details to be added.
+            - paragraph [ref=e2397]: Placeholder entry. Description, screenshot and link will be added once confirmed.
+            - generic [ref=e2398]:
+              - heading "Focus areas" [level=4] [ref=e2399]
+              - paragraph [ref=e2400]: Telecom
+              - heading "Technologies and skills" [level=4] [ref=e2401]
+              - list [ref=e2402]:
+                - listitem [ref=e2403]: To be confirmed
+              - paragraph [ref=e2404]: Details coming soon
+        - listitem [ref=e2405]:
+          - article [ref=e2406]:
+            - paragraph [ref=e2407]:
+              - generic [aria-hidden] [ref=e2408]: "02"
+              - generic [aria-hidden] [ref=e2409]: /
+              - generic [ref=e2410]: "Category:"
+              - text: FinTech & Payments
+            - heading "PayFlow Acceptance Solution Platform" [level=3] [ref=e2411]
+            - paragraph [ref=e2412]: Project details to be added.
+            - paragraph [ref=e2414]: Placeholder entry. Description, screenshot and link will be added once confirmed.
+            - generic [ref=e2415]:
+              - heading "Focus areas" [level=4] [ref=e2416]
+              - paragraph [ref=e2417]: FinTech
+              - heading "Technologies and skills" [level=4] [ref=e2418]
+              - list [ref=e2419]:
+                - listitem [ref=e2420]: To be confirmed
+              - paragraph [ref=e2421]: Details coming soon
+        - listitem [ref=e2422]:
+          - article [ref=e2423]:
+            - paragraph [ref=e2424]:
+              - generic [aria-hidden] [ref=e2425]: "03"
+              - generic [aria-hidden] [ref=e2426]: /
+              - generic [ref=e2427]: "Category:"
+              - text: Monitoring & Analytics
+            - heading "Detection Monitor Platform" [level=3] [ref=e2428]
+            - paragraph [ref=e2429]: Project details to be added.
+            - paragraph [ref=e2431]: Placeholder entry. Description, screenshot and link will be added once confirmed.
+            - generic [ref=e2432]:
+              - heading "Focus areas" [level=4] [ref=e2433]
+              - paragraph [ref=e2434]: Monitoring
+              - heading "Technologies and skills" [level=4] [ref=e2435]
+              - list [ref=e2436]:
+                - listitem [ref=e2437]: To be confirmed
+              - paragraph [ref=e2438]: Details coming soon
+        - listitem [ref=e2439]:
+          - article [ref=e2440]:
+            - paragraph [ref=e2441]:
+              - generic [aria-hidden] [ref=e2442]: "04"
+              - generic [aria-hidden] [ref=e2443]: /
+              - generic [ref=e2444]: "Category:"
+              - text: HR & Business Management
+            - heading "HR Connect Dashboard" [level=3] [ref=e2445]
+            - paragraph [ref=e2446]: Project details to be added.
+            - paragraph [ref=e2448]: Placeholder entry. Description, screenshot and link will be added once confirmed.
+            - generic [ref=e2449]:
+              - heading "Focus areas" [level=4] [ref=e2450]
+              - paragraph [ref=e2451]: HR
+              - heading "Technologies and skills" [level=4] [ref=e2452]
+              - list [ref=e2453]:
+                - listitem [ref=e2454]: To be confirmed
+              - paragraph [ref=e2455]: Details coming soon
+        - listitem [ref=e2456]:
+          - article [ref=e2457]:
+            - paragraph [ref=e2458]:
+              - generic [aria-hidden] [ref=e2459]: "05"
+              - generic [aria-hidden] [ref=e2460]: /
+              - generic [ref=e2461]: "Category:"
+              - text: Digital Banking
+            - heading "Meridian Digital Banking" [level=3] [ref=e2462]
+            - paragraph [ref=e2463]: Project details to be added.
+            - paragraph [ref=e2465]: Placeholder entry. Description, screenshot and link will be added once confirmed.
+            - generic [ref=e2466]:
+              - heading "Focus areas" [level=4] [ref=e2467]
+              - paragraph [ref=e2468]: Banking
+              - heading "Technologies and skills" [level=4] [ref=e2469]
+              - list [ref=e2470]:
+                - listitem [ref=e2471]: To be confirmed
+              - paragraph [ref=e2472]: Details coming soon
+        - listitem [ref=e2473]:
+          - article [ref=e2474]:
+            - paragraph [ref=e2476]:
+              - generic [ref=e2477]: "Category: News & Media"
+              - generic [ref=e2478]: Live
+            - heading "The Daily Wire News" [level=3] [ref=e2480]
+            - paragraph [ref=e2481]: A news website for UK and world stories.
+            - paragraph [ref=e2483]: A responsive news website with a breaking-news ticker, category navigation across politics, world, business, health, tech and sport, a live weather widget and a newsletter sign-up, designed for fast, clear reading on any screen.
+            - generic [ref=e2484]:
+              - heading "Focus areas" [level=4] [ref=e2485]
+              - paragraph [ref=e2486]:
+                - text: Web Application
+                - generic [ref=e2487]: · News
+                - generic [ref=e2488]: · Responsive Design
+              - heading "Technologies and skills" [level=4] [ref=e2489]
+              - list [ref=e2490]:
+                - listitem [ref=e2491]: News Feed UI
+                - listitem [ref=e2492]: Category Navigation
+                - listitem [ref=e2493]: Responsive Design
+              - link "View The Daily Wire News live project (opens in a new tab)" [ref=e2494] [cursor=pointer]:
+                - /url: https://the-daily-wire-two.vercel.app/
+                - text: View Project
+        - listitem [ref=e2498]:
+          - article [ref=e2499]:
+            - paragraph [ref=e2501]:
+              - generic [ref=e2502]: "Category: DevOps & Cloud"
+              - generic [ref=e2503]: Live
+            - heading "Azure DevOps Dashboard" [level=3] [ref=e2505]
+            - paragraph [ref=e2506]: A clean dashboard for Azure DevOps delivery information.
+            - paragraph [ref=e2508]: An Azure DevOps-focused dashboard for displaying and managing development and project information through a clean, responsive interface, with delivery overview figures, pipeline status, run history and a lifecycle view.
+            - generic [ref=e2509]:
+              - heading "Focus areas" [level=4] [ref=e2510]
+              - paragraph [ref=e2511]:
+                - text: Web Application
+                - generic [ref=e2512]: · DevOps
+                - generic [ref=e2513]: · Dashboard
+              - heading "Technologies and skills" [level=4] [ref=e2514]
+              - list [ref=e2515]:
+                - listitem [ref=e2516]: Azure DevOps
+                - listitem [ref=e2517]: Dashboard UI
+                - listitem [ref=e2518]: Responsive Design
+              - link "View Azure DevOps Dashboard live project (opens in a new tab)" [ref=e2519] [cursor=pointer]:
+                - /url: https://azure-devops-dashboard-chi.vercel.app/
+                - text: View Project
+        - listitem [ref=e2523]:
+          - article [ref=e2524]:
+            - paragraph [ref=e2526]:
+              - generic [ref=e2527]: "Category: Streaming & Entertainment"
+              - generic [ref=e2528]: Live
+            - heading "British Streaming — Web App, iOS & Android" [level=3] [ref=e2530]
+            - paragraph [ref=e2531]: A UK-focused streaming experience for films and series.
+            - generic [ref=e2532]:
+              - paragraph [ref=e2533]: Developed a modern, responsive entertainment streaming interface for discovering films and television series, featuring a cinematic hero section, trending content, popular titles and organised media collections.
+              - paragraph [ref=e2534]: Key features include a cinematic homepage with featured content, trending and top-rated collections, interactive media cards and browsing layouts, and a responsive interface across desktop, tablet and mobile.
+            - generic [ref=e2535]:
+              - heading "Focus areas" [level=4] [ref=e2536]
+              - paragraph [ref=e2537]:
+                - text: Web Application
+                - generic [ref=e2538]: · Entertainment
+                - generic [ref=e2539]: · Responsive Design
+              - heading "Technologies and skills" [level=4] [ref=e2540]
+              - list [ref=e2541]:
+                - listitem [ref=e2542]: Responsive UI
+                - listitem [ref=e2543]: Content Discovery
+                - listitem [ref=e2544]: Streaming-style Interface
+              - link "View British Streaming — Web App, iOS & Android live project (opens in a new tab)" [ref=e2545] [cursor=pointer]:
+                - /url: https://british-streaming.vercel.app/
+                - text: View Project
+    - generic [ref=e2549]:
+      - generic [ref=e2550]:
+        - generic [ref=e2551]: "04"
+        - text: CERTIFICATIONS
+      - generic [ref=e2553]:
+        - generic [ref=e2554]:
+          - heading "Always learning." [level=2] [ref=e2556]:
+            - generic [aria-hidden] [ref=e2558]:
+              - generic [ref=e2559]: Always
+              - emphasis [ref=e2560]: learning.
+          - paragraph [ref=e2561]: 13 certifications earned across frontend, backend, databases, software engineering and algorithms.
+        - generic "Certification carousel. Use the left and right arrow keys to browse." [ref=e2563]:
+          - generic [ref=e2564]:
+            - article [aria-hidden] [ref=e2566]:
+              - generic [ref=e2568]:
+                - generic [ref=e2570]: "13"
+                - strong [ref=e2571]: Algorithms
+                - generic [ref=e2572]: Loading certificate preview
+              - generic [ref=e2574]:
+                - generic [aria-hidden] [ref=e2575]: "13"
+                - generic [ref=e2576]:
+                  - generic [ref=e2577]:
+                    - generic [ref=e2578]: Algorithms
+                    - generic [ref=e2579]: Basic
+                  - heading [level=3] [ref=e2580]: Problem Solving (Basic)
+                  - paragraph [ref=e2581]: HackerRank · Algorithms
+                  - paragraph [ref=e2582]:
+                    - text: Issued
+                    - time [ref=e2583]: 2025-09-06
+                  - link [ref=e2584] [cursor=pointer]:
+                    - /url: /certifications/problem_solving_basic.webp
+                    - text: View Certificate
+                    - generic [ref=e2589]: ": Problem Solving (Basic) (opens in a new tab)"
+            - article [aria-hidden] [ref=e2591]:
+              - generic [ref=e2593]:
+                - generic [ref=e2595]: "12"
+                - strong [ref=e2596]: React
+                - generic [ref=e2597]: Loading certificate preview
+              - generic [ref=e2599]:
+                - generic [aria-hidden] [ref=e2600]: "12"
+                - generic [ref=e2601]:
+                  - generic [ref=e2602]:
+                    - generic [ref=e2603]: Frontend
+                    - generic [ref=e2604]: Basic
+                  - heading [level=3] [ref=e2605]: React (Basic)
+                  - paragraph [ref=e2606]: HackerRank · React
+                  - paragraph [ref=e2607]:
+                    - text: Issued
+                    - time [ref=e2608]: 2025-09-11
+                  - link [ref=e2609] [cursor=pointer]:
+                    - /url: /certifications/react_basic.webp
+                    - text: View Certificate
+                    - generic [ref=e2614]: ": React (Basic) (opens in a new tab)"
+            - article [aria-hidden] [ref=e2616]:
+              - generic [ref=e2618]:
+                - generic [ref=e2620]: "11"
+                - strong [ref=e2621]: JavaScript
+                - generic [ref=e2622]: Loading certificate preview
+              - generic [ref=e2624]:
+                - generic [aria-hidden] [ref=e2625]: "11"
+                - generic [ref=e2626]:
+                  - generic [ref=e2627]:
+                    - generic [ref=e2628]: Frontend
+                    - generic [ref=e2629]: Intermediate
+                  - heading [level=3] [ref=e2630]: JavaScript (Intermediate)
+                  - paragraph [ref=e2631]: HackerRank · JavaScript
+                  - paragraph [ref=e2632]:
+                    - text: Issued
+                    - time [ref=e2633]: 2025-09-11
+                  - link [ref=e2634] [cursor=pointer]:
+                    - /url: /certifications/javascript_intermediate.webp
+                    - text: View Certificate
+                    - generic [ref=e2639]: ": JavaScript (Intermediate) (opens in a new tab)"
+            - article [aria-hidden] [ref=e2641]:
+              - generic [ref=e2643]:
+                - generic [ref=e2645]: "10"
+                - strong [ref=e2646]: Software Engineering
+                - generic [ref=e2647]: Loading certificate preview
+              - generic [ref=e2649]:
+                - generic [aria-hidden] [ref=e2650]: "10"
+                - generic [ref=e2651]:
+                  - generic [ref=e2652]: Software Engineering
+                  - heading [level=3] [ref=e2654]: Software Engineer Intern
+                  - paragraph [ref=e2655]: HackerRank · Software Engineering
+                  - paragraph [ref=e2656]:
+                    - text: Issued
+                    - time [ref=e2657]: 2025-09-30
+                  - link [ref=e2658] [cursor=pointer]:
+                    - /url: /certifications/software_engineer_intern.webp
+                    - text: View Certificate
+                    - generic [ref=e2663]: ": Software Engineer Intern (opens in a new tab)"
+            - article [aria-hidden] [ref=e2665]:
+              - generic [ref=e2667]:
+                - generic [ref=e2669]: "09"
+                - strong [ref=e2670]: Node.js
+                - generic [ref=e2671]: Loading certificate preview
+              - generic [ref=e2673]:
+                - generic [aria-hidden] [ref=e2674]: "09"
+                - generic [ref=e2675]:
+                  - generic [ref=e2676]:
+                    - generic [ref=e2677]: Backend
+                    - generic [ref=e2678]: Basic
+                  - heading [level=3] [ref=e2679]: Node (Basic)
+                  - paragraph [ref=e2680]: HackerRank · Node.js
+                  - paragraph [ref=e2681]:
+                    - text: Issued
+                    - time [ref=e2682]: 2025-09-30
+                  - link [ref=e2683] [cursor=pointer]:
+                    - /url: /certifications/nodejs_basic.webp
+                    - text: View Certificate
+                    - generic [ref=e2688]: ": Node (Basic) (opens in a new tab)"
+            - article [aria-hidden] [ref=e2690]:
+              - generic [ref=e2692]:
+                - generic [ref=e2694]: "08"
+                - strong [ref=e2695]: SQL
+                - generic [ref=e2696]: Loading certificate preview
+              - generic [ref=e2698]:
+                - generic [aria-hidden] [ref=e2699]: "08"
+                - generic [ref=e2700]:
+                  - generic [ref=e2701]:
+                    - generic [ref=e2702]: Databases
+                    - generic [ref=e2703]: Basic
+                  - heading [level=3] [ref=e2704]: SQL (Basic)
+                  - paragraph [ref=e2705]: HackerRank · SQL
+                  - paragraph [ref=e2706]:
+                    - text: Issued
+                    - time [ref=e2707]: 2025-10-03
+                  - link [ref=e2708] [cursor=pointer]:
+                    - /url: /certifications/sql_basic.webp
+                    - text: View Certificate
+                    - generic [ref=e2713]: ": SQL (Basic) (opens in a new tab)"
+            - article [aria-hidden] [ref=e2715]:
+              - generic [ref=e2717]:
+                - generic [ref=e2719]: "07"
+                - strong [ref=e2720]: React
+                - generic [ref=e2721]: Loading certificate preview
+              - generic [ref=e2723]:
+                - generic [aria-hidden] [ref=e2724]: "07"
+                - generic [ref=e2725]:
+                  - generic [ref=e2726]: Frontend
+                  - heading [level=3] [ref=e2728]: Frontend Developer (React)
+                  - paragraph [ref=e2729]: HackerRank · React
+                  - paragraph [ref=e2730]:
+                    - text: Issued
+                    - time [ref=e2731]: 2025-10-07
+                  - link [ref=e2732] [cursor=pointer]:
+                    - /url: /certifications/frontend_developer_react.webp
+                    - text: View Certificate
+                    - generic [ref=e2737]: ": Frontend Developer (React) (opens in a new tab)"
+            - article [aria-hidden] [ref=e2739]:
+              - generic [ref=e2741]:
+                - generic [ref=e2743]: "06"
+                - strong [ref=e2744]: C#
+                - generic [ref=e2745]: Loading certificate preview
+              - generic [ref=e2747]:
+                - generic [aria-hidden] [ref=e2748]: "06"
+                - generic [ref=e2749]:
+                  - generic [ref=e2750]:
+                    - generic [ref=e2751]: Backend
+                    - generic [ref=e2752]: Basic
+                  - heading [level=3] [ref=e2753]: C# (Basic)
+                  - paragraph [ref=e2754]: HackerRank · C#
+                  - paragraph [ref=e2755]:
+                    - text: Issued
+                    - time [ref=e2756]: 2025-10-07
+                  - link [ref=e2757] [cursor=pointer]:
+                    - /url: /certifications/c_sharp_basic.webp
+                    - text: View Certificate
+                    - generic [ref=e2762]: ": C# (Basic) (opens in a new tab)"
+            - article [aria-hidden] [ref=e2764]:
+              - generic [ref=e2766]:
+                - generic [ref=e2768]: "05"
+                - strong [ref=e2769]: REST API
+                - generic [ref=e2770]: Loading certificate preview
+              - generic [ref=e2772]:
+                - generic [aria-hidden] [ref=e2773]: "05"
+                - generic [ref=e2774]:
+                  - generic [ref=e2775]:
+                    - generic [ref=e2776]: Backend
+                    - generic [ref=e2777]: Intermediate
+                  - heading [level=3] [ref=e2778]: REST API (Intermediate)
+                  - paragraph [ref=e2779]: HackerRank · REST API
+                  - paragraph [ref=e2780]:
+                    - text: Issued
+                    - time [ref=e2781]: 2025-10-08
+                  - link [ref=e2782] [cursor=pointer]:
+                    - /url: /certifications/rest_api_intermediate.webp
+                    - text: View Certificate
+                    - generic [ref=e2787]: ": REST API (Intermediate) (opens in a new tab)"
+            - article [aria-hidden] [ref=e2789]:
+              - generic [ref=e2791]:
+                - generic [ref=e2793]: "04"
+                - strong [ref=e2794]: Angular
+                - generic [ref=e2795]: Loading certificate preview
+              - generic [ref=e2797]:
+                - generic [aria-hidden] [ref=e2798]: "04"
+                - generic [ref=e2799]:
+                  - generic [ref=e2800]:
+                    - generic [ref=e2801]: Frontend
+                    - generic [ref=e2802]: Intermediate
+                  - heading [level=3] [ref=e2803]: Angular (Intermediate)
+                  - paragraph [ref=e2804]: HackerRank · Angular
+                  - paragraph [ref=e2805]:
+                    - text: Issued
+                    - time [ref=e2806]: 2025-10-08
+                  - link [ref=e2807] [cursor=pointer]:
+                    - /url: /certifications/angular_intermediate.webp
+                    - text: View Certificate
+                    - generic [ref=e2812]: ": Angular (Intermediate) (opens in a new tab)"
+            - article [aria-hidden] [ref=e2814]:
+              - generic [ref=e2816]:
+                - generic [ref=e2818]: "03"
+                - strong [ref=e2819]: Software Engineering
+                - generic [ref=e2820]: Loading certificate preview
+              - generic [ref=e2822]:
+                - generic [aria-hidden] [ref=e2823]: "03"
+                - generic [ref=e2824]:
+                  - generic [ref=e2825]: Software Engineering
+                  - heading [level=3] [ref=e2827]: Software Engineer
+                  - paragraph [ref=e2828]: HackerRank · Software Engineering
+                  - paragraph [ref=e2829]:
+                    - text: Issued
+                    - time [ref=e2830]: 2025-10-11
+                  - link [ref=e2831] [cursor=pointer]:
+                    - /url: /certifications/software_engineer.webp
+                    - text: View Certificate
+                    - generic [ref=e2836]: ": Software Engineer (opens in a new tab)"
+            - article [aria-hidden] [ref=e2838]:
+              - generic [ref=e2840]:
+                - generic [ref=e2842]: "02"
+                - strong [ref=e2843]: Go
+                - generic [ref=e2844]: Loading certificate preview
+              - generic [ref=e2846]:
+                - generic [aria-hidden] [ref=e2847]: "02"
+                - generic [ref=e2848]:
+                  - generic [ref=e2849]:
+                    - generic [ref=e2850]: Backend
+                    - generic [ref=e2851]: Basic
+                  - heading [level=3] [ref=e2852]: Go (Basic)
+                  - paragraph [ref=e2853]: HackerRank · Go
+                  - paragraph [ref=e2854]:
+                    - text: Issued
+                    - time [ref=e2855]: 2025-10-15
+                  - link [ref=e2856] [cursor=pointer]:
+                    - /url: /certifications/golang_basic.webp
+                    - text: View Certificate
+                    - generic [ref=e2861]: ": Go (Basic) (opens in a new tab)"
+            - article [ref=e2863]:
+              - generic [ref=e2864]:
+                - generic [ref=e2865]:
+                  - generic [ref=e2867]: "01"
+                  - strong [ref=e2868]: Java
+                  - generic [ref=e2869]: Loading certificate preview
+                - img "Java (Basic) certificate" [ref=e2870]
+              - generic [ref=e2871]:
+                - generic [aria-hidden] [ref=e2872]: "01"
+                - generic [ref=e2873]:
+                  - generic [ref=e2874]:
+                    - generic [ref=e2875]: Backend
+                    - generic [ref=e2876]: Basic
+                  - heading "Java (Basic)" [level=3] [ref=e2877]
+                  - paragraph [ref=e2878]: HackerRank · Java
+                  - paragraph [ref=e2879]:
+                    - text: Issued
+                    - time [ref=e2880]: 2025-11-02
+                  - 'link "View Certificate : Java (Basic) (opens in a new tab)" [ref=e2881] [cursor=pointer]':
+                    - /url: /certifications/java_basic.webp
+                    - text: View Certificate
+                    - generic [ref=e2886]: ": Java (Basic) (opens in a new tab)"
+          - generic [ref=e2889]:
+            - button "Previous certificate" [ref=e2890] [cursor=pointer]
+            - paragraph [ref=e2893]:
+              - generic [ref=e2894]: Certificate
+              - text: 01 / 13
+            - button "Next certificate" [ref=e2895] [cursor=pointer]
+          - generic "Choose a certificate" [ref=e2898]:
+            - 'button "Show certificate 1: Java (Basic)" [ref=e2899] [cursor=pointer]'
+            - 'button "Show certificate 2: Go (Basic)" [ref=e2900] [cursor=pointer]'
+            - 'button "Show certificate 3: Software Engineer" [ref=e2901] [cursor=pointer]'
+            - 'button "Show certificate 4: Angular (Intermediate)" [ref=e2902] [cursor=pointer]'
+            - 'button "Show certificate 5: REST API (Intermediate)" [ref=e2903] [cursor=pointer]'
+            - 'button "Show certificate 6: C# (Basic)" [ref=e2904] [cursor=pointer]'
+            - 'button "Show certificate 7: Frontend Developer (React)" [ref=e2905] [cursor=pointer]'
+            - 'button "Show certificate 8: SQL (Basic)" [ref=e2906] [cursor=pointer]'
+            - 'button "Show certificate 9: Node (Basic)" [ref=e2907] [cursor=pointer]'
+            - 'button "Show certificate 10: Software Engineer Intern" [ref=e2908] [cursor=pointer]'
+            - 'button "Show certificate 11: JavaScript (Intermediate)" [ref=e2909] [cursor=pointer]'
+            - 'button "Show certificate 12: React (Basic)" [ref=e2910] [cursor=pointer]'
+            - 'button "Show certificate 13: Problem Solving (Basic)" [ref=e2911] [cursor=pointer]'
+    - region "My professional journey." [ref=e2912]:
+      - generic [ref=e2913]:
+        - generic [ref=e2914]: "05"
+        - text: EXPERIENCE
+      - generic [ref=e2916]:
+        - heading "My professional journey." [level=2] [ref=e2917]
+        - paragraph [ref=e2918]: A journey through software engineering, digital transformation, technology innovation and continuous professional development — building accessible, scalable and meaningful digital experiences.
+      - navigation "Career timeline" [ref=e2919]:
+        - list [ref=e2920]:
+          - listitem [ref=e2921]:
+            - link "2024 Freelance" [ref=e2922] [cursor=pointer]:
+              - /url: "#xp-2024-01-freelance-software-engineer"
+              - generic [ref=e2923]: "2024"
+              - text: Freelance
+          - listitem [ref=e2924]:
+            - link "2024 Sky" [ref=e2925] [cursor=pointer]:
+              - /url: "#xp-2024-06-software-engineer"
+              - generic [ref=e2926]: "2024"
+              - text: Sky
+          - listitem [ref=e2927]:
+            - link "2022 Travel" [ref=e2928] [cursor=pointer]:
+              - /url: "#xp-2022-01-travel-specialist"
+              - generic [ref=e2929]: "2022"
+              - text: Travel
+          - listitem [ref=e2930]:
+            - link "2014 Lloyds Banking Group" [ref=e2931] [cursor=pointer]:
+              - /url: "#xp-2014-11-lloyds-banking-group"
+              - generic [ref=e2932]: "2014"
+              - text: Lloyds Banking Group
+          - listitem [ref=e2933]:
+            - link "2013 Leonard Cheshire" [ref=e2934] [cursor=pointer]:
+              - /url: "#xp-2013-09-career-development"
+              - generic [ref=e2935]: "2013"
+              - text: Leonard Cheshire
+          - listitem [ref=e2936]:
+            - link "2013 Lion Web Vision" [ref=e2937] [cursor=pointer]:
+              - /url: "#xp-2013-08-web-development-training"
+              - generic [ref=e2938]: "2013"
+              - text: Lion Web Vision
+          - listitem [ref=e2939]:
+            - link "2005 Education" [ref=e2940] [cursor=pointer]:
+              - /url: "#xp-education"
+              - generic [ref=e2941]: "2005"
+              - text: Education
+      - list [ref=e2943]:
+        - listitem [ref=e2944]:
+          - paragraph [ref=e2947]:
+            - time [ref=e2948]: Jan 2024
+            - text: –
+            - generic [ref=e2949]: to
+            - generic [ref=e2950]:
+              - text: Present
+              - generic [ref=e2952]: (current role)
+          - article [ref=e2956]:
+            - generic [ref=e2957]:
+              - generic [aria-hidden] [ref=e2958]: FR
+              - generic [ref=e2959]:
+                - heading "Freelance Software Engineer" [level=3] [ref=e2960]
+                - paragraph [ref=e2961]:
+                  - generic [ref=e2962]: Freelance
+                  - generic [aria-hidden] [ref=e2963]: /
+                  - generic [ref=e2964]: London Area, United Kingdom
+                - list [ref=e2965]:
+                  - listitem [ref=e2966]: Self-employed
+                  - listitem [ref=e2967]: Remote
+                  - listitem [ref=e2968]:
+                    - generic [ref=e2969]: "Duration:"
+                    - text: 2 years 11 months
+            - list "Skills" [ref=e2970]:
+              - listitem [ref=e2971]: React
+              - listitem [ref=e2972]: TypeScript
+              - listitem [ref=e2973]: JavaScript
+              - listitem [ref=e2974]: Next.js
+              - listitem [ref=e2975]: Frontend Development
+              - listitem [ref=e2976]: Responsive Web Design
+              - listitem [ref=e2977]: Accessibility
+              - listitem [ref=e2978]: UI/UX Design
+              - listitem [ref=e2979]: Component Architecture
+              - listitem [ref=e2980]: AI Integration
+              - listitem [ref=e2981]: Performance Optimisation
+              - listitem [ref=e2982]: Software Engineering
+            - generic [ref=e2983]:
+              - 'button "Responsibilities & projects: Freelance Software Engineer" [expanded] [ref=e2984] [cursor=pointer]':
+                - generic [ref=e2985]: Responsibilities & projects
+              - generic [ref=e2989]:
+                - list [ref=e2990]:
+                  - listitem [ref=e2991]: Built modern, responsive web applications using React, TypeScript, Next.js and JavaScript, focusing on accessibility, performance and intuitive user experiences.
+                  - listitem [ref=e2992]: Developed an AI-powered job tracking application designed to simplify job application management and improve workflow organisation.
+                  - listitem [ref=e2993]: Worked on booking systems, weather dashboards, property platforms and project management applications, translating practical requirements into functional, user-friendly interfaces.
+                  - listitem [ref=e2994]: Created reusable React components and maintainable front-end architectures to support scalable application development.
+                  - listitem [ref=e2995]: Applied responsive design, accessibility best practices and performance optimisation techniques across different web projects.
+                - region "Freelance projects" [ref=e2996]:
+                  - heading "Freelance projects" [level=4] [ref=e2997]:
+                    - text: Freelance projects
+                    - generic [aria-hidden] [ref=e2998]: · 08
+                  - list [ref=e2999]:
+                    - listitem [ref=e3000]:
+                      - generic [aria-hidden] [ref=e3001]: "01"
+                      - heading "British Streaming" [level=5] [ref=e3002]
+                      - paragraph [ref=e3003]: Developed a modern, responsive entertainment streaming web application featuring a cinematic interface for discovering films and television series, with trending content, popular titles and organised media collections.
+                      - link "View Project — British Streaming (opens in a new tab)" [ref=e3004] [cursor=pointer]:
+                        - /url: https://british-streaming.vercel.app/
+                        - text: View Project — British Streaming
+                        - generic [ref=e3005]: ": British Streaming (opens in a new tab)"
+                    - listitem [ref=e3009]:
+                      - generic [aria-hidden] [ref=e3010]: "02"
+                      - 'heading "Neurodivergents Take A Stand (NDS): Accessible Homepage Redesign" [level=5] [ref=e3011]'
+                      - paragraph [ref=e3012]: An accessible homepage redesign concept for Neurodivergents Take A Stand, a UK charity supporting neurodivergent people navigating employment tribunals. The project focuses on clear content structure, accessible navigation, readability and responsive user experience.
+                      - 'link "View Live Project : Neurodivergents Take A Stand (NDS): Accessible Homepage Redesign (opens in a new tab)" [ref=e3013] [cursor=pointer]':
+                        - /url: https://ndshomepagedemo.wordpress.com/accessible-homepage-mockup/
+                        - text: View Live Project
+                        - generic [ref=e3014]: ": Neurodivergents Take A Stand (NDS): Accessible Homepage Redesign (opens in a new tab)"
+                    - listitem [ref=e3018]:
+                      - generic [aria-hidden] [ref=e3019]: "03"
+                      - heading "Modern News Web Application" [level=5] [ref=e3020]
+                      - paragraph [ref=e3021]: Built a responsive news interface focused on accessible story presentation and intuitive navigation.
+                      - 'link "View Project : Modern News Web Application (opens in a new tab)" [ref=e3022] [cursor=pointer]':
+                        - /url: https://the-daily-wire-two.vercel.app/
+                        - text: View Project
+                        - generic [ref=e3023]: ": Modern News Web Application (opens in a new tab)"
+                    - listitem [ref=e3027]:
+                      - generic [aria-hidden] [ref=e3028]: "04"
+                      - heading "Air Quality & Weather Forecasting" [level=5] [ref=e3029]
+                      - paragraph [ref=e3030]: Built a Next.js environmental dashboard using D3.js and OpenWeather APIs for real-time air-quality and weather monitoring.
+                      - 'link "View Project : Air Quality & Weather Forecasting (opens in a new tab)" [ref=e3031] [cursor=pointer]':
+                        - /url: https://air-quality-weather-forecasting.vercel.app/en
+                        - text: View Project
+                        - generic [ref=e3032]: ": Air Quality & Weather Forecasting (opens in a new tab)"
+                    - listitem [ref=e3036]:
+                      - generic [aria-hidden] [ref=e3037]: "05"
+                      - heading "AI Application Jobs" [level=5] [ref=e3038]
+                      - paragraph [ref=e3039]: Built an AI-assisted Next.js and TypeScript platform that improved organisation and tracking of application activities.
+                      - 'link "View Project : AI Application Jobs (opens in a new tab)" [ref=e3040] [cursor=pointer]':
+                        - /url: https://ai-application-jobs-special-27ax.vercel.app/
+                        - text: View Project
+                        - generic [ref=e3041]: ": AI Application Jobs (opens in a new tab)"
+                    - listitem [ref=e3045]:
+                      - generic [aria-hidden] [ref=e3046]: "06"
+                      - heading "JIRA Project Management System" [level=5] [ref=e3047]
+                      - paragraph [ref=e3048]: Developed a project management application that enhanced task organisation and workflow visibility.
+                      - 'link "View Project : JIRA Project Management System (opens in a new tab)" [ref=e3049] [cursor=pointer]':
+                        - /url: https://jiraprojectmanagementsystem.vercel.app/
+                        - text: View Project
+                        - generic [ref=e3050]: ": JIRA Project Management System (opens in a new tab)"
+                    - listitem [ref=e3054]:
+                      - generic [aria-hidden] [ref=e3055]: "07"
+                      - heading "Coding Assessment" [level=5] [ref=e3056]
+                      - paragraph [ref=e3057]: Completed software engineering coding assessments and technical challenges, demonstrating practical problem-solving, debugging, and development skills.
+                      - 'link "View Project : Coding Assessment (opens in a new tab)" [ref=e3058] [cursor=pointer]':
+                        - /url: https://coding-challenege-assessment.vercel.app/
+                        - text: View Project
+                        - generic [ref=e3059]: ": Coding Assessment (opens in a new tab)"
+                    - listitem [ref=e3063]:
+                      - generic [aria-hidden] [ref=e3064]: "08"
+                      - heading "Software Engineer Workspace" [level=5] [ref=e3065]
+                      - paragraph [ref=e3066]: Built a developer-focused workspace to support software engineering tasks, project organisation, and efficient development workflows.
+                      - 'link "View Project : Software Engineer Workspace (opens in a new tab)" [ref=e3067] [cursor=pointer]':
+                        - /url: https://workspace-teams-seven.vercel.app/login
+                        - text: View Project
+                        - generic [ref=e3068]: ": Software Engineer Workspace (opens in a new tab)"
+        - listitem [ref=e3072]:
+          - paragraph [ref=e3075]:
+            - time [ref=e3076]: Jun 2024
+            - text: –
+            - generic [ref=e3077]: to
+            - time [ref=e3078]: Aug 2024
+          - article [ref=e3082]:
+            - generic [ref=e3083]:
+              - img "Sky logo" [ref=e3085]
+              - generic [ref=e3086]:
+                - heading "Software Engineer" [level=3] [ref=e3087]
+                - paragraph [ref=e3088]:
+                  - generic [ref=e3089]: Sky
+                  - generic [aria-hidden] [ref=e3090]: /
+                  - generic [ref=e3091]: London Area, United Kingdom
+                - list [ref=e3092]:
+                  - listitem [ref=e3093]: Full-time
+                  - listitem [ref=e3094]: Hybrid
+                  - listitem [ref=e3095]:
+                    - generic [ref=e3096]: "Duration:"
+                    - text: 3 months
+            - list "Skills" [ref=e3097]:
+              - listitem [ref=e3098]: Python
+              - listitem [ref=e3099]: AWS
+              - listitem [ref=e3100]: REST APIs
+              - listitem [ref=e3101]: Microservices
+              - listitem [ref=e3102]: Docker
+              - listitem [ref=e3103]: Kubernetes
+              - listitem [ref=e3104]: Jenkins
+              - listitem [ref=e3105]: CI/CD Pipelines
+              - listitem [ref=e3106]: Agile Development
+            - 'button "Responsibilities & projects: Software Engineer" [ref=e3108] [cursor=pointer]':
+              - generic [ref=e3109]: Responsibilities & projects
+        - listitem [ref=e3112]:
+          - paragraph [ref=e3115]:
+            - time [ref=e3116]: Jan 2022
+            - text: –
+            - generic [ref=e3117]: to
+            - time [ref=e3118]: Jun 2024
+          - article [ref=e3122]:
+            - generic [ref=e3128]:
+              - heading "Travel Specialist" [level=3] [ref=e3129]
+              - paragraph [ref=e3130]:
+                - generic [ref=e3131]: Career Break
+                - generic [aria-hidden] [ref=e3132]: /
+                - generic [ref=e3133]: International
+              - list [ref=e3134]:
+                - listitem [ref=e3135]: Career Break
+                - listitem [ref=e3136]: Remote
+                - listitem [ref=e3137]:
+                  - generic [ref=e3138]: "Duration:"
+                  - text: 2 years 6 months
+            - list "Transferable skills" [ref=e3139]:
+              - listitem [ref=e3140]: Adaptability
+              - listitem [ref=e3141]: Communication
+              - listitem [ref=e3142]: Problem Solving
+              - listitem [ref=e3143]: Organisation
+              - listitem [ref=e3144]: Independent Learning
+              - listitem [ref=e3145]: Cross-cultural Communication
+            - 'button "Experience: Travel Specialist" [ref=e3147] [cursor=pointer]':
+              - generic [ref=e3148]: Experience
+        - listitem [ref=e3151]:
+          - paragraph [ref=e3154]:
+            - time [ref=e3155]: Nov 2014
+            - text: –
+            - generic [ref=e3156]: to
+            - time [ref=e3157]: Jan 2020
+          - article [ref=e3161]:
+            - generic [ref=e3162]:
+              - img "Lloyds Banking Group logo" [ref=e3164]
+              - generic [ref=e3165]:
+                - heading "Lloyds Banking Group" [level=3] [ref=e3166]
+                - paragraph [ref=e3167]:
+                  - generic [ref=e3168]: London Area, United Kingdom
+                - list [ref=e3169]:
+                  - listitem [ref=e3170]: Full-time
+                  - listitem [ref=e3171]: Remote
+                  - listitem [ref=e3172]:
+                    - generic [ref=e3173]: "Duration:"
+                    - text: 5 years 3 months
+            - generic [ref=e3174]:
+              - 'button "4 roles: Lloyds Banking Group" [expanded] [ref=e3175] [cursor=pointer]':
+                - generic [ref=e3176]: 4 roles
+              - list [ref=e3181]:
+                - listitem [ref=e3182]:
+                  - heading "Senior Software Engineer" [level=4] [ref=e3183]
+                  - paragraph [ref=e3184]:
+                    - time [ref=e3185]: Sep 2018
+                    - text: –
+                    - generic [ref=e3186]: to
+                    - time [ref=e3187]: Jan 2020
+                  - paragraph [ref=e3188]:
+                    - generic [ref=e3189]: London Area, United Kingdom
+                  - list [ref=e3190]:
+                    - listitem [ref=e3191]:
+                      - generic [ref=e3192]: "Duration:"
+                      - text: 1 year 5 months
+                  - list "Skills" [ref=e3193]:
+                    - listitem [ref=e3194]: Software Engineering
+                    - listitem [ref=e3195]: Responsive Web Design
+                    - listitem [ref=e3196]: Accessibility
+                    - listitem [ref=e3197]: Frontend Development
+                    - listitem [ref=e3198]: UI Components
+                    - listitem [ref=e3199]: Agile Development
+                  - 'button "Responsibilities & projects: Senior Software Engineer" [ref=e3201] [cursor=pointer]':
+                    - generic [ref=e3202]: Responsibilities & projects
+                - listitem [ref=e3205]:
+                  - heading "Architecture, Methodology & Innovation — Applied Technology" [level=4] [ref=e3206]
+                  - paragraph [ref=e3207]:
+                    - time [ref=e3208]: Mar 2016
+                    - text: –
+                    - generic [ref=e3209]: to
+                    - time [ref=e3210]: Sep 2018
+                  - paragraph [ref=e3211]:
+                    - generic [ref=e3212]: London Area, United Kingdom
+                  - list [ref=e3213]:
+                    - listitem [ref=e3214]:
+                      - generic [ref=e3215]: "Duration:"
+                      - text: 2 years 7 months
+                  - list "Skills" [ref=e3216]:
+                    - listitem [ref=e3217]: Python
+                    - listitem [ref=e3218]: D3.js
+                    - listitem [ref=e3219]: Neo4j
+                    - listitem [ref=e3220]: Graph Databases
+                    - listitem [ref=e3221]: AI Prototyping
+                    - listitem [ref=e3222]: UI/UX Design
+                    - listitem [ref=e3223]: Technology Innovation
+                    - listitem [ref=e3224]: Digital Transformation
+                  - 'button "Responsibilities & projects: Architecture, Methodology & Innovation — Applied Technology" [ref=e3226] [cursor=pointer]':
+                    - generic [ref=e3227]: Responsibilities & projects
+                - listitem [ref=e3230]:
+                  - heading "UI Transformation" [level=4] [ref=e3231]
+                  - paragraph [ref=e3232]:
+                    - time [ref=e3233]: Mar 2015
+                    - text: –
+                    - generic [ref=e3234]: to
+                    - time [ref=e3235]: Sep 2016
+                  - paragraph [ref=e3236]:
+                    - generic [ref=e3237]: London Area, United Kingdom
+                  - list [ref=e3238]:
+                    - listitem [ref=e3239]:
+                      - generic [ref=e3240]: "Duration:"
+                      - text: 1 year 7 months
+                  - list "Skills" [ref=e3241]:
+                    - listitem [ref=e3242]: Responsive Web Design
+                    - listitem [ref=e3243]: User Interface Design
+                    - listitem [ref=e3244]: HTML
+                    - listitem [ref=e3245]: CSS
+                    - listitem [ref=e3246]: Frontend Development
+                    - listitem [ref=e3247]: Component Development
+                    - listitem [ref=e3248]: Performance Optimisation
+                  - 'button "Responsibilities & projects: UI Transformation" [ref=e3250] [cursor=pointer]':
+                    - generic [ref=e3251]: Responsibilities & projects
+                - listitem [ref=e3254]:
+                  - heading "Trainee Digital Transformation" [level=4] [ref=e3255]
+                  - paragraph [ref=e3256]:
+                    - time [ref=e3257]: Nov 2014
+                    - text: –
+                    - generic [ref=e3258]: to
+                    - time [ref=e3259]: Mar 2015
+                  - paragraph [ref=e3260]:
+                    - generic [ref=e3261]: City of London, United Kingdom
+                  - list [ref=e3262]:
+                    - listitem [ref=e3263]:
+                      - generic [ref=e3264]: "Duration:"
+                      - text: 5 months
+                  - list "Skills" [ref=e3265]:
+                    - listitem [ref=e3266]: Problem Solving
+                    - listitem [ref=e3267]: DevTools
+                    - listitem [ref=e3268]: DevOps
+                    - listitem [ref=e3269]: Mobile Application Development
+                    - listitem [ref=e3270]: Technical Troubleshooting
+                    - listitem [ref=e3271]: Digital Transformation
+                  - 'button "Responsibilities & projects: Trainee Digital Transformation" [ref=e3273] [cursor=pointer]':
+                    - generic [ref=e3274]: Responsibilities & projects
+        - listitem [ref=e3277]:
+          - paragraph [ref=e3280]:
+            - time [ref=e3281]: Sep 2013
+            - text: –
+            - generic [ref=e3282]: to
+            - time [ref=e3283]: May 2014
+          - article [ref=e3287]:
+            - generic [ref=e3288]:
+              - img "Leonard Cheshire Disability logo" [ref=e3290]
+              - generic [ref=e3291]:
+                - heading "Career Development" [level=3] [ref=e3292]
+                - paragraph [ref=e3293]:
+                  - generic [ref=e3294]: Leonard Cheshire Disability
+                  - generic [aria-hidden] [ref=e3295]: /
+                  - generic [ref=e3296]: Greater London, England, United Kingdom
+                - list [ref=e3297]:
+                  - listitem [ref=e3298]: Indirect Contract
+                  - listitem [ref=e3299]: Remote
+                  - listitem [ref=e3300]:
+                    - generic [ref=e3301]: "Duration:"
+                    - text: 9 months
+            - list "Skills" [ref=e3302]:
+              - listitem [ref=e3303]: Technical Support
+              - listitem [ref=e3304]: Employee Training
+              - listitem [ref=e3305]: Responsive Web Design
+              - listitem [ref=e3306]: Communication
+              - listitem [ref=e3307]: Problem Solving
+            - 'button "Responsibilities: Career Development" [ref=e3309] [cursor=pointer]':
+              - generic [ref=e3310]: Responsibilities
+        - listitem [ref=e3313]:
+          - paragraph [ref=e3316]:
+            - time [ref=e3317]: Aug 2013
+            - text: –
+            - generic [ref=e3318]: to
+            - time [ref=e3319]: Sep 2013
+          - article [ref=e3323]:
+            - generic [ref=e3324]:
+              - generic [aria-hidden] [ref=e3325]: LWV
+              - generic [ref=e3326]:
+                - heading "Web Development Training" [level=3] [ref=e3327]
+                - paragraph [ref=e3328]:
+                  - link "Lion Web Vision (opens in a new tab)" [ref=e3330] [cursor=pointer]:
+                    - /url: https://www.lionwebvision.com
+                    - text: Lion Web Vision
+                    - generic [ref=e3331]: (opens in a new tab)
+                  - generic [aria-hidden] [ref=e3332]: /
+                  - generic [ref=e3333]: West Ham, East London
+                - list [ref=e3334]:
+                  - listitem [ref=e3335]: Contract
+                  - listitem [ref=e3336]: On-site
+                  - listitem [ref=e3337]:
+                    - generic [ref=e3338]: "Duration:"
+                    - text: 2 months
+            - list "Skills" [ref=e3339]:
+              - listitem [ref=e3340]: WordPress
+              - listitem [ref=e3341]: HTML
+              - listitem [ref=e3342]: CSS
+              - listitem [ref=e3343]: Responsive Web Design
+              - listitem [ref=e3344]: Content Management
+              - listitem [ref=e3345]: Website Maintenance
+              - listitem [ref=e3346]: Technical Troubleshooting
+            - 'button "Responsibilities: Web Development Training" [ref=e3348] [cursor=pointer]':
+              - generic [ref=e3349]: Responsibilities
+      - region "Education & Qualifications" [ref=e3353]:
+        - heading "Education & Qualifications" [level=3] [ref=e3354]
+        - generic [ref=e3356]:
+          - paragraph [ref=e3357]:
+            - time [ref=e3358]: Sep 2005
+            - text: –
+            - generic [ref=e3359]: to
+            - time [ref=e3360]: May 2009
+          - article [ref=e3361]:
+            - generic [ref=e3362]:
+              - img "Ealing, Hammersmith & West London College logo" [ref=e3364]
+              - generic [ref=e3365]:
+                - heading "Ealing, Hammersmith & West London College" [level=4] [ref=e3366]
+                - paragraph [ref=e3367]:
+                  - generic [ref=e3368]: Education
+                  - generic [aria-hidden] [ref=e3369]: /
+                  - generic [ref=e3370]: Hammersmith, London
+                - list [ref=e3371]:
+                  - listitem [ref=e3372]: Full-time
+                  - listitem [ref=e3373]: On-site
+                  - listitem [ref=e3374]:
+                    - generic [ref=e3375]: "Duration:"
+                    - text: 3 years 9 months
+            - generic [ref=e3376]:
+              - 'button "Qualifications: Ealing, Hammersmith & West London College" [expanded] [ref=e3377] [cursor=pointer]':
+                - generic [ref=e3378]: Qualifications
+              - list [ref=e3383]:
+                - listitem [ref=e3384]: BTEC National Diploma — Level 3 — DMM (104 UCAS points).
+                - listitem [ref=e3385]: BTEC First Diploma — Merit.
+                - listitem [ref=e3386]: GNVQ Foundation — Distinction.
+    - region "Proud moments." [ref=e3387]:
+      - button "Play background video" [pressed] [ref=e3388] [cursor=pointer]:
+        - generic [ref=e3391]: Play
+      - generic [ref=e3392]:
+        - generic [ref=e3393]: "06"
+        - generic [ref=e3394]: ACHIEVEMENTS
+      - heading [level=2] [ref=e3396]:
+        - text: Proud
+        - emphasis [ref=e3397]: moments.
+      - group "Proud moments photo gallery" [ref=e3398]:
+        - button "SEE ME, photograph 1 of 15" [ref=e3399] [cursor=pointer]:
+          - img "SEE ME campaign portrait poster in a shopping centre." [ref=e3400]
+          - generic [aria-hidden]:
+            - generic: 01 / 15
+            - generic: SEE ME
+        - button "SEE ME campaign, photograph 2 of 15" [ref=e3401] [cursor=pointer]:
+          - img "Two SEE ME portrait banners in a meeting room." [ref=e3402]
+          - generic [aria-hidden]:
+            - generic: 02 / 15
+            - generic: SEE ME campaign
+        - button "SEE ME together, photograph 3 of 15" [ref=e3403] [cursor=pointer]:
+          - img "Two people smiling beside SEE ME campaign posters." [ref=e3404]
+          - generic [aria-hidden]:
+            - generic: 03 / 15
+            - generic: SEE ME together
+        - button "London, photograph 4 of 15" [ref=e3405] [cursor=pointer]:
+          - img "Dominic seated beside the Thames with St Paul’s Cathedral in the background." [ref=e3406]
+          - generic [aria-hidden]:
+            - generic: 04 / 15
+            - generic: London
+        - button "At work, photograph 5 of 15" [ref=e3407] [cursor=pointer]:
+          - img "A camera crew filming an interview in an office." [ref=e3408]
+          - generic [aria-hidden]:
+            - generic: 05 / 15
+            - generic: At work
+        - button "Millennium Bridge, photograph 6 of 15" [ref=e3409] [cursor=pointer]:
+          - img "Dominic walking across the Millennium Bridge with St Paul’s Cathedral behind him." [ref=e3410]
+          - generic [aria-hidden]:
+            - generic: 06 / 15
+            - generic: Millennium Bridge
+        - button "10 Downing Street, photograph 7 of 15" [ref=e3411] [cursor=pointer]:
+          - img "Dominic standing outside the front door of 10 Downing Street." [ref=e3412]
+          - generic [aria-hidden]:
+            - generic: 07 / 15
+            - generic: 10 Downing Street
+        - button "IBM, photograph 8 of 15" [pressed] [ref=e3413] [cursor=pointer]:
+          - img "Black-and-white portrait of Dominic beside an IBM sign." [ref=e3414]
+          - generic [aria-hidden]:
+            - generic: 08 / 15
+            - generic: IBM
+        - button "Red Lion Court, photograph 9 of 15" [ref=e3415] [cursor=pointer]:
+          - img "Dominic seated in a bright open-plan office." [ref=e3416]
+          - generic [aria-hidden]:
+            - generic: 09 / 15
+            - generic: Red Lion Court
+        - button "Professional connections, photograph 10 of 15" [ref=e3417] [cursor=pointer]:
+          - img "Dominic standing beside a colleague at a professional event." [ref=e3418]
+          - generic [aria-hidden]:
+            - generic: 10 / 15
+            - generic: Professional connections
+        - button "Innovation conference, photograph 11 of 15" [ref=e3419] [cursor=pointer]:
+          - img "An innovation conference hall with cyber security exhibits and attendees." [ref=e3420]
+          - generic [aria-hidden]:
+            - generic: 11 / 15
+            - generic: Innovation conference
+        - button "At Sky, photograph 12 of 15" [ref=e3421] [cursor=pointer]:
+          - img "Two colleagues walking past greenery outside an office building." [ref=e3422]
+          - generic [aria-hidden]:
+            - generic: 12 / 15
+            - generic: At Sky
+        - button "Sky office, photograph 13 of 15" [ref=e3423] [cursor=pointer]:
+          - img "Dominic standing in a Sky office with an orange lanyard." [ref=e3424]
+          - generic [aria-hidden]:
+            - generic: 13 / 15
+            - generic: Sky office
+        - button "Working together, photograph 14 of 15" [ref=e3425] [cursor=pointer]:
+          - img "Colleagues using sign language across a desk in an office." [ref=e3426]
+          - generic [aria-hidden]:
+            - generic: 14 / 15
+            - generic: Working together
+        - button "Dominic, photograph 15 of 15" [ref=e3427] [cursor=pointer]:
+          - img "Portrait of Dominic smiling in a navy jumper, shirt and tie." [ref=e3428]
+          - generic [aria-hidden]:
+            - generic: 15 / 15
+            - generic: Dominic
+    - region "What people are saying." [ref=e3429]:
+      - generic [ref=e3430]:
+        - generic [ref=e3431]: "07"
+        - text: TESTIMONIALS
+      - generic [ref=e3433]:
+        - heading "What people are saying." [level=2] [ref=e3434]:
+          - generic [aria-hidden] [ref=e3436]:
+            - generic [ref=e3437]: What
+            - generic [ref=e3439]: people
+            - generic [ref=e3441]: are
+            - emphasis [ref=e3443]:
+              - generic [ref=e3444]: saying.
+        - paragraph [ref=e3446]: Worked with me or seen my work? Leave a comment. New comments are reviewed before they appear here.
+      - region "Featured testimonials" [ref=e3447]:
+        - generic [ref=e3448]:
+          - paragraph [ref=e3449]: Featured testimonial
+          - button "Pause automatic testimonial scrolling" [ref=e3450] [cursor=pointer]:
+            - generic [aria-hidden] [ref=e3451]: ‖
+            - text: Pause
+        - generic [ref=e3454]:
+          - generic [ref=e3455]:
+            - article [ref=e3456]:
+              - generic [ref=e3457]:
+                - generic [ref=e3458]:
+                  - img "Innovation Community avatar" [ref=e3459]:
+                    - generic [aria-hidden] [ref=e3460]: IC
+                  - img "Verified testimonial"
+                - generic [ref=e3461]:
+                  - heading "Innovation Community" [level=3] [ref=e3462]
+                  - paragraph [ref=e3463]: Lloyds Banking Group
+              - blockquote [ref=e3464]:
+                - paragraph [ref=e3465]: “Dom A big big thanks from the team for all the handout you have done on Innovation Community conference 2018. It has been great working with you.”
+                - generic [ref=e3466]: — Innovation Communities Team
+              - time [ref=e3467]: 5 Oct 2026
+            - article [aria-hidden] [ref=e3468]:
+              - generic [ref=e3469]:
+                - img [ref=e3471]:
+                  - generic [aria-hidden] [ref=e3472]: IC
+                - generic [ref=e3473]:
+                  - heading [level=3] [ref=e3474]: Innovation Community
+                  - paragraph [ref=e3475]: Lloyds Banking Group
+              - blockquote [ref=e3476]:
+                - paragraph [ref=e3477]: “Dom A big big thanks from the team for all the handout you have done on Innovation Community conference 2018. It has been great working with you.”
+                - generic [ref=e3478]: — Innovation Communities Team
+              - time [ref=e3479]: 5 Oct 2026
+            - article [aria-hidden] [ref=e3480]:
+              - generic [ref=e3481]:
+                - img [ref=e3483]:
+                  - generic [aria-hidden] [ref=e3484]: IC
+                - generic [ref=e3485]:
+                  - heading [level=3] [ref=e3486]: Innovation Community
+                  - paragraph [ref=e3487]: Lloyds Banking Group
+              - blockquote [ref=e3488]:
+                - paragraph [ref=e3489]: “Dom A big big thanks from the team for all the handout you have done on Innovation Community conference 2018. It has been great working with you.”
+                - generic [ref=e3490]: — Innovation Communities Team
+              - time [ref=e3491]: 5 Oct 2026
+          - generic [aria-hidden] [ref=e3492]:
+            - article [aria-hidden] [ref=e3493]:
+              - generic [ref=e3494]:
+                - img [ref=e3496]:
+                  - generic [aria-hidden] [ref=e3497]: IC
+                - generic [ref=e3498]:
+                  - heading [level=3] [ref=e3499]: Innovation Community
+                  - paragraph [ref=e3500]: Lloyds Banking Group
+              - blockquote [ref=e3501]:
+                - paragraph [ref=e3502]: “Dom A big big thanks from the team for all the handout you have done on Innovation Community conference 2018. It has been great working with you.”
+                - generic [ref=e3503]: — Innovation Communities Team
+              - time [ref=e3504]: 5 Oct 2026
+            - article [aria-hidden] [ref=e3505]:
+              - generic [ref=e3506]:
+                - img [ref=e3508]:
+                  - generic [aria-hidden] [ref=e3509]: IC
+                - generic [ref=e3510]:
+                  - heading [level=3] [ref=e3511]: Innovation Community
+                  - paragraph [ref=e3512]: Lloyds Banking Group
+              - blockquote [ref=e3513]:
+                - paragraph [ref=e3514]: “Dom A big big thanks from the team for all the handout you have done on Innovation Community conference 2018. It has been great working with you.”
+                - generic [ref=e3515]: — Innovation Communities Team
+              - time [ref=e3516]: 5 Oct 2026
+            - article [aria-hidden] [ref=e3517]:
+              - generic [ref=e3518]:
+                - img [ref=e3520]:
+                  - generic [aria-hidden] [ref=e3521]: IC
+                - generic [ref=e3522]:
+                  - heading [level=3] [ref=e3523]: Innovation Community
+                  - paragraph [ref=e3524]: Lloyds Banking Group
+              - blockquote [ref=e3525]:
+                - paragraph [ref=e3526]: “Dom A big big thanks from the team for all the handout you have done on Innovation Community conference 2018. It has been great working with you.”
+                - generic [ref=e3527]: — Innovation Communities Team
+              - time [ref=e3528]: 5 Oct 2026
+      - generic [ref=e3529]:
+        - form "Add a comment" [ref=e3530]:
+          - heading "Add a comment" [level=3] [ref=e3531]
+          - generic [ref=e3532]:
+            - generic [ref=e3533]: Avatar (optional)
+            - generic [ref=e3534]:
+              - generic [aria-hidden] [ref=e3535]: "?"
+              - generic [ref=e3536]:
+                - generic [ref=e3537] [cursor=pointer]:
+                  - text: Upload avatar
+                  - button "Upload avatar" [ref=e3538]
+                - generic [ref=e3539]: "Maximum file size: 5 MB. JPG, PNG or WebP."
+          - generic [ref=e3540]:
+            - generic [ref=e3541]:
+              - generic [ref=e3542]:
+                - text: Full name *
+                - generic [ref=e3543]: (required)
+              - textbox "Full name (required)" [ref=e3544]
+            - generic [ref=e3545]:
+              - generic [ref=e3546]:
+                - text: Email *
+                - generic [ref=e3547]: (required)
+              - textbox "Email (required)" [ref=e3548]
+              - generic [ref=e3549]: Never shown publicly.
+          - generic [ref=e3550]:
+            - generic [ref=e3551]: Company (optional)
+            - combobox "Company (optional)" [ref=e3553]
+            - textbox [aria-hidden] [ref=e3554]
+            - status [ref=e3555]
+          - generic [ref=e3556]:
+            - generic [ref=e3557]:
+              - generic [ref=e3558]:
+                - text: Comment *
+                - generic [ref=e3559]: (required)
+              - generic [ref=e3560]: 0 / 600
+            - textbox "Comment (required)" [ref=e3561]
+          - generic [ref=e3562]:
+            - checkbox "I give permission for my submitted information to be used to review and moderate my comment. (required)" [ref=e3563] [cursor=pointer]
+            - generic [ref=e3564] [cursor=pointer]:
+              - text: I give permission for my submitted information to be used to review and moderate my comment. *
+              - generic [ref=e3565]: (required)
+            - paragraph [ref=e3566]:
+              - text: To moderate comments, the date and time, your IP address and your device type (for example “Mobile · iOS · Safari”) are recorded with your comment. Your email and these details are never shown publicly. See the
+              - link "privacy notice" [ref=e3567] [cursor=pointer]:
+                - /url: /privacy
+              - text: .
+          - generic [aria-hidden] [ref=e3568]:
+            - text: Website
+            - textbox [ref=e3569]
+          - button "Submit Comment" [ref=e3570] [cursor=pointer]
+        - list "Loading comments" [ref=e3572]:
+          - listitem [aria-hidden] [ref=e3573]
+          - listitem [aria-hidden] [ref=e3577]
+    - generic [ref=e3581]:
+      - generic [ref=e3582]:
+        - generic [ref=e3583]: "08"
+        - text: CONTACT
+      - generic [ref=e3586]:
+        - paragraph [ref=e3587]: LET'S BUILD SOMETHING
+        - heading [level=2] [ref=e3588]:
+          - text: Building thoughtful digital experiences from robust systems to
+          - emphasis [ref=e3589]: polished interfaces.
+        - paragraph [ref=e3590]: I create scalable, accessible, and user-focused digital products by combining strong engineering foundations with carefully crafted frontend experiences. From application architecture and data integration to responsive interfaces and interaction details, every part is designed to work seamlessly together.
+        - generic [ref=e3591]:
+          - generic [ref=e3592]:
+            - term [ref=e3597]: Email
+            - definition [ref=e3598]:
+              - link "Dominic.Wokorach-O@outlook.com" [ref=e3599] [cursor=pointer]:
+                - /url: mailto:Dominic.Wokorach-O@outlook.com
+          - generic [ref=e3600]:
+            - term [ref=e3605]: Location
+            - definition [ref=e3606]: London, UK
+          - generic [ref=e3607]:
+            - term [ref=e3613]: Work
+            - definition [ref=e3614]: Frontend Software Engineering
+        - link "View work" [ref=e3615] [cursor=pointer]:
+          - /url: "#work"
+        - paragraph [aria-hidden] [ref=e3619]: + CONTACT / PORTFOLIO / 2026
+    - region "iOS, Web & Android." [ref=e3621]:
+      - generic [ref=e3622]:
+        - generic [ref=e3623]: "09"
+        - text: PLATFORMS
+      - generic [ref=e3625]:
+        - heading [level=2] [ref=e3626]:
+          - text: iOS, Web
+          - emphasis [ref=e3627]: "& Android."
+        - paragraph [ref=e3628]: This portfolio runs in any browser. Expo Go is the official app for previewing Expo projects on your phone or tablet.
+      - list [ref=e3629]:
+        - listitem [ref=e3630]:
+          - heading "iOS" [level=3] [ref=e3634]
+          - paragraph [ref=e3635]: iPhone and iPad
+          - paragraph [ref=e3636]: Expo Go for iOS, for running Expo apps on iPhone and iPad.
+          - link "Install Expo Go on the Apple App Store (opens in a new tab)" [ref=e3637] [cursor=pointer]:
+            - /url: https://apps.apple.com/app/expo-go/id982107779
+            - text: Install Expo Go
+        - listitem [ref=e3641]:
+          - heading "Web" [level=3] [ref=e3646]
+          - paragraph [ref=e3647]: Desktop, tablet and mobile
+          - paragraph [ref=e3648]: The live portfolio, in any modern browser. No install needed.
+          - link "Open the portfolio website" [ref=e3649] [cursor=pointer]:
+            - /url: https://www.dominicwokorach.me/en-gb
+            - text: Open Website
+        - listitem [ref=e3653]:
+          - heading "Android" [level=3] [ref=e3657]
+          - paragraph [ref=e3658]: Android phones and tablets
+          - paragraph [ref=e3659]: Expo Go for Android, for running Expo apps on phones and tablets.
+          - link "Install Expo Go on Google Play (opens in a new tab)" [ref=e3660] [cursor=pointer]:
+            - /url: https://play.google.com/store/apps/details?id=host.exp.exponent
+            - text: Install Expo Go
+  - contentinfo [ref=e3664]:
+    - generic [ref=e3665]:
+      - generic [ref=e3666]:
+        - link "DOMINIC" [ref=e3667] [cursor=pointer]:
+          - /url: /en-gb
+        - paragraph [ref=e3668]: Software Engineer & Frontend Developer. · London
+      - navigation "Legal" [ref=e3669]:
+        - heading "Legal" [level=2] [ref=e3670]
+        - list [ref=e3671]:
+          - listitem [ref=e3672]:
+            - link "Terms and Conditions" [ref=e3673] [cursor=pointer]:
+              - /url: /terms
+          - listitem [ref=e3674]:
+            - link "Privacy" [ref=e3675] [cursor=pointer]:
+              - /url: /privacy
+          - listitem [ref=e3676]:
+            - link "Cookie" [ref=e3677] [cursor=pointer]:
+              - /url: /cookies
+          - listitem [ref=e3678]:
+            - link "Accessibility and disability" [ref=e3679] [cursor=pointer]:
+              - /url: /accessibility
+      - navigation "Connect" [ref=e3680]:
+        - heading "Connect" [level=2] [ref=e3681]
+        - list [ref=e3682]:
+          - listitem [ref=e3683]:
+            - link "LinkedIn (opens in a new tab)" [ref=e3684] [cursor=pointer]:
+              - /url: https://www.linkedin.com/in/dominic-w-3673523b/
+              - text: LinkedIn
+              - generic [ref=e3687]: (opens in a new tab)
+          - listitem [ref=e3688]:
+            - link "GitHub (opens in a new tab)" [ref=e3689] [cursor=pointer]:
+              - /url: https://github.com/domwokorach
+              - text: GitHub
+              - generic [ref=e3692]: (opens in a new tab)
+    - generic [ref=e3693]:
+      - paragraph [ref=e3694]: © 2026 DOMINIC
+      - generic [ref=e3695]:
+        - button "Cookie preferences" [ref=e3696] [cursor=pointer]
+        - button "Back to top" [ref=e3697] [cursor=pointer]: ↑
+  - button "Open Next.js Dev Tools" [ref=e3703] [cursor=pointer]:
+    - generic [ref=e3706]:
+      - text: Compiling
+      - generic [ref=e3707]:
+        - generic [ref=e3708]: .
+        - generic [ref=e3709]: .
+        - generic [ref=e3710]: .
+  - alert [ref=e3711]
+  - region "Privacy & cookies" [ref=e3712]:
+    - heading "Privacy & cookies" [level=2] [ref=e3713]
+    - paragraph [ref=e3714]:
+      - text: This site only uses what it needs to work. Any optional cookies, such as analytics, stay off unless you accept.
+      - link "Cookie policy" [ref=e3715] [cursor=pointer]:
+        - /url: /cookies
+    - generic [ref=e3716]:
+      - button "Reject all" [ref=e3717] [cursor=pointer]
+      - button "Accept all" [ref=e3718] [cursor=pointer]

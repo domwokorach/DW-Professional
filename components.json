@@ -21,6 +21,7 @@
   "registries": {
     "@loading-ui": "https://loading-ui.com/r/{name}.json",
     "@animate-ui": "https://animate-ui.com/r/{name}.json",
-    "@magicui": "https://magicui.design/r/{name}"
+    "@magicui": "https://magicui.design/r/{name}",
+    "@aceternity": "https://ui.aceternity.com/registry/{name}.json"
   }
 }
