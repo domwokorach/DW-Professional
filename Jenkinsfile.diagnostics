@@ -1,0 +1,97 @@
+// DIAGNOSTIC pipeline: controlled-failure tests for the CI pipeline. It is NOT the production pipeline and never runs
+// against master's code paths. Create a separate Jenkins job for it (so its intentional failures can never be mistaken
+// for a genuine production failure):
+//
+//   New Item -> Pipeline, name "DW-Professional-CI-Diagnostics" -> Pipeline script from SCM -> Git ->
+//   Script Path: Jenkinsfile.diagnostics
+//
+// Each scenario injects ONE deliberate fault into a throwaway copy of the repository (scripts/ci/diagnostic-scenarios.sh),
+// runs the repository's real tooling against it, and then checks three things (scripts/ci/diagnose.mjs verify):
+//   1. the command really failed, with the exit code that tool really uses (a fault that does not fail is NOT verified);
+//   2. the expected evidence exists (for example a JUnit report that records the failed test, or no report at all);
+//   3. the failure is classified correctly, with a root cause and a recommended fix.
+// A scenario stage is green only when all three hold. The real JUnit from the failing-test scenario is published, so
+// Jenkins marks the build UNSTABLE (yellow) by design: that is Jenkins' own result for a build with failed tests. If any
+// scenario is not verified the build FAILS. Evidence is archived either way.
+
+pipeline {
+  agent any
+
+  options {
+    timestamps()
+    skipDefaultCheckout(true)
+    disableConcurrentBuilds()
+    timeout(time: 30, unit: 'MINUTES')
+    buildDiscarder(logRotator(numToKeepStr: '15', artifactNumToKeepStr: '5'))
+  }
+
+  tools { nodejs 'node-22' }
+
+  environment {
+    CI = 'true'
+    PATH = "${PATH}:/usr/local/bin:/opt/homebrew/bin"
+    NEXT_TELEMETRY_DISABLED = '1'
+    NPM_CONFIG_FUND = 'false'
+    NPM_CONFIG_UPDATE_NOTIFIER = 'false'
+    DATABASE_URL = 'postgresql://ci:ci@localhost:5432/ci'
+    DIAGNOSTIC_RUN = 'true'
+    OUT = 'diagnostics-out'
+    NPM_CONFIG_CACHE = "${env.JENKINS_HOME}/ci-cache/${env.JOB_NAME.replaceAll('[^A-Za-z0-9._-]', '_')}/npm"
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+        script {
+          currentBuild.displayName = "#${env.BUILD_NUMBER} DIAGNOSTIC"
+          currentBuild.description = 'DIAGNOSTIC RUN: intentional failures, not a production result'
+        }
+        sh 'rm -rf "$OUT" && mkdir -p "$OUT" && git log -1 --format="%h %s (%an)"'
+      }
+    }
+
+    stage('Install') {
+      steps { sh 'npm ci --prefer-offline --no-audit' }
+    }
+
+    stage('Scenario 1: unit test assertion failure (expected failure)') {
+      steps { sh 'scripts/ci/diagnostic-scenarios.sh unit-test "$OUT" && node scripts/ci/diagnose.mjs verify unit-test "$OUT/unit-test"' }
+    }
+    stage('Scenario 2: TypeScript compilation failure (expected failure)') {
+      steps { sh 'scripts/ci/diagnostic-scenarios.sh typescript "$OUT" && node scripts/ci/diagnose.mjs verify typescript "$OUT/typescript"' }
+    }
+    stage('Scenario 3: database connection failure (expected failure)') {
+      steps { sh 'scripts/ci/diagnostic-scenarios.sh database "$OUT" && node scripts/ci/diagnose.mjs verify database "$OUT/database"' }
+    }
+    stage('Scenario 4: coverage threshold failure (expected failure)') {
+      steps { sh 'scripts/ci/diagnostic-scenarios.sh coverage "$OUT" && node scripts/ci/diagnose.mjs verify coverage "$OUT/coverage"' }
+    }
+    stage('Scenario 5: missing JUnit report (expected failure)') {
+      steps { sh 'scripts/ci/diagnostic-scenarios.sh missing-junit "$OUT" && node scripts/ci/diagnose.mjs verify missing-junit "$OUT/missing-junit"' }
+    }
+    stage('Scenario 6: production build failure (expected failure)') {
+      steps { sh 'scripts/ci/diagnostic-scenarios.sh production-build "$OUT" && node scripts/ci/diagnose.mjs verify production-build "$OUT/production-build"' }
+    }
+
+    stage('Summary') {
+      steps { sh 'node scripts/ci/diagnose.mjs summary "$OUT"' }
+    }
+  }
+
+  post {
+    always {
+      script {
+        // The failing-test scenario's REAL JUnit report. Jenkins itself marks the build UNSTABLE because it records a failure.
+        if (fileExists('diagnostics-out/unit-test/junit.xml')) {
+          junit testResults: 'diagnostics-out/unit-test/junit.xml', allowEmptyResults: false
+        }
+        // Evidence (logs, JUnit, verification results) is archived whatever the outcome. Scratch copies are not.
+        archiveArtifacts artifacts: 'diagnostics-out/**', excludes: 'diagnostics-out/work/**', fingerprint: true, allowEmptyArchive: true
+      }
+    }
+    cleanup {
+      timeout(time: 5, unit: 'MINUTES') { cleanWs(deleteDirs: true, notFailBuild: true) }
+    }
+  }
+}

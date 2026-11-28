@@ -17,13 +17,72 @@
 //   * Every stage has its own timeout; the overall timeout is the sum of the worst cases plus headroom.
 //   * Reports are published only when complete and valid; evidence is archived outside the main timeout.
 
+import groovy.json.JsonOutput
+import groovy.transform.Field
+
+// Leaf stages in execution order. The failure report uses this list to tell a stage that never ran ("not executed")
+// from one that passed, and to separate the original failure from stages skipped because of it.
+@Field List<String> LEAF_STAGES = ['Checkout', 'Validate environment', 'Install', 'Web typecheck', 'Next.js build', 'Mobile typecheck',
+  'Expo web export', 'Security audit', 'PostgreSQL container', 'Database migrations', 'Automated tests', 'Archive', 'Release manifest']
+// What the build really did, recorded as it happens; written to reports/ci/diagnostics/execution.json in `post`.
+@Field Map DIAG = [entered: [], failures: []]
+
+@NonCPS
+def slugOf(String name) { name.toLowerCase().replaceAll('[^a-z0-9]+', '-') }
+
+@NonCPS
+Integer exitCodeOf(String message) {
+  def m = (message ?: '') =~ /exit code (\d+)/
+  return m.find() ? (m.group(1) as Integer) : null
+}
+
+def diagEnter() {
+  def stage = env.STAGE_NAME
+  if (stage && !DIAG.entered.contains(stage)) { DIAG.entered << stage }
+}
+
+// Records a failure for the failure report, then the caller rethrows it: the build result and exit code are never changed.
+def diagFail(Throwable err) {
+  def stage = env.STAGE_NAME ?: 'unknown'
+  def message = err.message ?: err.toString()
+  if (DIAG.failures.any { it.stage == stage && it.message == message }) { return }
+  DIAG.failures << [stage: stage, slug: slugOf(stage), exitCode: exitCodeOf(message), message: message, ts: System.currentTimeMillis()]
+}
+
+def guarded(Closure body) {
+  try { body() } catch (err) { diagFail(err); throw err }
+}
+
 // Fail-fast bash for multi-command scripts. Jenkins' default `sh -xe` ignores a failure on the left of `&&`.
-def bash(String body) {
-  sh(script: "#!/usr/bin/env bash\nset -euo pipefail\n${body}")
+// The body also runs with its output copied to reports/ci/diagnostics/<stage>.log and the failing command written to
+// <stage>.cmd, so a red stage can be explained from evidence. The exit status is the script's own (pipefail).
+// Pass [log: false] for a script that deletes the reports directory itself.
+def bash(String body, Map opts = [:]) {
+  diagEnter()
+  def slug = slugOf(env.STAGE_NAME ?: 'unknown')
+  def script = body
+  if (opts.log != false) {
+    script = '''\
+mkdir -p "$REPORTS/diagnostics"
+{
+set -E
+trap 'printf "%s" "$BASH_COMMAND" > "$REPORTS/diagnostics/@@SLUG@@.cmd"' ERR
+trap 'rc=$?; if [ "$rc" -ne 0 ] && [ ! -s "$REPORTS/diagnostics/@@SLUG@@.cmd" ]; then printf "script exited with status %s" "$rc" > "$REPORTS/diagnostics/@@SLUG@@.cmd"; fi' EXIT
+@@BODY@@
+} 2>&1 | tee -a "$REPORTS/diagnostics/@@SLUG@@.log"
+'''.replace('@@SLUG@@', slug).replace('@@BODY@@', body)
+  }
+  try {
+    sh(script: "#!/usr/bin/env bash\nset -euo pipefail\n${script}")
+  } catch (err) {
+    diagFail(err)
+    throw err
+  }
 }
 
 // Makes a stage safe to "Restart from stage": the workspace is wiped after every build, so rebuild it if missing.
 def ensureWorkspace() {
+  diagEnter()
   if (!fileExists('package.json')) { unstash 'source' }
   if (!fileExists('node_modules/.bin/tsc')) { sh 'npm ci --prefer-offline --no-audit' }
 }
@@ -70,11 +129,11 @@ pipeline {
       options { timeout(time: 5, unit: 'MINUTES') }
       steps {
         checkout scm
-        bash '''
+        bash('''
           rm -rf "$REPORTS"
           mkdir -p "$REPORTS" "$CI_CACHE"
           git log -1 --format="%h %s (%an)"
-        '''
+        ''', [log: false])
         // Lets later stages be restarted on a clean workspace.
         stash name: 'source', includes: '**', excludes: 'node_modules/**,**/node_modules/**,.next/**,reports/**,apps/mobile/dist/**,.git/**', useDefaultExcludes: true
       }
@@ -97,16 +156,19 @@ pipeline {
           echo "swap: $(sysctl -n vm.swapusage 2>/dev/null || echo n/a)"
         '''
         script {
-          if (!env.TEST_DATABASE_URL) {
-            // Docker connection gate for the disposable PostgreSQL container.
-            def ok = sh(returnStatus: true, script: 'command -v docker >/dev/null && docker info >/dev/null 2>&1') == 0
-            if (!ok) {
-              sh 'echo "PATH=$PATH"; command -v docker || true; docker version 2>&1 | head -20 || true'
-              error('Docker is unavailable to Jenkins: cannot create the disposable PostgreSQL container for integration tests.')
+          guarded {
+            if (!env.TEST_DATABASE_URL) {
+              // Docker connection gate for the disposable PostgreSQL container.
+              def ok = sh(returnStatus: true, script: 'command -v docker >/dev/null && docker info >/dev/null 2>&1') == 0
+              if (!ok) {
+                // Through bash() so the evidence lands in the stage's diagnostic log.
+                bash 'echo "PATH=$PATH"; command -v docker || true; docker version 2>&1 | head -20 || true'
+                error('Docker is unavailable to Jenkins: cannot create the disposable PostgreSQL container for integration tests.')
+              }
+              echo 'Docker connection: OK'
+              // Cache the database image: pull only when it is not already present locally.
+              bash 'docker image inspect "$PG_IMAGE" >/dev/null 2>&1 || docker pull -q "$PG_IMAGE"'
             }
-            echo 'Docker connection: OK'
-            // Cache the database image: pull only when it is not already present locally.
-            bash 'docker image inspect "$PG_IMAGE" >/dev/null 2>&1 || docker pull -q "$PG_IMAGE"'
           }
         }
       }
@@ -217,8 +279,9 @@ pipeline {
             stage('PostgreSQL container') {
               options { timeout(time: 5, unit: 'MINUTES') }
               steps {
+                script { ensureWorkspace() }
                 script {
-                  ensureWorkspace()
+                  guarded {
                   if (env.TEST_DATABASE_URL) {
                     echo 'Using the throwaway database supplied by TEST_DATABASE_URL (never production: tests delete rows).'
                   } else {
@@ -247,6 +310,7 @@ pipeline {
                     if (!port) { error('Could not discover the dynamically allocated PostgreSQL port.') }
                     env.TEST_DATABASE_URL = "postgresql://ci:ci@127.0.0.1:${port}/ci"
                     echo "Disposable database on 127.0.0.1:${port}"
+                  }
                   }
                 }
               }
@@ -277,7 +341,8 @@ pipeline {
                   npm run test:ci
                 '''
                 // Mandatory reporting: coverage must be measurable, never assumed.
-                bash 'node scripts/ci/reports.mjs coverage "$REPORTS/lcov.info" "$REPORTS/coverage-summary.txt"'
+                // Set COVERAGE_MIN_LINES (0-100) on the job to also enforce a line-coverage threshold; unset = measure only.
+                bash 'node scripts/ci/reports.mjs coverage "$REPORTS/lcov.info" "$REPORTS/coverage-summary.txt" ${COVERAGE_MIN_LINES:+--min-lines "$COVERAGE_MIN_LINES"}'
               }
               post {
                 always {
@@ -339,8 +404,17 @@ pipeline {
         script {
           // Non-secret execution summary. Incomplete or invalid reports are under reports/ci/diagnostics/ or
           // reports/ci/incomplete-test-run/, separate from the verified reports in the reports/ci root.
-          sh 'mkdir -p "$REPORTS"'
+          sh 'mkdir -p "$REPORTS/diagnostics"'
+          // Failure report: original failure vs stages never executed, from what the build recorded. Describes the result;
+          // it never changes it, and a problem in this tool is reported but does not alter the build outcome.
+          writeFile file: "${env.REPORTS}/diagnostics/execution.json", text: JsonOutput.prettyPrint(JsonOutput.toJson([stages: LEAF_STAGES, entered: DIAG.entered, failures: DIAG.failures]))
+          if (fileExists('scripts/ci/diagnose.mjs')) {
+            def rc = withEnv(["BUILD_RESULT=${currentBuild.currentResult}"]) { sh(returnStatus: true, script: 'node scripts/ci/diagnose.mjs report') }
+            if (rc != 0) { echo "WARNING: scripts/ci/diagnose.mjs exited ${rc}; the failure report may be missing. The build result is unchanged." }
+          }
           def read = { String f -> fileExists(f) ? readFile(f).trim() : 'not produced' }
+          def failureLine = read("${env.REPORTS}/failure-summary.txt")
+          if (currentBuild.currentResult != 'SUCCESS' && failureLine && failureLine != 'not produced') { currentBuild.description = failureLine }
           writeFile file: "${env.REPORTS}/build-summary.txt", text: """\
             job:        ${env.JOB_NAME}
             build:      #${env.BUILD_NUMBER}
@@ -349,6 +423,7 @@ pipeline {
             duration:   ${currentBuild.durationString.replace(' and counting', '')}
             tests:      ${read("${env.REPORTS}/test-summary.json")}
             coverage:   ${read("${env.REPORTS}/coverage-summary.txt").replace('\n', ' | ')}
+            failure:    ${failureLine}
             """.stripIndent()
           // Reports are kept for failed and unstable builds too; they are the evidence for diagnosing a red build.
           archiveArtifacts artifacts: 'reports/ci/**', fingerprint: true, allowEmptyArchive: true

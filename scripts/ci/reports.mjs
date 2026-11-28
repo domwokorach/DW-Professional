@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // CI report validation. Dependency-free so it can run before and after `npm ci`.
 //   reports.mjs junit <junit.xml>              validate JUnit XML, print a JSON summary, exit 2 if unusable
-//   reports.mjs coverage <lcov.info> <out.txt> validate LCOV, write the summary, exit 3 if coverage is unavailable
+//   reports.mjs coverage <lcov.info> <out.txt> [--min-lines N]
+//                                              validate LCOV, write the summary, exit 3 if coverage is unavailable,
+//                                              exit 4 if line coverage is below N (the gate is off unless N is given)
 import { readFileSync, statSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 
@@ -44,7 +46,7 @@ function junit(file) {
   console.log(JSON.stringify({ tests, passed, failed, errors, skipped }));
 }
 
-function coverage(file, out) {
+function coverage(file, out, minLines) {
   const unavailable = (reason) => {
     writeFileSync(out, `Line coverage: UNAVAILABLE (${reason})\n`);
     fail(3, `Coverage unavailable: ${reason}`);
@@ -68,10 +70,23 @@ function coverage(file, out) {
   if (brf > 0) lines.push(`Branch coverage: ${((100 * sum('BRH')) / brf).toFixed(2)}% (${sum('BRH')}/${brf})`);
   const fnf = sum('FNF');
   if (fnf > 0) lines.push(`Function coverage: ${((100 * sum('FNH')) / fnf).toFixed(2)}% (${sum('FNH')}/${fnf})`);
+  const percent = (100 * lh) / lf;
+  if (minLines != null && percent < minLines) {
+    lines.push(`Coverage threshold: FAILED, line coverage ${percent.toFixed(2)}% is below the required ${minLines}%`);
+    writeFileSync(out, lines.join('\n') + '\n');
+    console.log(lines.join('\n'));
+    fail(4, `Coverage is below the required ${minLines}% (measured ${percent.toFixed(2)}%)`);
+  }
+  if (minLines != null) lines.push(`Coverage threshold: met (${percent.toFixed(2)}% >= ${minLines}%)`);
   writeFileSync(out, lines.join('\n') + '\n');
   console.log(lines.join('\n'));
 }
 
 if (command === 'junit' && args[0]) junit(args[0]);
-else if (command === 'coverage' && args[0] && args[1]) coverage(args[0], args[1]);
-else fail(64, 'usage: reports.mjs junit <file> | coverage <lcov> <out>');
+else if (command === 'coverage' && args[0] && args[1]) {
+  const flag = args.indexOf('--min-lines');
+  const min = flag === -1 ? null : Number(args[flag + 1]);
+  if (flag !== -1 && !(min >= 0 && min <= 100)) fail(64, '--min-lines needs a number from 0 to 100');
+  coverage(args[0], args[1], min);
+}
+else fail(64, 'usage: reports.mjs junit <file> | coverage <lcov> <out> [--min-lines N]');
