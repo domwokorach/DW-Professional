@@ -50,6 +50,8 @@
 .xp-nav__year{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:var(--xp-muted)}
 .xp-nav a:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 @media(hover:hover){.xp-nav a:hover{background:var(--cream2);border-color:rgba(var(--ink-rgb),.3)}}
+.xp-nav a[aria-current="location"]{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.xp-nav a[aria-current="location"] .xp-nav__year{color:inherit;opacity:.8}
 .xp-head{display:flex;align-items:flex-start;gap:16px}
 .xp-head__text{min-width:0;flex:1}
 .xp-head h3{margin-bottom:8px;overflow-wrap:anywhere}
