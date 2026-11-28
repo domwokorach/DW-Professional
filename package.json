@@ -125,7 +125,10 @@
     "react-native-worklets": "0.13.0",
     "effect": "^3.22.5",
     "minimatch": "^11.0.9",
-    "glob": "^14.0.2"
+    "glob": "^14.0.2",
+    "eslint-plugin-import": {
+      "minimatch": "^3.1.5"
+    }
   },
   "packageManager": "npm@11.19.1",
   "engines": {
