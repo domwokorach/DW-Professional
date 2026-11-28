@@ -6,7 +6,10 @@ import { CommentsSection } from '@/components/comments';
 import { ContactSection } from '@/components/contact';
 import { AboutSection } from '@/components/developer-id';
 import { ExperienceSection } from '@/components/experience';
+import { GitHubActivitySection } from '@/components/github-activity';
+import { HomeTravel } from '@/components/home-travel';
 import { HeroSection } from '@/components/hero';
+import { ORIGIN } from '~/constants/site';
 import { BackgroundOrbs, SiteHeader } from '@/components/layout';
 import AppFooter from '@/components/layout/AppFooter';
 import { AchievementsSection, CertificationsSection, CertificationsSectionSkeleton } from '@/components/learning';
@@ -22,10 +25,12 @@ export default function Home() {
       <main>
         <BackgroundOrbs />
         <SiteHeader />
+        <HomeTravel />
         <HeroSection />
         <AboutSection />
         <SkillsSection />
         <ProjectsSection />
+        <GitHubActivitySection apiOrigin={ORIGIN} />
         <Suspense fallback={<CertificationsSectionSkeleton />}><CertificationsSection /></Suspense>
         <ExperienceSection />
         <AchievementsSection />

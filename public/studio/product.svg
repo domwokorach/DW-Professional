@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 480" width="120" height="480">
+  <title>Placeholder product cut-out: fountain pen</title>
+  <rect x="38" y="0" width="44" height="250" fill="#141C2B"/>
+  <rect x="38" y="52" width="44" height="6" fill="#E5DED0"/>
+  <rect x="38" y="64" width="44" height="2" fill="#4A5364"/>
+  <rect x="44" y="12" width="4" height="150" fill="#4A5364"/>
+  <rect x="42" y="250" width="36" height="70" fill="#4A5364"/>
+  <rect x="42" y="250" width="36" height="6" fill="#E5DED0"/>
+  <path d="M42 320 H78 L60 456 Z" fill="#E5DED0"/>
+  <path d="M60 372 V440" stroke="#141C2B" stroke-width="1.5" fill="none"/>
+  <circle cx="60" cy="372" r="3" fill="#141C2B"/>
+  <path d="M60 456 L56 480 H64 Z" fill="#141C2B" opacity="0"/>
+</svg>
