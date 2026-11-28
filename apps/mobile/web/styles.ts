@@ -15,4 +15,5 @@ import '../../../src/styles/legal.css';
 import '../../../src/styles/privacy.css';
 import '../../../src/styles/resume.css';
 import '../../../src/styles/platforms.css';
+import '../../../src/styles/github.css';
 import '../../../src/styles/christmas.css';

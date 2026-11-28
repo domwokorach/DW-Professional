@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Checks a GLB against what the hero avatar needs.   node scripts/inspect-avatar.mjs [file.glb]
 import { readFileSync } from 'node:fs';
+
 const file = process.argv[2] ?? 'public/avatar/dominic.glb';
 const b = readFileSync(file);
 if (b.subarray(0, 4).toString() !== 'glTF') { console.error(`${file} is not a GLB (it does not start with the glTF header).`); process.exit(1); }

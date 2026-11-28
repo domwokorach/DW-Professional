@@ -32,7 +32,7 @@ Global tokens are defined in `src/styles/base.css`.
 | `--white` | `#fffdf7` | Card surface. |
 | `--line` | `rgba(var(--ink-rgb), .16)` | Shared border colour. |
 | `--text-2` to `--text-4` | Contextual neutrals | Secondary readable text. |
-| `--live` | `#2f7a4c` | Live/current/success-adjacent status. |
+| `--live` | `#2a7048` | Live/current/success-adjacent status. |
 | `--on-ink` | `#fff` | Text on `--ink` surfaces. |
 
 Dark mode redefines the same tokens on `:root[data-theme="dark"]`; components must consume tokens rather than branch on hard-coded theme colours. The Contact section has its own mapped `--contact-*` tokens because it intentionally uses a distinct neutral system in both themes.

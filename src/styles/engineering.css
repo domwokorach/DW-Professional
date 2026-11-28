@@ -1,0 +1,62 @@
+/* engineering: ten capability cards, live status and links. Gold is for rules and borders; text uses --gold-ink or --ink. */
+.engineering-section{--eng-muted:var(--text-2);--eng-body:var(--text-3);--eng-fail:#a3262a;--eng-radius:var(--radius-lg)}
+:root[data-theme="dark"] .engineering-section{--eng-fail:#ff9a9a}
+.engineering-section>.section-tag,.engineering-section>.section-heading{max-width:1200px;margin-inline:auto}
+.eng-grid{list-style:none;margin:0 auto;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;max-width:1200px}
+.eng-card{position:relative;display:flex;flex-direction:column;min-width:0;padding:28px 28px 24px;background:var(--white);border:1px solid var(--line);border-radius:var(--eng-radius);box-shadow:0 1px 0 rgba(var(--shadow-rgb),.04);transition:transform var(--dur-base) var(--ease-out),border-color var(--dur-base) ease,box-shadow var(--dur-base) ease,background-color var(--dur-base) ease}
+.eng-card:before{content:"";position:absolute;left:28px;top:-1px;width:36px;height:2px;background:var(--gold);transition:width var(--dur-base) var(--ease-out)}
+.eng-card__top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.eng-card__num{font-family:var(--font-mono);font-size:12px;letter-spacing:.2em;color:var(--eng-muted)}
+.eng-icon{flex:none;color:var(--gold-ink)}
+.eng-card__title{margin:0 0 10px;font-family:Georgia,serif;font-weight:400;font-size:clamp(21px,1.9vw,25px);line-height:1.2;letter-spacing:-.01em;color:var(--ink)}
+.eng-card__text{margin:0 0 22px;font-size:15px;line-height:1.6;color:var(--eng-body)}
+.eng-card__foot{margin-top:auto;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+/* Reserve the status row's height so the pill appearing after the fetch never shifts the layout. */
+.eng-card__status{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin:0;min-height:28px}
+.eng-card__detail{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.02em;color:var(--eng-muted)}
+.eng-link{display:inline-flex;align-items:center;gap:6px;min-height:24px;color:var(--ink);font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;text-decoration:underline;text-decoration-color:rgba(var(--ink-rgb),.3);text-underline-offset:4px;transition:text-decoration-color var(--dur-control) ease}
+.eng-link svg{flex:none;transition:transform var(--dur-control) var(--ease-out)}
+.eng-link:focus-visible,.eng-cta:focus-visible{outline:var(--focus-ring);outline-offset:3px;border-radius:4px}
+@media(hover:hover){.eng-link:hover{text-decoration-color:var(--gold)}.eng-link:hover svg{transform:translate(2px,-2px)}}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){.eng-card:hover{transform:translateY(-3px)}}
+@media(hover:hover){.eng-card:hover,.eng-card:focus-within{border-color:color-mix(in srgb,var(--gold) 70%,var(--line));box-shadow:0 14px 30px -20px rgba(var(--shadow-rgb),.35);background:var(--card-hover)}.eng-card:hover:before,.eng-card:focus-within:before{width:64px}}
+.eng-card:focus-within{border-color:color-mix(in srgb,var(--gold) 70%,var(--line))}
+.eng-card:focus-within:before{width:64px}
+
+/* Status pill: text carries the state; the dot and border only reinforce it. */
+.eng-pill{display:inline-flex;align-items:center;gap:7px;min-height:26px;padding:0 11px;border:1px solid var(--line);border-radius:var(--radius-pill);font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);white-space:nowrap}
+.eng-pill__dot{width:7px;height:7px;border-radius:50%;background:var(--eng-muted)}
+.eng-pill__stale{opacity:.85}
+.eng-pill--passed{border-color:color-mix(in srgb,var(--live) 55%,transparent)}.eng-pill--passed .eng-pill__dot{background:var(--live)}
+.eng-pill--failed{border-color:color-mix(in srgb,var(--eng-fail) 60%,transparent)}.eng-pill--failed .eng-pill__dot{background:var(--eng-fail)}
+.eng-pill--running{border-color:color-mix(in srgb,var(--gold) 70%,transparent)}.eng-pill--running .eng-pill__dot{background:var(--gold)}
+@media(prefers-reduced-motion:no-preference){.eng-pill--running .eng-pill__dot,.eng-pill--checking .eng-pill__dot{animation:eng-pulse 1.8s ease-in-out infinite}}
+@keyframes eng-pulse{50%{opacity:.35}}
+.eng-pill--cancelled .eng-pill__dot,.eng-pill--pending .eng-pill__dot{background:transparent;box-shadow:inset 0 0 0 1.5px var(--eng-muted)}
+.eng-pill--unavailable{border-style:dashed}.eng-pill--not_configured{border-style:dashed}
+
+/* Live status panel */
+.eng-live{max-width:1200px;margin:clamp(28px,4vw,44px) auto 0;padding:clamp(20px,2.6vw,32px);border:1px solid var(--line);border-radius:var(--eng-radius);background:var(--cream2);transition:background-color var(--dur-base) ease,border-color var(--dur-base) ease}
+.eng-live__title{margin:0 0 14px;font-family:var(--font-mono);font-size:12px;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--eng-muted)}
+.eng-live__list{margin:0}
+.eng-live__row{display:grid;grid-template-columns:minmax(150px,220px) minmax(0,1fr);gap:6px 24px;align-items:baseline;padding:12px 0;border-top:1px solid var(--line);min-height:48px}
+.eng-live__row dt{font-size:13px;color:var(--eng-muted)}
+.eng-live__row dd{margin:0;font-size:14px;line-height:1.5;color:var(--ink);overflow-wrap:anywhere}
+.eng-live__row code{font-family:var(--font-mono);font-size:12.5px}
+.eng-live__when,.eng-muted{font-family:var(--font-mono);font-size:12px;letter-spacing:.02em;color:var(--eng-muted)}
+.eng-live__note{margin:14px 0 0;min-height:1.5em;font-family:var(--font-mono);font-size:12px;letter-spacing:.04em;color:var(--eng-muted)}
+
+/* Links row */
+.eng-actions{max-width:1200px;margin:clamp(24px,3.4vw,36px) auto 0}
+.eng-actions ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:12px}
+.eng-cta{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 20px;border:1px solid var(--line);border-radius:var(--radius-pill);color:var(--ink);font-size:14px;text-decoration:none;transition:background-color var(--dur-control) ease,border-color var(--dur-control) ease,color var(--dur-control) ease}
+@media(hover:hover){.eng-cta:hover{border-color:var(--gold);background:rgba(var(--ink-rgb),.04)}}
+
+@media(max-width:1050px){.eng-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){
+  .eng-grid{grid-template-columns:minmax(0,1fr);gap:14px}
+  .eng-card{padding:24px 22px 22px}.eng-card:before{left:22px}
+  .eng-live__row{grid-template-columns:minmax(0,1fr);gap:2px}
+  .eng-actions ul{flex-direction:column}.eng-cta{width:100%;justify-content:space-between}
+}
+@media(prefers-reduced-motion:reduce){.eng-card,.eng-card:before,.eng-link svg,.eng-cta{transition:none}}

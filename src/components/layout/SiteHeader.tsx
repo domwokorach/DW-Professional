@@ -78,8 +78,8 @@ export default function SiteHeader() {
 
   return (
     <header className="site-header">
-      <button className="brand" onClick={scrollToTop} aria-label="Back to top">
-        <span>DO</span><b>DOMINIC</b>
+      <button className="brand" onClick={scrollToTop} >
+        <span aria-hidden="true">DO</span><b>DOMINIC</b><span className="sr-only"> — back to top</span>
       </button>
 
       <div className="site-header__end">

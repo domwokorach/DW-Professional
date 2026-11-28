@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
-import { useReducedMotion } from 'motion/react';
+import { useReducedMotionSafe } from '@/hooks/use-reduced-motion-safe';
 import PulseHeart from '@/components/ui/pulse-heart';
 import type { PublicComment } from '@/lib/comments';
 import { formatCommentDate, initials } from './format';
@@ -39,7 +39,7 @@ const PlayIcon = () => (
  *   crossfade without moving.
  */
 export default function CommentsCarousel({ items }: { items: PublicComment[] }) {
-  const reduce = useReducedMotion();
+  const reduce = useReducedMotionSafe();
   const count = items.length;
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState<number | null>(null);
@@ -143,13 +143,10 @@ export default function CommentsCarousel({ items }: { items: PublicComment[] }) 
             <li
               key={c.id}
               className={`cm-slide ${state(i)}`.trim()}
-              role="group"
-              aria-roledescription="slide"
-              aria-label={`${i + 1} of ${count}`}
               aria-hidden={i === index ? undefined : true}
               inert={i !== index}
             >
-              <article className="cm-card">
+              <article className="cm-card" role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${count}`}>
                 <header className="cm-card__head">
                   <span className="cm-avatar-wrap">
                     <span className="cm-avatar" aria-hidden={c.avatarUrl ? undefined : true}>

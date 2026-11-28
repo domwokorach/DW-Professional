@@ -42,9 +42,9 @@
 .cert-carousel__controls button{display:grid;width:44px;height:44px;padding:0;place-items:center;border:1px solid rgba(255,255,255,.16);border-radius:999px;background:rgba(255,255,255,.06);color:#f6f4ee;cursor:pointer;transition:background-color .2s ease,border-color .2s ease,transform .2s ease}
 .cert-carousel__controls button:focus-visible,.cert-carousel__pagination button:focus-visible{outline:2px solid #f6f4ee;outline-offset:3px}
 .cert-carousel__counter{margin:0;font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:rgba(246,244,238,.66);text-align:center}
-.cert-carousel__pagination{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:7px;margin:15px auto 5px}
-.cert-carousel__pagination button{width:7px;height:7px;padding:0;border:0;border-radius:999px;background:rgba(255,255,255,.24);cursor:pointer;transition:width .2s ease,background-color .2s ease}
-.cert-carousel__pagination button.is-active{width:22px;background:#d9d1ff}
+.cert-carousel__pagination{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0;margin:7px auto 0}
+.cert-carousel__pagination button{box-sizing:border-box;width:24px;height:24px;padding:8.5px;border:0;border-radius:999px;background:rgba(255,255,255,.24);background-clip:content-box;cursor:pointer;transition:width .2s ease,background-color .2s ease}
+.cert-carousel__pagination button.is-active{width:39px;background:#d9d1ff;background-clip:content-box}
 .cert-carousel--empty{display:grid;min-height:390px;padding:48px;place-content:center;justify-items:center;border:1px solid rgba(var(--ink-rgb),.12);border-radius:24px;background:linear-gradient(145deg,rgba(var(--ink-rgb),.05),rgba(var(--ink-rgb),.015));text-align:center}
 .cert-carousel--empty h3{margin:14px 0 6px;font-size:22px}.cert-carousel--empty p{max-width:340px;margin:0;color:var(--text-2);line-height:1.6}
 .cert-loading{display:grid;grid-template-columns:.7fr 1.3fr;gap:8vw}.cert-loading span{display:block;height:360px;border-radius:22px;background:linear-gradient(100deg,rgba(var(--ink-rgb),.04),rgba(var(--ink-rgb),.09),rgba(var(--ink-rgb),.04));background-size:200% 100%;animation:cert-skeleton 1.4s linear infinite}.cert-loading span:first-child{height:180px}.cert-loading span:last-child{display:none}

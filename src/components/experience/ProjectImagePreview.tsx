@@ -35,7 +35,7 @@ export default function ProjectImagePreview({ name, image }: { name: string; ima
     trigger.current?.focus();
   };
 
-  const useFallback = (element: HTMLImageElement) => {
+  const applyFallback = (element: HTMLImageElement) => {
     element.removeAttribute('srcset');
     if (element.src !== image.fallbackSrc) element.src = image.fallbackSrc;
   };
@@ -52,7 +52,7 @@ export default function ProjectImagePreview({ name, image }: { name: string; ima
           height={image.height}
           loading="lazy"
           decoding="async"
-          onError={(event) => useFallback(event.currentTarget)}
+          onError={(event) => applyFallback(event.currentTarget)}
         />
       </div>
       <button
@@ -88,7 +88,7 @@ export default function ProjectImagePreview({ name, image }: { name: string; ima
             height={image.height}
             loading="lazy"
             decoding="async"
-            onError={(event) => useFallback(event.currentTarget)}
+            onError={(event) => applyFallback(event.currentTarget)}
           />
           <a href={image.originalSrc} target="_blank" rel="noopener noreferrer" className="xp-lightbox__fallback">
             Open original image<span className="sr-only"> (opens in a new tab)</span>

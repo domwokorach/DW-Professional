@@ -7,7 +7,7 @@ function WeatherReading({ weather }: { weather: Weather }) {
       {/* Decorative: the condition is always written out next to it. */}
       <picture className="quick-fact-weather-icon">
         {weather.staticIconSrc && <source media="(prefers-reduced-motion: reduce)" srcSet={weather.staticIconSrc} />}
-        {/* eslint-disable-next-line @next/next/no-img-element -- external SVG, no optimisation needed */}
+        { }
         <img src={weather.iconSrc} alt="" width={40} height={40} decoding="async" />
       </picture>
       <span className="quick-fact-weather-text">

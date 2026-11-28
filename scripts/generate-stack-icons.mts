@@ -4,13 +4,14 @@
 // Fails loudly if any icon id doesn't exist. Run: npm run icons
 import { createRequire } from 'node:module';
 import { writeFileSync } from 'node:fs';
-import { getIconData, iconToSVG } from '@iconify/utils';
+import { getIconData, iconToSVG } from "@iconify/utils";
+import type { IconifyJSON } from "@iconify/types";
 import { coreTechGroups } from '../src/data/core-tech.ts';
 import { contactInfo } from '../src/data/contact.ts';
 import { socialLinks } from '../src/data/social.ts';
 
 const require = createRequire(import.meta.url);
-const sets: Record<string, any> = {
+const sets: Record<string, IconifyJSON> = {
   'simple-icons': require('@iconify-json/simple-icons/icons.json'),
   tabler: require('@iconify-json/tabler/icons.json'),
   logos: require('@iconify-json/logos/icons.json'),

@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { SwipeableCards, type CardWithId } from '@daformat/react-swipeable-cards';
 import { ArrowLeft, ArrowRight, ExternalLink, ImageOff } from 'lucide-react';
-import { useReducedMotion } from 'motion/react';
+import { useReducedMotionSafe } from '@/hooks/use-reduced-motion-safe';
 import type { Certification } from '@/types';
 import { bringCardToFront, showNextCard, showPreviousCard } from './carouselStack';
 
@@ -79,7 +79,7 @@ function CarouselExperience({ certifications }: { certifications: Certification[
   const stack = SwipeableCards.useSwipeableCardsStack();
   const { setStack, discardedCardId } = SwipeableCards.useSwipeableCardsContext();
   const { trigger } = SwipeableCards.useProgrammaticSwipe();
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotionSafe();
   const activeId = stack.at(-1)?.id;
   const activeIndex = Math.max(certifications.findIndex(({ id }) => id === activeId), 0);
 
@@ -132,7 +132,7 @@ function CarouselExperience({ certifications }: { certifications: Certification[
 
 export default function CertificationsCarousel({ certifications, error }: { certifications: Certification[]; error?: string }) {
   const cards = useMemo<CardWithId[]>(() => [...certifications].reverse().map((certificate) => ({ id: certificate.id, card: <CertificateCard certificate={certificate} /> })), [certifications]);
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotionSafe();
 
   if (!certifications.length) return <div className="cert-carousel cert-carousel--empty" role="status"><ImageOff aria-hidden="true" size={24}/><h3>No certificates available</h3><p>{error ?? 'New certifications will appear here automatically.'}</p></div>;
 

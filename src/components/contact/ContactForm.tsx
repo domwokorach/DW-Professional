@@ -39,7 +39,7 @@ const id = (field: ContactField) => `contact-${field}`;
 
 /** POSTs the form with XHR rather than fetch, because only XHR reports real upload progress. */
 function postForm(url: string, body: FormData, onProgress?: (percent: number | null) => void) {
-  return new Promise<{ ok: boolean; status: number; body: any }>((resolve, reject) => {
+  return new Promise<{ ok: boolean; status: number; body: { errors?: ContactErrors } | null }>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', url);
     xhr.responseType = 'json'; // unparseable bodies come back as null
@@ -236,14 +236,15 @@ export default function ContactForm({ directUploads }: { directUploads: boolean 
         return;
       }
       const body = res.body;
-      if (body?.errors) {
+      const fieldErrors = body?.errors;
+      if (fieldErrors) {
         await waitForMinimumLoading(startedAt);
         submittingRef.current = false;
-        setErrors(body.errors as ContactErrors);
+        setErrors(fieldErrors);
         setStatus('idle');
         // Validation (including a server-side file rejection) is shown by the field errors, not as an upload failure.
         setUpload(file ? { status: 'selected', percent: 0 } : UPLOAD_IDLE);
-        const first = ORDER.find((f) => body.errors[f]);
+        const first = ORDER.find((f) => fieldErrors[f]);
         if (first) formRef.current?.querySelector<HTMLElement>(`#${id(first)}`)?.focus();
         return;
       }

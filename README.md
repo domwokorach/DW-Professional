@@ -19,7 +19,7 @@ DOMINIC is a production-oriented developer portfolio for Dominic Wokorach Olanya
 
 ## Technology stack
 
-- Next.js 15 App Router, React 19 and TypeScript.
+- Next.js 16 App Router, React 19 and TypeScript.
 - Plain CSS organised by section; no Tailwind runtime.
 - Motion, React Spring and React Three Fiber for focused interaction and visual effects.
 - Prisma ORM 7 with PostgreSQL.
@@ -31,7 +31,7 @@ DOMINIC is a production-oriented developer portfolio for Dominic Wokorach Olanya
 
 ## Prerequisites
 
-- Node.js 20.19 or newer.
+- Node.js 22 or newer (CI uses 24).
 - npm.
 - PostgreSQL only when persistence, comments, admin tools or Portfolio Access records are required.
 - Optional service accounts for Resend, Amazon S3, LinkedIn, Companies House and OpenWeather.
@@ -88,10 +88,12 @@ Open <http://localhost:3000/en-gb>. `/` redirects to the localised home route. O
 | Command | Purpose |
 |---|---|
 | `npm run dev` | Start the Next.js development server. |
-| `npm run build` | Generate icons and Prisma clients, lint/type-check through Next.js, and create the production build. |
+| `npm run build` | Generate icons and Prisma clients and create the production build. |
 | `npm start` | Serve the completed production build. |
-| `npm run typecheck` | Run TypeScript without emitting files. |
-| `npm test` | Run the automated Node/TypeScript test suite. |
+| `npm run lint` | ESLint (flat config, CLI). `npm run lint:fix` applies safe fixes. |
+| `npm run typecheck` | TypeScript for the web app and the Expo app (`typecheck:web`, `typecheck:mobile`). |
+| `npm test` | All Node/TypeScript test suites with JUnit output; `test:unit`, `test:integration`, `test:component`, `test:coverage` run parts. |
+| `npm run test:e2e` / `test:a11y` | Playwright browser and axe accessibility tests. See [docs/TESTING.md](docs/TESTING.md). |
 | `npm run package:build` | Generate the reusable design-token package from the canonical CSS source. |
 | `npm run icons` | Rebuild `src/data/stack-icons.ts` from configured Iconify identifiers. |
 | `npm run db:generate` | Generate the portfolio Prisma client. |
@@ -105,7 +107,7 @@ Open <http://localhost:3000/en-gb>. `/` redirects to the localised home route. O
 | `npm run companies:import` | Import the configured Companies House dataset. |
 | `npm run admin -- <command>` | Manage administrator accounts and sessions from the terminal. |
 
-There is no standalone `lint` script. `next build` performs the repository's configured linting and type validation; `npm run typecheck` is available for a faster TypeScript-only check.
+Linting runs through the ESLint CLI (`npm run lint`); `next build` no longer lints. CI runs lint, both type-checks, the tests and a production build on every pull request.
 
 ## Mobile app
 
@@ -213,7 +215,7 @@ Security controls reduce risk but are not a certification. Review dependencies, 
 - Put reusable interaction primitives in `src/components/ui`; keep feature-specific UI beside its section.
 - Put shared hooks in `src/hooks`, static content in `src/data`, operational configuration in `src/config`, and server integrations in `src/lib` with a `.server.ts` suffix.
 - Use existing CSS tokens instead of adding near-duplicate colours, radii or shadows. See [DESIGN.md](DESIGN.md).
-- Run `npm run typecheck` and `npm run build` before submitting changes.
+- Run `npm run lint`, `npm run typecheck`, `npm test` and `npm run build` before submitting changes. See [CONTRIBUTING.md](CONTRIBUTING.md).
 - Update privacy and setup documentation whenever a change affects data collection, storage, third parties or environment variables.
 
 ## Additional documentation
@@ -225,6 +227,8 @@ Security controls reduce risk but are not a certification. Review dependencies, 
 - [docs/COMMENTS.md](docs/COMMENTS.md) — comments, moderation and administrator setup.
 - [docs/COMPANIES.md](docs/COMPANIES.md) — company dataset and search setup.
 - [docs/S3_SETUP.md](docs/S3_SETUP.md) — private attachment storage.
+- [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md) — contribution workflow and vulnerability reporting.
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/TESTING.md](docs/TESTING.md), [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md), [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) — engineering documentation.
 
 ## Packages and releases
 

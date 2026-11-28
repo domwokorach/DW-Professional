@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState, type PointerEvent } from 'react';
-import { useMotionValue, useMotionValueEvent, useReducedMotion, useTransform, type MotionValue } from 'motion/react';
+import { useMotionValue, useMotionValueEvent, useTransform, type MotionValue } from 'motion/react';
+import { useReducedMotionSafe } from '@/hooks/use-reduced-motion-safe';
 import { CardPattern, generateRandomString } from '@/components/ui/evervault-card';
 
 const CHARS = 1500;
@@ -33,7 +34,7 @@ type Pointer = ReturnType<typeof useEvervaultPointer>;
  * the back face, which is rotated 180°.
  */
 export default function DeveloperIdEvervault({ pointer, mirror = false }: { pointer: Pointer; mirror?: boolean }) {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotionSafe();
   const ref = useRef<HTMLDivElement>(null);
   const [randomString, setRandomString] = useState('');
   const lastRefresh = useRef(0);

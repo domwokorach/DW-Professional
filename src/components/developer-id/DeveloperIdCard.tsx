@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { encode } from 'uqr';
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
+import { useEffect, useId, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
 import { DEVELOPER_ID_SCAN_URL, PORTFOLIO_ACCESS_URL } from '@/config';
 import DeveloperIdEvervault, { useEvervaultPointer } from './DeveloperIdEvervault';
 import FloatingCard from './FloatingCard';
@@ -132,6 +132,7 @@ type Props = {
 
 export default function DeveloperIdCard({ flipOnHover = false, standalone = false }: Props) {
   const [flipped, setFlipped] = useState(false);
+  const hintId = useId();
   // Counts flips so the caption's text animation replays each time the card turns.
   const [flips, setFlips] = useState(0);
   const evervault = useEvervaultPointer();
@@ -182,12 +183,13 @@ export default function DeveloperIdCard({ flipOnHover = false, standalone = fals
       <div className="dev-id-shadow" aria-hidden="true" />
       <div className="dev-id-elevation">
       <FloatingCard className="dev-id-stage">
+      <span id={hintId} className="sr-only">{flipped ? 'Back side of the Developer ID card. Activate to show the front.' : 'Front side of the Developer ID card. Activate to show the back.'}</span>
       <div
         className={`dev-id${flipped ? ' is-flipped' : ''}`}
         role="button"
         tabIndex={0}
         aria-pressed={flipped}
-        aria-label={flipped ? 'Developer ID card, back side. Activate to show the front.' : 'Developer ID card, front side. Activate to show the back.'}
+        aria-describedby={hintId}
         onClick={toggle}
         onKeyDown={onKeyDown}
         onPointerEnter={hover(true)}

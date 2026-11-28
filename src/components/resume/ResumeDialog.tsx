@@ -203,7 +203,7 @@ export default function ResumeDialog({ open, onClose }: { open: boolean; onClose
               <p className="rs-privacy">
                 Your name, email, company and basic access details (IP address, browser and device) are recorded for recruitment-related
                 follow-up and kept for up to 12 months. See the{' '}
-                <Link href="/privacy" target="_blank">Privacy Policy</Link>.
+                <Link href="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</Link>.
               </p>
             </form>
           </div>

@@ -1,0 +1,154 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  NODE_VERSION: 24
+  # Reports are always uploaded, pass or fail, so a failing run can be diagnosed from its artefacts.
+  CI: true
+
+jobs:
+  quality:
+    name: Lint and type-check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: ESLint
+        run: npm run lint
+      - name: TypeScript (web)
+        run: npm run typecheck:web
+      - name: TypeScript (Expo)
+        run: npm run typecheck:mobile
+
+  test:
+    name: Unit, integration and component tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      statuses: write # publish the real test and coverage numbers on master pushes (never on pull requests)
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: portfolio_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      # A throwaway database that exists only for this job. Never a real database.
+      TEST_DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432/portfolio_test
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Apply migrations to the throwaway database
+        run: |
+          DATABASE_URL="$TEST_DATABASE_URL" DATABASE_SCHEMA=portfolio npx prisma migrate deploy
+          COMPANY_DATABASE_URL="$TEST_DATABASE_URL" COMPANY_DATABASE_SCHEMA=companies npx prisma migrate deploy --config prisma.company.config.ts
+      - name: Tests with coverage (enforces thresholds in .c8rc.json)
+        run: npm run test:coverage
+      - name: Report summary (computed from the real JUnit and coverage files)
+        if: always()
+        id: summary
+        run: |
+          if line="$(node scripts/report-summary.mjs)"; then
+            echo "line=$line" >> "$GITHUB_OUTPUT"
+            { echo '### Test and coverage report'; echo '```'; echo "$line"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No complete report was produced (tests or coverage did not finish)." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Publish report to the portfolio's live status (master only)
+        if: always() && github.event_name == 'push' && github.ref == 'refs/heads/master' && steps.summary.outputs.line != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LINE: ${{ steps.summary.outputs.line }}
+        run: |
+          state=success; [ "${{ job.status }}" = "success" ] || state=failure
+          gh api "repos/${{ github.repository }}/statuses/${{ github.sha }}" \
+            -f state="$state" -f context="engineering/test-report" -f description="$LINE" \
+            -f target_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: test-reports
+          path: |
+            reports/junit/
+            reports/coverage/
+          if-no-files-found: error
+
+  e2e:
+    name: Build and browser tests (Playwright, axe)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - name: Production build
+        run: npm run build
+      - name: Cache Playwright browsers
+        id: pw-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: E2E and accessibility tests
+        run: npx playwright test --project=chromium --project=mobile --project=a11y --project=a11y-mobile
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: playwright-reports
+          path: |
+            playwright-report/
+            test-results/
+            reports/junit/e2e.xml
+          if-no-files-found: error
+
+  tokens:
+    name: Build design-token package
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run package:build

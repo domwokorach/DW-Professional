@@ -2,7 +2,7 @@
   "name": "dw-professional",
   "version": "1.0.1",
   "private": true,
-  "description": "Professional portfolio website for Dominic — Software Engineer & Frontend Developer.",
+  "description": "Professional portfolio website for Dominic \u2014 Software Engineer & Frontend Developer.",
   "keywords": [
     "portfolio",
     "software-engineer",
@@ -44,8 +44,20 @@
     "db:studio": "prisma studio",
     "db:seed": "prisma db seed",
     "postinstall": "prisma generate && npm run companies:generate",
-    "typecheck": "tsc --noEmit",
-    "test": "tsx --test --test-concurrency=1 tests/*.test.ts",
+    "typecheck": "npm run typecheck:web && npm run typecheck:mobile",
+    "typecheck:web": "tsc --noEmit",
+    "typecheck:mobile": "npm run typecheck --workspace @domwokorach/dw-professional-mobile",
+    "lint": "eslint . --max-warnings=1000",
+    "lint:fix": "eslint . --fix",
+    "test": "node scripts/run-tests.mjs all",
+    "test:unit": "node scripts/run-tests.mjs unit",
+    "test:integration": "node scripts/run-tests.mjs integration",
+    "test:component": "node scripts/run-tests.mjs component",
+    "test:coverage": "node scripts/run-tests.mjs all --coverage",
+    "coverage:clean": "node -e \"require('node:fs').rmSync('coverage',{recursive:true,force:true})\"",
+    "coverage:report": "c8 report --check-coverage",
+    "test:e2e": "playwright test --project=chromium",
+    "test:a11y": "playwright test --project=a11y",
     "import:certifications": "tsx scripts/import-certifications.mts",
     "resume:import": "tsx scripts/resume-import.mts",
     "resume:purge": "tsx scripts/resume-purge.mts",
@@ -84,10 +96,12 @@
     "uqr": "^0.1.3"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.1",
     "@iconify-json/logos": "^1.2.15",
     "@iconify-json/simple-icons": "^1.2.98",
     "@iconify-json/tabler": "^1.2.41",
     "@iconify/utils": "^3.1.7",
+    "@playwright/test": "^1.65.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.0",
     "@types/jsdom": "^21.1.7",
@@ -96,13 +110,20 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@types/three": "^0.186.0",
+    "c8": "^12.0.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.4.5",
     "jsdom": "^26.1.0",
     "prisma": "^7.10.0",
     "tsx": "^4.23.15",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.74.0"
   },
   "overrides": {
     "react-native-worklets": "0.13.0"
   },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "packageManager": "npm@11.19.1",
+  "engines": {
+    "node": ">=22"
+  }
 }

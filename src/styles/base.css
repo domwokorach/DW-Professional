@@ -5,7 +5,7 @@
      redefines all of these; most of the CSS just uses the tokens. */
   --on-ink:#fff;--ink-rgb:37,35,63;--shadow-rgb:37,35,63;--surface-rgb:255,253,247;--glass:rgba(255,255,255,.3);--glass-strong:rgba(255,255,255,.5);
   --band:#efe7b6;--band2:#f4efdd;--card-hover:#fffefa;--badge:#f4f1e7;--lanyard:#25233f;
-  --text-2:#5f5c56;--text-3:#4f4c47;--text-4:#6e6b69;--legal-body:#4f4c58;--live:#2f7a4c;
+  --text-2:#5f5c56;--text-3:#4f4c47;--text-4:#6e6b69;--legal-body:#4f4c58;--live:#2a7048;
   --orb-1:#fff4a8;--orb-2:#d8d0ff;--orb-opacity:.22;
   --footer-bg:#111827;--footer-fg:#F8F5EE;
   /* Champagne gold accent: fills, rules and borders only. Use --gold-ink for gold-toned text (AA on --cream). */
@@ -55,7 +55,7 @@ a,button,input,select,textarea,label,summary,[role="button"]{touch-action:manipu
 .section{padding:110px 7vw;position:relative;border-top:1px solid rgba(var(--ink-rgb),.06)}
 .section-tag{display:flex;align-items:center;gap:14px;font-family:var(--font-mono);font-size:11px;letter-spacing:.22em;margin-bottom:54px}
 .section-tag i{width:38px;height:1px;background:var(--ink);opacity:.35}
-.section-tag span{opacity:.65}
+.section-tag span{opacity:.8}
 .section-heading{display:flex;justify-content:space-between;gap:30px;align-items:flex-end;margin-bottom:46px}
 .section-heading h2{font-size:clamp(48px,6vw,94px);margin:0;line-height:.92}
 .section-heading em,.about h2 em{font-family:Georgia,serif;font-weight:400}
