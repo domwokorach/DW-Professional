@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next';
+import { cspReportOnlyHeaders } from './src/lib/security-headers';
 
 const securityHeaders = [
   { key: 'X-Content-Type-Options', value: 'nosniff' },
@@ -6,10 +7,16 @@ const securityHeaders = [
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
   { key: 'Permissions-Policy', value: 'camera=(self), microphone=(), geolocation=(), payment=(), usb=()' },
   { key: 'Strict-Transport-Security', value: 'max-age=31536000' },
+  // Keeps window.opener isolated from other sites while still allowing OAuth-style popups.
+  { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
+  // Report-only for now: reports go to /api/csp-report; enforce once real traffic shows no legitimate violations (SECURITY.md).
+  ...cspReportOnlyHeaders(),
 ];
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Don't advertise the framework in an X-Powered-By header.
+  poweredByHeader: false,
   // Opt-in: lets CI and local test runs build into a separate folder without touching a running `next dev`.
   // Unset (Vercel, normal development) it is the default `.next`.
   distDir: process.env.NEXT_DIST_DIR || '.next',
@@ -38,8 +45,8 @@ const nextConfig: NextConfig = {
     const cache = [{ key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' }];
     return [
       // Baseline hardening for every response. The camera is used by the portfolio-access attachment capture, so it
-      // stays available to this origin only. A Content-Security-Policy is not set yet: the inline theme script and
-      // third-party media need a nonce-based policy tested in report-only mode first (see SECURITY.md).
+      // stays available to this origin only. The Content-Security-Policy is report-only (see
+      // src/lib/security-headers.ts and SECURITY.md).
       { source: '/((?!admin|api/admin).*)', headers: securityHeaders }, // admin routes get their own (stricter) headers in src/proxy.ts
       ...['/images/:path*', '/hero-poses/:path*', '/draco/:path*', '/certifications/:path*'].map((source) => ({ source, headers: cache })),
     ];

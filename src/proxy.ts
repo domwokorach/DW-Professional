@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { LOGIN_PATH, SESSION_COOKIE } from '@/lib/admin/constants';
+import { cspReportOnlyHeaders } from '@/lib/security-headers';
 
 /**
  * First line of defence for the admin area only (the public site isn't matched). It redirects visitors with no
@@ -35,6 +36,8 @@ export function proxy(request: NextRequest) {
   response.headers.set('Referrer-Policy', 'same-origin');
   response.headers.set('X-Content-Type-Options', 'nosniff');
   if (production) response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  // The admin area never embeds frames, so it is stricter than the public site; still report-only.
+  for (const { key, value } of cspReportOnlyHeaders()) response.headers.set(key, key === 'Content-Security-Policy-Report-Only' ? value.replace("frame-src 'self'", "frame-src 'self'").replace("frame-ancestors 'self'", "frame-ancestors 'none'") : value);
   return response;
 }
 

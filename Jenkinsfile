@@ -92,8 +92,8 @@ pipeline {
         stage('Dependency audit') {
           steps {
             sh 'npm audit signatures'
-            sh 'npm audit --omit=dev --audit-level=critical'
-            // Full report for the archive; the known, unfixable-without-downgrade findings are in SECURITY.md.
+            sh 'npm audit --omit=dev --audit-level=high'
+            // Full report for the archive, including moderate and low findings that do not block.
             sh 'mkdir -p reports && (npm audit --omit=dev > reports/npm-audit.txt || true)'
           }
         }

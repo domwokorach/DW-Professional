@@ -31,11 +31,12 @@ jobs:
       - run: npm ci
       - name: Verify registry signatures and provenance
         run: npm audit signatures
-      - name: Block on critical production vulnerabilities
-        run: npm audit --omit=dev --audit-level=critical
+      - name: Block on high or critical production vulnerabilities
+        # Tightened from "critical" once the tree reported 0 vulnerabilities (verified 2026-11-28). A new high/critical
+        # advisory fails this job; fix it with a normal update, never `npm audit fix --force`.
+        run: npm audit --omit=dev --audit-level=high
       - name: Report all production vulnerabilities
-        # Visible in the job summary. Not blocking: the remaining high findings (see SECURITY.md) can only be
-        # "fixed" by downgrading Prisma, which is a breaking change that must not be applied with --force.
+        # Visible in the job summary, including moderate and low findings that do not block.
         continue-on-error: true
         run: |
           {
