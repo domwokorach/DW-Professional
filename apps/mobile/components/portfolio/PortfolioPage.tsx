@@ -2,6 +2,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AboutSection } from '~/components/sections/AboutSection';
 import { ContactSection } from '~/components/sections/ContactSection';
+import { GitHubActivitySection } from '~/components/github/GitHubActivitySection';
 import { ExperienceSection } from '~/components/sections/ExperienceSection';
 import { HomeSection } from '~/components/sections/HomeSection';
 import { ProjectsSection } from '~/components/sections/ProjectsSection';
@@ -49,6 +50,8 @@ export default function PortfolioPage({ only, nav = true }: { only?: string[]; n
             const Body = BODY[def.id];
             return (
               <View key={def.id} nativeID={def.id} onLayout={s.onSectionLayout(def.id)}>
+                {/* GitHub activity sits between Projects and Contact; it has no tab of its own. */}
+                {def.id === 'contact' && !only ? <View style={{ marginBottom: space.section }}><GitHubActivitySection /></View> : null}
                 <Body />
               </View>
             );

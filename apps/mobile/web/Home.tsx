@@ -6,6 +6,7 @@ import { CommentsSection } from '@/components/comments';
 import { ContactSection } from '@/components/contact';
 import { AboutSection } from '@/components/developer-id';
 import { ExperienceSection } from '@/components/experience';
+import { GitHubActivitySection } from '@/components/github';
 import { HeroSection } from '@/components/hero';
 import { BackgroundOrbs, SiteHeader } from '@/components/layout';
 import AppFooter from '@/components/layout/AppFooter';
@@ -29,6 +30,7 @@ export default function Home() {
         <Suspense fallback={<CertificationsSectionSkeleton />}><CertificationsSection /></Suspense>
         <ExperienceSection />
         <AchievementsSection />
+        <GitHubActivitySection />
         <CommentsSection />
         <ContactSection />
         <PlatformsSection />
