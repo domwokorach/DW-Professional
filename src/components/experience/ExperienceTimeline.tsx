@@ -9,6 +9,7 @@ import ExperienceCollapse from './ExperienceCollapse';
 import LiveDuration from './LiveDuration';
 import LogoMark from './LogoMark';
 import ProjectVideo from './ProjectVideo';
+import TimelineNavLinks, { type TimelineNavItem } from './TimelineNav';
 import ProjectImagePreview from './ProjectImagePreview';
 import WorkLearningGallery from './WorkLearningGallery';
 
@@ -86,7 +87,7 @@ function Mark({ item }: { item: Pick<Experience, 'logo' | 'mark' | 'markIcon'> }
 }
 
 /** Employment type, workplace type and duration. Education carries no duration. */
-function Facts({ xp }: { xp: Pick<Experience, 'start' | 'end' | 'employmentType' | 'workplaceType' | 'hideDuration'> }) {
+function Facts({ xp, progression }: { xp: Pick<Experience, 'start' | 'end' | 'employmentType' | 'workplaceType' | 'hideDuration'>; progression?: number }) {
   const months = monthsBetween(xp.start.iso, xp.end?.iso);
   return (
     <ul className="xp-facts">
@@ -98,6 +99,7 @@ function Facts({ xp }: { xp: Pick<Experience, 'start' | 'end' | 'employmentType'
           {xp.end ? formatDuration(months) : <LiveDuration startIso={xp.start.iso} initial={formatDuration(months)} />}
         </li>
       )}
+      {progression ? <li>Career progression: {progression} roles</li> : null}
     </ul>
   );
 }
@@ -155,7 +157,7 @@ function Group({ group, id }: { group: ExperienceGroup; id: string }) {
         <div className="xp-head__text">
           <h3 id={`${id}-title`}>{group.employer}</h3>
           <p className="xp-meta"><span className="xp-location">{group.location}</span></p>
-          <Facts xp={group} />
+          <Facts xp={group} progression={group.roles.length} />
         </div>
       </header>
       <ExperienceCollapse id={`${id}-roles`} label={`${group.roles.length} roles`} name={group.employer} defaultOpen>
@@ -191,23 +193,11 @@ const data: TimelineEntry[] = experiences.map((item, index) => {
 
 /** Chronological jump links, newest first, matching the timeline order. */
 export function TimelineNav() {
-  return (
-    <nav className="xp-nav" aria-label="Career timeline">
-      <ol>
-        {experiences.map((item) => (
-          <li key={itemId(item)}>
-            <a href={`#${itemId(item)}`}>
-              <span className="xp-nav__year">{item.start.iso.slice(0, 4)}</span>
-              {'roles' in item ? item.employer : item.navLabel ?? item.role}
-            </a>
-          </li>
-        ))}
-        <li>
-          <a href="#xp-education"><span className="xp-nav__year">{education[0]?.start.iso.slice(0, 4)}</span>Education</a>
-        </li>
-      </ol>
-    </nav>
-  );
+  const items: TimelineNavItem[] = [
+    ...experiences.map((item) => ({ id: itemId(item), year: item.start.iso.slice(0, 4), label: 'roles' in item ? item.employer : item.navLabel ?? item.role })),
+    { id: 'xp-education', year: education[0]?.start.iso.slice(0, 4) ?? '', label: 'Education' },
+  ];
+  return <TimelineNavLinks items={items} />;
 }
 
 /** Academic qualifications: a dated entry of its own, not part of the employment timeline. */

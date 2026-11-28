@@ -9,7 +9,7 @@ import { mkdirSync, readdirSync } from 'node:fs';
 
 const SUITES = {
   // Pure logic and server helpers; no database, browser or network.
-  unit: ['admin-auth', 'clock-angles', 'design-tokens-contrast', 'experience-duration', 'engineering-data', 'engineering-status', 'github-contributions', 'linkedin-oidc', 'resume-unit', 'companies-live'],
+  unit: ['admin-auth', 'clock-angles', 'design-tokens-contrast', 'experience-data', 'experience-duration', 'engineering-data', 'engineering-status', 'github-contributions', 'linkedin-oidc', 'resume-unit', 'companies-live'],
   // Route handlers and stores; the database-backed cases need TEST_DATABASE_URL and report as skipped without it.
   integration: ['companies-db', 'resume-company', 'resume-flow', 'resume-regression'],
   // React components rendered in jsdom with Testing Library.

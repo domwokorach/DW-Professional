@@ -3,7 +3,7 @@ import ExperienceTimeline, { EducationEntries, TimelineNav } from './ExperienceT
 export default function ExperienceSection() {
   return (
     <section id="experience" className="section experience-section" aria-labelledby="experience-heading">
-      <div className="section-tag"><span>05</span><i/>EXPERIENCE</div>
+      <div className="section-tag"><span>05</span><i/>EMPLOYER HISTORY</div>
       <div className="section-heading">
         <h2 id="experience-heading">My professional journey.</h2>
         <p>A journey through software engineering, digital transformation, technology innovation and continuous professional development — building accessible, scalable and meaningful digital experiences.</p>
