@@ -53,7 +53,9 @@ export default function ExpandedProjectDialog({ project: p, uid, onClose }: { pr
       <div className="xp-stage" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
         <motion.div
           ref={panelRef}
-          layoutId={ids.card}
+          initial={{ opacity: 0, y: 24, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 16, scale: 0.98 }}
           transition={spring}
           className="xp-panel"
           role="dialog"
@@ -65,15 +67,17 @@ export default function ExpandedProjectDialog({ project: p, uid, onClose }: { pr
             <X aria-hidden="true" size={18} strokeWidth={2} />
           </button>
           <div className="xp-scroll">
-            <motion.div layoutId={ids.image} transition={spring} className="xp-panel__shot" style={{ aspectRatio: p.image ? `${p.image.width} / ${p.image.height}` : undefined }}>
-              <ProjectImage project={p} alt={`${p.title} website screenshot`} sizes="(max-width: 960px) 100vw, 900px" priority />
-            </motion.div>
+            {p.image && (
+  <div className="xp-panel__shot" style={{ aspectRatio: p.image ? `${p.image.width} / ${p.image.height}` : undefined }}>
+                <ProjectImage project={p} alt={`${p.title} website screenshot`} sizes="(max-width: 960px) 100vw, 900px" priority />
+              </div>
+            )}
             <div className="xp-panel__body">
               <div className="xp-panel__meta">
-                <motion.span layoutId={ids.category} transition={spring} className="xp-panel__cat">{p.category}</motion.span>
+                <motion.span className="xp-panel__cat">{p.category}</motion.span>
                 {p.url && <ProjectStatus />}
               </div>
-              <motion.h3 layoutId={ids.title} transition={spring} id={`${ids.title}-h`} className="xp-panel__title">{p.title}</motion.h3>
+              <motion.h3 id={`${ids.title}-h`} className="xp-panel__title">{p.title}</motion.h3>
               {p.headline && <motion.p custom={0} variants={reveal} initial="hidden" animate="shown" className="xp-panel__sub">{p.headline}</motion.p>}
               <motion.div custom={1} variants={reveal} initial="hidden" animate="shown" className="xp-panel__desc">
                 {p.description.map((para) => <p key={para}>{para}</p>)}
