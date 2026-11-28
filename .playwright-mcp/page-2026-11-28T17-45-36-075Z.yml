@@ -1,0 +1,2202 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic:
+      - button "— back to top" [ref=e3343] [cursor=pointer]:
+        - generic [aria-hidden] [ref=e4]: DO
+      - generic [ref=e7]:
+        - button "Light" [ref=e16] [cursor=pointer]
+        - button "Open navigation menu" [ref=e3345] [cursor=pointer]
+    - region "Software Engineer & Frontend Developer." [ref=e24]:
+      - generic [ref=e25]: DOMINIC
+      - generic [ref=e26]:
+        - generic [ref=e27]: DOMINIC
+        - heading "Software Engineer & Frontend Developer." [level=1] [ref=e31]: SoftwareEngineer &FrontendDeveloper.
+        - paragraph [ref=e35]: Creative developer · AI & web technology
+      - img "DOMINIC 3D character" [ref=e39]
+      - button "Explore work" [ref=e41] [cursor=pointer]
+      - button "Scroll to about" [ref=e59] [cursor=pointer]: ⌄
+    - generic [ref=e60]:
+      - generic [ref=e61]:
+        - generic [ref=e62]: "01"
+        - text: ABOUT
+      - generic [ref=e64]:
+        - article [ref=e65]:
+          - heading [level=2] [ref=e66]:
+            - text: Hi, I'm
+            - emphasis [ref=e67]: DOMINIC.
+          - paragraph [ref=e68]: Software Engineer and Frontend Developer with commercial experience at Sky and Lloyds Banking Group, specialising in React, TypeScript, and accessible digital products.
+          - paragraph [ref=e69]: Proven track record of delivering scalable web applications, improving user experiences, and collaborating with Agile teams. Passionate about technology, innovation, and creating inclusive solutions for diverse audiences.
+          - generic [ref=e70]:
+            - button "Resume" [ref=e71] [cursor=pointer]
+            - link "LinkedIn" [ref=e76] [cursor=pointer]:
+              - /url: https://www.linkedin.com/in/dominic-w-3673523b/
+            - link "GitHub" [ref=e80] [cursor=pointer]:
+              - /url: https://github.com/domwokorach
+        - generic [ref=e84]:
+          - generic [ref=e91]:
+            - generic [ref=e92]: Front side of the Developer ID card. Activate to show the back.
+            - button "DO DEVELOPER ID Portfolio · 2026 DOMINIC DOMINIC Software Engineer & Frontend Developer. ID NO. DO-0001 DEPT. Engineering VALID TILL 2027 QR code that opens a page with a button to email Dominic *DO00012027*" [ref=e93] [cursor=pointer]:
+              - generic [ref=e94]:
+                - generic [ref=e95]:
+                  - generic [ref=e96]:
+                    - generic [ref=e97]: DO
+                    - generic [ref=e98]:
+                      - text: DEVELOPER ID
+                      - generic [ref=e99]: Portfolio · 2026
+                  - img "DOMINIC" [ref=e102]
+                  - generic [ref=e103]:
+                    - heading "DOMINIC" [level=3] [ref=e104]
+                    - paragraph [ref=e105]: Software Engineer & Frontend Developer.
+                  - generic [ref=e106]:
+                    - generic [ref=e107]:
+                      - term [ref=e108]: ID NO.
+                      - definition [ref=e109]: DO-0001
+                    - generic [ref=e110]:
+                      - term [ref=e111]: DEPT.
+                      - definition [ref=e112]: Engineering
+                    - generic [ref=e113]:
+                      - term [ref=e114]: VALID TILL
+                      - definition [ref=e115]: "2027"
+                  - img "QR code that opens a page with a button to email Dominic" [ref=e116]
+                  - generic [ref=e119]: "*DO00012027*"
+                - generic [aria-hidden] [ref=e172]:
+                  - generic [ref=e173]:
+                    - generic [ref=e174]: DEVELOPER PROFILE
+                    - generic [ref=e175]: DO
+                  - heading [level=3] [ref=e176]: DOMINIC
+                  - paragraph [ref=e177]: SOFTWARE ENGINEER & FRONTEND DEVELOPER.
+                  - paragraph [ref=e178]: I build responsive web applications, interactive digital experiences, and AI-powered platforms.
+                  - list [ref=e179]:
+                    - listitem [ref=e180]: React
+                    - listitem [ref=e181]: Next.js
+                    - listitem [ref=e182]: Vue
+                    - listitem [ref=e183]: TypeScript
+                    - listitem [ref=e184]: Node.js
+                    - listitem [ref=e185]: Python
+                    - listitem [ref=e186]: AI
+                    - listitem [ref=e187]: Data
+                  - generic [ref=e189]:
+                    - term [ref=e190]: PORTFOLIO ACCESS
+                    - definition [ref=e191]: "STATUS: ACTIVE"
+                    - definition [ref=e193]: "ID: DO-0001"
+                  - paragraph [ref=e641]: Tap to return
+          - paragraph [ref=e642]:
+            - generic [ref=e643]: Click or tap the card to flip
+            - generic [ref=e645]: CLICK OR TAP THE CARD TO FLIP
+        - complementary [ref=e646]:
+          - generic [ref=e647]: QUICK FACTS
+          - 'figure "Current time in London: Saturday 28 November at 17:45:35 GMT" [ref=e3352]':
+            - generic [aria-hidden] [ref=e649]:
+              - img:
+                - generic: "28"
+            - generic [ref=e650]:
+              - generic [ref=e651]: "Current time in London: Saturday 28 November at 17:45:35 GMT. Blue and gold dive-watch style analogue clock."
+              - generic [aria-hidden] [ref=e652]: November
+          - generic [ref=e653]:
+            - generic [ref=e654]:
+              - term [ref=e655]:
+                - text: Time
+                - generic [aria-hidden] [ref=e656]: Live
+              - definition [ref=e657]:
+                - generic [ref=e658]: "Current time in London:"
+                - generic [ref=e659]: 17:45:35
+                - generic [ref=e660]: London · GMT
+            - generic [ref=e661]:
+              - term [ref=e662]: Weather
+              - definition [ref=e663]:
+                - generic [ref=e665]:
+                  - generic [ref=e666]: 9°C
+                  - text: Light rain
+                  - generic [ref=e667]: London, UK
+            - generic [ref=e669]:
+              - term [ref=e670]: Based in
+              - definition [ref=e671]: London, United Kingdom
+            - generic [ref=e672]:
+              - term [ref=e673]: Current
+              - definition [ref=e674]: Freelance Software Engineer
+            - generic [ref=e675]:
+              - term [ref=e676]: Batch
+              - definition [ref=e677]: 2014 – Present
+          - blockquote [ref=e678]: “From the database to the last pixel.”
+    - region "The periodic table of my stack." [ref=e679]:
+      - generic [ref=e680]:
+        - generic [ref=e681]: "02"
+        - text: SKILLS
+      - heading "The periodic table of my stack." [level=2] [ref=e684]:
+        - generic [aria-hidden] [ref=e686]:
+          - generic [ref=e687]: The
+          - generic [ref=e689]: periodic
+          - generic [ref=e691]: table
+          - emphasis [ref=e693]:
+            - generic [ref=e694]: of
+            - generic [ref=e696]: my
+            - generic [ref=e698]: stack.
+      - generic [ref=e700]:
+        - heading "Core technologies" [level=3] [ref=e701]
+        - generic [ref=e702]:
+          - group "Frontend" [ref=e703]:
+            - heading "Frontend" [level=4] [ref=e704]
+            - list "Frontend" [ref=e3353]:
+              - listitem [ref=e3354]:
+                - generic [ref=e3355]: React
+              - listitem [ref=e3359]:
+                - generic [ref=e3360]: Next.js
+              - listitem [ref=e3364]:
+                - generic [ref=e3365]: React Native
+              - listitem [ref=e3369]:
+                - generic [ref=e3370]: TypeScript
+              - listitem [ref=e3374]:
+                - generic [ref=e3375]: JavaScript
+              - listitem [ref=e3380]:
+                - generic [ref=e3381]: HTML5
+              - listitem [ref=e3385]:
+                - generic [ref=e3386]: CSS
+              - listitem [ref=e3390]:
+                - generic [ref=e3391]: PostCSS
+              - listitem [ref=e3395]:
+                - generic [ref=e3396]: D3.js
+              - listitem [ref=e3400]:
+                - generic [ref=e3401]: MUI
+              - listitem [ref=e3405]:
+                - generic [ref=e3406]: Tailwind CSS
+              - listitem [ref=e3410]:
+                - generic [ref=e3411]: Sass
+              - listitem [ref=e3415]:
+                - generic [ref=e3416]: Less
+              - listitem [ref=e3420]:
+                - generic [ref=e3421]: WordPress
+              - listitem [ref=e3425]:
+                - generic [ref=e3426]: Responsive Design
+              - listitem [ref=e3432]:
+                - generic [ref=e3433]: Accessibility
+          - group "Mobile App" [ref=e913]:
+            - heading "Mobile App" [level=4] [ref=e914]
+            - list "Mobile App" [ref=e3440]:
+              - listitem [ref=e3441]:
+                - generic [ref=e3442]: iOS
+              - listitem [ref=e3446]:
+                - generic [ref=e3447]: Android
+              - listitem [ref=e3451]:
+                - generic [ref=e3452]: Apple Pay
+              - listitem [ref=e3456]:
+                - generic [ref=e3457]: Touch ID
+              - listitem [ref=e3463]:
+                - generic [ref=e3464]: Mobile Banking
+          - group "Backend & APIs" [ref=e983]:
+            - heading "Backend & APIs" [level=4] [ref=e984]
+            - list "Backend & APIs" [ref=e3468]:
+              - listitem [ref=e3469]:
+                - generic [ref=e3470]: Node.js
+              - listitem [ref=e3474]:
+                - generic [ref=e3475]: NestJS
+              - listitem [ref=e3479]:
+                - generic [ref=e3480]: Express
+              - listitem [ref=e3484]:
+                - generic [ref=e3485]: Python
+              - listitem [ref=e3490]:
+                - generic [ref=e3491]: FastAPI
+              - listitem [ref=e3495]:
+                - generic [ref=e3496]: Django
+              - listitem [ref=e3500]:
+                - generic [ref=e3501]: GraphQL
+              - listitem [ref=e3505]:
+                - generic [ref=e3506]: REST API
+              - listitem [ref=e3510]:
+                - generic [ref=e3511]: Socket.IO
+              - listitem [ref=e3515]:
+                - generic [ref=e3516]: MCP
+          - group "Authentication & Web Security" [ref=e1111]:
+            - heading "Authentication & Web Security" [level=4] [ref=e1112]
+            - list "Authentication & Web Security" [ref=e3520]:
+              - listitem [ref=e3521]:
+                - generic [ref=e3522]: JWT Authentication
+              - listitem [ref=e3526]:
+                - generic [ref=e3527]: OAuth 2.0
+              - listitem [ref=e3533]:
+                - generic [ref=e3534]: CORS
+              - listitem [ref=e3540]:
+                - generic [ref=e3541]: Helmet
+              - listitem [ref=e3547]:
+                - generic [ref=e3548]: bcrypt
+              - listitem [ref=e3552]:
+                - generic [ref=e3553]: HTTPS / TLS
+              - listitem [ref=e3559]:
+                - generic [ref=e3560]: OWASP
+          - group "Testing & Quality" [ref=e1217]:
+            - heading "Testing & Quality" [level=4] [ref=e1218]
+            - list "Testing & Quality" [ref=e3564]:
+              - listitem [ref=e3565]:
+                - generic [ref=e3566]: Jest
+              - listitem [ref=e3570]:
+                - generic [ref=e3571]: React Testing Library
+              - listitem [ref=e3575]:
+                - generic [ref=e3576]: Playwright
+              - listitem [ref=e3586]:
+                - generic [ref=e3587]: TDD
+              - listitem [ref=e3591]:
+                - generic [ref=e3592]: Postman
+              - listitem [ref=e3596]:
+                - generic [ref=e3597]: Browser DevTools
+          - group "Databases & Data" [ref=e1307]:
+            - heading "Databases & Data" [level=4] [ref=e1308]
+            - list "Databases & Data" [ref=e3601]:
+              - listitem [ref=e3602]:
+                - generic [ref=e3603]: PostgreSQL
+              - listitem [ref=e3607]:
+                - generic [ref=e3608]: MongoDB
+              - listitem [ref=e3612]:
+                - generic [ref=e3613]: MySQL
+              - listitem [ref=e3617]:
+                - generic [ref=e3618]: SQLite
+              - listitem [ref=e3622]:
+                - generic [ref=e3623]: Supabase
+              - listitem [ref=e3627]:
+                - generic [ref=e3628]: Prisma
+              - listitem [ref=e3632]:
+                - generic [ref=e3633]: ORM
+          - group "Cloud, DevOps & Delivery" [ref=e1403]:
+            - heading "Cloud, DevOps & Delivery" [level=4] [ref=e1404]
+            - list "Cloud, DevOps & Delivery" [ref=e3640]:
+              - listitem [ref=e3641]:
+                - generic [ref=e3642]: AWS
+              - listitem [ref=e3646]:
+                - generic [ref=e3647]: Google Cloud Platform (GCP)
+              - listitem [ref=e3654]:
+                - generic [ref=e3655]: Cloudflare
+              - listitem [ref=e3659]:
+                - generic [ref=e3660]: Docker
+              - listitem [ref=e3664]:
+                - generic [ref=e3665]: Kubernetes
+              - listitem [ref=e3669]:
+                - generic [ref=e3670]: Jenkins
+              - listitem [ref=e3674]:
+                - generic [ref=e3675]: GitHub Actions
+              - listitem [ref=e3679]:
+                - generic [ref=e3680]: CI/CD
+          - group "AI" [ref=e1511]:
+            - heading "AI" [level=4] [ref=e1512]
+            - list "AI" [ref=e3684]:
+              - listitem [ref=e3685]:
+                - generic [ref=e3686]: Generative AI
+              - listitem [ref=e3690]:
+                - generic [ref=e3691]: LLM
+          - group "Development & Collaboration Tools" [ref=e1549]:
+            - heading "Development & Collaboration Tools" [level=4] [ref=e1550]
+            - list "Development & Collaboration Tools" [ref=e3699]:
+              - listitem [ref=e3700]:
+                - generic [ref=e3701]: Local Development Environment
+              - listitem [ref=e3707]:
+                - generic [ref=e3708]: GitHub
+              - listitem [ref=e3712]:
+                - generic [ref=e3713]: JIRA
+              - listitem [ref=e3717]:
+                - generic [ref=e3718]: Confluence
+              - listitem [ref=e3722]:
+                - generic [ref=e3723]: Figma
+              - listitem [ref=e3731]:
+                - generic [ref=e3732]: Adobe
+    - region "Things I've built." [ref=e1639]:
+      - generic [ref=e1640]:
+        - generic [ref=e1641]: "03"
+        - text: PROJECTS
+      - generic [ref=e1643]:
+        - heading "Things I've built." [level=2] [ref=e1644]:
+          - generic [aria-hidden] [ref=e1646]:
+            - generic [ref=e1647]: Things
+            - generic [ref=e1649]: I've
+            - emphasis [ref=e1651]:
+              - generic [ref=e1652]: built.
+        - paragraph [ref=e1654]: Eight projects across telecom, fintech, banking, monitoring, media and DevOps.
+      - generic [ref=e1655]:
+        - region "Projects" [ref=e1656]:
+          - generic [ref=e1659]:
+            - group [aria-hidden]:
+              - generic:
+                - generic: Telecom & Customer Experience
+                - generic: Telecom Customer Portal
+                - generic: Details coming soon
+            - group [aria-hidden]:
+              - generic:
+                - generic: FinTech & Payments
+                - generic: PayFlow Acceptance Solution Platform
+                - generic: Details coming soon
+            - group [aria-hidden]:
+              - generic:
+                - generic: Monitoring & Analytics
+                - generic: Detection Monitor Platform
+                - generic: Details coming soon
+            - group [aria-hidden]:
+              - generic:
+                - generic: HR & Business Management
+                - generic: HR Connect Dashboard
+                - generic: Details coming soon
+            - group [aria-hidden] [ref=e1665] [cursor=pointer]:
+              - generic [ref=e1666]:
+                - generic [ref=e1667]: Digital Banking
+                - generic [ref=e1668]: Meridian Digital Banking
+                - generic [ref=e1669]: Details coming soon
+            - 'group "Project 6 of 8: The Daily Wire News" [ref=e1670]':
+              - img "The Daily Wire News screenshot"
+            - group [aria-hidden] [ref=e1671] [cursor=pointer]
+            - group [aria-hidden]
+          - paragraph [ref=e1673]: "Project 6 of 8: The Daily Wire News"
+          - generic [ref=e1674]:
+            - button "Previous project" [ref=e1675] [cursor=pointer]
+            - list "Choose a project" [ref=e1678]:
+              - listitem [ref=e1679]:
+                - 'button "Show project 1 of 8: Telecom Customer Portal" [ref=e1680] [cursor=pointer]'
+              - listitem [ref=e1681]:
+                - 'button "Show project 2 of 8: PayFlow Acceptance Solution Platform" [ref=e1682] [cursor=pointer]'
+              - listitem [ref=e1683]:
+                - 'button "Show project 3 of 8: Detection Monitor Platform" [ref=e1684] [cursor=pointer]'
+              - listitem [ref=e1685]:
+                - 'button "Show project 4 of 8: HR Connect Dashboard" [ref=e1686] [cursor=pointer]'
+              - listitem [ref=e1687]:
+                - 'button "Show project 5 of 8: Meridian Digital Banking" [ref=e1688] [cursor=pointer]'
+              - listitem [ref=e1689]:
+                - 'button "Show project 6 of 8: The Daily Wire News" [ref=e1690] [cursor=pointer]'
+              - listitem [ref=e1691]:
+                - 'button "Show project 7 of 8: Azure DevOps Dashboard" [ref=e1692] [cursor=pointer]'
+              - listitem [ref=e1693]:
+                - 'button "Show project 8 of 8: British Streaming — Web App, iOS & Android" [ref=e1694] [cursor=pointer]'
+            - button "Next project" [ref=e1695] [cursor=pointer]
+        - generic [ref=e1699]:
+          - paragraph [ref=e1700]:
+            - generic [ref=e1701]:
+              - generic [ref=e1702]: "Category:"
+              - text: News & Media
+            - generic [ref=e1703]: Live
+          - heading "The Daily Wire News" [level=3] [ref=e1705]
+          - paragraph [ref=e1706]: A news website for UK and world stories.
+          - 'button "View details : The Daily Wire News" [ref=e1707] [cursor=pointer]':
+            - generic [ref=e1708]: View details
+            - generic [ref=e1709]: ": The Daily Wire News"
+    - generic [ref=e1715]:
+      - generic [ref=e1716]:
+        - generic [ref=e1717]: "04"
+        - text: CERTIFICATIONS
+      - generic [ref=e1719]:
+        - generic [ref=e1720]:
+          - heading "Always learning." [level=2] [ref=e1722]:
+            - generic [aria-hidden] [ref=e1724]:
+              - generic [ref=e1725]: Always
+              - emphasis [ref=e1726]: learning.
+          - paragraph [ref=e1727]: 13 certifications earned across frontend, backend, databases, software engineering and algorithms.
+        - generic "Certification carousel. Use the left and right arrow keys to browse." [ref=e1729]:
+          - generic [ref=e1730]:
+            - article [aria-hidden] [ref=e1732]:
+              - generic [ref=e1734]:
+                - generic [ref=e1736]: "13"
+                - strong [ref=e1737]: Algorithms
+                - generic [ref=e1738]: Loading certificate preview
+              - generic [ref=e1740]:
+                - generic [aria-hidden] [ref=e1741]: "13"
+                - generic [ref=e1742]:
+                  - generic [ref=e1743]:
+                    - generic [ref=e1744]: Algorithms
+                    - generic [ref=e1745]: Basic
+                  - heading [level=3] [ref=e1746]: Problem Solving (Basic)
+                  - paragraph [ref=e1747]: HackerRank · Algorithms
+                  - paragraph [ref=e1748]:
+                    - text: Issued
+                    - time [ref=e1749]: 2025-09-06
+                  - link [ref=e1750] [cursor=pointer]:
+                    - /url: /certifications/problem_solving_basic.webp
+                    - text: View Certificate
+                    - generic [ref=e1755]: ": Problem Solving (Basic) (opens in a new tab)"
+            - article [aria-hidden] [ref=e1757]:
+              - generic [ref=e1759]:
+                - generic [ref=e1761]: "12"
+                - strong [ref=e1762]: React
+                - generic [ref=e1763]: Loading certificate preview
+              - generic [ref=e1765]:
+                - generic [aria-hidden] [ref=e1766]: "12"
+                - generic [ref=e1767]:
+                  - generic [ref=e1768]:
+                    - generic [ref=e1769]: Frontend
+                    - generic [ref=e1770]: Basic
+                  - heading [level=3] [ref=e1771]: React (Basic)
+                  - paragraph [ref=e1772]: HackerRank · React
+                  - paragraph [ref=e1773]:
+                    - text: Issued
+                    - time [ref=e1774]: 2025-09-11
+                  - link [ref=e1775] [cursor=pointer]:
+                    - /url: /certifications/react_basic.webp
+                    - text: View Certificate
+                    - generic [ref=e1780]: ": React (Basic) (opens in a new tab)"
+            - article [aria-hidden] [ref=e1782]:
+              - generic [ref=e1784]:
+                - generic [ref=e1786]: "11"
+                - strong [ref=e1787]: JavaScript
+                - generic [ref=e1788]: Loading certificate preview
+              - generic [ref=e1790]:
+                - generic [aria-hidden] [ref=e1791]: "11"
+                - generic [ref=e1792]:
+                  - generic [ref=e1793]:
+                    - generic [ref=e1794]: Frontend
+                    - generic [ref=e1795]: Intermediate
+                  - heading [level=3] [ref=e1796]: JavaScript (Intermediate)
+                  - paragraph [ref=e1797]: HackerRank · JavaScript
+                  - paragraph [ref=e1798]:
+                    - text: Issued
+                    - time [ref=e1799]: 2025-09-11
+                  - link [ref=e1800] [cursor=pointer]:
+                    - /url: /certifications/javascript_intermediate.webp
+                    - text: View Certificate
+                    - generic [ref=e1805]: ": JavaScript (Intermediate) (opens in a new tab)"
+            - article [aria-hidden] [ref=e1807]:
+              - generic [ref=e1809]:
+                - generic [ref=e1811]: "10"
+                - strong [ref=e1812]: Software Engineering
+                - generic [ref=e1813]: Loading certificate preview
+              - generic [ref=e1815]:
+                - generic [aria-hidden] [ref=e1816]: "10"
+                - generic [ref=e1817]:
+                  - generic [ref=e1818]: Software Engineering
+                  - heading [level=3] [ref=e1820]: Software Engineer Intern
+                  - paragraph [ref=e1821]: HackerRank · Software Engineering
+                  - paragraph [ref=e1822]:
+                    - text: Issued
+                    - time [ref=e1823]: 2025-09-30
+                  - link [ref=e1824] [cursor=pointer]:
+                    - /url: /certifications/software_engineer_intern.webp
+                    - text: View Certificate
+                    - generic [ref=e1829]: ": Software Engineer Intern (opens in a new tab)"
+            - article [aria-hidden] [ref=e1831]:
+              - generic [ref=e1833]:
+                - generic [ref=e1835]: "09"
+                - strong [ref=e1836]: Node.js
+                - generic [ref=e1837]: Loading certificate preview
+              - generic [ref=e1839]:
+                - generic [aria-hidden] [ref=e1840]: "09"
+                - generic [ref=e1841]:
+                  - generic [ref=e1842]:
+                    - generic [ref=e1843]: Backend
+                    - generic [ref=e1844]: Basic
+                  - heading [level=3] [ref=e1845]: Node (Basic)
+                  - paragraph [ref=e1846]: HackerRank · Node.js
+                  - paragraph [ref=e1847]:
+                    - text: Issued
+                    - time [ref=e1848]: 2025-09-30
+                  - link [ref=e1849] [cursor=pointer]:
+                    - /url: /certifications/nodejs_basic.webp
+                    - text: View Certificate
+                    - generic [ref=e1854]: ": Node (Basic) (opens in a new tab)"
+            - article [aria-hidden] [ref=e1856]:
+              - generic [ref=e1858]:
+                - generic [ref=e1860]: "08"
+                - strong [ref=e1861]: SQL
+                - generic [ref=e1862]: Loading certificate preview
+              - generic [ref=e1864]:
+                - generic [aria-hidden] [ref=e1865]: "08"
+                - generic [ref=e1866]:
+                  - generic [ref=e1867]:
+                    - generic [ref=e1868]: Databases
+                    - generic [ref=e1869]: Basic
+                  - heading [level=3] [ref=e1870]: SQL (Basic)
+                  - paragraph [ref=e1871]: HackerRank · SQL
+                  - paragraph [ref=e1872]:
+                    - text: Issued
+                    - time [ref=e1873]: 2025-10-03
+                  - link [ref=e1874] [cursor=pointer]:
+                    - /url: /certifications/sql_basic.webp
+                    - text: View Certificate
+                    - generic [ref=e1879]: ": SQL (Basic) (opens in a new tab)"
+            - article [aria-hidden] [ref=e1881]:
+              - generic [ref=e1883]:
+                - generic [ref=e1885]: "07"
+                - strong [ref=e1886]: React
+                - generic [ref=e1887]: Loading certificate preview
+              - generic [ref=e1889]:
+                - generic [aria-hidden] [ref=e1890]: "07"
+                - generic [ref=e1891]:
+                  - generic [ref=e1892]: Frontend
+                  - heading [level=3] [ref=e1894]: Frontend Developer (React)
+                  - paragraph [ref=e1895]: HackerRank · React
+                  - paragraph [ref=e1896]:
+                    - text: Issued
+                    - time [ref=e1897]: 2025-10-07
+                  - link [ref=e1898] [cursor=pointer]:
+                    - /url: /certifications/frontend_developer_react.webp
+                    - text: View Certificate
+                    - generic [ref=e1903]: ": Frontend Developer (React) (opens in a new tab)"
+            - article [aria-hidden] [ref=e1905]:
+              - generic [ref=e1907]:
+                - generic [ref=e1909]: "06"
+                - strong [ref=e1910]: C#
+                - generic [ref=e1911]: Loading certificate preview
+              - generic [ref=e1913]:
+                - generic [aria-hidden] [ref=e1914]: "06"
+                - generic [ref=e1915]:
+                  - generic [ref=e1916]:
+                    - generic [ref=e1917]: Backend
+                    - generic [ref=e1918]: Basic
+                  - heading [level=3] [ref=e1919]: C# (Basic)
+                  - paragraph [ref=e1920]: HackerRank · C#
+                  - paragraph [ref=e1921]:
+                    - text: Issued
+                    - time [ref=e1922]: 2025-10-07
+                  - link [ref=e1923] [cursor=pointer]:
+                    - /url: /certifications/c_sharp_basic.webp
+                    - text: View Certificate
+                    - generic [ref=e1928]: ": C# (Basic) (opens in a new tab)"
+            - article [aria-hidden] [ref=e1930]:
+              - generic [ref=e1932]:
+                - generic [ref=e1934]: "05"
+                - strong [ref=e1935]: REST API
+                - generic [ref=e1936]: Loading certificate preview
+              - generic [ref=e1938]:
+                - generic [aria-hidden] [ref=e1939]: "05"
+                - generic [ref=e1940]:
+                  - generic [ref=e1941]:
+                    - generic [ref=e1942]: Backend
+                    - generic [ref=e1943]: Intermediate
+                  - heading [level=3] [ref=e1944]: REST API (Intermediate)
+                  - paragraph [ref=e1945]: HackerRank · REST API
+                  - paragraph [ref=e1946]:
+                    - text: Issued
+                    - time [ref=e1947]: 2025-10-08
+                  - link [ref=e1948] [cursor=pointer]:
+                    - /url: /certifications/rest_api_intermediate.webp
+                    - text: View Certificate
+                    - generic [ref=e1953]: ": REST API (Intermediate) (opens in a new tab)"
+            - article [aria-hidden] [ref=e1955]:
+              - generic [ref=e1957]:
+                - generic [ref=e1959]: "04"
+                - strong [ref=e1960]: Angular
+                - generic [ref=e1961]: Loading certificate preview
+              - generic [ref=e1963]:
+                - generic [aria-hidden] [ref=e1964]: "04"
+                - generic [ref=e1965]:
+                  - generic [ref=e1966]:
+                    - generic [ref=e1967]: Frontend
+                    - generic [ref=e1968]: Intermediate
+                  - heading [level=3] [ref=e1969]: Angular (Intermediate)
+                  - paragraph [ref=e1970]: HackerRank · Angular
+                  - paragraph [ref=e1971]:
+                    - text: Issued
+                    - time [ref=e1972]: 2025-10-08
+                  - link [ref=e1973] [cursor=pointer]:
+                    - /url: /certifications/angular_intermediate.webp
+                    - text: View Certificate
+                    - generic [ref=e1978]: ": Angular (Intermediate) (opens in a new tab)"
+            - article [aria-hidden] [ref=e1980]:
+              - generic [ref=e1982]:
+                - generic [ref=e1984]: "03"
+                - strong [ref=e1985]: Software Engineering
+                - generic [ref=e1986]: Loading certificate preview
+              - generic [ref=e1988]:
+                - generic [aria-hidden] [ref=e1989]: "03"
+                - generic [ref=e1990]:
+                  - generic [ref=e1991]: Software Engineering
+                  - heading [level=3] [ref=e1993]: Software Engineer
+                  - paragraph [ref=e1994]: HackerRank · Software Engineering
+                  - paragraph [ref=e1995]:
+                    - text: Issued
+                    - time [ref=e1996]: 2025-10-11
+                  - link [ref=e1997] [cursor=pointer]:
+                    - /url: /certifications/software_engineer.webp
+                    - text: View Certificate
+                    - generic [ref=e2002]: ": Software Engineer (opens in a new tab)"
+            - article [aria-hidden] [ref=e2004]:
+              - generic [ref=e2006]:
+                - generic [ref=e2008]: "02"
+                - strong [ref=e2009]: Go
+                - generic [ref=e2010]: Loading certificate preview
+              - generic [ref=e2012]:
+                - generic [aria-hidden] [ref=e2013]: "02"
+                - generic [ref=e2014]:
+                  - generic [ref=e2015]:
+                    - generic [ref=e2016]: Backend
+                    - generic [ref=e2017]: Basic
+                  - heading [level=3] [ref=e2018]: Go (Basic)
+                  - paragraph [ref=e2019]: HackerRank · Go
+                  - paragraph [ref=e2020]:
+                    - text: Issued
+                    - time [ref=e2021]: 2025-10-15
+                  - link [ref=e2022] [cursor=pointer]:
+                    - /url: /certifications/golang_basic.webp
+                    - text: View Certificate
+                    - generic [ref=e2027]: ": Go (Basic) (opens in a new tab)"
+            - article [ref=e2029]:
+              - generic [ref=e2030]:
+                - generic [ref=e2031]:
+                  - generic [ref=e2033]: "01"
+                  - strong [ref=e2034]: Java
+                  - generic [ref=e2035]: Loading certificate preview
+                - img "Java (Basic) certificate" [ref=e2036]
+              - generic [ref=e2037]:
+                - generic [aria-hidden] [ref=e2038]: "01"
+                - generic [ref=e2039]:
+                  - generic [ref=e2040]:
+                    - generic [ref=e2041]: Backend
+                    - generic [ref=e2042]: Basic
+                  - heading "Java (Basic)" [level=3] [ref=e2043]
+                  - paragraph [ref=e2044]: HackerRank · Java
+                  - paragraph [ref=e2045]:
+                    - text: Issued
+                    - time [ref=e2046]: 2025-11-02
+                  - 'link "View Certificate : Java (Basic) (opens in a new tab)" [ref=e2047] [cursor=pointer]':
+                    - /url: /certifications/java_basic.webp
+                    - text: View Certificate
+                    - generic [ref=e2052]: ": Java (Basic) (opens in a new tab)"
+          - generic [ref=e2055]:
+            - button "Previous certificate" [ref=e2056] [cursor=pointer]
+            - paragraph [ref=e2059]:
+              - generic [ref=e2060]: Certificate
+              - text: 01 / 13
+            - button "Next certificate" [ref=e2061] [cursor=pointer]
+          - generic "Choose a certificate" [ref=e2064]:
+            - 'button "Show certificate 1: Java (Basic)" [ref=e2065] [cursor=pointer]'
+            - 'button "Show certificate 2: Go (Basic)" [ref=e2066] [cursor=pointer]'
+            - 'button "Show certificate 3: Software Engineer" [ref=e2067] [cursor=pointer]'
+            - 'button "Show certificate 4: Angular (Intermediate)" [ref=e2068] [cursor=pointer]'
+            - 'button "Show certificate 5: REST API (Intermediate)" [ref=e2069] [cursor=pointer]'
+            - 'button "Show certificate 6: C# (Basic)" [ref=e2070] [cursor=pointer]'
+            - 'button "Show certificate 7: Frontend Developer (React)" [ref=e2071] [cursor=pointer]'
+            - 'button "Show certificate 8: SQL (Basic)" [ref=e2072] [cursor=pointer]'
+            - 'button "Show certificate 9: Node (Basic)" [ref=e2073] [cursor=pointer]'
+            - 'button "Show certificate 10: Software Engineer Intern" [ref=e2074] [cursor=pointer]'
+            - 'button "Show certificate 11: JavaScript (Intermediate)" [ref=e2075] [cursor=pointer]'
+            - 'button "Show certificate 12: React (Basic)" [ref=e2076] [cursor=pointer]'
+            - 'button "Show certificate 13: Problem Solving (Basic)" [ref=e2077] [cursor=pointer]'
+    - region "My professional journey." [ref=e2078]:
+      - generic [ref=e2079]:
+        - generic [ref=e2080]: "05"
+        - text: EMPLOYER HISTORY
+      - generic [ref=e2082]:
+        - heading "My professional journey." [level=2] [ref=e2083]
+        - paragraph [ref=e2084]: A journey through software engineering, digital transformation, technology innovation and continuous professional development — building accessible, scalable and meaningful digital experiences.
+      - navigation "Career timeline" [ref=e2085]:
+        - list [ref=e2086]:
+          - listitem [ref=e2087]:
+            - link "2024 Freelance" [ref=e2088] [cursor=pointer]:
+              - /url: "#xp-2024-01-freelance-software-developer"
+              - generic [ref=e2089]: "2024"
+              - text: Freelance
+          - listitem [ref=e2090]:
+            - link "Now Development" [ref=e2091] [cursor=pointer]:
+              - /url: "#xp-2024-01-professional-development"
+              - generic [ref=e2092]: Now
+              - text: Development
+          - listitem [ref=e2093]:
+            - link "2024 Sky" [ref=e2094] [cursor=pointer]:
+              - /url: "#xp-2024-06-software-engineer-placement"
+              - generic [ref=e2095]: "2024"
+              - text: Sky
+          - listitem [ref=e2096]:
+            - link "2022 Travel" [ref=e2097] [cursor=pointer]:
+              - /url: "#xp-2022-01-career-break-travel-and-personal-development"
+              - generic [ref=e2098]: "2022"
+              - text: Travel
+          - listitem [ref=e2099]:
+            - link "2014 Lloyds Banking Group" [ref=e2100] [cursor=pointer]:
+              - /url: "#xp-2014-10-lloyds-banking-group"
+              - generic [ref=e2101]: "2014"
+              - text: Lloyds Banking Group
+          - listitem [ref=e2102]:
+            - link "2013 Leonard Cheshire" [ref=e2103] [cursor=pointer]:
+              - /url: "#xp-2013-09-career-developer"
+              - generic [ref=e2104]: "2013"
+              - text: Leonard Cheshire
+          - listitem [ref=e2105]:
+            - link "2013 Lion Web Vision" [ref=e2106] [cursor=pointer]:
+              - /url: "#xp-2013-08-web-development-training"
+              - generic [ref=e2107]: "2013"
+              - text: Lion Web Vision
+          - listitem [ref=e2108]:
+            - link "2005 Education" [ref=e2109] [cursor=pointer]:
+              - /url: "#xp-education"
+              - generic [ref=e2110]: "2005"
+              - text: Education
+      - list [ref=e2112]:
+        - listitem [ref=e2113]:
+          - generic [ref=e2124]:
+            - paragraph [ref=e3737]:
+              - time [ref=e3738]: Jan 2024
+              - text: –
+              - generic [ref=e3739]: to
+              - generic [ref=e3740]:
+                - text: Present
+                - generic [ref=e3742]: (current role)
+            - article [ref=e2125]:
+              - generic [ref=e2126]:
+                - generic [aria-hidden] [ref=e2127]: FR
+                - generic [ref=e2128]:
+                  - heading "Freelance Software Developer" [level=3] [ref=e2129]
+                  - paragraph [ref=e2130]:
+                    - generic [ref=e2131]: Freelance
+                    - generic [aria-hidden] [ref=e2132]: /
+                    - generic [ref=e2133]: London Area, United Kingdom
+                  - list [ref=e2134]:
+                    - listitem [ref=e2135]: Self-employed
+                    - listitem [ref=e2136]: Remote
+                    - listitem [ref=e2137]:
+                      - generic [ref=e2138]: "Duration:"
+                      - text: 2 years 11 months
+              - list "Skills" [ref=e2139]:
+                - listitem [ref=e2140]: React
+                - listitem [ref=e2141]: TypeScript
+                - listitem [ref=e2142]: JavaScript
+                - listitem [ref=e2143]: Next.js
+                - listitem [ref=e2144]: Frontend Development
+                - listitem [ref=e2145]: Responsive Web Design
+                - listitem [ref=e2146]: Accessibility
+                - listitem [ref=e2147]: UI/UX Design
+                - listitem [ref=e2148]: Component Architecture
+                - listitem [ref=e2149]: AI Integration
+                - listitem [ref=e2150]: Performance Optimisation
+                - listitem [ref=e2151]: Software Engineering
+              - generic [ref=e2152]:
+                - 'button "Responsibilities, challenges & achievements: Freelance Software Developer" [expanded] [ref=e2153] [cursor=pointer]':
+                  - generic [ref=e2154]: Responsibilities, challenges & achievements
+                - generic [ref=e2160]:
+                  - region "Responsibilities" [ref=e2161]:
+                    - heading "Responsibilities" [level=4] [ref=e2162]
+                    - list [ref=e2167]:
+                      - listitem [ref=e2168]: Built modern, responsive web applications using React, TypeScript, Next.js and JavaScript, focusing on accessibility, performance and intuitive user experiences.
+                      - listitem [ref=e2169]: Developed an AI-powered job tracking application designed to simplify job application management and improve workflow organisation.
+                      - listitem [ref=e2170]: Worked on booking systems, weather dashboards, property platforms and project management applications, translating practical requirements into functional, user-friendly interfaces.
+                      - listitem [ref=e2171]: Created reusable React components and maintainable front-end architectures to support scalable application development.
+                      - listitem [ref=e2172]: Applied responsive design, accessibility best practices and performance optimisation techniques across different web projects.
+                  - region "Problems & Challenges" [ref=e2173]:
+                    - heading "Problems & Challenges" [level=4] [ref=e2174]
+                    - list [ref=e2180]:
+                      - listitem [ref=e2181]: Turning practical requirements for booking, weather, property and project-management applications into usable, functional interfaces.
+                      - listitem [ref=e2182]: Keeping front-end architecture maintainable and scalable as applications grew.
+                      - listitem [ref=e2183]: Making job-application management easier to organise and follow.
+                  - region "Achievements" [ref=e2184]:
+                    - heading "Achievements" [level=4] [ref=e2185]
+                    - list [ref=e2193]:
+                      - listitem [ref=e2194]: Delivered a range of working web applications across booking, weather, property and project-management needs.
+                      - listitem [ref=e2195]: Brought AI integration into a practical, user-facing product through the job tracking application.
+                      - listitem [ref=e2196]: Produced reusable React components that support scalable development across projects.
+        - listitem [ref=e2197]:
+          - generic [ref=e2203]:
+            - paragraph [ref=e3744]: Ongoing
+            - article [ref=e2204]:
+              - generic [ref=e2210]:
+                - heading "Professional Development" [level=3] [ref=e2211]
+                - paragraph [ref=e2212]:
+                  - generic [ref=e2213]: Continuous learning
+                - list
+              - list "Development areas" [ref=e2214]:
+                - listitem [ref=e2215]: Continuous Learning
+                - listitem [ref=e2216]: Professional Certifications
+                - listitem [ref=e2217]: Coding Assessments
+                - listitem [ref=e2218]: Frontend Development
+                - listitem [ref=e2219]: Backend Development
+                - listitem [ref=e2220]: Cloud Computing
+                - listitem [ref=e2221]: DevOps
+                - listitem [ref=e2222]: Personal Projects
+                - listitem [ref=e2223]: AI Integration
+              - 'button "Responsibilities, challenges & achievements: Professional Development" [ref=e2225] [cursor=pointer]':
+                - generic [ref=e2226]: Responsibilities, challenges & achievements
+        - listitem [ref=e2229]:
+          - generic [ref=e2238]:
+            - paragraph [ref=e3746]:
+              - time [ref=e3747]: Jun 2024
+              - text: –
+              - generic [ref=e3748]: to
+              - time [ref=e3749]: Sep 2026
+            - article [ref=e2239]:
+              - generic [ref=e2240]:
+                - img "Sky logo" [ref=e2242]
+                - generic [ref=e2243]:
+                  - heading "Software Engineer (Placement)" [level=3] [ref=e2244]
+                  - paragraph [ref=e2245]:
+                    - generic [ref=e2246]: Sky
+                    - generic [aria-hidden] [ref=e2247]: /
+                    - generic [ref=e2248]: Osterley, London, United Kingdom
+                  - list [ref=e2249]:
+                    - listitem [ref=e2250]: Full-time
+                    - listitem [ref=e2251]: Hybrid
+                    - listitem [ref=e2252]:
+                      - generic [ref=e2253]: "Duration:"
+                      - text: 2 years 4 months
+              - list "Skills" [ref=e2254]:
+                - listitem [ref=e2255]: Python
+                - listitem [ref=e2256]: React
+                - listitem [ref=e2257]: TypeScript
+                - listitem [ref=e2258]: AWS
+                - listitem [ref=e2259]: REST APIs
+                - listitem [ref=e2260]: Microservices
+                - listitem [ref=e2261]: Docker
+                - listitem [ref=e2262]: Kubernetes
+                - listitem [ref=e2263]: Jenkins
+                - listitem [ref=e2264]: CI/CD Pipelines
+                - listitem [ref=e2265]: Agile Development
+              - 'button "Responsibilities, challenges & achievements: Software Engineer (Placement)" [ref=e2267] [cursor=pointer]':
+                - generic [ref=e2268]: Responsibilities, challenges & achievements
+        - listitem [ref=e2271]:
+          - generic [ref=e2280]:
+            - paragraph [ref=e3751]:
+              - time [ref=e3752]: Jan 2022
+              - text: –
+              - generic [ref=e3753]: to
+              - time [ref=e3754]: Jun 2024
+            - article [ref=e2281]:
+              - generic [ref=e2287]:
+                - heading "Career Break – Travel and Personal Development" [level=3] [ref=e2288]
+                - paragraph [ref=e2289]:
+                  - generic [ref=e2290]: Career Break
+                  - generic [aria-hidden] [ref=e2291]: /
+                  - generic [ref=e2292]: International
+                - list [ref=e2293]:
+                  - listitem [ref=e2294]: Career Break
+                  - listitem [ref=e2295]:
+                    - generic [ref=e2296]: "Duration:"
+                    - text: 2 years 6 months
+              - list "Transferable skills" [ref=e2297]:
+                - listitem [ref=e2298]: Adaptability
+                - listitem [ref=e2299]: Communication
+                - listitem [ref=e2300]: Problem Solving
+                - listitem [ref=e2301]: Organisation
+                - listitem [ref=e2302]: Independent Learning
+                - listitem [ref=e2303]: Cross-cultural Communication
+              - 'button "Responsibilities, challenges & achievements: Career Break – Travel and Personal Development" [ref=e2305] [cursor=pointer]':
+                - generic [ref=e2306]: Responsibilities, challenges & achievements
+        - listitem [ref=e2309]:
+          - generic [ref=e2318]:
+            - paragraph [ref=e3756]:
+              - time [ref=e3757]: Oct 2014
+              - text: –
+              - generic [ref=e3758]: to
+              - time [ref=e3759]: Jan 2020
+            - article [ref=e2319]:
+              - generic [ref=e2320]:
+                - img "Lloyds Banking Group logo" [ref=e2322]
+                - generic [ref=e2323]:
+                  - heading "Lloyds Banking Group" [level=3] [ref=e2324]
+                  - paragraph [ref=e2325]:
+                    - generic [ref=e2326]: London Area, United Kingdom
+                  - list [ref=e2327]:
+                    - listitem [ref=e2328]: Full-time
+                    - listitem [ref=e2329]: Remote
+                    - listitem [ref=e2330]:
+                      - generic [ref=e2331]: "Duration:"
+                      - text: 5 years 4 months
+                    - listitem [ref=e2332]: "Career progression: 4 roles"
+              - generic [ref=e2333]:
+                - 'button "4 roles: Lloyds Banking Group" [expanded] [ref=e2334] [cursor=pointer]':
+                  - generic [ref=e2335]: 4 roles
+                - list [ref=e2340]:
+                  - listitem [ref=e2341]:
+                    - heading "Frontend Developer" [level=4] [ref=e2342]
+                    - paragraph [ref=e2343]:
+                      - time [ref=e2344]: Sep 2018
+                      - text: –
+                      - generic [ref=e2345]: to
+                      - time [ref=e2346]: Jan 2020
+                    - paragraph [ref=e2347]:
+                      - generic [ref=e2348]: London Bridge, London, United Kingdom
+                    - list [ref=e2349]:
+                      - listitem [ref=e2350]:
+                        - generic [ref=e2351]: "Duration:"
+                        - text: 1 year 5 months
+                    - list "Skills" [ref=e2352]:
+                      - listitem [ref=e2353]: Software Engineering
+                      - listitem [ref=e2354]: Responsive Web Design
+                      - listitem [ref=e2355]: Accessibility
+                      - listitem [ref=e2356]: Frontend Development
+                      - listitem [ref=e2357]: UI Components
+                      - listitem [ref=e2358]: Design Systems
+                      - listitem [ref=e2359]: WCAG 2.1 AA
+                      - listitem [ref=e2360]: Agile Development
+                    - 'button "Responsibilities, challenges & achievements: Frontend Developer" [ref=e2362] [cursor=pointer]':
+                      - generic [ref=e2363]: Responsibilities, challenges & achievements
+                  - listitem [ref=e2366]:
+                    - heading "Web Developer – Innovation, Architecture and Strategy" [level=4] [ref=e2367]
+                    - paragraph [ref=e2368]:
+                      - time [ref=e2369]: Mar 2016
+                      - text: –
+                      - generic [ref=e2370]: to
+                      - time [ref=e2371]: Sep 2018
+                    - paragraph [ref=e2372]:
+                      - generic [ref=e2373]: London Bridge, London, United Kingdom
+                    - list [ref=e2374]:
+                      - listitem [ref=e2375]:
+                        - generic [ref=e2376]: "Duration:"
+                        - text: 2 years 7 months
+                    - list "Skills" [ref=e2377]:
+                      - listitem [ref=e2378]: Python
+                      - listitem [ref=e2379]: D3.js
+                      - listitem [ref=e2380]: Neo4j
+                      - listitem [ref=e2381]: Graph Databases
+                      - listitem [ref=e2382]: AI Prototyping
+                      - listitem [ref=e2383]: UI/UX Design
+                      - listitem [ref=e2384]: Technology Innovation
+                      - listitem [ref=e2385]: Digital Transformation
+                      - listitem [ref=e2386]: Process Automation
+                    - 'button "Responsibilities, challenges & achievements: Web Developer – Innovation, Architecture and Strategy" [ref=e2388] [cursor=pointer]':
+                      - generic [ref=e2389]: Responsibilities, challenges & achievements
+                  - listitem [ref=e2392]:
+                    - heading "Software Engineer" [level=4] [ref=e2393]
+                    - paragraph [ref=e2394]:
+                      - time [ref=e2395]: Mar 2015
+                      - text: –
+                      - generic [ref=e2396]: to
+                      - time [ref=e2397]: Mar 2016
+                    - paragraph [ref=e2398]:
+                      - generic [ref=e2399]: Moorgate, London, United Kingdom
+                    - list [ref=e2400]:
+                      - listitem [ref=e2401]:
+                        - generic [ref=e2402]: "Duration:"
+                        - text: 1 year 1 month
+                    - list "Skills" [ref=e2403]:
+                      - listitem [ref=e2404]: HTML
+                      - listitem [ref=e2405]: CSS
+                      - listitem [ref=e2406]: Responsive Web Design
+                      - listitem [ref=e2407]: User Interface Design
+                      - listitem [ref=e2408]: Frontend Development
+                      - listitem [ref=e2409]: Component Development
+                      - listitem [ref=e2410]: Performance Optimisation
+                    - generic [ref=e2411]:
+                      - 'button "Responsibilities, challenges & achievements: Software Engineer" [expanded] [ref=e2412] [cursor=pointer]':
+                        - generic [ref=e2413]: Responsibilities, challenges & achievements
+                      - generic [ref=e3761]:
+                        - generic [ref=e3763]:
+                          - region "Responsibilities" [ref=e3764]:
+                            - heading "Responsibilities" [level=5] [ref=e3765]
+                            - list [ref=e3770]:
+                              - listitem [ref=e3771]: Developed reusable frontend components supporting scalable and maintainable UI architecture.
+                              - listitem [ref=e3772]: Improved application quality through performance enhancements and defect resolution.
+                              - listitem [ref=e3773]: Contributed to responsive web applications supporting multiple business functions.
+                              - listitem [ref=e3774]: Supported frontend testing and release validation for digital banking changes, working with Git version control and Jenkins-based workflows.
+                              - listitem [ref=e3775]: Investigated software defects and frontend behaviour, supporting debugging, troubleshooting and quality assurance.
+                          - region "Problems & Challenges" [ref=e3776]:
+                            - heading "Problems & Challenges" [level=5] [ref=e3777]
+                            - list [ref=e3783]:
+                              - listitem [ref=e3784]: Keeping UI code scalable and maintainable across several business functions.
+                              - listitem [ref=e3785]: Defects and performance issues affecting application quality.
+                              - listitem [ref=e3786]: Producing accurate, timely internal communications for employees across the UK.
+                              - listitem [ref=e3787]: Investigating frontend defects and keeping software quality high during digital banking changes.
+                              - listitem [ref=e3788]: Supporting reliable release processes through consistent validation.
+                          - region "Achievements" [ref=e3789]:
+                            - heading "Achievements" [level=5] [ref=e3790]
+                            - list [ref=e3798]:
+                              - listitem [ref=e3799]: Improved application quality through performance enhancements and defect resolution.
+                              - listitem [ref=e3800]: Created reusable, responsive frontend components that support maintainable UI architecture.
+                              - listitem [ref=e3801]: Delivered weekly internal email updates to employees across the UK.
+                        - region "Work projects" [ref=e3802]:
+                          - heading "Work projects" [level=5] [ref=e3803]:
+                            - text: Work projects
+                            - generic [aria-hidden] [ref=e3804]: · 02
+                          - list [ref=e3805]:
+                            - listitem [ref=e3806]:
+                              - generic [aria-hidden] [ref=e3807]: "01"
+                              - heading "UI Delivery and Transformation" [level=6] [ref=e3808]
+                              - paragraph [ref=e3809]: Frontend testing, Jenkins/Git workflows, debugging, defect investigation and release validation for digital banking changes.
+                              - group "Preview" [ref=e3810]:
+                                - paragraph [ref=e3811]: Preview
+                                - generic [ref=e3812]:
+                                  - 'generic "Animated illustrative reconstruction of a digital banking testing workflow on a fictional banking app: a Git feature branch and commit, a Jenkins pipeline, a failing frontend test, defect investigation in browser DevTools, a debugged and corrected sort-code pattern, passing regression tests and a final \"Release Ready — All Checks Passed\" status." [ref=e3814]'
+                                  - group "Preview playback controls" [ref=e3815]:
+                                    - button "Play preview animation" [ref=e3816] [cursor=pointer]: Play
+                                    - button "Replay preview animation from the start" [ref=e3819] [cursor=pointer]: Replay
+                                    - button "View preview animation full screen" [ref=e3823] [cursor=pointer]: Full screen
+                                - paragraph [ref=e3829]: "Illustrative reconstruction for portfolio purposes: a fictional banking app with synthetic data. It is not actual historical Lloyds Banking Group engineering footage and shows no internal systems, code or customer information."
+                            - listitem [ref=e3830]:
+                              - generic [aria-hidden] [ref=e3831]: "02"
+                              - heading "HTML Email" [level=6] [ref=e3832]
+                              - paragraph [ref=e3833]: Internal Communications
+                              - paragraph [ref=e3834]: Internal HTML email template development and communication support across Lloyds Banking Group.
+                              - 'group "HTML Email: interactive email preview" [ref=e3835]':
+                                - generic [ref=e3836]:
+                                  - generic [ref=e3837]:
+                                    - toolbar "Email preview controls" [ref=e3838]:
+                                      - group "Preview size" [ref=e3839]:
+                                        - button "Desktop" [pressed] [ref=e3840] [cursor=pointer]
+                                        - button "Mobile" [ref=e3843] [cursor=pointer]
+                                      - generic [ref=e3846]:
+                                        - button "View HTML" [ref=e3847] [cursor=pointer]
+                                        - button "Copy HTML" [ref=e3852] [cursor=pointer]
+                                        - button "Reset" [ref=e3856] [cursor=pointer]
+                                        - button "Full screen" [ref=e3860] [cursor=pointer]
+                                    - generic [ref=e3866]:
+                                      - generic [ref=e3868]:
+                                        - generic [ref=e3869]:
+                                          - term [ref=e3870]: From
+                                          - definition [ref=e3871]: Internal Communications (illustrative)
+                                        - generic [ref=e3872]:
+                                          - term [ref=e3873]: Subject
+                                          - definition [ref=e3874]: "Internal Communications: technology and digital transformation update"
+                                      - iframe [ref=e3878]:
+                                        - generic [ref=f1e2]:
+                                          - paragraph [ref=f1e3]: Lloyds Banking Group
+                                          - paragraph [ref=f1e4]: Internal Communications
+                                          - heading "Keeping our colleagues connected." [level=1] [ref=f1e5]
+                                          - paragraph [ref=f1e6]: Supporting collaboration, digital transformation and continuous improvement across our organisation.
+                                          - paragraph [ref=f1e7]: Welcome to our internal technology and digital transformation update. Explore the latest initiatives, engineering developments and opportunities to collaborate with colleagues across the organisation.
+                                          - heading "Featured updates" [level=2] [ref=f1e8]
+                                          - text: "01"
+                                          - heading "Digital Transformation" [level=3] [ref=f1e9]
+                                          - paragraph [ref=f1e10]: Supporting modern digital experiences through accessible, responsive and reusable technologies.
+                                          - text: "02"
+                                          - heading "Technology & Innovation" [level=3] [ref=f1e11]
+                                          - paragraph [ref=f1e12]: Exploring emerging technologies, innovative solutions and opportunities to improve internal systems.
+                                          - text: "03"
+                                          - heading "Engineering & Collaboration" [level=3] [ref=f1e13]
+                                          - paragraph [ref=f1e14]: Connecting multidisciplinary teams to support knowledge sharing, software quality and continuous improvement.
+                                          - link "Explore Internal Updates" [ref=f1e15] [cursor=pointer]:
+                                            - /url: "#"
+                                          - paragraph [ref=f1e16]: Lloyds Banking Group
+                                          - paragraph [ref=f1e17]: Internal Communications · Employee Information
+                                          - paragraph [ref=f1e18]: For illustrative portfolio demonstration purposes only. Not an official Lloyds Banking Group communication.
+                                  - paragraph [ref=e3879]: Independent portfolio demonstration. Not an official Lloyds Banking Group communication. No email is sent and nothing connects to any internal system.
+                                  - status [ref=e3880]
+                                - generic [ref=e3882]:
+                                  - region "Responsibilities" [ref=e3883]:
+                                    - heading "Responsibilities" [level=5] [ref=e3884]
+                                    - list [ref=e3889]:
+                                      - listitem [ref=e3890]: Developed and maintained internal HTML email templates.
+                                      - listitem [ref=e3891]: Supported employee communications through structured, reusable email layouts.
+                                      - listitem [ref=e3892]: Applied HTML and CSS to improve content presentation and readability.
+                                      - listitem [ref=e3893]: Supported consistent visual presentation across internal communications.
+                                  - region "Problems & Challenges" [ref=e3894]:
+                                    - heading "Problems & Challenges" [level=5] [ref=e3895]
+                                    - list [ref=e3901]:
+                                      - listitem [ref=e3902]: Maintaining consistent layouts across different email clients.
+                                      - listitem [ref=e3903]: Supporting desktop and mobile email readability.
+                                      - listitem [ref=e3904]: Managing the limitations of HTML email rendering.
+                                      - listitem [ref=e3905]: Creating reusable templates for internal communication.
+                                      - listitem [ref=e3906]: Maintaining consistent corporate branding and accessibility.
+                                  - region "Achievements" [ref=e3907]:
+                                    - heading "Achievements" [level=5] [ref=e3908]
+                                    - list [ref=e3916]:
+                                      - listitem [ref=e3917]: Created reusable HTML email templates.
+                                      - listitem [ref=e3918]: Established consistent internal communication layouts.
+                                      - listitem [ref=e3919]: Improved content presentation and readability.
+                                      - listitem [ref=e3920]: Delivered responsive email designs.
+                                      - listitem [ref=e3921]: Built maintainable email template structures.
+                        - region "Preview" [ref=e3922]:
+                          - heading "Preview" [level=5] [ref=e3923]: Preview · Interactive developer terminal
+                          - generic [ref=e3924]:
+                            - generic [ref=e3925]:
+                              - generic [aria-hidden] [ref=e3926]:
+                                - generic [ref=e3927]: Software Engineer — illustrative simulation
+                                - generic [ref=e3933]: $
+                              - generic [ref=e3936]:
+                                - button "Pause terminal preview" [disabled] [ref=e3937]: Pause
+                                - button "Replay terminal preview" [ref=e3941] [cursor=pointer]: Replay
+                            - paragraph [ref=e3945]: Illustrative simulation of a frontend workflow. This is not actual Lloyds Banking Group terminal output, and no commands are executed.
+                            - generic [ref=e3946]:
+                              - paragraph [ref=e3947]: "Static transcript of the illustrative terminal simulation for the Software Engineer role:"
+                              - list [ref=e3948]:
+                                - listitem: "Command: initialise ui-transformation"
+                                - listitem: "[INFO] Initialising frontend workspace..."
+                                - listitem: "[OK] HTML components loaded"
+                                - listitem: "[OK] CSS stylesheets loaded"
+                                - listitem: "[OK] Responsive layouts configured"
+                                - listitem: "[OK] Reusable UI components prepared"
+                                - listitem: "Command: run responsive-check"
+                                - listitem: "[OK] Desktop layout"
+                                - listitem: "[OK] Tablet layout"
+                                - listitem: "[OK] Mobile layout"
+                                - listitem: "Command: run quality-check"
+                                - listitem: "[OK] Component architecture"
+                                - listitem: "[OK] Performance optimisation"
+                                - listitem: "[OK] User interface consistency"
+                                - listitem: "[COMPLETE] UI transformation preview ready."
+                  - listitem [ref=e2416]:
+                    - heading "Trainee Digital Transformation" [level=4] [ref=e2417]
+                    - paragraph [ref=e2418]:
+                      - time [ref=e2419]: Oct 2014
+                      - text: –
+                      - generic [ref=e2420]: to
+                      - time [ref=e2421]: Mar 2015
+                    - paragraph [ref=e2422]:
+                      - generic [ref=e2423]: Moorgate, London, United Kingdom
+                    - list [ref=e2424]:
+                      - listitem [ref=e2425]:
+                        - generic [ref=e2426]: "Duration:"
+                        - text: 6 months
+                    - list "Skills" [ref=e2427]:
+                      - listitem [ref=e2428]: Problem Solving
+                      - listitem [ref=e2429]: DevTools
+                      - listitem [ref=e2430]: DevOps
+                      - listitem [ref=e2431]: Mobile Application Development
+                      - listitem [ref=e2432]: Technical Troubleshooting
+                      - listitem [ref=e2433]: Digital Transformation
+                    - 'button "Responsibilities, challenges & achievements: Trainee Digital Transformation" [ref=e2435] [cursor=pointer]':
+                      - generic [ref=e2436]: Responsibilities, challenges & achievements
+        - listitem [ref=e2439]:
+          - generic [ref=e2448]:
+            - paragraph [ref=e3950]:
+              - time [ref=e3951]: Sep 2013
+              - text: –
+              - generic [ref=e3952]: to
+              - time [ref=e3953]: May 2014
+            - article [ref=e2449]:
+              - generic [ref=e2450]:
+                - img "Leonard Cheshire Disability logo" [ref=e2452]
+                - generic [ref=e2453]:
+                  - heading "Career Developer" [level=3] [ref=e2454]
+                  - paragraph [ref=e2455]:
+                    - generic [ref=e2456]: Leonard Cheshire Disability
+                    - generic [aria-hidden] [ref=e2457]: /
+                    - generic [ref=e2458]: Vauxhall, South London, United Kingdom
+                  - list [ref=e2459]:
+                    - listitem [ref=e2460]: Indirect Contract
+                    - listitem [ref=e2461]: Remote
+                    - listitem [ref=e2462]:
+                      - generic [ref=e2463]: "Duration:"
+                      - text: 9 months
+              - list "Skills" [ref=e2464]:
+                - listitem [ref=e2465]: Technical Support
+                - listitem [ref=e2466]: Employee Training
+                - listitem [ref=e2467]: Responsive Web Design
+                - listitem [ref=e2468]: Communication
+                - listitem [ref=e2469]: Problem Solving
+              - 'button "Responsibilities, challenges & achievements: Career Developer" [ref=e2471] [cursor=pointer]':
+                - generic [ref=e2472]: Responsibilities, challenges & achievements
+        - listitem [ref=e2475]:
+          - generic [ref=e2484]:
+            - paragraph [ref=e3955]:
+              - time [ref=e3956]: Aug 2013
+              - text: –
+              - generic [ref=e3957]: to
+              - time [ref=e3958]: Sep 2013
+            - article [ref=e2485]:
+              - generic [ref=e2486]:
+                - generic [aria-hidden] [ref=e2487]: LWV
+                - generic [ref=e2488]:
+                  - heading "Web Development Training" [level=3] [ref=e2489]
+                  - paragraph [ref=e2490]:
+                    - link "Lion Web Vision (opens in a new tab)" [ref=e2492] [cursor=pointer]:
+                      - /url: https://www.lionwebvision.com
+                      - text: Lion Web Vision
+                      - generic [ref=e2493]: (opens in a new tab)
+                    - generic [aria-hidden] [ref=e2494]: /
+                    - generic [ref=e2495]: West Ham, East London
+                  - list [ref=e2496]:
+                    - listitem [ref=e2497]: Contract
+                    - listitem [ref=e2498]: On-site
+                    - listitem [ref=e2499]:
+                      - generic [ref=e2500]: "Duration:"
+                      - text: 2 months
+              - list "Skills" [ref=e2501]:
+                - listitem [ref=e2502]: WordPress
+                - listitem [ref=e2503]: HTML
+                - listitem [ref=e2504]: CSS
+                - listitem [ref=e2505]: Responsive Web Design
+                - listitem [ref=e2506]: Content Management
+                - listitem [ref=e2507]: Website Maintenance
+                - listitem [ref=e2508]: Technical Troubleshooting
+              - 'button "Responsibilities, challenges & achievements: Web Development Training" [ref=e2510] [cursor=pointer]':
+                - generic [ref=e2511]: Responsibilities, challenges & achievements
+      - region "Education & Qualifications" [ref=e2514]:
+        - heading "Education & Qualifications" [level=3] [ref=e2515]
+        - generic [ref=e2517]:
+          - paragraph [ref=e2518]:
+            - time [ref=e2519]: Sep 2005
+            - text: –
+            - generic [ref=e2520]: to
+            - time [ref=e2521]: Jun 2009
+          - article [ref=e2522]:
+            - generic [ref=e2523]:
+              - img "Ealing, Hammersmith & West London College logo" [ref=e2525]
+              - generic [ref=e2526]:
+                - heading "Ealing, Hammersmith & West London College" [level=4] [ref=e2527]
+                - paragraph [ref=e2528]:
+                  - generic [ref=e2529]: Education
+                  - generic [aria-hidden] [ref=e2530]: /
+                  - generic [ref=e2531]: Hammersmith, London
+                - list [ref=e2532]:
+                  - listitem [ref=e2533]: Full-time
+                  - listitem [ref=e2534]: On-site
+                  - listitem [ref=e2535]:
+                    - generic [ref=e2536]: "Duration:"
+                    - text: 3 years 10 months
+            - generic [ref=e2537]:
+              - 'button "Qualifications: Ealing, Hammersmith & West London College" [expanded] [ref=e2538] [cursor=pointer]':
+                - generic [ref=e2539]: Qualifications
+              - list [ref=e2544]:
+                - listitem [ref=e2545]: BTEC National Diploma — Level 3 — DMM (104 UCAS points).
+                - listitem [ref=e2546]: BTEC First Diploma — Merit.
+                - listitem [ref=e2547]: GNVQ Foundation — Distinction.
+    - region "Proud moments." [ref=e2548]:
+      - button "Play background video" [pressed] [ref=e2549] [cursor=pointer]:
+        - generic [ref=e2552]: Play
+      - generic [ref=e2553]:
+        - generic [ref=e2554]: "06"
+        - generic [ref=e2555]: ACHIEVEMENTS
+      - heading [level=2] [ref=e2557]:
+        - text: Proud
+        - emphasis [ref=e2558]: moments.
+      - group "Proud moments photo gallery" [ref=e2559]:
+        - button "01 / 15 SEE ME" [ref=e2560] [cursor=pointer]:
+          - img "SEE ME campaign portrait poster in a shopping centre." [ref=e2561]
+          - generic [aria-hidden]:
+            - generic: 01 / 15
+            - generic: SEE ME
+        - button "02 / 15 SEE ME campaign" [ref=e2562] [cursor=pointer]:
+          - img "Two SEE ME portrait banners in a meeting room." [ref=e2563]
+          - generic [aria-hidden]:
+            - generic: 02 / 15
+            - generic: SEE ME campaign
+        - button "03 / 15 SEE ME together" [ref=e2564] [cursor=pointer]:
+          - img "Two people smiling beside SEE ME campaign posters." [ref=e2565]
+          - generic [aria-hidden]:
+            - generic: 03 / 15
+            - generic: SEE ME together
+        - button "04 / 15 London" [ref=e2566] [cursor=pointer]:
+          - img "Dominic seated beside the Thames with St Paul’s Cathedral in the background." [ref=e2567]
+          - generic [aria-hidden]:
+            - generic: 04 / 15
+            - generic: London
+        - button "05 / 15 At work" [ref=e2568] [cursor=pointer]:
+          - img "A camera crew filming an interview in an office." [ref=e2569]
+          - generic [aria-hidden]:
+            - generic: 05 / 15
+            - generic: At work
+        - button "06 / 15 Millennium Bridge" [ref=e2570] [cursor=pointer]:
+          - img "Dominic walking across the Millennium Bridge with St Paul’s Cathedral behind him." [ref=e2571]
+          - generic [aria-hidden]:
+            - generic: 06 / 15
+            - generic: Millennium Bridge
+        - button "07 / 15 10 Downing Street" [ref=e2572] [cursor=pointer]:
+          - img "Dominic standing outside the front door of 10 Downing Street." [ref=e2573]
+          - generic [aria-hidden]:
+            - generic: 07 / 15
+            - generic: 10 Downing Street
+        - button "08 / 15 IBM" [pressed] [ref=e2574] [cursor=pointer]:
+          - img "Black-and-white portrait of Dominic beside an IBM sign." [ref=e2575]
+          - generic [aria-hidden]:
+            - generic: 08 / 15
+            - generic: IBM
+        - button "09 / 15 Red Lion Court" [ref=e2576] [cursor=pointer]:
+          - img "Dominic seated in a bright open-plan office." [ref=e2577]
+          - generic [aria-hidden]:
+            - generic: 09 / 15
+            - generic: Red Lion Court
+        - button "10 / 15 Professional connections" [ref=e2578] [cursor=pointer]:
+          - img "Dominic standing beside a colleague at a professional event." [ref=e2579]
+          - generic [aria-hidden]:
+            - generic: 10 / 15
+            - generic: Professional connections
+        - button "11 / 15 Innovation conference" [ref=e2580] [cursor=pointer]:
+          - img "An innovation conference hall with cyber security exhibits and attendees." [ref=e2581]
+          - generic [aria-hidden]:
+            - generic: 11 / 15
+            - generic: Innovation conference
+        - button "12 / 15 At Sky" [ref=e2582] [cursor=pointer]:
+          - img "Two colleagues walking past greenery outside an office building." [ref=e2583]
+          - generic [aria-hidden]:
+            - generic: 12 / 15
+            - generic: At Sky
+        - button "13 / 15 Sky office" [ref=e2584] [cursor=pointer]:
+          - img "Dominic standing in a Sky office with an orange lanyard." [ref=e2585]
+          - generic [aria-hidden]:
+            - generic: 13 / 15
+            - generic: Sky office
+        - button "14 / 15 Working together" [ref=e2586] [cursor=pointer]:
+          - img "Colleagues using sign language across a desk in an office." [ref=e2587]
+          - generic [aria-hidden]:
+            - generic: 14 / 15
+            - generic: Working together
+        - button "15 / 15 Dominic" [ref=e2588] [cursor=pointer]:
+          - img "Portrait of Dominic smiling in a navy jumper, shirt and tie." [ref=e2589]
+          - generic [aria-hidden]:
+            - generic: 15 / 15
+            - generic: Dominic
+    - region "Consistency in code." [ref=e2590]:
+      - generic [ref=e2591]: GITHUB ACTIVITY
+      - generic [ref=e2593]:
+        - heading [level=2] [ref=e2594]:
+          - text: Consistency in
+          - emphasis [ref=e2595]: code.
+        - paragraph [ref=e2596]: A visual record of building, learning and contributing — one day at a time.
+      - generic [ref=e2597]:
+        - generic [ref=e2598]:
+          - group "Reporting period" [ref=e3960]:
+            - button "Last 12 months" [pressed] [ref=e3961] [cursor=pointer]
+            - button "2026" [ref=e3962] [cursor=pointer]
+            - button "2025" [ref=e3963] [cursor=pointer]
+            - button "2024" [ref=e3964] [cursor=pointer]
+            - button "2023" [ref=e3965] [cursor=pointer]
+            - button "2022" [ref=e3966] [cursor=pointer]
+            - button "2021" [ref=e3967] [cursor=pointer]
+            - button "2020" [ref=e3968] [cursor=pointer]
+            - button "2019" [ref=e3969] [cursor=pointer]
+            - button "2018" [ref=e3970] [cursor=pointer]
+            - button "2017" [ref=e3971] [cursor=pointer]
+            - button "2016" [ref=e3972] [cursor=pointer]
+            - button "2015" [ref=e3973] [cursor=pointer]
+          - link "@domwokorach on GitHub (opens in a new tab)" [ref=e2599] [cursor=pointer]:
+            - /url: https://github.com/domwokorach
+            - generic [ref=e2600]: "@domwokorach on GitHub"
+            - generic [ref=e2604]: (opens in a new tab)
+        - generic [ref=e3974]:
+          - generic [ref=e3975]:
+            - generic [ref=e3977]:
+              - paragraph [ref=e3978]: Contribution calendar. Use the arrow keys to move between days; press Enter to pin the details, Escape to close.
+              - group "Daily contributions" [ref=e3979]:
+                - generic [aria-hidden] [ref=e3980]: Dec
+                - generic [aria-hidden] [ref=e3981]: Jan
+                - generic [aria-hidden] [ref=e3982]: Feb
+                - generic [aria-hidden] [ref=e3983]: Mar
+                - generic [aria-hidden] [ref=e3984]: Apr
+                - generic [aria-hidden] [ref=e3985]: May
+                - generic [aria-hidden] [ref=e3986]: Jun
+                - generic [aria-hidden] [ref=e3987]: Jul
+                - generic [aria-hidden] [ref=e3988]: Aug
+                - generic [aria-hidden] [ref=e3989]: Sept
+                - generic [aria-hidden] [ref=e3990]: Oct
+                - generic [aria-hidden] [ref=e3991]: Nov
+                - generic [aria-hidden] [ref=e3992]: Mon
+                - generic [aria-hidden] [ref=e3993]: Wed
+                - generic [aria-hidden] [ref=e3994]: Fri
+                - button "No contributions on Sunday, 23 November 2025" [ref=e3995] [cursor=pointer]
+                - button "No contributions on Monday, 24 November 2025" [ref=e3996] [cursor=pointer]
+                - button "No contributions on Tuesday, 25 November 2025" [ref=e3997] [cursor=pointer]
+                - button "No contributions on Wednesday, 26 November 2025" [ref=e3998] [cursor=pointer]
+                - button "No contributions on Thursday, 27 November 2025" [ref=e3999] [cursor=pointer]
+                - button "No contributions on Friday, 28 November 2025" [ref=e4000] [cursor=pointer]
+                - button "No contributions on Saturday, 29 November 2025" [ref=e4001] [cursor=pointer]
+                - button "No contributions on Sunday, 30 November 2025" [ref=e4002] [cursor=pointer]
+                - button "No contributions on Monday, 1 December 2025" [ref=e4003] [cursor=pointer]
+                - button "No contributions on Tuesday, 2 December 2025" [ref=e4004] [cursor=pointer]
+                - button "No contributions on Wednesday, 3 December 2025" [ref=e4005] [cursor=pointer]
+                - button "No contributions on Thursday, 4 December 2025" [ref=e4006] [cursor=pointer]
+                - button "No contributions on Friday, 5 December 2025" [ref=e4007] [cursor=pointer]
+                - button "No contributions on Saturday, 6 December 2025" [ref=e4008] [cursor=pointer]
+                - button "No contributions on Sunday, 7 December 2025" [ref=e4009] [cursor=pointer]
+                - button "No contributions on Monday, 8 December 2025" [ref=e4010] [cursor=pointer]
+                - button "No contributions on Tuesday, 9 December 2025" [ref=e4011] [cursor=pointer]
+                - button "No contributions on Wednesday, 10 December 2025" [ref=e4012] [cursor=pointer]
+                - button "No contributions on Thursday, 11 December 2025" [ref=e4013] [cursor=pointer]
+                - button "No contributions on Friday, 12 December 2025" [ref=e4014] [cursor=pointer]
+                - button "No contributions on Saturday, 13 December 2025" [ref=e4015] [cursor=pointer]
+                - button "No contributions on Sunday, 14 December 2025" [ref=e4016] [cursor=pointer]
+                - button "No contributions on Monday, 15 December 2025" [ref=e4017] [cursor=pointer]
+                - button "No contributions on Tuesday, 16 December 2025" [ref=e4018] [cursor=pointer]
+                - button "No contributions on Wednesday, 17 December 2025" [ref=e4019] [cursor=pointer]
+                - button "No contributions on Thursday, 18 December 2025" [ref=e4020] [cursor=pointer]
+                - button "No contributions on Friday, 19 December 2025" [ref=e4021] [cursor=pointer]
+                - button "No contributions on Saturday, 20 December 2025" [ref=e4022] [cursor=pointer]
+                - button "No contributions on Sunday, 21 December 2025" [ref=e4023] [cursor=pointer]
+                - button "No contributions on Monday, 22 December 2025" [ref=e4024] [cursor=pointer]
+                - button "No contributions on Tuesday, 23 December 2025" [ref=e4025] [cursor=pointer]
+                - button "No contributions on Wednesday, 24 December 2025" [ref=e4026] [cursor=pointer]
+                - button "No contributions on Thursday, 25 December 2025" [ref=e4027] [cursor=pointer]
+                - button "No contributions on Friday, 26 December 2025" [ref=e4028] [cursor=pointer]
+                - button "No contributions on Saturday, 27 December 2025" [ref=e4029] [cursor=pointer]
+                - button "No contributions on Sunday, 28 December 2025" [ref=e4030] [cursor=pointer]
+                - button "No contributions on Monday, 29 December 2025" [ref=e4031] [cursor=pointer]
+                - button "No contributions on Tuesday, 30 December 2025" [ref=e4032] [cursor=pointer]
+                - button "No contributions on Wednesday, 31 December 2025" [ref=e4033] [cursor=pointer]
+                - button "No contributions on Thursday, 1 January 2026" [ref=e4034] [cursor=pointer]
+                - button "No contributions on Friday, 2 January 2026" [ref=e4035] [cursor=pointer]
+                - button "No contributions on Saturday, 3 January 2026" [ref=e4036] [cursor=pointer]
+                - button "No contributions on Sunday, 4 January 2026" [ref=e4037] [cursor=pointer]
+                - button "No contributions on Monday, 5 January 2026" [ref=e4038] [cursor=pointer]
+                - button "No contributions on Tuesday, 6 January 2026" [ref=e4039] [cursor=pointer]
+                - button "No contributions on Wednesday, 7 January 2026" [ref=e4040] [cursor=pointer]
+                - button "No contributions on Thursday, 8 January 2026" [ref=e4041] [cursor=pointer]
+                - button "No contributions on Friday, 9 January 2026" [ref=e4042] [cursor=pointer]
+                - button "No contributions on Saturday, 10 January 2026" [ref=e4043] [cursor=pointer]
+                - button "No contributions on Sunday, 11 January 2026" [ref=e4044] [cursor=pointer]
+                - button "No contributions on Monday, 12 January 2026" [ref=e4045] [cursor=pointer]
+                - button "No contributions on Tuesday, 13 January 2026" [ref=e4046] [cursor=pointer]
+                - button "No contributions on Wednesday, 14 January 2026" [ref=e4047] [cursor=pointer]
+                - button "No contributions on Thursday, 15 January 2026" [ref=e4048] [cursor=pointer]
+                - button "No contributions on Friday, 16 January 2026" [ref=e4049] [cursor=pointer]
+                - button "No contributions on Saturday, 17 January 2026" [ref=e4050] [cursor=pointer]
+                - button "No contributions on Sunday, 18 January 2026" [ref=e4051] [cursor=pointer]
+                - button "No contributions on Monday, 19 January 2026" [ref=e4052] [cursor=pointer]
+                - button "No contributions on Tuesday, 20 January 2026" [ref=e4053] [cursor=pointer]
+                - button "No contributions on Wednesday, 21 January 2026" [ref=e4054] [cursor=pointer]
+                - button "No contributions on Thursday, 22 January 2026" [ref=e4055] [cursor=pointer]
+                - button "No contributions on Friday, 23 January 2026" [ref=e4056] [cursor=pointer]
+                - button "No contributions on Saturday, 24 January 2026" [ref=e4057] [cursor=pointer]
+                - button "No contributions on Sunday, 25 January 2026" [ref=e4058] [cursor=pointer]
+                - button "No contributions on Monday, 26 January 2026" [ref=e4059] [cursor=pointer]
+                - button "No contributions on Tuesday, 27 January 2026" [ref=e4060] [cursor=pointer]
+                - button "No contributions on Wednesday, 28 January 2026" [ref=e4061] [cursor=pointer]
+                - button "No contributions on Thursday, 29 January 2026" [ref=e4062] [cursor=pointer]
+                - button "No contributions on Friday, 30 January 2026" [ref=e4063] [cursor=pointer]
+                - button "No contributions on Saturday, 31 January 2026" [ref=e4064] [cursor=pointer]
+                - button "No contributions on Sunday, 1 February 2026" [ref=e4065] [cursor=pointer]
+                - button "No contributions on Monday, 2 February 2026" [ref=e4066] [cursor=pointer]
+                - button "No contributions on Tuesday, 3 February 2026" [ref=e4067] [cursor=pointer]
+                - button "No contributions on Wednesday, 4 February 2026" [ref=e4068] [cursor=pointer]
+                - button "No contributions on Thursday, 5 February 2026" [ref=e4069] [cursor=pointer]
+                - button "No contributions on Friday, 6 February 2026" [ref=e4070] [cursor=pointer]
+                - button "No contributions on Saturday, 7 February 2026" [ref=e4071] [cursor=pointer]
+                - button "No contributions on Sunday, 8 February 2026" [ref=e4072] [cursor=pointer]
+                - button "No contributions on Monday, 9 February 2026" [ref=e4073] [cursor=pointer]
+                - button "No contributions on Tuesday, 10 February 2026" [ref=e4074] [cursor=pointer]
+                - button "No contributions on Wednesday, 11 February 2026" [ref=e4075] [cursor=pointer]
+                - button "No contributions on Thursday, 12 February 2026" [ref=e4076] [cursor=pointer]
+                - button "No contributions on Friday, 13 February 2026" [ref=e4077] [cursor=pointer]
+                - button "No contributions on Saturday, 14 February 2026" [ref=e4078] [cursor=pointer]
+                - button "No contributions on Sunday, 15 February 2026" [ref=e4079] [cursor=pointer]
+                - button "1 contribution on Monday, 16 February 2026" [ref=e4080] [cursor=pointer]
+                - button "No contributions on Tuesday, 17 February 2026" [ref=e4081] [cursor=pointer]
+                - button "No contributions on Wednesday, 18 February 2026" [ref=e4082] [cursor=pointer]
+                - button "No contributions on Thursday, 19 February 2026" [ref=e4083] [cursor=pointer]
+                - button "No contributions on Friday, 20 February 2026" [ref=e4084] [cursor=pointer]
+                - button "No contributions on Saturday, 21 February 2026" [ref=e4085] [cursor=pointer]
+                - button "No contributions on Sunday, 22 February 2026" [ref=e4086] [cursor=pointer]
+                - button "No contributions on Monday, 23 February 2026" [ref=e4087] [cursor=pointer]
+                - button "No contributions on Tuesday, 24 February 2026" [ref=e4088] [cursor=pointer]
+                - button "No contributions on Wednesday, 25 February 2026" [ref=e4089] [cursor=pointer]
+                - button "2 contributions on Thursday, 26 February 2026" [ref=e4090] [cursor=pointer]
+                - button "No contributions on Friday, 27 February 2026" [ref=e4091] [cursor=pointer]
+                - button "No contributions on Saturday, 28 February 2026" [ref=e4092] [cursor=pointer]
+                - button "2 contributions on Sunday, 1 March 2026" [ref=e4093] [cursor=pointer]
+                - button "4 contributions on Monday, 2 March 2026" [ref=e4094] [cursor=pointer]
+                - button "9 contributions on Tuesday, 3 March 2026" [ref=e4095] [cursor=pointer]
+                - button "No contributions on Wednesday, 4 March 2026" [ref=e4096] [cursor=pointer]
+                - button "No contributions on Thursday, 5 March 2026" [ref=e4097] [cursor=pointer]
+                - button "No contributions on Friday, 6 March 2026" [ref=e4098] [cursor=pointer]
+                - button "No contributions on Saturday, 7 March 2026" [ref=e4099] [cursor=pointer]
+                - button "No contributions on Sunday, 8 March 2026" [ref=e4100] [cursor=pointer]
+                - button "No contributions on Monday, 9 March 2026" [ref=e4101] [cursor=pointer]
+                - button "2 contributions on Tuesday, 10 March 2026" [ref=e4102] [cursor=pointer]
+                - button "No contributions on Wednesday, 11 March 2026" [ref=e4103] [cursor=pointer]
+                - button "1 contribution on Thursday, 12 March 2026" [ref=e4104] [cursor=pointer]
+                - button "No contributions on Friday, 13 March 2026" [ref=e4105] [cursor=pointer]
+                - button "No contributions on Saturday, 14 March 2026" [ref=e4106] [cursor=pointer]
+                - button "2 contributions on Sunday, 15 March 2026" [ref=e4107] [cursor=pointer]
+                - button "2 contributions on Monday, 16 March 2026" [ref=e4108] [cursor=pointer]
+                - button "1 contribution on Tuesday, 17 March 2026" [ref=e4109] [cursor=pointer]
+                - button "1 contribution on Wednesday, 18 March 2026" [ref=e4110] [cursor=pointer]
+                - button "No contributions on Thursday, 19 March 2026" [ref=e4111] [cursor=pointer]
+                - button "No contributions on Friday, 20 March 2026" [ref=e4112] [cursor=pointer]
+                - button "No contributions on Saturday, 21 March 2026" [ref=e4113] [cursor=pointer]
+                - button "No contributions on Sunday, 22 March 2026" [ref=e4114] [cursor=pointer]
+                - button "1 contribution on Monday, 23 March 2026" [ref=e4115] [cursor=pointer]
+                - button "No contributions on Tuesday, 24 March 2026" [ref=e4116] [cursor=pointer]
+                - button "1 contribution on Wednesday, 25 March 2026" [ref=e4117] [cursor=pointer]
+                - button "No contributions on Thursday, 26 March 2026" [ref=e4118] [cursor=pointer]
+                - button "No contributions on Friday, 27 March 2026" [ref=e4119] [cursor=pointer]
+                - button "No contributions on Saturday, 28 March 2026" [ref=e4120] [cursor=pointer]
+                - button "No contributions on Sunday, 29 March 2026" [ref=e4121] [cursor=pointer]
+                - button "No contributions on Monday, 30 March 2026" [ref=e4122] [cursor=pointer]
+                - button "No contributions on Tuesday, 31 March 2026" [ref=e4123] [cursor=pointer]
+                - button "4 contributions on Wednesday, 1 April 2026" [ref=e4124] [cursor=pointer]
+                - button "6 contributions on Thursday, 2 April 2026" [ref=e4125] [cursor=pointer]
+                - button "5 contributions on Friday, 3 April 2026" [ref=e4126] [cursor=pointer]
+                - button "2 contributions on Saturday, 4 April 2026" [ref=e4127] [cursor=pointer]
+                - button "2 contributions on Sunday, 5 April 2026" [ref=e4128] [cursor=pointer]
+                - button "1 contribution on Monday, 6 April 2026" [ref=e4129] [cursor=pointer]
+                - button "No contributions on Tuesday, 7 April 2026" [ref=e4130] [cursor=pointer]
+                - button "No contributions on Wednesday, 8 April 2026" [ref=e4131] [cursor=pointer]
+                - button "No contributions on Thursday, 9 April 2026" [ref=e4132] [cursor=pointer]
+                - button "No contributions on Friday, 10 April 2026" [ref=e4133] [cursor=pointer]
+                - button "1 contribution on Saturday, 11 April 2026" [ref=e4134] [cursor=pointer]
+                - button "No contributions on Sunday, 12 April 2026" [ref=e4135] [cursor=pointer]
+                - button "No contributions on Monday, 13 April 2026" [ref=e4136] [cursor=pointer]
+                - button "No contributions on Tuesday, 14 April 2026" [ref=e4137] [cursor=pointer]
+                - button "No contributions on Wednesday, 15 April 2026" [ref=e4138] [cursor=pointer]
+                - button "No contributions on Thursday, 16 April 2026" [ref=e4139] [cursor=pointer]
+                - button "No contributions on Friday, 17 April 2026" [ref=e4140] [cursor=pointer]
+                - button "No contributions on Saturday, 18 April 2026" [ref=e4141] [cursor=pointer]
+                - button "No contributions on Sunday, 19 April 2026" [ref=e4142] [cursor=pointer]
+                - button "No contributions on Monday, 20 April 2026" [ref=e4143] [cursor=pointer]
+                - button "No contributions on Tuesday, 21 April 2026" [ref=e4144] [cursor=pointer]
+                - button "No contributions on Wednesday, 22 April 2026" [ref=e4145] [cursor=pointer]
+                - button "No contributions on Thursday, 23 April 2026" [ref=e4146] [cursor=pointer]
+                - button "No contributions on Friday, 24 April 2026" [ref=e4147] [cursor=pointer]
+                - button "No contributions on Saturday, 25 April 2026" [ref=e4148] [cursor=pointer]
+                - button "No contributions on Sunday, 26 April 2026" [ref=e4149] [cursor=pointer]
+                - button "No contributions on Monday, 27 April 2026" [ref=e4150] [cursor=pointer]
+                - button "No contributions on Tuesday, 28 April 2026" [ref=e4151] [cursor=pointer]
+                - button "No contributions on Wednesday, 29 April 2026" [ref=e4152] [cursor=pointer]
+                - button "No contributions on Thursday, 30 April 2026" [ref=e4153] [cursor=pointer]
+                - button "No contributions on Friday, 1 May 2026" [ref=e4154] [cursor=pointer]
+                - button "No contributions on Saturday, 2 May 2026" [ref=e4155] [cursor=pointer]
+                - button "No contributions on Sunday, 3 May 2026" [ref=e4156] [cursor=pointer]
+                - button "No contributions on Monday, 4 May 2026" [ref=e4157] [cursor=pointer]
+                - button "No contributions on Tuesday, 5 May 2026" [ref=e4158] [cursor=pointer]
+                - button "No contributions on Wednesday, 6 May 2026" [ref=e4159] [cursor=pointer]
+                - button "No contributions on Thursday, 7 May 2026" [ref=e4160] [cursor=pointer]
+                - button "No contributions on Friday, 8 May 2026" [ref=e4161] [cursor=pointer]
+                - button "No contributions on Saturday, 9 May 2026" [ref=e4162] [cursor=pointer]
+                - button "No contributions on Sunday, 10 May 2026" [ref=e4163] [cursor=pointer]
+                - button "No contributions on Monday, 11 May 2026" [ref=e4164] [cursor=pointer]
+                - button "No contributions on Tuesday, 12 May 2026" [ref=e4165] [cursor=pointer]
+                - button "No contributions on Wednesday, 13 May 2026" [ref=e4166] [cursor=pointer]
+                - button "No contributions on Thursday, 14 May 2026" [ref=e4167] [cursor=pointer]
+                - button "No contributions on Friday, 15 May 2026" [ref=e4168] [cursor=pointer]
+                - button "No contributions on Saturday, 16 May 2026" [ref=e4169] [cursor=pointer]
+                - button "No contributions on Sunday, 17 May 2026" [ref=e4170] [cursor=pointer]
+                - button "No contributions on Monday, 18 May 2026" [ref=e4171] [cursor=pointer]
+                - button "No contributions on Tuesday, 19 May 2026" [ref=e4172] [cursor=pointer]
+                - button "No contributions on Wednesday, 20 May 2026" [ref=e4173] [cursor=pointer]
+                - button "No contributions on Thursday, 21 May 2026" [ref=e4174] [cursor=pointer]
+                - button "No contributions on Friday, 22 May 2026" [ref=e4175] [cursor=pointer]
+                - button "No contributions on Saturday, 23 May 2026" [ref=e4176] [cursor=pointer]
+                - button "No contributions on Sunday, 24 May 2026" [ref=e4177] [cursor=pointer]
+                - button "No contributions on Monday, 25 May 2026" [ref=e4178] [cursor=pointer]
+                - button "No contributions on Tuesday, 26 May 2026" [ref=e4179] [cursor=pointer]
+                - button "No contributions on Wednesday, 27 May 2026" [ref=e4180] [cursor=pointer]
+                - button "No contributions on Thursday, 28 May 2026" [ref=e4181] [cursor=pointer]
+                - button "No contributions on Friday, 29 May 2026" [ref=e4182] [cursor=pointer]
+                - button "No contributions on Saturday, 30 May 2026" [ref=e4183] [cursor=pointer]
+                - button "No contributions on Sunday, 31 May 2026" [ref=e4184] [cursor=pointer]
+                - button "No contributions on Monday, 1 June 2026" [ref=e4185] [cursor=pointer]
+                - button "1 contribution on Tuesday, 2 June 2026" [ref=e4186] [cursor=pointer]
+                - button "2 contributions on Wednesday, 3 June 2026" [ref=e4187] [cursor=pointer]
+                - button "1 contribution on Thursday, 4 June 2026" [ref=e4188] [cursor=pointer]
+                - button "No contributions on Friday, 5 June 2026" [ref=e4189] [cursor=pointer]
+                - button "No contributions on Saturday, 6 June 2026" [ref=e4190] [cursor=pointer]
+                - button "No contributions on Sunday, 7 June 2026" [ref=e4191] [cursor=pointer]
+                - button "1 contribution on Monday, 8 June 2026" [ref=e4192] [cursor=pointer]
+                - button "No contributions on Tuesday, 9 June 2026" [ref=e4193] [cursor=pointer]
+                - button "No contributions on Wednesday, 10 June 2026" [ref=e4194] [cursor=pointer]
+                - button "No contributions on Thursday, 11 June 2026" [ref=e4195] [cursor=pointer]
+                - button "No contributions on Friday, 12 June 2026" [ref=e4196] [cursor=pointer]
+                - button "No contributions on Saturday, 13 June 2026" [ref=e4197] [cursor=pointer]
+                - button "No contributions on Sunday, 14 June 2026" [ref=e4198] [cursor=pointer]
+                - button "No contributions on Monday, 15 June 2026" [ref=e4199] [cursor=pointer]
+                - button "No contributions on Tuesday, 16 June 2026" [ref=e4200] [cursor=pointer]
+                - button "1 contribution on Wednesday, 17 June 2026" [ref=e4201] [cursor=pointer]
+                - button "No contributions on Thursday, 18 June 2026" [ref=e4202] [cursor=pointer]
+                - button "No contributions on Friday, 19 June 2026" [ref=e4203] [cursor=pointer]
+                - button "14 contributions on Saturday, 20 June 2026" [ref=e4204] [cursor=pointer]
+                - button "1 contribution on Sunday, 21 June 2026" [ref=e4205] [cursor=pointer]
+                - button "No contributions on Monday, 22 June 2026" [ref=e4206] [cursor=pointer]
+                - button "1 contribution on Tuesday, 23 June 2026" [ref=e4207] [cursor=pointer]
+                - button "No contributions on Wednesday, 24 June 2026" [ref=e4208] [cursor=pointer]
+                - button "No contributions on Thursday, 25 June 2026" [ref=e4209] [cursor=pointer]
+                - button "No contributions on Friday, 26 June 2026" [ref=e4210] [cursor=pointer]
+                - button "No contributions on Saturday, 27 June 2026" [ref=e4211] [cursor=pointer]
+                - button "No contributions on Sunday, 28 June 2026" [ref=e4212] [cursor=pointer]
+                - button "No contributions on Monday, 29 June 2026" [ref=e4213] [cursor=pointer]
+                - button "No contributions on Tuesday, 30 June 2026" [ref=e4214] [cursor=pointer]
+                - button "4 contributions on Wednesday, 1 July 2026" [ref=e4215] [cursor=pointer]
+                - button "3 contributions on Thursday, 2 July 2026" [ref=e4216] [cursor=pointer]
+                - button "No contributions on Friday, 3 July 2026" [ref=e4217] [cursor=pointer]
+                - button "13 contributions on Saturday, 4 July 2026" [ref=e4218] [cursor=pointer]
+                - button "No contributions on Sunday, 5 July 2026" [ref=e4219] [cursor=pointer]
+                - button "No contributions on Monday, 6 July 2026" [ref=e4220] [cursor=pointer]
+                - button "No contributions on Tuesday, 7 July 2026" [ref=e4221] [cursor=pointer]
+                - button "No contributions on Wednesday, 8 July 2026" [ref=e4222] [cursor=pointer]
+                - button "No contributions on Thursday, 9 July 2026" [ref=e4223] [cursor=pointer]
+                - button "No contributions on Friday, 10 July 2026" [ref=e4224] [cursor=pointer]
+                - button "No contributions on Saturday, 11 July 2026" [ref=e4225] [cursor=pointer]
+                - button "No contributions on Sunday, 12 July 2026" [ref=e4226] [cursor=pointer]
+                - button "No contributions on Monday, 13 July 2026" [ref=e4227] [cursor=pointer]
+                - button "No contributions on Tuesday, 14 July 2026" [ref=e4228] [cursor=pointer]
+                - button "1 contribution on Wednesday, 15 July 2026" [ref=e4229] [cursor=pointer]
+                - button "No contributions on Thursday, 16 July 2026" [ref=e4230] [cursor=pointer]
+                - button "2 contributions on Friday, 17 July 2026" [ref=e4231] [cursor=pointer]
+                - button "1 contribution on Saturday, 18 July 2026" [ref=e4232] [cursor=pointer]
+                - button "2 contributions on Sunday, 19 July 2026" [ref=e4233] [cursor=pointer]
+                - button "1 contribution on Monday, 20 July 2026" [ref=e4234] [cursor=pointer]
+                - button "2 contributions on Tuesday, 21 July 2026" [ref=e4235] [cursor=pointer]
+                - button "1 contribution on Wednesday, 22 July 2026" [ref=e4236] [cursor=pointer]
+                - button "No contributions on Thursday, 23 July 2026" [ref=e4237] [cursor=pointer]
+                - button "No contributions on Friday, 24 July 2026" [ref=e4238] [cursor=pointer]
+                - button "No contributions on Saturday, 25 July 2026" [ref=e4239] [cursor=pointer]
+                - button "No contributions on Sunday, 26 July 2026" [ref=e4240] [cursor=pointer]
+                - button "No contributions on Monday, 27 July 2026" [ref=e4241] [cursor=pointer]
+                - button "No contributions on Tuesday, 28 July 2026" [ref=e4242] [cursor=pointer]
+                - button "No contributions on Wednesday, 29 July 2026" [ref=e4243] [cursor=pointer]
+                - button "No contributions on Thursday, 30 July 2026" [ref=e4244] [cursor=pointer]
+                - button "No contributions on Friday, 31 July 2026" [ref=e4245] [cursor=pointer]
+                - button "No contributions on Saturday, 1 August 2026" [ref=e4246] [cursor=pointer]
+                - button "3 contributions on Sunday, 2 August 2026" [ref=e4247] [cursor=pointer]
+                - button "1 contribution on Monday, 3 August 2026" [ref=e4248] [cursor=pointer]
+                - button "1 contribution on Tuesday, 4 August 2026" [ref=e4249] [cursor=pointer]
+                - button "5 contributions on Wednesday, 5 August 2026" [ref=e4250] [cursor=pointer]
+                - button "1 contribution on Thursday, 6 August 2026" [ref=e4251] [cursor=pointer]
+                - button "1 contribution on Friday, 7 August 2026" [ref=e4252] [cursor=pointer]
+                - button "1 contribution on Saturday, 8 August 2026" [ref=e4253] [cursor=pointer]
+                - button "No contributions on Sunday, 9 August 2026" [ref=e4254] [cursor=pointer]
+                - button "No contributions on Monday, 10 August 2026" [ref=e4255] [cursor=pointer]
+                - button "No contributions on Tuesday, 11 August 2026" [ref=e4256] [cursor=pointer]
+                - button "No contributions on Wednesday, 12 August 2026" [ref=e4257] [cursor=pointer]
+                - button "No contributions on Thursday, 13 August 2026" [ref=e4258] [cursor=pointer]
+                - button "No contributions on Friday, 14 August 2026" [ref=e4259] [cursor=pointer]
+                - button "No contributions on Saturday, 15 August 2026" [ref=e4260] [cursor=pointer]
+                - button "No contributions on Sunday, 16 August 2026" [ref=e4261] [cursor=pointer]
+                - button "4 contributions on Monday, 17 August 2026" [ref=e4262] [cursor=pointer]
+                - button "No contributions on Tuesday, 18 August 2026" [ref=e4263] [cursor=pointer]
+                - button "No contributions on Wednesday, 19 August 2026" [ref=e4264] [cursor=pointer]
+                - button "No contributions on Thursday, 20 August 2026" [ref=e4265] [cursor=pointer]
+                - button "No contributions on Friday, 21 August 2026" [ref=e4266] [cursor=pointer]
+                - button "1 contribution on Saturday, 22 August 2026" [ref=e4267] [cursor=pointer]
+                - button "No contributions on Sunday, 23 August 2026" [ref=e4268] [cursor=pointer]
+                - button "No contributions on Monday, 24 August 2026" [ref=e4269] [cursor=pointer]
+                - button "No contributions on Tuesday, 25 August 2026" [ref=e4270] [cursor=pointer]
+                - button "No contributions on Wednesday, 26 August 2026" [ref=e4271] [cursor=pointer]
+                - button "No contributions on Thursday, 27 August 2026" [ref=e4272] [cursor=pointer]
+                - button "No contributions on Friday, 28 August 2026" [ref=e4273] [cursor=pointer]
+                - button "1 contribution on Saturday, 29 August 2026" [ref=e4274] [cursor=pointer]
+                - button "2 contributions on Sunday, 30 August 2026" [ref=e4275] [cursor=pointer]
+                - button "2 contributions on Monday, 31 August 2026" [ref=e4276] [cursor=pointer]
+                - button "No contributions on Tuesday, 1 September 2026" [ref=e4277] [cursor=pointer]
+                - button "1 contribution on Wednesday, 2 September 2026" [ref=e4278] [cursor=pointer]
+                - button "3 contributions on Thursday, 3 September 2026" [ref=e4279] [cursor=pointer]
+                - button "1 contribution on Friday, 4 September 2026" [ref=e4280] [cursor=pointer]
+                - button "1 contribution on Saturday, 5 September 2026" [ref=e4281] [cursor=pointer]
+                - button "2 contributions on Sunday, 6 September 2026" [ref=e4282] [cursor=pointer]
+                - button "2 contributions on Monday, 7 September 2026" [ref=e4283] [cursor=pointer]
+                - button "No contributions on Tuesday, 8 September 2026" [ref=e4284] [cursor=pointer]
+                - button "1 contribution on Wednesday, 9 September 2026" [ref=e4285] [cursor=pointer]
+                - button "1 contribution on Thursday, 10 September 2026" [ref=e4286] [cursor=pointer]
+                - button "No contributions on Friday, 11 September 2026" [ref=e4287] [cursor=pointer]
+                - button "8 contributions on Saturday, 12 September 2026" [ref=e4288] [cursor=pointer]
+                - button "12 contributions on Sunday, 13 September 2026" [ref=e4289] [cursor=pointer]
+                - button "7 contributions on Monday, 14 September 2026" [ref=e4290] [cursor=pointer]
+                - button "14 contributions on Tuesday, 15 September 2026" [ref=e4291] [cursor=pointer]
+                - button "16 contributions on Wednesday, 16 September 2026" [ref=e4292] [cursor=pointer]
+                - button "6 contributions on Thursday, 17 September 2026" [ref=e4293] [cursor=pointer]
+                - button "2 contributions on Friday, 18 September 2026" [ref=e4294] [cursor=pointer]
+                - button "No contributions on Saturday, 19 September 2026" [ref=e4295] [cursor=pointer]
+                - button "4 contributions on Sunday, 20 September 2026" [ref=e4296] [cursor=pointer]
+                - button "19 contributions on Monday, 21 September 2026" [ref=e4297] [cursor=pointer]
+                - button "19 contributions on Tuesday, 22 September 2026" [ref=e4298] [cursor=pointer]
+                - button "16 contributions on Wednesday, 23 September 2026" [ref=e4299] [cursor=pointer]
+                - button "18 contributions on Thursday, 24 September 2026" [ref=e4300] [cursor=pointer]
+                - button "5 contributions on Friday, 25 September 2026" [ref=e4301] [cursor=pointer]
+                - button "8 contributions on Saturday, 26 September 2026" [ref=e4302] [cursor=pointer]
+                - button "3 contributions on Sunday, 27 September 2026" [ref=e4303] [cursor=pointer]
+                - button "7 contributions on Monday, 28 September 2026" [ref=e4304] [cursor=pointer]
+                - button "2 contributions on Tuesday, 29 September 2026" [ref=e4305] [cursor=pointer]
+                - button "3 contributions on Wednesday, 30 September 2026" [ref=e4306] [cursor=pointer]
+                - button "4 contributions on Thursday, 1 October 2026" [ref=e4307] [cursor=pointer]
+                - button "12 contributions on Friday, 2 October 2026" [ref=e4308] [cursor=pointer]
+                - button "1 contribution on Saturday, 3 October 2026" [ref=e4309] [cursor=pointer]
+                - button "13 contributions on Sunday, 4 October 2026" [ref=e4310] [cursor=pointer]
+                - button "17 contributions on Monday, 5 October 2026" [ref=e4311] [cursor=pointer]
+                - button "12 contributions on Tuesday, 6 October 2026" [ref=e4312] [cursor=pointer]
+                - button "6 contributions on Wednesday, 7 October 2026" [ref=e4313] [cursor=pointer]
+                - button "5 contributions on Thursday, 8 October 2026" [ref=e4314] [cursor=pointer]
+                - button "3 contributions on Friday, 9 October 2026" [ref=e4315] [cursor=pointer]
+                - button "No contributions on Saturday, 10 October 2026" [ref=e4316] [cursor=pointer]
+                - button "6 contributions on Sunday, 11 October 2026" [ref=e4317] [cursor=pointer]
+                - button "5 contributions on Monday, 12 October 2026" [ref=e4318] [cursor=pointer]
+                - button "5 contributions on Tuesday, 13 October 2026" [ref=e4319] [cursor=pointer]
+                - button "3 contributions on Wednesday, 14 October 2026" [ref=e4320] [cursor=pointer]
+                - button "15 contributions on Thursday, 15 October 2026" [ref=e4321] [cursor=pointer]
+                - button "2 contributions on Friday, 16 October 2026" [ref=e4322] [cursor=pointer]
+                - button "No contributions on Saturday, 17 October 2026" [ref=e4323] [cursor=pointer]
+                - button "No contributions on Sunday, 18 October 2026" [ref=e4324] [cursor=pointer]
+                - button "2 contributions on Monday, 19 October 2026" [ref=e4325] [cursor=pointer]
+                - button "No contributions on Tuesday, 20 October 2026" [ref=e4326] [cursor=pointer]
+                - button "4 contributions on Wednesday, 21 October 2026" [ref=e4327] [cursor=pointer]
+                - button "1 contribution on Thursday, 22 October 2026" [ref=e4328] [cursor=pointer]
+                - button "No contributions on Friday, 23 October 2026" [ref=e4329] [cursor=pointer]
+                - button "2 contributions on Saturday, 24 October 2026" [ref=e4330] [cursor=pointer]
+                - button "4 contributions on Sunday, 25 October 2026" [ref=e4331] [cursor=pointer]
+                - button "No contributions on Monday, 26 October 2026" [ref=e4332] [cursor=pointer]
+                - button "No contributions on Tuesday, 27 October 2026" [ref=e4333] [cursor=pointer]
+                - button "No contributions on Wednesday, 28 October 2026" [ref=e4334] [cursor=pointer]
+                - button "No contributions on Thursday, 29 October 2026" [ref=e4335] [cursor=pointer]
+                - button "No contributions on Friday, 30 October 2026" [ref=e4336] [cursor=pointer]
+                - button "No contributions on Saturday, 31 October 2026" [ref=e4337] [cursor=pointer]
+                - button "No contributions on Sunday, 1 November 2026" [ref=e4338] [cursor=pointer]
+                - button "1 contribution on Monday, 2 November 2026" [ref=e4339] [cursor=pointer]
+                - button "9 contributions on Tuesday, 3 November 2026" [ref=e4340] [cursor=pointer]
+                - button "No contributions on Wednesday, 4 November 2026" [ref=e4341] [cursor=pointer]
+                - button "No contributions on Thursday, 5 November 2026" [ref=e4342] [cursor=pointer]
+                - button "No contributions on Friday, 6 November 2026" [ref=e4343] [cursor=pointer]
+                - button "No contributions on Saturday, 7 November 2026" [ref=e4344] [cursor=pointer]
+                - button "3 contributions on Sunday, 8 November 2026" [ref=e4345] [cursor=pointer]
+                - button "No contributions on Monday, 9 November 2026" [ref=e4346] [cursor=pointer]
+                - button "8 contributions on Tuesday, 10 November 2026" [ref=e4347] [cursor=pointer]
+                - button "13 contributions on Wednesday, 11 November 2026" [ref=e4348] [cursor=pointer]
+                - button "16 contributions on Thursday, 12 November 2026" [ref=e4349] [cursor=pointer]
+                - button "13 contributions on Friday, 13 November 2026" [ref=e4350] [cursor=pointer]
+                - button "17 contributions on Saturday, 14 November 2026" [ref=e4351] [cursor=pointer]
+                - button "9 contributions on Sunday, 15 November 2026" [ref=e4352] [cursor=pointer]
+                - button "20 contributions on Monday, 16 November 2026" [ref=e4353] [cursor=pointer]
+                - button "8 contributions on Tuesday, 17 November 2026" [ref=e4354] [cursor=pointer]
+                - button "2 contributions on Wednesday, 18 November 2026" [ref=e4355] [cursor=pointer]
+                - button "No contributions on Thursday, 19 November 2026" [ref=e4356] [cursor=pointer]
+                - button "2 contributions on Friday, 20 November 2026" [ref=e4357] [cursor=pointer]
+                - button "No contributions on Saturday, 21 November 2026" [ref=e4358] [cursor=pointer]
+                - button "No contributions on Sunday, 22 November 2026" [ref=e4359] [cursor=pointer]
+                - button "14 contributions on Monday, 23 November 2026" [ref=e4360] [cursor=pointer]
+                - button "No contributions on Tuesday, 24 November 2026" [ref=e4361] [cursor=pointer]
+                - button "4 contributions on Wednesday, 25 November 2026" [ref=e4362] [cursor=pointer]
+                - button "16 contributions on Thursday, 26 November 2026" [ref=e4363] [cursor=pointer]
+                - button "5 contributions on Friday, 27 November 2026" [ref=e4364] [cursor=pointer]
+                - button "11 contributions on Saturday, 28 November 2026" [ref=e4365] [cursor=pointer]
+            - generic [ref=e4366]:
+              - paragraph [ref=e4367]: Counts follow my GitHub profile’s visibility settings; private repository details are never shown.
+              - group "Contribution intensity" [ref=e4368]:
+                - generic [aria-hidden] [ref=e4369]: Less
+                - list [ref=e4370]:
+                  - listitem "No contributions" [ref=e4371]
+                  - listitem "1–5 contributions" [ref=e4373]
+                  - listitem "6–9 contributions" [ref=e4375]
+                  - listitem "11–15 contributions" [ref=e4377]
+                  - listitem "16–20 contributions" [ref=e4379]
+                - generic [aria-hidden] [ref=e4381]: More
+          - region "GitHub statistics" [ref=e4382]:
+            - paragraph [ref=e4383]:
+              - text: "Reporting period:"
+              - time [ref=e4384]: 23 Nov 2025
+              - text: –
+              - time [ref=e4385]: 28 Nov 2026
+              - text: (UTC)
+            - generic [ref=e4386]:
+              - generic [ref=e4387]:
+                - term [ref=e4388]: Total contributions
+                - definition [ref=e4389]:
+                  - generic [ref=e4390]: "599"
+                - definition [ref=e4391]: 371 days in this period
+              - generic [ref=e4392]:
+                - term [ref=e4393]: Current streak
+                - definition [ref=e4394]:
+                  - generic [ref=e4395]: "4"
+                  - generic [ref=e4396]: days
+                - definition [ref=e4397]: Consecutive days with activity
+              - generic [ref=e4398]:
+                - term [ref=e4399]: Longest streak
+                - definition [ref=e4400]:
+                  - generic [ref=e4401]: "20"
+                  - generic [ref=e4402]: days
+                - definition [ref=e4403]: 20 Sept 2026 – 9 Oct 2026
+              - generic [ref=e4404]:
+                - term [ref=e4405]: Most active day
+                - definition [ref=e4406]:
+                  - generic [ref=e4407]: "20"
+                  - generic [ref=e4408]: contributions
+                - definition [ref=e4409]:
+                  - time [ref=e4410]: 16 Nov 2026
+              - generic [ref=e4411]:
+                - term [ref=e4412]: Active days
+                - definition [ref=e4413]:
+                  - generic [ref=e4414]: "114"
+                  - generic [ref=e4415]: of 371
+                - definition [ref=e4416]: 31% of days
+    - region "Built. Tested. Delivered." [ref=e2796]:
+      - generic [ref=e2797]:
+        - generic [ref=e2798]: "10"
+        - text: ENGINEERING
+      - generic [ref=e2800]:
+        - heading [level=2] [ref=e2801]:
+          - text: Built. Tested.
+          - emphasis [ref=e2802]: Delivered.
+        - paragraph [ref=e2803]: Engineering beyond the interface. Automated quality assurance, maintainable architecture and reliable delivery workflows.
+      - list [ref=e2804]:
+        - listitem [ref=e2805]:
+          - generic [aria-hidden] [ref=e2807]: "01"
+          - heading "01. Automated Testing" [level=3] [ref=e2810]:
+            - generic [ref=e2811]: "01."
+            - text: Automated Testing
+          - paragraph [ref=e2812]: Node test runner with unit, integration and component suites, Playwright browser tests, c8 coverage and JUnit reports.
+          - generic [ref=e2813]:
+            - paragraph [ref=e2814]:
+              - generic [ref=e2815]: Not configured
+              - generic [ref=e4417]: No report published yet
+            - link "Testing guide (opens in a new tab)" [ref=e2817] [cursor=pointer]:
+              - /url: https://github.com/domwokorach/DW-Professional/blob/master/docs/TESTING.md
+              - text: Testing guide
+              - generic [ref=e2822]: (opens in a new tab)
+        - listitem [ref=e2823]:
+          - generic [aria-hidden] [ref=e2825]: "02"
+          - heading "02. Jenkins CI/CD" [level=3] [ref=e2830]:
+            - generic [ref=e2831]: "02."
+            - text: Jenkins CI/CD
+          - paragraph [ref=e2832]: "Declarative pipeline: parallel static analysis and test stages, reports always published, build artefacts archived."
+          - generic [ref=e2833]:
+            - paragraph [ref=e2834]:
+              - generic [ref=e2835]: Not configured
+              - generic [ref=e4418]: Jenkins is local and is not exposed to the public site
+            - link "Jenkinsfile (opens in a new tab)" [ref=e2837] [cursor=pointer]:
+              - /url: https://github.com/domwokorach/DW-Professional/blob/master/Jenkinsfile
+              - text: Jenkinsfile
+              - generic [ref=e2842]: (opens in a new tab)
+        - listitem [ref=e2843]:
+          - generic [aria-hidden] [ref=e2845]: "03"
+          - heading "03. GitHub Actions" [level=3] [ref=e2851]:
+            - generic [ref=e2852]: "03."
+            - text: GitHub Actions
+          - paragraph [ref=e2853]: Pull-request and master validation, CodeQL, dependency review, accessibility and post-deployment smoke tests, with pinned actions.
+          - generic [ref=e2854]:
+            - paragraph [ref=e2855]:
+              - generic [ref=e2856]: Failed
+              - generic [ref=e4419]: failure
+            - link "Workflows (opens in a new tab)" [ref=e2858] [cursor=pointer]:
+              - /url: https://github.com/domwokorach/DW-Professional/tree/master/.github/workflows
+              - text: Workflows
+              - generic [ref=e2863]: (opens in a new tab)
+        - listitem [ref=e2864]:
+          - generic [aria-hidden] [ref=e2866]: "04"
+          - heading "04. TypeScript" [level=3] [ref=e2870]:
+            - generic [ref=e2871]: "04."
+            - text: TypeScript
+          - paragraph [ref=e2872]: Strict mode across the Next.js app and the Expo app, type-checked separately in every pipeline.
+          - link "tsconfig.json (opens in a new tab)" [ref=e2874] [cursor=pointer]:
+            - /url: https://github.com/domwokorach/DW-Professional/blob/master/tsconfig.json
+            - text: tsconfig.json
+            - generic [ref=e2879]: (opens in a new tab)
+        - listitem [ref=e2880]:
+          - generic [aria-hidden] [ref=e2882]: "05"
+          - heading "05. Code Quality" [level=3] [ref=e2890]:
+            - generic [ref=e2891]: "05."
+            - text: Code Quality
+          - paragraph [ref=e2892]: ESLint flat config with Next.js, TypeScript, React Hooks and accessibility rules; Conventional Commits; coverage thresholds.
+          - link "Contributing (opens in a new tab)" [ref=e2894] [cursor=pointer]:
+            - /url: https://github.com/domwokorach/DW-Professional/blob/master/CONTRIBUTING.md
+            - text: Contributing
+            - generic [ref=e2899]: (opens in a new tab)
+        - listitem [ref=e2900]:
+          - generic [aria-hidden] [ref=e2902]: "06"
+          - heading "06. Security" [level=3] [ref=e2906]:
+            - generic [ref=e2907]: "06."
+            - text: Security
+          - paragraph [ref=e2908]: Dependabot, CodeQL, npm audit gates, secure headers, server-side validation and a responsible-disclosure policy.
+          - link "Security policy (opens in a new tab)" [ref=e2910] [cursor=pointer]:
+            - /url: https://github.com/domwokorach/DW-Professional/blob/master/SECURITY.md
+            - text: Security policy
+            - generic [ref=e2915]: (opens in a new tab)
+        - listitem [ref=e2916]:
+          - generic [aria-hidden] [ref=e2918]: "07"
+          - heading "07. Accessibility" [level=3] [ref=e2925]:
+            - generic [ref=e2926]: "07."
+            - text: Accessibility
+          - paragraph [ref=e2927]: axe-core checks on both themes and viewports, keyboard and touch-target tests, plus manual screen-reader guidance for WCAG 2.2 AA.
+          - link "Accessibility guide (opens in a new tab)" [ref=e2929] [cursor=pointer]:
+            - /url: https://github.com/domwokorach/DW-Professional/blob/master/docs/ACCESSIBILITY.md
+            - text: Accessibility guide
+            - generic [ref=e2934]: (opens in a new tab)
+        - listitem [ref=e2935]:
+          - generic [aria-hidden] [ref=e2937]: "08"
+          - heading "08. Vercel Deployment" [level=3] [ref=e2943]:
+            - generic [ref=e2944]: "08."
+            - text: Vercel Deployment
+          - paragraph [ref=e2945]: Git-integrated preview and production deployments, build validation, smoke tests on the live URL and a documented rollback.
+          - generic [ref=e2946]:
+            - paragraph [ref=e2947]:
+              - generic [ref=e2948]: Passed
+              - generic [ref=e4420]: success
+            - link "Deployment guide (opens in a new tab)" [ref=e2950] [cursor=pointer]:
+              - /url: https://github.com/domwokorach/DW-Professional/blob/master/docs/DEPLOYMENT.md
+              - text: Deployment guide
+              - generic [ref=e2955]: (opens in a new tab)
+        - listitem [ref=e2956]:
+          - generic [aria-hidden] [ref=e2958]: "09"
+          - heading "09. GitHub Source Code" [level=3] [ref=e2963]:
+            - generic [ref=e2964]: "09."
+            - text: GitHub Source Code
+          - paragraph [ref=e2965]: "Public monorepo: the Next.js site, the Expo app and a design-token package, with contribution guidelines."
+          - generic [ref=e2966]:
+            - paragraph [ref=e2967]:
+              - generic [ref=e2968]: Passed
+              - generic [ref=e4421]: 0b0f54d
+            - link "Repository (opens in a new tab)" [ref=e2970] [cursor=pointer]:
+              - /url: https://github.com/domwokorach/DW-Professional
+              - text: Repository
+              - generic [ref=e2975]: (opens in a new tab)
+        - listitem [ref=e2976]:
+          - generic [aria-hidden] [ref=e2978]: "10"
+          - heading "10. System Architecture" [level=3] [ref=e2984]:
+            - generic [ref=e2985]: "10."
+            - text: System Architecture
+          - paragraph [ref=e2986]: Documented App Router, API, Prisma and PostgreSQL, authentication and delivery flows, with Mermaid diagrams.
+          - link "Architecture (opens in a new tab)" [ref=e2988] [cursor=pointer]:
+            - /url: https://github.com/domwokorach/DW-Professional/blob/master/docs/ARCHITECTURE.md
+            - text: Architecture
+            - generic [ref=e2993]: (opens in a new tab)
+      - region "Live status" [ref=e2994]:
+        - heading "Live status" [level=3] [ref=e2995]
+        - generic [ref=e2996]:
+          - generic [ref=e2997]:
+            - term [ref=e2998]: Latest CI run
+            - definition [ref=e2999]:
+              - link "Failed (opens in a new tab)" [ref=e4422] [cursor=pointer]:
+                - /url: https://github.com/domwokorach/DW-Professional/actions/runs/46164953943
+                - generic [ref=e4423]: Failed
+                - generic [ref=e4425]: (opens in a new tab)
+              - generic [ref=e4426]: · failure
+              - generic [ref=e4427]: · 28 Nov 2026, 16:24 UTC
+          - generic [ref=e3002]:
+            - term [ref=e3003]: Last successful build
+            - definition [ref=e3004]: Not available
+          - generic [ref=e3007]:
+            - term [ref=e3008]: Latest commit
+            - definition [ref=e3009]:
+              - 'link "0b0f54d Merge pull request #22 from domwokorach/fix/remove-hsts-override (opens in a new tab)" [ref=e4428] [cursor=pointer]':
+                - /url: https://github.com/domwokorach/DW-Professional/commit/0b0f54ddf1d741dfb2f9f95cf3c7362b09c6fa86
+                - code [ref=e4429]: 0b0f54d
+                - text: "Merge pull request #22 from domwokorach/fix/remove-hsts-override"
+                - generic [ref=e4430]: (opens in a new tab)
+              - generic [ref=e4431]: · 28 Nov 2026, 16:24 UTC
+          - generic [ref=e3012]:
+            - term [ref=e3013]: Production deployment
+            - definition [ref=e3014]:
+              - link "Passed (opens in a new tab)" [ref=e4432] [cursor=pointer]:
+                - /url: https://dw-professional-lftx41asq-domwokorachs-projects.vercel.app
+                - generic [ref=e4433]: Passed
+                - generic [ref=e4435]: (opens in a new tab)
+              - generic [ref=e4436]: · success
+              - generic [ref=e4437]: · 28 Nov 2026, 16:24 UTC
+          - generic [ref=e3017]:
+            - term [ref=e3018]: Jenkins
+            - definition [ref=e3019]:
+              - generic [ref=e4438]: Not configured
+              - generic [ref=e4440]: · Jenkins is local and is not exposed to the public site
+          - generic [ref=e3022]:
+            - term [ref=e3023]: Tests and coverage
+            - definition [ref=e3024]: No report published for the latest successful build
+        - status [ref=e3027]: Last verified 28 Nov 2026, 17:45 UTC.
+      - navigation "Engineering links" [ref=e3028]:
+        - list [ref=e3029]:
+          - listitem [ref=e3030]:
+            - link "View GitHub Source Code (opens in a new tab)" [ref=e3031] [cursor=pointer]:
+              - /url: https://github.com/domwokorach/DW-Professional
+              - text: View GitHub Source Code
+              - generic [ref=e3036]: (opens in a new tab)
+          - listitem [ref=e3037]:
+            - link "View CI/CD Pipelines (opens in a new tab)" [ref=e3038] [cursor=pointer]:
+              - /url: https://github.com/domwokorach/DW-Professional/actions
+              - text: View CI/CD Pipelines
+              - generic [ref=e3043]: (opens in a new tab)
+          - listitem [ref=e3044]:
+            - link "Explore Automated Tests (opens in a new tab)" [ref=e3045] [cursor=pointer]:
+              - /url: https://github.com/domwokorach/DW-Professional/tree/master/tests
+              - text: Explore Automated Tests
+              - generic [ref=e3050]: (opens in a new tab)
+          - listitem [ref=e3051]:
+            - link "View Jenkins Pipeline (opens in a new tab)" [ref=e3052] [cursor=pointer]:
+              - /url: https://github.com/domwokorach/DW-Professional/blob/master/Jenkinsfile
+              - text: View Jenkins Pipeline
+              - generic [ref=e3057]: (opens in a new tab)
+          - listitem [ref=e3058]:
+            - link "View Engineering Documentation (opens in a new tab)" [ref=e3059] [cursor=pointer]:
+              - /url: https://github.com/domwokorach/DW-Professional/tree/master/docs
+              - text: View Engineering Documentation
+              - generic [ref=e3064]: (opens in a new tab)
+    - region "What people are saying." [ref=e3065]:
+      - generic [ref=e3066]:
+        - generic [ref=e3067]: "07"
+        - text: TESTIMONIALS
+      - generic [ref=e3069]:
+        - heading "What people are saying." [level=2] [ref=e3070]:
+          - generic [aria-hidden] [ref=e3072]:
+            - generic [ref=e3073]: What
+            - generic [ref=e3075]: people
+            - generic [ref=e3077]: are
+            - emphasis [ref=e3079]:
+              - generic [ref=e3080]: saying.
+        - paragraph [ref=e3082]: Worked with me or seen my work? Leave a comment. New comments are reviewed before they appear here.
+      - region "Featured testimonials" [ref=e3083]:
+        - paragraph [ref=e3085]: Featured testimonial
+        - generic [ref=e3090]:
+          - generic [ref=e3091]:
+            - article [ref=e3092]:
+              - generic [ref=e3093]:
+                - generic [ref=e3094]:
+                  - img "Innovation Community avatar" [ref=e3095]:
+                    - generic [aria-hidden] [ref=e3096]: IC
+                  - img "Verified testimonial"
+                - generic [ref=e3097]:
+                  - heading "Innovation Community" [level=3] [ref=e3098]
+                  - paragraph [ref=e3099]: Lloyds Banking Group
+              - blockquote [ref=e3100]:
+                - paragraph [ref=e3101]: “Dom A big big thanks from the team for all the handout you have done on Innovation Community conference 2018. It has been great working with you.”
+                - generic [ref=e3102]: — Innovation Communities Team
+              - time [ref=e3103]: 5 Oct 2026
+            - article [aria-hidden] [ref=e3104]:
+              - generic [ref=e3105]:
+                - img [ref=e3107]:
+                  - generic [aria-hidden] [ref=e3108]: IC
+                - generic [ref=e3109]:
+                  - heading [level=3] [ref=e3110]: Innovation Community
+                  - paragraph [ref=e3111]: Lloyds Banking Group
+              - blockquote [ref=e3112]:
+                - paragraph [ref=e3113]: “Dom A big big thanks from the team for all the handout you have done on Innovation Community conference 2018. It has been great working with you.”
+                - generic [ref=e3114]: — Innovation Communities Team
+              - time [ref=e3115]: 5 Oct 2026
+            - article [aria-hidden] [ref=e3116]:
+              - generic [ref=e3117]:
+                - img [ref=e3119]:
+                  - generic [aria-hidden] [ref=e3120]: IC
+                - generic [ref=e3121]:
+                  - heading [level=3] [ref=e3122]: Innovation Community
+                  - paragraph [ref=e3123]: Lloyds Banking Group
+              - blockquote [ref=e3124]:
+                - paragraph [ref=e3125]: “Dom A big big thanks from the team for all the handout you have done on Innovation Community conference 2018. It has been great working with you.”
+                - generic [ref=e3126]: — Innovation Communities Team
+              - time [ref=e3127]: 5 Oct 2026
+          - generic [aria-hidden] [ref=e3128]:
+            - article [aria-hidden] [ref=e3129]:
+              - generic [ref=e3130]:
+                - img [ref=e3132]:
+                  - generic [aria-hidden] [ref=e3133]: IC
+                - generic [ref=e3134]:
+                  - heading [level=3] [ref=e3135]: Innovation Community
+                  - paragraph [ref=e3136]: Lloyds Banking Group
+              - blockquote [ref=e3137]:
+                - paragraph [ref=e3138]: “Dom A big big thanks from the team for all the handout you have done on Innovation Community conference 2018. It has been great working with you.”
+                - generic [ref=e3139]: — Innovation Communities Team
+              - time [ref=e3140]: 5 Oct 2026
+            - article [aria-hidden] [ref=e3141]:
+              - generic [ref=e3142]:
+                - img [ref=e3144]:
+                  - generic [aria-hidden] [ref=e3145]: IC
+                - generic [ref=e3146]:
+                  - heading [level=3] [ref=e3147]: Innovation Community
+                  - paragraph [ref=e3148]: Lloyds Banking Group
+              - blockquote [ref=e3149]:
+                - paragraph [ref=e3150]: “Dom A big big thanks from the team for all the handout you have done on Innovation Community conference 2018. It has been great working with you.”
+                - generic [ref=e3151]: — Innovation Communities Team
+              - time [ref=e3152]: 5 Oct 2026
+            - article [aria-hidden] [ref=e3153]:
+              - generic [ref=e3154]:
+                - img [ref=e3156]:
+                  - generic [aria-hidden] [ref=e3157]: IC
+                - generic [ref=e3158]:
+                  - heading [level=3] [ref=e3159]: Innovation Community
+                  - paragraph [ref=e3160]: Lloyds Banking Group
+              - blockquote [ref=e3161]:
+                - paragraph [ref=e3162]: “Dom A big big thanks from the team for all the handout you have done on Innovation Community conference 2018. It has been great working with you.”
+                - generic [ref=e3163]: — Innovation Communities Team
+              - time [ref=e3164]: 5 Oct 2026
+      - generic [ref=e3165]:
+        - form "Add a comment" [ref=e3166]:
+          - heading "Add a comment" [level=3] [ref=e3167]
+          - generic [ref=e3168]:
+            - generic [ref=e3169]: Avatar (optional)
+            - generic [ref=e3170]:
+              - generic [aria-hidden] [ref=e3171]: "?"
+              - generic [ref=e3172]:
+                - generic [ref=e3173] [cursor=pointer]:
+                  - text: Upload avatar
+                  - button "Upload avatar" [ref=e3174]
+                - generic [ref=e3175]: "Maximum file size: 5 MB. JPG, PNG or WebP."
+          - generic [ref=e3176]:
+            - generic [ref=e3177]:
+              - generic [ref=e3178]:
+                - text: Full name *
+                - generic [ref=e3179]: (required)
+              - textbox "Full name (required)" [ref=e3180]
+            - generic [ref=e3181]:
+              - generic [ref=e3182]:
+                - text: Email *
+                - generic [ref=e3183]: (required)
+              - textbox "Email (required)" [ref=e3184]
+              - generic [ref=e3185]: Never shown publicly.
+          - generic [ref=e3186]:
+            - generic [ref=e3187]: Company (optional)
+            - combobox "Company (optional)" [ref=e3189]
+            - textbox [aria-hidden] [ref=e3190]
+            - status [ref=e3191]
+          - generic [ref=e3192]:
+            - generic [ref=e3193]:
+              - generic [ref=e3194]:
+                - text: Comment *
+                - generic [ref=e3195]: (required)
+              - generic [ref=e3196]: 0 / 600
+            - textbox "Comment (required)" [ref=e3197]
+          - generic [ref=e3198]:
+            - checkbox "I give permission for my submitted information to be used to review and moderate my comment. (required)" [ref=e3199] [cursor=pointer]
+            - generic [ref=e3200] [cursor=pointer]:
+              - text: I give permission for my submitted information to be used to review and moderate my comment. *
+              - generic [ref=e3201]: (required)
+            - paragraph [ref=e3202]:
+              - text: To moderate comments, the date and time, your IP address and your device type (for example “Mobile · iOS · Safari”) are recorded with your comment. Your email and these details are never shown publicly. See the
+              - link "privacy notice" [ref=e3203] [cursor=pointer]:
+                - /url: /privacy
+              - text: .
+          - generic [aria-hidden] [ref=e3204]:
+            - text: Website
+            - textbox [ref=e3205]
+          - button "Submit Comment" [ref=e3206] [cursor=pointer]
+        - paragraph [ref=e4441]: No comments yet. Be the first to leave one.
+    - generic [ref=e3217]:
+      - generic [ref=e3218]:
+        - generic [ref=e3219]: "08"
+        - text: CONTACT
+      - generic [ref=e3222]:
+        - paragraph [ref=e3223]: LET'S BUILD SOMETHING
+        - heading [level=2] [ref=e3224]:
+          - text: Building thoughtful digital experiences from robust systems to
+          - emphasis [ref=e3225]: polished interfaces.
+        - paragraph [ref=e3226]: I create scalable, accessible, and user-focused digital products by combining strong engineering foundations with carefully crafted frontend experiences. From application architecture and data integration to responsive interfaces and interaction details, every part is designed to work seamlessly together.
+        - generic [ref=e3227]:
+          - generic [ref=e3228]:
+            - term [ref=e3233]: Email
+            - definition [ref=e3234]:
+              - link "Dominic.Wokorach-O@outlook.com" [ref=e3235] [cursor=pointer]:
+                - /url: mailto:Dominic.Wokorach-O@outlook.com
+          - generic [ref=e3236]:
+            - term [ref=e3241]: Location
+            - definition [ref=e3242]: London, UK
+          - generic [ref=e3243]:
+            - term [ref=e3249]: Work
+            - definition [ref=e3250]: Frontend Software Engineering
+        - link "View work" [ref=e3251] [cursor=pointer]:
+          - /url: "#work"
+        - text: +
+    - region "iOS, Web & Android." [ref=e3257]:
+      - generic [ref=e3258]:
+        - generic [ref=e3259]: "09"
+        - text: PLATFORMS
+      - generic [ref=e3261]:
+        - heading [level=2] [ref=e3262]:
+          - text: iOS, Web
+          - emphasis [ref=e3263]: "& Android."
+        - paragraph [ref=e3264]: This portfolio runs in any browser. Expo Go is the official app for previewing Expo projects on your phone or tablet.
+      - list [ref=e3265]:
+        - listitem [ref=e3266]:
+          - heading "iOS" [level=3] [ref=e3270]
+          - paragraph [ref=e3271]: iPhone and iPad
+          - paragraph [ref=e3272]: Expo Go for iOS, for running Expo apps on iPhone and iPad.
+          - link "Install Expo Go on the Apple App Store (opens in a new tab)" [ref=e3273] [cursor=pointer]:
+            - /url: https://apps.apple.com/app/expo-go/id982107779
+            - text: Install Expo Go
+        - listitem [ref=e3277]:
+          - heading "Web" [level=3] [ref=e3282]
+          - paragraph [ref=e3283]: Desktop, tablet and mobile
+          - paragraph [ref=e3284]: The live portfolio, in any modern browser. No install needed.
+          - 'link "Open Website: the DW portfolio website" [ref=e3285] [cursor=pointer]':
+            - /url: https://www.dominicwokorach.me/en-gb
+            - text: Open Website
+        - listitem [ref=e3289]:
+          - heading "Android" [level=3] [ref=e3293]
+          - paragraph [ref=e3294]: Android phones and tablets
+          - paragraph [ref=e3295]: Expo Go for Android, for running Expo apps on phones and tablets.
+          - link "Install Expo Go on Google Play (opens in a new tab)" [ref=e3296] [cursor=pointer]:
+            - /url: https://play.google.com/store/apps/details?id=host.exp.exponent
+            - text: Install Expo Go
+  - contentinfo [ref=e3300]:
+    - generic [ref=e3301]:
+      - generic [ref=e3302]:
+        - link "DOMINIC" [ref=e3303] [cursor=pointer]:
+          - /url: /en-gb
+        - paragraph [ref=e3304]: Software Engineer & Frontend Developer. · London
+      - navigation "Legal" [ref=e3305]:
+        - heading "Legal" [level=2] [ref=e3306]
+        - list [ref=e3307]:
+          - listitem [ref=e3308]:
+            - link "Terms and Conditions" [ref=e3309] [cursor=pointer]:
+              - /url: /terms
+          - listitem [ref=e3310]:
+            - link "Privacy" [ref=e3311] [cursor=pointer]:
+              - /url: /privacy
+          - listitem [ref=e3312]:
+            - link "Cookie" [ref=e3313] [cursor=pointer]:
+              - /url: /cookies
+          - listitem [ref=e3314]:
+            - link "Accessibility and disability" [ref=e3315] [cursor=pointer]:
+              - /url: /accessibility
+      - navigation "Connect" [ref=e3316]:
+        - heading "Connect" [level=2] [ref=e3317]
+        - list [ref=e3318]:
+          - listitem [ref=e3319]:
+            - link "LinkedIn (opens in a new tab)" [ref=e3320] [cursor=pointer]:
+              - /url: https://www.linkedin.com/in/dominic-w-3673523b/
+              - text: LinkedIn
+              - generic [ref=e3323]: (opens in a new tab)
+          - listitem [ref=e3324]:
+            - link "GitHub (opens in a new tab)" [ref=e3325] [cursor=pointer]:
+              - /url: https://github.com/domwokorach
+              - text: GitHub
+              - generic [ref=e3328]: (opens in a new tab)
+    - generic [ref=e3329]:
+      - paragraph [ref=e3330]: © 2026 DOMINIC
+      - generic [ref=e3331]:
+        - button "Cookie preferences" [ref=e3332] [cursor=pointer]
+        - button "Back to top" [ref=e3333] [cursor=pointer]: ↑
+  - button "Open Next.js Dev Tools" [ref=e3339] [cursor=pointer]
+  - alert [ref=e4442]

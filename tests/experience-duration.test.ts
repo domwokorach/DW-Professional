@@ -31,9 +31,10 @@ test('total experience merges overlapping periods instead of summing them', () =
   assert.equal(totalMonths([]), 0);
 });
 
-test('experience data lists the ongoing role first, then ended roles newest first, with Lloyds grouped', () => {
+test('experience data lists the ongoing roles first, then ended roles newest first, with Lloyds grouped', () => {
   assert.equal(experiences[0].end, undefined);
-  const ended = experiences.slice(1);
+  assert.equal(experiences[1].end, undefined); // Professional Development: ongoing, undated
+  const ended = experiences.slice(2);
   assert.ok(ended.every((e) => e.end));
   const ends = ended.map((e) => e.end!.iso);
   assert.deepEqual(ends, [...ends].sort().reverse());

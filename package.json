@@ -104,6 +104,7 @@
     "@playwright/test": "^1.65.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.0",
+    "@types/d3-force": "^3.0.10",
     "@types/jsdom": "^21.1.7",
     "@types/node": "^22.0.0",
     "@types/pg": "^8.23.1",
@@ -111,6 +112,7 @@
     "@types/react-dom": "^19.0.0",
     "@types/three": "^0.186.0",
     "c8": "^12.0.0",
+    "d3-force": "^3.0.1",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.4.5",
     "jsdom": "^26.1.0",
@@ -120,7 +122,10 @@
     "typescript-eslint": "^8.74.0"
   },
   "overrides": {
-    "react-native-worklets": "0.13.0"
+    "react-native-worklets": "0.13.0",
+    "effect": "^3.22.5",
+    "minimatch": "^11.0.9",
+    "glob": "^14.0.2"
   },
   "packageManager": "npm@11.19.1",
   "engines": {

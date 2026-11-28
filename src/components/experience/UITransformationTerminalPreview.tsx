@@ -114,7 +114,7 @@ export default function UITransformationTerminalPreview() {
 
   return (
     <div ref={rootRef} className="xp-preview__terminal">
-      <Terminal lines={printed} typing={typing} active={running} title="ui-transformation — illustrative simulation">
+      <Terminal lines={printed} typing={typing} active={running} title="Software Engineer — illustrative simulation">
         <div className="term__controls">
           <button type="button" className="term__btn" onClick={togglePause} disabled={!running && !paused} aria-label={paused ? 'Resume terminal preview' : 'Pause terminal preview'}>
             {paused ? <Play aria-hidden="true" size={14} /> : <Pause aria-hidden="true" size={14} />}
@@ -128,7 +128,7 @@ export default function UITransformationTerminalPreview() {
       </Terminal>
       <p className="term__note">Illustrative simulation of a frontend workflow. This is not actual Lloyds Banking Group terminal output, and no commands are executed.</p>
       <div className="sr-only">
-        <p>Static transcript of the illustrative terminal simulation:</p>
+        <p>Static transcript of the illustrative terminal simulation for the Software Engineer role:</p>
         <ul>
           {SCRIPT.filter((line) => line.type !== 'blank').map((line) => (
             <li key={line.text}>{line.type === 'command' ? `Command: ${line.text}` : line.text}</li>

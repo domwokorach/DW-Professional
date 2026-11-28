@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>Innovation Community knowledge graph — illustrative animation</title>
+<style>
+/* Deterministic, time-driven scene: window.render(t) draws the frame for t seconds. window.GRAPH is injected by the capture script. */
+:root{--bg:#14132a;--fg:#ece8d9;--mut:#9a97b4;--line:rgba(236,232,217,.14);--mono:"SF Mono",Menlo,Consolas,monospace;--ui:-apple-system,"Helvetica Neue",Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--fg);font-family:var(--ui)}
+#stage{position:relative;width:1920px;height:1080px;background:radial-gradient(1200px 700px at 50% 50%,#1b1a3a 0%,#14132a 70%)}
+svg{position:absolute;inset:0}
+.hud{position:absolute;font-family:var(--mono);color:var(--mut)}
+#title{left:40px;top:30px;font-family:var(--ui);font-size:30px;font-weight:600;color:var(--fg)}
+#title small{display:block;margin-top:6px;font-family:var(--mono);font-size:16px;font-weight:400;color:var(--mut);letter-spacing:.04em}
+#chip{right:40px;top:34px;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#f2b84b;border:1px solid rgba(242,184,75,.4);border-radius:999px;padding:6px 14px}
+#legend{right:40px;top:92px;display:grid;gap:9px;font-size:16px;text-align:right}
+#legend i{display:inline-block;width:13px;height:13px;border-radius:50%;margin-left:10px;vertical-align:-1px}
+#cypher{left:40px;bottom:112px;font-size:20px;color:#d6d4e2;background:rgba(10,9,26,.72);border:1px solid var(--line);border-radius:12px;padding:14px 20px;min-width:640px;white-space:pre;line-height:1.55}
+#cypher .k{color:#c4a4f2}#cypher .f{color:#8fd3f4}#cypher .s{color:#f2cf86}
+#counts{right:40px;bottom:112px;font-size:18px;text-align:right;line-height:1.7}
+#counts b{color:var(--fg);font-weight:600}
+#rail{left:0;right:0;bottom:0;height:78px;display:flex;align-items:center;gap:26px;padding:0 40px;background:rgba(10,9,26,.82);border-top:1px solid var(--line);font-size:18px}
+#rail b{color:var(--fg);font-weight:500;white-space:nowrap}
+#segs{display:flex;gap:8px;flex:1}.seg{flex:1;height:6px;border-radius:3px;background:rgba(236,232,217,.12);overflow:hidden}.seg i{display:block;height:100%;background:#8c83ff}
+#disc{font-size:15px;max-width:640px;text-align:right;line-height:1.35}
+#tag{left:580px;right:440px;top:26px;text-align:center;font-family:var(--ui);font-size:34px;font-weight:600;color:var(--fg);letter-spacing:-.01em}
+#tag span{display:inline-block;padding:12px 28px;border-radius:18px;background:rgba(10,9,26,.78);border:1px solid rgba(224,165,38,.5)}
+text{font-family:var(--ui)}
+</style>
+</head>
+<body>
+<div id="stage">
+  <svg id="svg" width="1920" height="1080" viewBox="0 0 1920 1080"><g id="cam"><g id="links"></g><g id="nodes"></g></g></svg>
+  <div class="hud" id="title">Innovation Community<small>Organisational knowledge graph · Neo4j-inspired</small></div>
+  <div class="hud" id="chip">Illustrative</div>
+  <div class="hud" id="legend"></div>
+  <div class="hud" id="cypher"></div>
+  <div class="hud" id="counts"></div>
+  <div class="hud" id="tag"><span>Connecting people, technology and innovation.</span></div>
+  <div class="hud" id="rail"><b id="railn"></b><span id="segs"></span><span id="disc">Fictional organisation · demonstration data · not an official Lloyds Banking Group organisational structure</span></div>
+</div>
+<script>
+const G=window.GRAPH;const NS='http://www.w3.org/2000/svg';
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const prog=(t,a,d)=>clamp((t-a)/d);
+const ease=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const easeOut=x=>1-Math.pow(1-x,3);
+const byId=Object.fromEntries(G.nodes.map(n=>[n.id,n]));
+const P=G.positions;
+const SCENES=[
+ {n:'Innovation Community',s:0,len:2.5,q:'MATCH (c:InnovationCommunity)\nRETURN c'},
+ {n:'Departments',s:2.5,len:3,q:'MATCH (c)-[:HAS_DEPARTMENT]->(d:Department)\nRETURN c, d'},
+ {n:'Teams',s:5.5,len:3.5,q:'MATCH (d:Department)-[:HAS_TEAM]->(t:Team)\nRETURN d, t'},
+ {n:'Professional roles',s:9,len:3.5,q:'MATCH (t)-[:HAS_ROLE]->(r:Role)\nRETURN t, r'},
+ {n:'Collaboration',s:12.5,len:3.5,q:'MATCH (a)-[r:COLLABORATES_WITH|SHARES_KNOWLEDGE_WITH]->(b)\nRETURN a, r, b'},
+ {n:'Innovation conferences',s:16,len:3,q:'MATCH (c)-[:ORGANISES]->(e)<-[:PARTICIPATES_IN]-(r:Role)\nRETURN c, e, r'},
+ {n:'Complete network',s:19,len:3.5,q:'MATCH (n)-[r]->(m)\nRETURN n, r, m'}];
+const TOTAL=22.5;window.TOTAL=TOTAL;
+const FADE=.4;
+
+/* reveal schedule */
+const order=cat=>G.nodes.filter(n=>n.category===cat);
+const reveal={ic:{t:.35,d:1,from:'ic'}};
+order('department').forEach((n,i)=>reveal[n.id]={t:2.75+i*.3,d:1,from:'ic'});
+const parent={};G.links.forEach(l=>{if(['HAS_TEAM','HAS_ROLE'].includes(l.type))parent[l.target]=l.source;});
+order('team').forEach((n,i)=>reveal[n.id]={t:5.75+i*.28,d:.9,from:parent[n.id]});
+order('role').forEach((n,i)=>reveal[n.id]={t:9.25+i*.2,d:.8,from:parent[n.id]});
+G.nodes.filter(n=>n.category==='event'||n.category==='project').forEach((n,i)=>reveal[n.id]={t:16.25+i*.3,d:.9,from:'ic'});
+const nodeP=(id,t)=>{const r=reveal[id];return ease(prog(t,r.t,r.d));};
+
+/* link schedule: hierarchy links follow their target node; cross links have their own windows */
+const COL={HAS_DEPARTMENT:'#8d8aa8',HAS_TEAM:'#8d8aa8',HAS_ROLE:'#8d8aa8',COLLABORATES_WITH:'#4a8fe0',SHARES_KNOWLEDGE_WITH:'#9a73e6',ORGANISES:'#ef7d3d',PARTICIPATES_IN:'#ef7d3d',CONTRIBUTES_TO:'#22a6a0',SUPPORTS:'#22a6a0'};
+const cross=G.links.filter(l=>l.type==='COLLABORATES_WITH'||l.type==='SHARES_KNOWLEDGE_WITH');
+const inner=G.links.filter(l=>['ORGANISES','PARTICIPATES_IN','CONTRIBUTES_TO','SUPPORTS'].includes(l.type));
+const sched=new Map();
+G.links.forEach(l=>{
+  if(['HAS_DEPARTMENT','HAS_TEAM','HAS_ROLE'].includes(l.type)){const r=reveal[l.target];sched.set(l,{t:r.t+.25,d:r.d*.8});}
+});
+cross.forEach((l,i)=>sched.set(l,{t:12.9+i*.17,d:.6}));
+inner.forEach((l,i)=>{const base=l.type==='ORGANISES'?16.3:l.type==='PARTICIPATES_IN'?17.0:17.7;sched.set(l,{t:base+(i%9)*.12,d:.6});});
+const labelled=new Map([['t-fe|COLLABORATES_WITH|t-ux',13.2],['t-il|SHARES_KNOWLEDGE_WITH|t-ea',13.9],['t-be|COLLABORATES_WITH|t-de',14.6],['t-ux|SHARES_KNOWLEDGE_WITH|t-il',15.2]]);
+const orgLabel=new Map([['ic|ORGANISES|e-conf',16.4],['r-fd|PARTICIPATES_IN|e-conf',17.4],['t-il|CONTRIBUTES_TO|p-poc',18.2]]);
+
+/* camera keyframes: [time,k,cx,cy] fitted to the nodes revealed so far */
+function fitFor(ids,pad,w=1920,h=1080,top=100,bottom=110){let a=1e9,b=-1e9,c=1e9,d=-1e9;ids.forEach(id=>{const[x,y]=P[id];a=Math.min(a,x);b=Math.max(b,x);c=Math.min(c,y);d=Math.max(d,y);});
+  const kx=(w-2*pad)/Math.max(1,b-a),ky=(h-top-bottom-2*pad*.6)/Math.max(1,d-c);return{k:Math.min(kx,ky),cx:(a+b)/2,cy:(c+d)/2+ (bottom-top)/2*0};}
+const all=G.nodes.map(n=>n.id);
+const camEnd=fitFor(all,150);
+const camDept=fitFor(['ic',...order('department').map(n=>n.id)],420);
+const camTeam=fitFor(['ic',...order('department').map(n=>n.id),...order('team').map(n=>n.id)],330);
+const camRole=fitFor(all,190);
+const KEYS=[{t:0,k:1.5,cx:0,cy:0},{t:2.2,k:1.5,cx:0,cy:0},{t:5.2,...camDept},{t:8.7,...camTeam},{t:12.2,...camRole},{t:19.4,...camRole},{t:21.6,...camEnd}];
+function camera(t){let i=0;while(i<KEYS.length-2&&t>KEYS[i+1].t)i++;const a=KEYS[i],b=KEYS[i+1];const p=ease(clamp((t-a.t)/(b.t-a.t)));
+  return{k:Math.exp(Math.log(a.k)+(Math.log(b.k)-Math.log(a.k))*p),cx:a.cx+(b.cx-a.cx)*p,cy:a.cy+(b.cy-a.cy)*p};}
+
+/* DOM */
+const linksEl=document.getElementById('links'),nodesEl=document.getElementById('nodes');
+const lk=G.links.map(l=>{const g=document.createElementNS(NS,'g');const line=document.createElementNS(NS,'line');line.setAttribute('stroke',COL[l.type]);line.setAttribute('stroke-linecap','round');
+  const pill=document.createElementNS(NS,'rect');const txt=document.createElementNS(NS,'text');txt.textContent=l.type;txt.setAttribute('text-anchor','middle');txt.setAttribute('fill','#ece8d9');txt.setAttribute('font-family','SF Mono, Menlo, monospace');pill.setAttribute('fill','#14132a');pill.setAttribute('stroke',COL[l.type]);
+  g.append(line,pill,txt);linksEl.appendChild(g);return{l,g,line,pill,txt};});
+const nd=G.nodes.map(n=>{const g=document.createElementNS(NS,'g');const halo=document.createElementNS(NS,'circle');halo.setAttribute('fill','none');halo.setAttribute('stroke',n.colour);
+  const dot=document.createElementNS(NS,'circle');dot.setAttribute('fill',n.colour);dot.setAttribute('stroke','#14132a');dot.setAttribute('stroke-width','3');
+  const txt=document.createElementNS(NS,'text');txt.textContent=n.name;txt.setAttribute('text-anchor','middle');txt.setAttribute('fill','#ece8d9');txt.setAttribute('font-weight','500');txt.setAttribute('paint-order','stroke');txt.setAttribute('stroke','#14132a');txt.setAttribute('stroke-linejoin','round');
+  g.append(halo,dot,txt);nodesEl.appendChild(g);return{n,g,halo,dot,txt};});
+const legend=document.getElementById('legend');
+[['#e0a526','Innovation Community'],['#3fae6b','Departments'],['#4a8fe0','Teams'],['#9a73e6','Professional roles'],['#ef7d3d','Conferences & events'],['#22a6a0','Innovation projects']].forEach(([c,l])=>{const d=document.createElement('div');d.innerHTML=`${l}<i style="background:${c}"></i>`;legend.appendChild(d);});
+const segs=document.getElementById('segs');SCENES.forEach(()=>{const s=document.createElement('span');s.className='seg';s.innerHTML='<i></i>';segs.appendChild(s);});
+const hl=q=>q.replace(/\b(MATCH|RETURN)\b/g,'<span class="k">$1</span>').replace(/(:[A-Za-z_|]+)/g,'<span class="f">$1</span>');
+
+window.render=function(t){
+  t=clamp(t,0,TOTAL-1e-6);
+  const cam=camera(t);const k=cam.k;
+  const cx=960-cam.cx*k,cy=490-cam.cy*k;
+  document.getElementById('cam').setAttribute('transform',`translate(${cx} ${cy}) scale(${k})`);
+  const fs=Math.min(13/k,26);
+  /* scene fade for loop: fade in at start, out at end */
+  const fade=Math.min(prog(t,0,FADE),1-prog(t,TOTAL-FADE,FADE));
+  document.getElementById('stage').style.opacity=fade;
+  let revealedNodes=0,revealedLinks=0;
+  nd.forEach(o=>{const id=o.n.id,r=reveal[id],p=nodeP(id,t);const[x,y]=P[id];const[px,py]=P[r.from];
+    const q=easeOut(prog(t,r.t,r.d));const X=px+(x-px)*q,Y=py+(y-py)*q;const rad=o.n.radius*(.2+.8*Math.min(1,q*1.15));
+    o.g.setAttribute('transform',`translate(${X} ${Y})`);o.g.setAttribute('opacity',p>0?clamp(p*2.2):0);
+    o.dot.setAttribute('r',rad);o.dot.setAttribute('stroke-width',3/k*0.7);
+    const pulse=(o.n.category==='event'&&t>16.2&&t<19)?(.5+.5*Math.sin((t-16.2)*5)):(id==='ic'&&t<2.5?(.5+.5*Math.sin(t*4)):0);
+    o.halo.setAttribute('r',rad+(8+10*pulse)/k*1.6);o.halo.setAttribute('stroke-width',3/k*1.4);o.halo.setAttribute('opacity',pulse>0?.15+.4*pulse:0);
+    o.txt.setAttribute('y',rad+fs+4/k);o.txt.setAttribute('font-size',fs);o.txt.setAttribute('stroke-width',fs*.28);
+    o.txt.setAttribute('opacity',clamp((t-(r.t+r.d*.7))/.5));
+    if(p>0)revealedNodes++;});
+  lk.forEach(o=>{const s=sched.get(o.l);const q=ease(prog(t,s.t,s.d));const a=P[o.l.source],b=P[o.l.target];
+    const ra=byId[o.l.source].radius,rb=byId[o.l.target].radius;const dx=b[0]-a[0],dy=b[1]-a[1],len=Math.hypot(dx,dy)||1,ux=dx/len,uy=dy/len;
+    const x1=a[0]+ux*ra,y1=a[1]+uy*ra,x2full=b[0]-ux*(rb+4),y2full=b[1]-uy*(rb+4);
+    const hier=['HAS_DEPARTMENT','HAS_TEAM','HAS_ROLE'].includes(o.l.type);
+    o.line.setAttribute('x1',x1);o.line.setAttribute('y1',y1);o.line.setAttribute('x2',x1+(x2full-x1)*q);o.line.setAttribute('y2',y1+(y2full-y1)*q);
+    o.line.setAttribute('stroke-width',(hier?2.2:3)/k*0.9);o.line.setAttribute('stroke-opacity',q>0?(hier?.5:.8):0);
+    if(o.l.type==='SHARES_KNOWLEDGE_WITH'||o.l.type==='PARTICIPATES_IN')o.line.setAttribute('stroke-dasharray',`${10/k} ${7/k}`);
+    const key=`${o.l.source}|${o.l.type}|${o.l.target}`;const lt=labelled.get(key)??orgLabel.get(key);
+    let show=0;if(lt!==undefined){const u=t-lt;show=clamp(u/.3)*clamp((lt+1.6-t)/.3);}
+    const mx=(x1+x2full)/2,my=(y1+y2full)/2,f=13.5/k;const w=o.l.type.length*f*.66+f*1.4,h=f*1.9;
+    o.txt.setAttribute('x',mx);o.txt.setAttribute('y',my+f*.36);o.txt.setAttribute('font-size',f);o.pill.setAttribute('x',mx-w/2);o.pill.setAttribute('y',my-h/2);o.pill.setAttribute('width',w);o.pill.setAttribute('height',h);o.pill.setAttribute('rx',h/2);o.pill.setAttribute('stroke-width',1.5/k);
+    o.pill.setAttribute('opacity',show);o.txt.setAttribute('opacity',show);
+    if(q>=1)revealedLinks++;});
+  /* scene HUD */
+  let cur=SCENES[0];SCENES.forEach((s,i)=>{if(t>=s.s)cur=s;segs.children[i].firstChild.style.width=(prog(t,s.s,s.len)*100)+'%';});
+  document.getElementById('railn').textContent=`${String(SCENES.indexOf(cur)+1).padStart(2,'0')} / 07   ${cur.n}`;
+  const tp=cur.q;const typed=Math.floor((t-cur.s)*60);document.getElementById('cypher').innerHTML=hl(tp.slice(0,Math.max(0,typed)));
+  document.getElementById('counts').innerHTML=`nodes <b>${revealedNodes}</b> / ${G.nodes.length}<br>relationships <b>${revealedLinks}</b> / ${G.links.length}`;
+  document.getElementById('tag').style.opacity=clamp((t-20.6)/.7);
+};
+window.render(0);
+</script>
+</body>
+</html>

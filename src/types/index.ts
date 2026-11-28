@@ -48,6 +48,12 @@ export type ExperienceProject = {
   };
   /** Optional card image with an enlarged, accessible preview. */
   image?: ExperienceImage;
+  /** Short category label shown above the description. */
+  category?: string;
+  /** Illustrative interactive or animated preview shown under this project. */
+  preview?: 'html-email' | 'digital-banking-testing' | 'innovation-graph';
+  /** Responsibilities, challenges and achievements specific to this project. */
+  insights?: { responsibilities: string[]; challenges?: string[]; achievements?: string[] };
 };
 
 export type Experience = {
@@ -59,7 +65,12 @@ export type Experience = {
   start: Period;
   /** Omitted for the current role. */
   end?: Period;
-  bullets: string[];
+  /** Duties, technical contributions and day-to-day activity. */
+  responsibilities: string[];
+  /** Technical and business problems addressed in the role; omitted where the evidence does not support any. */
+  challenges?: string[];
+  /** Outcomes and contributions; never statistics unless verified. */
+  achievements?: string[];
   /** Heading for `projects`, e.g. "Freelance projects"; the count is added automatically. */
   projectsLabel?: string;
   projects?: ExperienceProject[];
@@ -79,14 +90,20 @@ export type Experience = {
   mark?: string;
   /** Calendar or globe icon in the circle instead of the text monogram, for periods without an employer. */
   markIcon?: 'calendar' | 'globe';
+  /** Shown in place of the start–end range when no verified dates exist, e.g. "Ongoing". */
+  dateLabel?: string;
   /** Hides the computed duration, e.g. when the end month is not known. */
   hideDuration?: boolean;
   /** Short label for the timeline jump links; defaults to `role`. */
   navLabel?: string;
   /** Education and career breaks get their own labels instead of "Responsibilities". */
   kind?: 'education' | 'career-break';
-  /** Overrides the heading for `bullets`, e.g. "Experience" for a career break. */
-  bulletsLabel?: string;
+  /** Overrides the "Responsibilities" heading, e.g. "Experience" for a career break. */
+  responsibilitiesLabel?: string;
+  /** Overrides the "Problems & Challenges" heading. */
+  challengesLabel?: string;
+  /** Overrides the "Achievements" heading. */
+  achievementsLabel?: string;
   /** Overrides the aria-label for `skills`, e.g. "Transferable skills". */
   skillsLabel?: string;
   /** Illustrative interactive preview shown beneath the responsibilities and projects. */

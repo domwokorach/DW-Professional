@@ -11,7 +11,7 @@ const p = (mmYyyy: string): Period => {
 // Newest first.
 export const experiences: ExperienceItem[] = [
   {
-    role: 'Freelance Software Engineer',
+    role: 'Freelance Software Developer',
     navLabel: 'Freelance',
     mark: 'FR',
     company: 'Freelance',
@@ -19,17 +19,54 @@ export const experiences: ExperienceItem[] = [
     workplaceType: 'Remote',
     location: 'London Area, United Kingdom',
     start: p('01/2024'),
-    bullets: [
+    responsibilities: [
       'Built modern, responsive web applications using React, TypeScript, Next.js and JavaScript, focusing on accessibility, performance and intuitive user experiences.',
       'Developed an AI-powered job tracking application designed to simplify job application management and improve workflow organisation.',
       'Worked on booking systems, weather dashboards, property platforms and project management applications, translating practical requirements into functional, user-friendly interfaces.',
       'Created reusable React components and maintainable front-end architectures to support scalable application development.',
       'Applied responsive design, accessibility best practices and performance optimisation techniques across different web projects.',
     ],
+    challenges: [
+      'Turning practical requirements for booking, weather, property and project-management applications into usable, functional interfaces.',
+      'Keeping front-end architecture maintainable and scalable as applications grew.',
+      'Making job-application management easier to organise and follow.',
+    ],
+    achievements: [
+      'Delivered a range of working web applications across booking, weather, property and project-management needs.',
+      'Brought AI integration into a practical, user-facing product through the job tracking application.',
+      'Produced reusable React components that support scalable development across projects.',
+    ],
     skills: ['React', 'TypeScript', 'JavaScript', 'Next.js', 'Frontend Development', 'Responsive Web Design', 'Accessibility', 'UI/UX Design', 'Component Architecture', 'AI Integration', 'Performance Optimisation', 'Software Engineering'],
   },
   {
-    role: 'Software Engineer',
+    role: 'Professional Development',
+    navLabel: 'Development',
+    markIcon: 'globe',
+    description: 'Continuous learning',
+    // No verified start or end date: shown as an ongoing record. `start` only orders the timeline and is never displayed.
+    start: p('01/2024'),
+    dateLabel: 'Ongoing',
+    hideDuration: true,
+    responsibilitiesLabel: 'Activities',
+    skillsLabel: 'Development areas',
+    responsibilities: [
+      'Continuous technical learning alongside software engineering practice, including self-directed study during and after a career break.',
+      'Earned HackerRank certifications across frontend (React, Angular, JavaScript), backend (Node.js, Java, Go, C#, REST API), SQL, algorithms and software engineering, with coding assessments completed.',
+      'Built personal technical projects across frontend and backend development, including an AI-powered job tracking application.',
+      'Developing practical experience of cloud computing and DevOps (AWS, Docker, Kubernetes, Jenkins and CI/CD) and of emerging technologies and AI integration.',
+    ],
+    challenges: [
+      'Keeping skills current through independent study, without a formal programme or employer structure.',
+      'Covering a broad range of frontend, backend, database and algorithm topics.',
+    ],
+    achievements: [
+      'Earned multiple HackerRank certifications and completed coding assessments across frontend, backend, SQL, algorithms and software engineering.',
+      'Applied that learning in personal technical projects, including an AI-powered job tracking application.',
+    ],
+    skills: ['Continuous Learning', 'Professional Certifications', 'Coding Assessments', 'Frontend Development', 'Backend Development', 'Cloud Computing', 'DevOps', 'Personal Projects', 'AI Integration'],
+  },
+  {
+    role: 'Software Engineer (Placement)',
     navLabel: 'Sky',
     mark: 'Sky',
     logo: { src: 'https://res.cloudinary.com/dkkuwmr42/image/upload/v1794310779/Full%20Stack%20Developer/Sky_50x50_io5fjd.jpg', alt: 'Sky logo' },
@@ -39,11 +76,21 @@ export const experiences: ExperienceItem[] = [
     location: 'Osterley, London, United Kingdom',
     start: p('06/2024'),
     end: p('09/2026'),
-    bullets: [
+    responsibilities: [
       'Delivered Python, React and TypeScript components that enhanced catalogue, pricing and billing workflows.',
       'Integrated REST APIs with AWS-hosted microservices, improving data exchange across business applications.',
       'Contributed to cloud-native solutions deployed through Docker and Kubernetes environments.',
       'Supported high-quality software delivery through Agile collaboration, code reviews, testing and CI/CD practices.',
+    ],
+    challenges: [
+      'Improving catalogue, pricing and billing workflows that depend on several connected services.',
+      'Exchanging data reliably between business applications and AWS-hosted microservices.',
+      'Working within cloud-native Docker and Kubernetes environments.',
+    ],
+    achievements: [
+      'Improved data exchange across business applications through REST API integration with AWS-hosted microservices.',
+      'Supported release confidence through code reviews, testing and CI/CD practices.',
+      'Gained practical experience across the software delivery lifecycle, from analysis and design to deployment and maintenance.',
     ],
     skills: ['Python', 'React', 'TypeScript', 'AWS', 'REST APIs', 'Microservices', 'Docker', 'Kubernetes', 'Jenkins', 'CI/CD Pipelines', 'Agile Development'],
     projectsLabel: 'Work Learning',
@@ -84,7 +131,7 @@ export const experiences: ExperienceItem[] = [
   },
   {
     kind: 'career-break',
-    role: 'Travel Specialist',
+    role: 'Career Break – Travel and Personal Development',
     navLabel: 'Travel',
     markIcon: 'globe',
     description: 'Career Break',
@@ -92,12 +139,20 @@ export const experiences: ExperienceItem[] = [
     location: 'International',
     start: p('01/2022'),
     end: p('06/2024'),
-    bulletsLabel: 'Experience',
+    responsibilitiesLabel: 'Experience',
     skillsLabel: 'Transferable skills',
-    bullets: [
+    responsibilities: [
       'Completed international travel across North America and South Asia, gaining valuable cross-cultural experience.',
       'Developed adaptability, communication and problem-solving skills through cross-cultural experiences.',
       'Maintained technical knowledge through self-directed learning and professional development activities.',
+    ],
+    challenges: [
+      'Staying current with technical knowledge while away from paid employment.',
+      'Working and communicating across unfamiliar cultures and environments.',
+    ],
+    achievements: [
+      'Developed adaptability, communication and cross-cultural skills through international travel.',
+      'Maintained technical knowledge through self-directed learning, then returned to software engineering in 2024.',
     ],
     skills: ['Adaptability', 'Communication', 'Problem Solving', 'Organisation', 'Independent Learning', 'Cross-cultural Communication'],
   },
@@ -112,15 +167,25 @@ export const experiences: ExperienceItem[] = [
     end: p('01/2020'),
     roles: [
       {
-        role: 'Senior Frontend Developer',
+        role: 'Frontend Developer',
         location: 'London Bridge, London, United Kingdom',
         start: p('09/2018'),
         end: p('01/2020'),
-        bullets: [
+        responsibilities: [
           'Developed and maintained an enterprise event platform supporting innovation programmes and employee engagement initiatives.',
           'Improved digital accessibility through WCAG 2.1 AA-compliant user interfaces across desktop and mobile platforms.',
           'Developed reusable design-system components adopted across multiple projects, reducing duplication and accelerating feature delivery.',
           'Collaborated with cross-functional stakeholders to successfully deliver features within Agile release cycles.',
+        ],
+        challenges: [
+          'Meeting WCAG 2.1 AA requirements consistently across desktop and mobile interfaces.',
+          'Duplicated UI code across projects slowing feature delivery.',
+          'Delivering features alongside cross-functional stakeholders within Agile release cycles.',
+        ],
+        achievements: [
+          'Improved digital accessibility for the interfaces I built.',
+          'Design-system components adopted across multiple projects, reducing duplication and accelerating feature delivery.',
+          'Delivered features successfully within Agile release cycles.',
         ],
         skills: ['Software Engineering', 'Responsive Web Design', 'Accessibility', 'Frontend Development', 'UI Components', 'Design Systems', 'WCAG 2.1 AA', 'Agile Development'],
         projectsLabel: 'Work projects',
@@ -140,6 +205,26 @@ export const experiences: ExperienceItem[] = [
             name: 'Innovation Community',
             description: 'Conference facilitation, graph-based visual work, web construction and innovation collaboration.',
             visibility: 'confidential',
+            preview: 'innovation-graph',
+            insights: {
+              responsibilities: [
+                'Supported innovation community activities and conference facilitation.',
+                'Contributed to graph-based data visualisation and relationship mapping.',
+                'Supported web construction and digital content development.',
+                'Collaborated on technology innovation initiatives.',
+              ],
+              challenges: [
+                'Visualising complex organisational relationships.',
+                'Improving knowledge discovery across different teams.',
+                'Presenting interconnected information through intuitive interfaces.',
+                'Supporting collaboration across multidisciplinary teams.',
+              ],
+              achievements: [
+                'Delivered graph-based visual work that helped connect people and ideas across the innovation community.',
+                'Helped facilitate innovation conferences and collaboration between teams.',
+                'Built web content that supported the community and its events.',
+              ],
+            },
           },
           { name: 'Innovation X', description: 'Team values, KPIs, internal innovation and search/frontend experience.', visibility: 'confidential' },
           { name: 'Applied Technology and Strategy Team', description: 'Prototype showcases, emerging technology and applied innovation.', visibility: 'confidential' },
@@ -158,15 +243,25 @@ export const experiences: ExperienceItem[] = [
         ],
       },
       {
-        role: 'Senior Web Developer, Innovation & Architecture and Strategy',
+        role: 'Web Developer – Innovation, Architecture and Strategy',
         location: 'London Bridge, London, United Kingdom',
         start: p('03/2016'),
         end: p('09/2018'),
-        bullets: [
+        responsibilities: [
           'Developed Python-based automation tooling that streamlined manual processes and improved operational efficiency across innovation teams.',
           'Contributed to Neo4j graph database initiatives, improving internal search and knowledge discovery capabilities.',
           'Designed UX prototypes and wireframes supporting youth-focused digital banking concepts.',
           'Built AI-powered search proofs of concept that improved access to internal knowledge resources.',
+        ],
+        challenges: [
+          'Manual processes reducing efficiency across innovation teams.',
+          'Finding internal knowledge and information quickly and easily.',
+          'Exploring new digital banking concepts for younger customers.',
+        ],
+        achievements: [
+          'Streamlined manual processes across innovation teams through Python automation tooling.',
+          'Improved internal search and knowledge discovery through Neo4j graph database work.',
+          'Presented youth-focused banking concepts as UX prototypes and wireframes, and demonstrated AI-powered search proofs of concept.',
         ],
         skills: ['Python', 'D3.js', 'Neo4j', 'Graph Databases', 'AI Prototyping', 'UI/UX Design', 'Technology Innovation', 'Digital Transformation', 'Process Automation'],
         projectsLabel: 'Work projects',
@@ -179,20 +274,62 @@ export const experiences: ExperienceItem[] = [
         ],
       },
       {
-        role: 'Junior UI Delivery and Transformation',
+        role: 'Software Engineer',
         location: 'Moorgate, London, United Kingdom',
         start: p('03/2015'),
         end: p('03/2016'),
-        bullets: [
+        responsibilities: [
           'Developed reusable frontend components supporting scalable and maintainable UI architecture.',
           'Improved application quality through performance enhancements and defect resolution.',
           'Contributed to responsive web applications supporting multiple business functions.',
+          'Supported frontend testing and release validation for digital banking changes, working with Git version control and Jenkins-based workflows.',
+          'Investigated software defects and frontend behaviour, supporting debugging, troubleshooting and quality assurance.',
+        ],
+        challenges: [
+          'Keeping UI code scalable and maintainable across several business functions.',
+          'Defects and performance issues affecting application quality.',
+          'Producing accurate, timely internal communications for employees across the UK.',
+          'Investigating frontend defects and keeping software quality high during digital banking changes.',
+          'Supporting reliable release processes through consistent validation.',
+        ],
+        achievements: [
+          'Improved application quality through performance enhancements and defect resolution.',
+          'Created reusable, responsive frontend components that support maintainable UI architecture.',
+          'Delivered weekly internal email updates to employees across the UK.',
         ],
         skills: ['HTML', 'CSS', 'Responsive Web Design', 'User Interface Design', 'Frontend Development', 'Component Development', 'Performance Optimisation'],
         projectsLabel: 'Work projects',
         projects: [
-          { name: 'UI Delivery and Transformation', description: 'Frontend testing, Jenkins/Git workflows, debugging, defect investigation and release validation for digital banking changes.', visibility: 'confidential' },
-          { name: 'HTML Email', description: 'Internal HTML email template development and communication support across Lloyds Banking Group.', visibility: 'confidential' },
+          { name: 'UI Delivery and Transformation', description: 'Frontend testing, Jenkins/Git workflows, debugging, defect investigation and release validation for digital banking changes.', visibility: 'confidential', preview: 'digital-banking-testing' },
+          {
+            name: 'HTML Email',
+            description: 'Internal HTML email template development and communication support across Lloyds Banking Group.',
+            category: 'Internal Communications',
+            visibility: 'confidential',
+            preview: 'html-email',
+            insights: {
+              responsibilities: [
+                'Developed and maintained internal HTML email templates.',
+                'Supported employee communications through structured, reusable email layouts.',
+                'Applied HTML and CSS to improve content presentation and readability.',
+                'Supported consistent visual presentation across internal communications.',
+              ],
+              challenges: [
+                'Maintaining consistent layouts across different email clients.',
+                'Supporting desktop and mobile email readability.',
+                'Managing the limitations of HTML email rendering.',
+                'Creating reusable templates for internal communication.',
+                'Maintaining consistent corporate branding and accessibility.',
+              ],
+              achievements: [
+                'Created reusable HTML email templates.',
+                'Established consistent internal communication layouts.',
+                'Improved content presentation and readability.',
+                'Delivered responsive email designs.',
+                'Built maintainable email template structures.',
+              ],
+            },
+          },
         ],
         preview: 'ui-transformation-terminal',
       },
@@ -201,10 +338,17 @@ export const experiences: ExperienceItem[] = [
         location: 'Moorgate, London, United Kingdom',
         start: p('10/2014'),
         end: p('03/2015'),
-        bullets: [
+        responsibilities: [
           'Completed an engineering apprenticeship, gaining cross-functional experience across DevOps, Mobile Engineering and UI Digital Transformation.',
           'Supported digital initiatives while building strong foundations in software engineering and operational practices.',
           'Collaborated with multidisciplinary teams to gain practical experience across the software development lifecycle.',
+        ],
+        challenges: [
+          'Learning unfamiliar domains quickly across HR, mobile engineering, UI delivery and DevOps rotations.',
+        ],
+        achievements: [
+          'Completed an engineering apprenticeship with cross-functional experience.',
+          'Identified UI and frontend work as the best fit, shaping the move into frontend development.',
         ],
         skills: ['Problem Solving', 'DevTools', 'DevOps', 'Mobile Application Development', 'Technical Troubleshooting', 'Digital Transformation'],
         projectsLabel: 'Work Trainee',
@@ -227,11 +371,18 @@ export const experiences: ExperienceItem[] = [
     location: 'Vauxhall, South London, United Kingdom',
     start: p('09/2013'),
     end: p('05/2014'),
-    bullets: [
+    responsibilities: [
       'Completed a structured career development programme focused on building technical skills and preparing for a career in the technology sector.',
       'Gained foundational knowledge of IT support, responsive web design and digital technologies.',
       'Developed communication, problem-solving and organisational skills through professional development and practical learning activities.',
       'Established a strong foundation for career progression into software engineering and digital transformation.',
+    ],
+    challenges: [
+      'Building technical skills from foundations towards a career in the technology sector.',
+    ],
+    achievements: [
+      'Completed a structured career development programme.',
+      'Developed communication, problem-solving and organisational skills alongside IT support and responsive web design foundations.',
     ],
     skills: ['Technical Support', 'Employee Training', 'Responsive Web Design', 'Communication', 'Problem Solving'],
   },
@@ -246,11 +397,19 @@ export const experiences: ExperienceItem[] = [
     location: 'West Ham, East London',
     start: p('08/2013'),
     end: p('09/2013'),
-    bullets: [
+    responsibilities: [
       'Developed, enhanced and maintained WordPress websites, applying web development and content management skills.',
       'Designed and customised responsive web pages using HTML and CSS, optimising usability and cross-device compatibility.',
       'Executed website deployments, performed maintenance and resolved technical issues.',
       'Applied technical problem-solving skills and streamlined web development workflows.',
+    ],
+    challenges: [
+      'Keeping websites usable across devices.',
+      'Resolving technical issues on live websites.',
+    ],
+    achievements: [
+      'Delivered website deployments and ongoing maintenance.',
+      'Streamlined web development workflows through technical problem-solving.',
     ],
     skills: ['WordPress', 'HTML', 'CSS', 'Responsive Web Design', 'Content Management', 'Website Maintenance', 'Technical Troubleshooting'],
   },
@@ -269,7 +428,7 @@ export const education: Experience[] = [
     location: 'Hammersmith, London',
     start: p('09/2005'),
     end: p('06/2009'),
-    bullets: [
+    responsibilities: [
       'BTEC National Diploma — Level 3 — DMM (104 UCAS points).',
       'BTEC First Diploma — Merit.',
       'GNVQ Foundation — Distinction.',

@@ -10,7 +10,7 @@ import { openUrl } from '~/lib/links';
 import { mono, useTheme } from '~/theme';
 
 const isGroup = (e: ExperienceItem): e is ExperienceGroup => 'roles' in e;
-const range = (e: { start: { label: string }; end?: { label: string } }) => `${e.start.label} – ${e.end?.label ?? 'Present'}`;
+const range = (e: { start: { label: string }; end?: { label: string }; dateLabel?: string }) => e.dateLabel ?? `${e.start.label} – ${e.end?.label ?? 'Present'}`;
 /** Computed from today's date for the current role, never hardcoded. */
 const duration = (e: { start: { iso: string }; end?: { iso: string }; hideDuration?: boolean }) => (e.hideDuration ? undefined : formatDuration(monthsBetween(e.start.iso, e.end?.iso)));
 
@@ -23,16 +23,31 @@ function Mark({ logo, mark, icon, title }: { logo?: { src: string; alt: string }
   );
 }
 
+function Insight({ icon, heading, items }: { icon: keyof typeof Ionicons.glyphMap; heading: string; items: string[] }) {
+  const t = useTheme();
+  return (
+    <View style={[styles.insight, { borderColor: t.line, backgroundColor: t.cream2 }]}>
+      <View style={styles.insightHead} accessible accessibilityRole="header" accessibilityLabel={heading}>
+        <Ionicons name={icon} size={16} color={t.ink} />
+        <Text style={[styles.sub, { color: t.ink }]}>{heading.toUpperCase()}</Text>
+      </View>
+      {items.map((item) => (
+        <View key={item} style={styles.bullet}>
+          <Text style={{ color: t.ink }}>•</Text>
+          <Body style={{ flex: 1 }}>{item}</Body>
+        </View>
+      ))}
+    </View>
+  );
+}
+
 function RoleBody({ role }: { role: Experience }) {
   const t = useTheme();
   return (
     <View style={{ gap: 10 }}>
-      {role.bullets.map((b) => (
-        <View key={b} style={styles.bullet}>
-          <Text style={{ color: t.ink }}>•</Text>
-          <Body style={{ flex: 1 }}>{b}</Body>
-        </View>
-      ))}
+      <Insight icon="briefcase-outline" heading={role.responsibilitiesLabel ?? (role.kind === 'education' ? 'Qualifications' : 'Responsibilities')} items={role.responsibilities} />
+      {role.challenges?.length ? <Insight icon="locate-outline" heading={role.challengesLabel ?? 'Problems & Challenges'} items={role.challenges} /> : null}
+      {role.achievements?.length ? <Insight icon="trophy-outline" heading={role.achievementsLabel ?? 'Achievements'} items={role.achievements} /> : null}
       {role.skills?.length ? <View style={styles.badges} accessibilityLabel={role.skillsLabel ?? 'Skills'}>{role.skills.map((s) => <Badge key={s}>{s}</Badge>)}</View> : null}
       {role.projects?.length ? (
         <View style={{ gap: 8 }}>
@@ -112,6 +127,8 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: 14, fontWeight: '500' },
   meta: { fontFamily: mono, fontSize: 11, letterSpacing: 0.3 },
   bullet: { flexDirection: 'row', gap: 10 },
+  insight: { gap: 10, padding: 14, borderWidth: StyleSheet.hairlineWidth, borderRadius: 14 },
+  insightHead: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   badges: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   sub: { fontFamily: mono, fontSize: 11, letterSpacing: 1.6, marginTop: 6 },
   project: { borderWidth: 1, borderRadius: 12, padding: 14, gap: 6 },

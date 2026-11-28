@@ -1,7 +1,11 @@
 'use client';
 
 import { ChevronDown } from 'lucide-react';
-import { useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, type ReactNode } from 'react';
+
+/** Lets content inside a disclosure animate when it opens, without prop drilling through server components. */
+const CollapseOpenContext = createContext(false);
+export const useCollapseOpen = () => useContext(CollapseOpenContext);
 
 /** Disclosure whose content stays in the DOM (server-rendered, crawlable) while collapsed. */
 export default function ExperienceCollapse({ id, label, name, defaultOpen = false, children }: {
@@ -20,7 +24,7 @@ export default function ExperienceCollapse({ id, label, name, defaultOpen = fals
         <ChevronDown aria-hidden="true" size={16} strokeWidth={1.8} />
       </button>
       <div id={id} className="xp-collapse__panel" inert={!open}>
-        <div className="xp-collapse__inner">{children}</div>
+        <div className="xp-collapse__inner"><CollapseOpenContext.Provider value={open}>{children}</CollapseOpenContext.Provider></div>
       </div>
     </div>
   );

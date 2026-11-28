@@ -6,9 +6,9 @@ import { formatDuration, monthsBetween } from '../src/lib/experience-duration';
 const named = (name: string) => experiences.find((e) => ('roles' in e ? e.employer : e.navLabel) === name);
 
 describe('employer history content', () => {
-  test('timeline order and years: Freelance, Sky, Travel, Lloyds, Leonard Cheshire, Lion Web Vision, then Education', () => {
-    assert.deepEqual(experiences.map((e) => ('roles' in e ? e.employer : e.navLabel)), ['Freelance', 'Sky', 'Travel', 'Lloyds Banking Group', 'Leonard Cheshire', 'Lion Web Vision']);
-    assert.deepEqual(experiences.map((e) => e.start.iso.slice(0, 4)), ['2024', '2024', '2022', '2014', '2013', '2013']);
+  test('timeline order and years: Freelance, Professional Development, Sky, Travel, Lloyds, Leonard Cheshire, Lion Web Vision, then Education', () => {
+    assert.deepEqual(experiences.map((e) => ('roles' in e ? e.employer : e.navLabel)), ['Freelance', 'Development', 'Sky', 'Travel', 'Lloyds Banking Group', 'Leonard Cheshire', 'Lion Web Vision']);
+    assert.deepEqual(experiences.map((e) => e.start.iso.slice(0, 4)), ['2024', '2024', '2024', '2022', '2014', '2013', '2013']);
     assert.equal(education[0].start.iso.slice(0, 4), '2005');
   });
 
@@ -44,9 +44,9 @@ describe('employer history content', () => {
     assert.equal(formatDuration(monthsBetween(l.start.iso, l.end?.iso)), '5 years 4 months');
     assert.equal(l.roles.length, 4);
     const expected = [
-      ['Senior Frontend Developer', '2018-09', '2020-01', '1 year 5 months'],
-      ['Senior Web Developer, Innovation & Architecture and Strategy', '2016-03', '2018-09', '2 years 7 months'],
-      ['Junior UI Delivery and Transformation', '2015-03', '2016-03', '1 year 1 month'],
+      ['Frontend Developer', '2018-09', '2020-01', '1 year 5 months'],
+      ['Web Developer – Innovation, Architecture and Strategy', '2016-03', '2018-09', '2 years 7 months'],
+      ['Software Engineer', '2015-03', '2016-03', '1 year 1 month'],
       ['Trainee Digital Transformation', '2014-10', '2015-03', '6 months'],
     ];
     expected.forEach(([role, start, end, duration], i) => {

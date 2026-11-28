@@ -1,14 +1,14 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('employer history', () => {
-  test('heading, tag and the seven timeline entries in order', async ({ page }) => {
+  test('heading, tag and the eight timeline entries in order', async ({ page }) => {
     await page.goto('/en-gb');
     const section = page.locator('#experience');
     await expect(section.locator('.section-tag')).toContainText('EMPLOYER HISTORY');
     await expect(section.getByRole('heading', { level: 2, name: 'My professional journey.' })).toBeVisible();
     const links = await section.getByRole('navigation', { name: 'Career timeline' }).getByRole('link').allTextContents();
     expect(links.map((t) => t.replace(/\s+/g, ' ').trim())).toEqual([
-      '2024 Freelance', '2024 Sky', '2022 Travel', '2014 Lloyds Banking Group', '2013 Leonard Cheshire', '2013 Lion Web Vision', '2005 Education',
+      '2024 Freelance', 'Now Development', '2024 Sky', '2022 Travel', '2014 Lloyds Banking Group', '2013 Leonard Cheshire', '2013 Lion Web Vision', '2005 Education',
     ]);
   });
 
@@ -34,7 +34,7 @@ test.describe('employer history', () => {
 
   test('details expand and collapse with the keyboard', async ({ page }) => {
     await page.goto('/en-gb');
-    const toggle = page.locator('#experience .xp-toggle').nth(1); // second entry (Sky): collapsed by default
+    const toggle = page.locator('#experience .xp-toggle').nth(2); // third entry (Sky): collapsed by default
     await toggle.scrollIntoViewIfNeeded();
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
     await toggle.focus();
@@ -55,7 +55,7 @@ test.describe('employer history', () => {
   test('freelance entry no longer lists a project block', async ({ page }) => {
     await page.goto('/en-gb');
     const freelance = page.locator('#experience article.xp-entry').first();
-    await expect(freelance).toContainText('Freelance Software Engineer');
+    await expect(freelance).toContainText('Freelance Software Developer');
     await expect(freelance.locator('.xp-projects')).toHaveCount(0);
   });
 });

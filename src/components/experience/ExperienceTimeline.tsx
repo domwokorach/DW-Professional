@@ -4,13 +4,17 @@ import IconLink from '@/components/ui/IconLink';
 import { education, experiences } from '@/data';
 import { formatDuration, monthsBetween } from '@/lib/experience-duration';
 import type { Experience, ExperienceGroup, ExperienceItem } from '@/types';
-import { LockKeyhole } from 'lucide-react';
 import ExperienceCollapse from './ExperienceCollapse';
+import ExperienceInsights, { type InsightBlock } from './ExperienceInsights';
 import LiveDuration from './LiveDuration';
 import LogoMark from './LogoMark';
 import ProjectVideo from './ProjectVideo';
 import UITransformationTerminalPreview from './UITransformationTerminalPreview';
+import HTMLEmailPreview from './html-email/HTMLEmailPreview';
+import InnovationCommunityPreview from './innovation-graph/InnovationCommunityPreview';
+import { renderAllEmails } from './html-email/email-templates';
 import TimelineNavLinks, { type TimelineNavItem } from './TimelineNav';
+import DigitalBankingTestingPreview from './DigitalBankingTestingPreview';
 import ProjectImagePreview from './ProjectImagePreview';
 import WorkLearningGallery from './WorkLearningGallery';
 
@@ -24,15 +28,21 @@ function Projects({ id, label, projects, gallery, nested }: { id: string; label:
       <Label className="xp-label" id={headingId}>{label} <span aria-hidden="true">· {String(projects.length).padStart(2, '0')}</span></Label>
       <ol className="xp-projects__list">
         {projects.map((proj, i) => (
-          <li key={proj.name} className={proj.url || proj.image ? 'xp-projects__item--linked' : undefined}>
+          <li key={proj.name} className={proj.preview ? 'xp-projects__item--preview' : proj.url || proj.image ? 'xp-projects__item--linked' : undefined}>
             <span className="xp-projects__index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
             <Name>{proj.name}</Name>
+            {proj.category && <p className="xp-projects__category">{proj.category}</p>}
             <p>{proj.description}</p>
-            {proj.visibility && (
-              <p className={`project-status xp-projects__status project-status--${proj.visibility}`}>
-                {proj.visibility === 'confidential' && <LockKeyhole aria-hidden="true" size={14} strokeWidth={1.8} />}
-                <span>{proj.visibility === 'confidential' ? 'Internal Project · Confidential' : 'Professional Development'}</span>
+            {proj.visibility === 'professional-development' && (
+              <p className="project-status xp-projects__status project-status--professional-development">
+                <span>Professional Development</span>
               </p>
+            )}
+            {proj.preview === 'digital-banking-testing' && (
+              <div className="xp-projects__preview" role="group" aria-labelledby={`${headingId}-${i}-preview`}>
+                <p className="xp-label" id={`${headingId}-${i}-preview`}>Preview</p>
+                <DigitalBankingTestingPreview />
+              </div>
             )}
             {proj.video && (
               <div className="xp-projects__media">
@@ -40,6 +50,39 @@ function Projects({ id, label, projects, gallery, nested }: { id: string; label:
               </div>
             )}
             {proj.image && <ProjectImagePreview name={proj.name} image={proj.image} />}
+            {proj.preview === 'html-email' && (
+              <div className="xp-projects__feature" role="group" aria-label={`${proj.name}: interactive email preview`}>
+                <HTMLEmailPreview templates={renderAllEmails()} />
+                {proj.insights && (
+                  <ExperienceInsights
+                    id={`${id}-html-email`}
+                    nested
+                    blocks={[
+                      { key: 'responsibilities', heading: 'Responsibilities', items: proj.insights.responsibilities },
+                      ...(proj.insights.challenges ? [{ key: 'challenges' as const, heading: 'Problems & Challenges', items: proj.insights.challenges }] : []),
+                      ...(proj.insights.achievements ? [{ key: 'achievements' as const, heading: 'Achievements', items: proj.insights.achievements }] : []),
+                    ]}
+                  />
+                )}
+              </div>
+            )}
+            {proj.preview === 'innovation-graph' && (
+              <div className="xp-projects__feature" role="group" aria-labelledby={`${id}-innovation-graph-preview`}>
+                <p className="xp-label" id={`${id}-innovation-graph-preview`}>Preview</p>
+                <InnovationCommunityPreview />
+                {proj.insights && (
+                  <ExperienceInsights
+                    id={`${id}-innovation-graph`}
+                    nested
+                    blocks={[
+                      { key: 'responsibilities', heading: 'Responsibilities', items: proj.insights.responsibilities },
+                      ...(proj.insights.challenges ? [{ key: 'challenges' as const, heading: 'Problems & Challenges', items: proj.insights.challenges }] : []),
+                      ...(proj.insights.achievements ? [{ key: 'achievements' as const, heading: 'Achievements', items: proj.insights.achievements }] : []),
+                    ]}
+                  />
+                )}
+              </div>
+            )}
             {proj.url && (
               <IconLink
                 className="xp-projects__link"
@@ -60,7 +103,8 @@ function Projects({ id, label, projects, gallery, nested }: { id: string; label:
   );
 }
 
-function Period({ xp }: { xp: Pick<Experience, 'start' | 'end'> }) {
+function Period({ xp }: { xp: Pick<Experience, 'start' | 'end' | 'dateLabel'> }) {
+  if (xp.dateLabel) return <p className="xp-date"><span className="xp-present">{xp.dateLabel}</span></p>;
   return (
     <p className="xp-date">
       <time dateTime={xp.start.iso}>{xp.start.label}</time>
@@ -126,12 +170,22 @@ function Skills({ skills, label = 'Skills' }: { skills?: string[]; label?: strin
 }
 
 function Details({ id, xp, nested, defaultOpen }: { id: string; xp: Experience; nested?: boolean; defaultOpen?: boolean }) {
-  const label = xp.bulletsLabel ?? (xp.kind === 'education' ? 'Qualifications' : xp.projects ? 'Responsibilities & projects' : 'Responsibilities');
+  const structured = xp.kind !== 'education' && Boolean(xp.challenges?.length || xp.achievements?.length);
+  const label = structured ? 'Responsibilities, challenges & achievements' : xp.kind === 'education' ? 'Qualifications' : xp.projects ? 'Responsibilities & projects' : 'Responsibilities';
+  const blocks: InsightBlock[] = [
+    { key: 'responsibilities', heading: xp.responsibilitiesLabel ?? (xp.kind === 'education' ? 'Qualifications' : 'Responsibilities'), items: xp.responsibilities },
+    ...(xp.challenges?.length ? [{ key: 'challenges' as const, heading: xp.challengesLabel ?? 'Problems & Challenges', items: xp.challenges }] : []),
+    ...(xp.achievements?.length ? [{ key: 'achievements' as const, heading: xp.achievementsLabel ?? 'Achievements', items: xp.achievements }] : []),
+  ];
   return (
     <ExperienceCollapse id={`${id}-details`} label={label} name={xp.role} defaultOpen={defaultOpen}>
-      <ul className="xp-bullets">
-        {xp.bullets.map((b) => <li key={b}>{b}</li>)}
-      </ul>
+      {structured ? (
+        <ExperienceInsights id={id} blocks={blocks} nested={nested} />
+      ) : (
+        <ul className="xp-bullets">
+          {xp.responsibilities.map((b) => <li key={b}>{b}</li>)}
+        </ul>
+      )}
       {xp.projects && <Projects id={id} label={xp.projectsLabel ?? 'Projects'} projects={xp.projects} gallery={xp.projectGallery} nested={nested} />}
       {xp.preview === 'ui-transformation-terminal' && <Preview id={id} nested={nested} />}
     </ExperienceCollapse>
@@ -207,7 +261,7 @@ const data: TimelineEntry[] = experiences.map((item, index) => {
 /** Chronological jump links, newest first, matching the timeline order. */
 export function TimelineNav() {
   const items: TimelineNavItem[] = [
-    ...experiences.map((item) => ({ id: itemId(item), year: item.start.iso.slice(0, 4), label: 'roles' in item ? item.employer : item.navLabel ?? item.role })),
+    ...experiences.map((item) => ({ id: itemId(item), year: 'dateLabel' in item && item.dateLabel ? 'Now' : item.start.iso.slice(0, 4), label: 'roles' in item ? item.employer : item.navLabel ?? item.role })),
     { id: 'xp-education', year: education[0]?.start.iso.slice(0, 4) ?? '', label: 'Education' },
   ];
   return <TimelineNavLinks items={items} />;
